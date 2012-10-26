@@ -12,6 +12,7 @@
  *
  */
 
+#include <linux/fs.h>
 #include <linux/lsm_hooks.h>
 #include <linux/sysctl.h>
 #include <linux/ptrace.h>
@@ -473,4 +474,8 @@ void __init yama_add_hooks(void)
 	pr_info("Yama: becoming mindful.\n");
 	security_add_hooks(yama_hooks, ARRAY_SIZE(yama_hooks));
 	yama_init_sysctl();
+
+	/* Enable link restrictions when Yama is enabled. */
+	sysctl_protected_symlinks = 1;
+	sysctl_protected_hardlinks = 1;
 }

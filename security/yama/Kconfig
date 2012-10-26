@@ -9,4 +9,8 @@ config SECURITY_YAMA
 	  Like capabilities, this security module stacks with other LSMs.
 	  Further information can be found in Documentation/security/Yama.txt.
 
+	  Enables the VFS link restriction sysctls (protected_symlinks and
+	  protected_hardlinks) by default. Further information can be found
+	  in Documentation/security/Yama.txt.
+
 	  If you are unsure how to answer this question, answer N.
