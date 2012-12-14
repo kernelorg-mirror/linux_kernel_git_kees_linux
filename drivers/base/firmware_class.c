@@ -1056,6 +1056,12 @@ _request_firmware_prepare(struct firmware **firmware_p, const char *name,
 	struct firmware_buf *buf;
 	int ret;
 
+        if (strstr(name, "../")) {
+                dev_err(device, "%s: parent directory in firmware name (%s)\n",
+                        __func__, name);
+                return -EINVAL;
+        }
+
 	*firmware_p = firmware = kzalloc(sizeof(*firmware), GFP_KERNEL);
 	if (!firmware) {
 		dev_err(device, "%s: kmalloc(struct firmware) failed\n",
