@@ -250,8 +250,7 @@ poll_again:
 			kdb_printf("\b%s \r", cp);
 			tmp = *cp;
 			*cp = '\0';
-			kdb_printf(kdb_prompt_str);
-			kdb_printf("%s", buffer);
+			kdb_printf("%s%s", kdb_prompt_str, buffer);
 			*cp = tmp;
 		}
 		break;
@@ -272,15 +271,13 @@ poll_again:
 			kdb_printf("%s \r", cp);
 			tmp = *cp;
 			*cp = '\0';
-			kdb_printf(kdb_prompt_str);
-			kdb_printf("%s", buffer);
+			kdb_printf("%s%s", kdb_prompt_str, buffer);
 			*cp = tmp;
 		}
 		break;
 	case 1: /* Home */
 		if (cp > buffer) {
-			kdb_printf("\r");
-			kdb_printf(kdb_prompt_str);
+			kdb_printf("\r%s", kdb_prompt_str);
 			cp = buffer;
 		}
 		break;
@@ -357,9 +354,7 @@ poll_again:
 			}
 			if (i >= dtab_count)
 				kdb_printf("...");
-			kdb_printf("\n");
-			kdb_printf(kdb_prompt_str);
-			kdb_printf("%s", buffer);
+			kdb_printf("\n%s%s", kdb_prompt_str, buffer);
 		} else if (tab != 2 && count > 0) {
 			len_tmp = strlen(p_tmp);
 			strncpy(p_tmp+len_tmp, cp, lastchar-cp+1);
@@ -383,8 +378,7 @@ poll_again:
 				++cp;
 				tmp = *cp;
 				*cp = '\0';
-				kdb_printf(kdb_prompt_str);
-				kdb_printf("%s", buffer);
+				kdb_printf("%s%s", kdb_prompt_str, buffer);
 				*cp = tmp;
 			} else {
 				*++lastchar = '\0';
@@ -444,7 +438,7 @@ char *kdb_getstr(char *buffer, size_t bufsize, const char *prompt)
 {
 	if (prompt && kdb_prompt_str != prompt)
 		strncpy(kdb_prompt_str, prompt, CMD_BUFLEN);
-	kdb_printf(kdb_prompt_str);
+	kdb_printf("%s", kdb_prompt_str);
 	kdb_nextline = 1;	/* Prompt and input resets line number */
 	return kdb_read(buffer, bufsize);
 }

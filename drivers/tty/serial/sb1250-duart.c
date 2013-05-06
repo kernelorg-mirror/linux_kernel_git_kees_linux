@@ -677,7 +677,7 @@ static int sbd_map_port(struct uart_port *uport)
 		uport->membase = ioremap_nocache(uport->mapbase,
 						 DUART_CHANREG_SPACING);
 	if (!uport->membase) {
-		printk(err);
+		printk("%s", err);
 		return -ENOMEM;
 	}
 
@@ -685,7 +685,7 @@ static int sbd_map_port(struct uart_port *uport)
 		sport->memctrl = ioremap_nocache(duart->mapctrl,
 						 DUART_CHANREG_SPACING);
 	if (!sport->memctrl) {
-		printk(err);
+		printk("%s", err);
 		iounmap(uport->membase);
 		uport->membase = NULL;
 		return -ENOMEM;
@@ -703,7 +703,7 @@ static int sbd_request_port(struct uart_port *uport)
 
 	if (!request_mem_region(uport->mapbase, DUART_CHANREG_SPACING,
 				"sb1250-duart")) {
-		printk(err);
+		printk("%s", err);
 		return -EBUSY;
 	}
 	map_guard = atomic_add_return(1, &duart->map_guard);
@@ -711,7 +711,7 @@ static int sbd_request_port(struct uart_port *uport)
 		if (!request_mem_region(duart->mapctrl, DUART_CHANREG_SPACING,
 					"sb1250-duart")) {
 			atomic_add(-1, &duart->map_guard);
-			printk(err);
+			printk("%s", err);
 			ret = -EBUSY;
 		}
 	}

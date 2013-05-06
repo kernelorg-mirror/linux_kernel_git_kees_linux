@@ -428,7 +428,7 @@ struct prom_pmemblock *__init prom_getmdesc(void)
 
 	str = prom_getenv(memsz_env);
 	if (!str) {
-		ppfinit("memsize not set in boot prom, "
+		ppfinit("%s", "memsize not set in boot prom, "
 			"set to default (32Mb)\n");
 		memsize = 0x02000000;
 	} else {

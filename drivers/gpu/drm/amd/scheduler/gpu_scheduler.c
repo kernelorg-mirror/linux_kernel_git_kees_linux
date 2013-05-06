@@ -619,7 +619,7 @@ int amd_sched_init(struct amd_gpu_scheduler *sched,
 	atomic_set(&sched->hw_rq_count, 0);
 
 	/* Each scheduler will run on a seperate kernel thread */
-	sched->thread = kthread_run(amd_sched_main, sched, sched->name);
+	sched->thread = kthread_run(amd_sched_main, sched, "%s", sched->name);
 	if (IS_ERR(sched->thread)) {
 		DRM_ERROR("Failed to create scheduler for %s.\n", name);
 		return PTR_ERR(sched->thread);

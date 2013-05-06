@@ -394,7 +394,7 @@ static void setup_bus_id(struct parisc_device *padev)
 		output += sprintf(output, "%u:", (unsigned char) path.bc[i]);
 	}
 	sprintf(output, "%u", (unsigned char) padev->hw_path);
-	dev_set_name(&padev->dev, name);
+	dev_set_name(&padev->dev, "%s", name);
 }
 
 struct parisc_device * create_tree_node(char id, struct device *parent)

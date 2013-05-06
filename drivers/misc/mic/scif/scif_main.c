@@ -55,7 +55,7 @@ int scif_setup_intr_wq(struct scif_dev *scifdev)
 		snprintf(scifdev->intr_wqname, sizeof(scifdev->intr_wqname),
 			 "SCIF INTR %d", scifdev->node);
 		scifdev->intr_wq =
-			alloc_ordered_workqueue(scifdev->intr_wqname, 0);
+			alloc_ordered_workqueue("%s", 0, scifdev->intr_wqname);
 		if (!scifdev->intr_wq)
 			return -ENOMEM;
 		INIT_WORK(&scifdev->intr_bh, scif_intr_bh_handler);

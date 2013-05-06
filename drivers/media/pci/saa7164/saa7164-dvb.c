@@ -124,7 +124,7 @@ static int si2157_attach(struct saa7164_port *port, struct i2c_adapter *adapter,
 	bi.platform_data = cfg;
 	bi.addr = addr8bit >> 1;
 
-	request_module(bi.type);
+	request_module("%s", bi.type);
 
 	tuner = i2c_new_device(adapter, &bi);
 	if (tuner == NULL || tuner->dev.driver == NULL)
@@ -646,7 +646,7 @@ int saa7164_dvb_register(struct saa7164_port *port)
 			strlcpy(info.type, "si2168", I2C_NAME_SIZE);
 			info.addr = 0xc8 >> 1;
 			info.platform_data = &si2168_config;
-			request_module(info.type);
+			request_module("%s", info.type);
 			client_demod = i2c_new_device(&dev->i2c_bus[2].i2c_adap,
 						      &info);
 			if (!client_demod || !client_demod->dev.driver)
@@ -666,7 +666,7 @@ int saa7164_dvb_register(struct saa7164_port *port)
 			strlcpy(info.type, "si2157", I2C_NAME_SIZE);
 			info.addr = 0xc0 >> 1;
 			info.platform_data = &si2157_config;
-			request_module(info.type);
+			request_module("%s", info.type);
 			client_tuner = i2c_new_device(&dev->i2c_bus[0].i2c_adap,
 						      &info);
 			if (!client_tuner || !client_tuner->dev.driver) {
@@ -691,7 +691,7 @@ int saa7164_dvb_register(struct saa7164_port *port)
 			strlcpy(info.type, "si2168", I2C_NAME_SIZE);
 			info.addr = 0xcc >> 1;
 			info.platform_data = &si2168_config;
-			request_module(info.type);
+			request_module("%s", info.type);
 			client_demod = i2c_new_device(&dev->i2c_bus[2].i2c_adap,
 						      &info);
 			if (!client_demod || !client_demod->dev.driver)
@@ -711,7 +711,7 @@ int saa7164_dvb_register(struct saa7164_port *port)
 			strlcpy(info.type, "si2157", I2C_NAME_SIZE);
 			info.addr = 0xc0 >> 1;
 			info.platform_data = &si2157_config;
-			request_module(info.type);
+			request_module("%s", info.type);
 			client_tuner = i2c_new_device(&dev->i2c_bus[1].i2c_adap,
 						      &info);
 			if (!client_tuner || !client_tuner->dev.driver) {

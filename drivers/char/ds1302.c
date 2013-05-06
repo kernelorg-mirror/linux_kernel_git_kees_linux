@@ -320,7 +320,7 @@ ds1302_probe(void)
 		ds1302_wdisable();
 		printk("%s: RTC found.\n", ds1302_name);
 		get_rtc_status(buf);
-		printk(buf);
+		printk("%s", buf);
 		retval = 1;
 	} else {
 		printk("%s: RTC not found.\n", ds1302_name);

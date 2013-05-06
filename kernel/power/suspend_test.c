@@ -208,7 +208,7 @@ static int __init test_suspend(void)
 		put_device(dev);
 	}
 	if (!rtc) {
-		printk(warn_no_rtc);
+		printk("%s", warn_no_rtc);
 		return 0;
 	}
 

@@ -1235,7 +1235,7 @@ int scif_setup_loopback_qp(struct scif_dev *scifdev)
 	snprintf(scif_info.loopb_wqname, sizeof(scif_info.loopb_wqname),
 		 "SCIF LOOPB %d", scifdev->node);
 	scif_info.loopb_wq =
-		alloc_ordered_workqueue(scif_info.loopb_wqname, 0);
+		alloc_ordered_workqueue("%s", 0, scif_info.loopb_wqname);
 	if (!scif_info.loopb_wq) {
 		err = -ENOMEM;
 		goto destroy_intr;

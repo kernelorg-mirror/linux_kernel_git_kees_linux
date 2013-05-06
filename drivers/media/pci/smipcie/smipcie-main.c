@@ -492,7 +492,7 @@ static struct i2c_client *smi_add_i2c_client(struct i2c_adapter *adapter,
 {
 	struct i2c_client *client;
 
-	request_module(info->type);
+	request_module("%s", info->type);
 	client = i2c_new_device(adapter, info);
 	if (client == NULL || client->dev.driver == NULL)
 		goto err_add_i2c_client;

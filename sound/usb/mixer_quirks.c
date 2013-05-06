@@ -101,7 +101,7 @@ static int snd_create_std_mono_ctl_offset(struct usb_mixer_interface *mixer,
 	}
 
 	/* Set name */
-	snprintf(kctl->id.name, sizeof(kctl->id.name), name);
+	strlcpy(kctl->id.name, name, sizeof(kctl->id.name));
 	kctl->private_free = snd_usb_mixer_elem_free;
 
 	/* set TLV */

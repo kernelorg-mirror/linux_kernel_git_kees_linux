@@ -953,7 +953,7 @@ static int rtl2832u_frontend_attach(struct dvb_usb_adapter *adap)
 			mn88472_config.ts_clock = VARIABLE_TS_CLOCK;
 			info.addr = 0x18;
 			info.platform_data = &mn88472_config;
-			request_module(info.type);
+			request_module("%s", info.type);
 			client = i2c_new_device(&d->i2c_adap, &info);
 			if (client == NULL || client->dev.driver == NULL) {
 				dev->slave_demod = SLAVE_DEMOD_NONE;
@@ -975,7 +975,7 @@ static int rtl2832u_frontend_attach(struct dvb_usb_adapter *adap)
 			strlcpy(info.type, "mn88473", I2C_NAME_SIZE);
 			info.addr = 0x18;
 			info.platform_data = &mn88473_config;
-			request_module(info.type);
+			request_module("%s", info.type);
 			client = i2c_new_device(&d->i2c_adap, &info);
 			if (client == NULL || client->dev.driver == NULL) {
 				dev->slave_demod = SLAVE_DEMOD_NONE;
@@ -1001,7 +1001,7 @@ static int rtl2832u_frontend_attach(struct dvb_usb_adapter *adap)
 			strlcpy(info.type, "si2168", I2C_NAME_SIZE);
 			info.addr = 0x64;
 			info.platform_data = &si2168_config;
-			request_module(info.type);
+			request_module("%s", info.type);
 			client = i2c_new_device(&d->i2c_adap, &info);
 			if (client == NULL || client->dev.driver == NULL) {
 				dev->slave_demod = SLAVE_DEMOD_NONE;
@@ -1193,7 +1193,7 @@ static int rtl2832u_tuner_attach(struct dvb_usb_adapter *adap)
 			info.addr = 0x64;
 			info.platform_data = &e4000_config;
 
-			request_module(info.type);
+			request_module("%s", info.type);
 			client = i2c_new_device(dev->demod_i2c_adapter, &info);
 			if (client == NULL || client->dev.driver == NULL)
 				break;
@@ -1292,7 +1292,7 @@ static int rtl2832u_tuner_attach(struct dvb_usb_adapter *adap)
 			strlcpy(info.type, "si2157", I2C_NAME_SIZE);
 			info.addr = 0x60;
 			info.platform_data = &si2157_config;
-			request_module(info.type);
+			request_module("%s", info.type);
 			client = i2c_new_device(&d->i2c_adap, &info);
 			if (client == NULL || client->dev.driver == NULL)
 				break;

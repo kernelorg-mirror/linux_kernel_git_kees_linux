@@ -1293,7 +1293,7 @@ do_full_getstr:
 		snprintf(kdb_prompt_str, CMD_BUFLEN, kdbgetenv("PROMPT"),
 			 raw_smp_processor_id());
 #else
-		snprintf(kdb_prompt_str, CMD_BUFLEN, kdbgetenv("PROMPT"));
+		snprintf(kdb_prompt_str, CMD_BUFLEN, "%s", kdbgetenv("PROMPT"));
 #endif
 		if (defcmd_in_progress)
 			strncat(kdb_prompt_str, "[defcmd]", CMD_BUFLEN);

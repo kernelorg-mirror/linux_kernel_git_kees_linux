@@ -1194,7 +1194,7 @@ static int cxusb_mygica_t230_frontend_attach(struct dvb_usb_adapter *adap)
 	strlcpy(info.type, "si2168", I2C_NAME_SIZE);
 	info.addr = 0x64;
 	info.platform_data = &si2168_config;
-	request_module(info.type);
+	request_module("%s", info.type);
 	client_demod = i2c_new_device(&d->i2c_adap, &info);
 	if (client_demod == NULL || client_demod->dev.driver == NULL)
 		return -ENODEV;
@@ -1214,7 +1214,7 @@ static int cxusb_mygica_t230_frontend_attach(struct dvb_usb_adapter *adap)
 	strlcpy(info.type, "si2157", I2C_NAME_SIZE);
 	info.addr = 0x60;
 	info.platform_data = &si2157_config;
-	request_module(info.type);
+	request_module("%s", info.type);
 	client_tuner = i2c_new_device(adapter, &info);
 	if (client_tuner == NULL || client_tuner->dev.driver == NULL) {
 		module_put(client_demod->dev.driver->owner);

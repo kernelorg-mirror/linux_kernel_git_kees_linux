@@ -1157,7 +1157,7 @@ static int dvb_register_ci_mac(struct cx23885_tsport *port)
 		strlcpy(info.type, "sp2", I2C_NAME_SIZE);
 		info.addr = 0x40;
 		info.platform_data = &sp2_config;
-		request_module(info.type);
+		request_module("%s", info.type);
 		client_ci = i2c_new_device(&i2c_bus->i2c_adap, &info);
 		if (client_ci == NULL || client_ci->dev.driver == NULL)
 			return -ENODEV;
@@ -1942,7 +1942,7 @@ static int dvb_register(struct cx23885_tsport *port)
 			strlcpy(info.type, "ts2020", I2C_NAME_SIZE);
 			info.addr = 0x60;
 			info.platform_data = &ts2020_config;
-			request_module(info.type);
+			request_module("%s", info.type);
 			client_tuner = i2c_new_device(adapter, &info);
 			if (client_tuner == NULL ||
 					client_tuner->dev.driver == NULL)
@@ -1979,7 +1979,7 @@ static int dvb_register(struct cx23885_tsport *port)
 			strlcpy(info.type, "si2168", I2C_NAME_SIZE);
 			info.addr = 0x64;
 			info.platform_data = &si2168_config;
-			request_module(info.type);
+			request_module("%s", info.type);
 			client_demod = i2c_new_device(&i2c_bus->i2c_adap, &info);
 			if (client_demod == NULL ||
 					client_demod->dev.driver == NULL)
@@ -1998,7 +1998,7 @@ static int dvb_register(struct cx23885_tsport *port)
 			strlcpy(info.type, "si2157", I2C_NAME_SIZE);
 			info.addr = 0x60;
 			info.platform_data = &si2157_config;
-			request_module(info.type);
+			request_module("%s", info.type);
 			client_tuner = i2c_new_device(adapter, &info);
 			if (client_tuner == NULL ||
 					client_tuner->dev.driver == NULL)
@@ -2026,7 +2026,7 @@ static int dvb_register(struct cx23885_tsport *port)
 		strlcpy(info.type, "si2168", I2C_NAME_SIZE);
 		info.addr = 0x64;
 		info.platform_data = &si2168_config;
-		request_module(info.type);
+		request_module("%s", info.type);
 		client_demod = i2c_new_device(&i2c_bus2->i2c_adap, &info);
 		if (client_demod == NULL || client_demod->dev.driver == NULL)
 			goto frontend_detach;
@@ -2044,7 +2044,7 @@ static int dvb_register(struct cx23885_tsport *port)
 		strlcpy(info.type, "si2157", I2C_NAME_SIZE);
 		info.addr = 0x60;
 		info.platform_data = &si2157_config;
-		request_module(info.type);
+		request_module("%s", info.type);
 		client_tuner = i2c_new_device(adapter, &info);
 		if (client_tuner == NULL ||
 				client_tuner->dev.driver == NULL)
@@ -2074,7 +2074,7 @@ static int dvb_register(struct cx23885_tsport *port)
 		strlcpy(info.type, "ts2020", I2C_NAME_SIZE);
 		info.addr = 0x60;
 		info.platform_data = &ts2020_config;
-		request_module(info.type);
+		request_module("%s", info.type);
 		client_tuner = i2c_new_device(adapter, &info);
 		if (client_tuner == NULL || client_tuner->dev.driver == NULL)
 			goto frontend_detach;
@@ -2143,7 +2143,7 @@ static int dvb_register(struct cx23885_tsport *port)
 		strlcpy(info.type, "ts2020", I2C_NAME_SIZE);
 		info.addr = 0x60;
 		info.platform_data = &ts2020_config;
-		request_module(info.type);
+		request_module("%s", info.type);
 		client_tuner = i2c_new_device(adapter, &info);
 		if (client_tuner == NULL || client_tuner->dev.driver == NULL)
 			goto frontend_detach;
@@ -2188,7 +2188,7 @@ static int dvb_register(struct cx23885_tsport *port)
 		strlcpy(info.type, "si2168", I2C_NAME_SIZE);
 		info.addr = 0x64;
 		info.platform_data = &si2168_config;
-		request_module(info.type);
+		request_module("%s", info.type);
 		client_demod = i2c_new_device(&i2c_bus->i2c_adap, &info);
 		if (client_demod == NULL || client_demod->dev.driver == NULL)
 			goto frontend_detach;
@@ -2206,7 +2206,7 @@ static int dvb_register(struct cx23885_tsport *port)
 		strlcpy(info.type, "si2157", I2C_NAME_SIZE);
 		info.addr = 0x60;
 		info.platform_data = &si2157_config;
-		request_module(info.type);
+		request_module("%s", info.type);
 		client_tuner = i2c_new_device(adapter, &info);
 		if (client_tuner == NULL ||
 				client_tuner->dev.driver == NULL)

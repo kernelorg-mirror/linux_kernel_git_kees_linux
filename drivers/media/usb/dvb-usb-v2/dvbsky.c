@@ -537,7 +537,7 @@ static int dvbsky_t680c_attach(struct dvb_usb_adapter *adap)
 	info.addr = 0x64;
 	info.platform_data = &si2168_config;
 
-	request_module(info.type);
+	request_module("%s", info.type);
 	client_demod = i2c_new_device(&d->i2c_adap, &info);
 	if (client_demod == NULL ||
 			client_demod->dev.driver == NULL)
@@ -554,7 +554,7 @@ static int dvbsky_t680c_attach(struct dvb_usb_adapter *adap)
 	info.addr = 0x60;
 	info.platform_data = &si2157_config;
 
-	request_module(info.type);
+	request_module("%s", info.type);
 	client_tuner = i2c_new_device(i2c_adapter, &info);
 	if (client_tuner == NULL ||
 			client_tuner->dev.driver == NULL)
@@ -572,7 +572,7 @@ static int dvbsky_t680c_attach(struct dvb_usb_adapter *adap)
 	info.addr = 0x40;
 	info.platform_data = &sp2_config;
 
-	request_module(info.type);
+	request_module("%s", info.type);
 	client_ci = i2c_new_device(&d->i2c_adap, &info);
 
 	if (client_ci == NULL || client_ci->dev.driver == NULL)
@@ -622,7 +622,7 @@ static int dvbsky_t330_attach(struct dvb_usb_adapter *adap)
 	info.addr = 0x64;
 	info.platform_data = &si2168_config;
 
-	request_module(info.type);
+	request_module("%s", info.type);
 	client_demod = i2c_new_device(&d->i2c_adap, &info);
 	if (client_demod == NULL ||
 			client_demod->dev.driver == NULL)
@@ -639,7 +639,7 @@ static int dvbsky_t330_attach(struct dvb_usb_adapter *adap)
 	info.addr = 0x60;
 	info.platform_data = &si2157_config;
 
-	request_module(info.type);
+	request_module("%s", info.type);
 	client_tuner = i2c_new_device(i2c_adapter, &info);
 	if (client_tuner == NULL ||
 			client_tuner->dev.driver == NULL)

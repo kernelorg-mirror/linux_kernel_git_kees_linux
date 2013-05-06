@@ -211,7 +211,7 @@ unsigned int pvr2_std_id_to_str(char *bufPtr, unsigned int bufSize,
 			c1 += c2;
 			bufSize -= c2;
 			bufPtr += c2;
-			c2 = scnprintf(bufPtr,bufSize,
+			c2 = scnprintf(bufPtr, bufSize, "%s",
 				       ip->name);
 			c1 += c2;
 			bufSize -= c2;

@@ -27,7 +27,7 @@ enum {
 
 struct aoe_chardev {
 	ulong minor;
-	char name[32];
+	const char name[32];
 };
 
 enum { EMFL_VALID = 1 };
@@ -50,7 +50,7 @@ static struct completion emsgs_comp;
 static spinlock_t emsgs_lock;
 static int nblocked_emsgs_readers;
 static struct class *aoe_class;
-static struct aoe_chardev chardevs[] = {
+static const struct aoe_chardev chardevs[] = {
 	{ MINOR_ERR, "err" },
 	{ MINOR_DISCOVER, "discover" },
 	{ MINOR_INTERFACES, "interfaces" },
@@ -301,7 +301,7 @@ aoechr_init(void)
 
 	for (i = 0; i < ARRAY_SIZE(chardevs); ++i)
 		device_create(aoe_class, NULL,
-			      MKDEV(AOE_MAJOR, chardevs[i].minor), NULL,
+			      MKDEV(AOE_MAJOR, chardevs[i].minor), NULL, "%s",
 			      chardevs[i].name);
 
 	return 0;

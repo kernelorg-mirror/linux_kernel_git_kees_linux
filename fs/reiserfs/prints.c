@@ -289,7 +289,7 @@ void reiserfs_info(struct super_block *sb, const char *fmt, ...)
 static void reiserfs_printk(const char *fmt, ...)
 {
 	do_reiserfs_warning(fmt);
-	printk(error_buf);
+	printk("%s", error_buf);
 }
 
 void reiserfs_debug(struct super_block *s, int level, const char *fmt, ...)

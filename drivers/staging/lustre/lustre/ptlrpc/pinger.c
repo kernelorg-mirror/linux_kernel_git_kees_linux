@@ -303,7 +303,7 @@ int ptlrpc_start_pinger(void)
 	strcpy(pinger_thread.t_name, "ll_ping");
 
 	task = kthread_run(ptlrpc_pinger_main, &pinger_thread,
-			   pinger_thread.t_name);
+			   "%s", pinger_thread.t_name);
 	if (IS_ERR(task)) {
 		rc = PTR_ERR(task);
 		CERROR("cannot start pinger thread: rc = %d\n", rc);

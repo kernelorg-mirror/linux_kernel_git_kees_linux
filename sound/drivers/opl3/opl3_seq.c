@@ -237,7 +237,7 @@ static int snd_opl3_seq_probe(struct device *_dev)
 	sprintf(name, "OPL%i FM synth", opl_ver);
 	client = opl3->seq_client =
 		snd_seq_create_kernel_client(opl3->card, opl3->seq_dev_num,
-					     name);
+					     "%s", name);
 	if (client < 0)
 		return client;
 

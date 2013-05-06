@@ -1596,7 +1596,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
 
 		/* attach tuner */
 		kworld_ub435q_v3_config.fe = dvb->fe[0];
-		request_module("tda18212");
+		request_module("%s", "tda18212");
 		client = i2c_new_device(adapter, &board_info);
 		if (client == NULL || client->dev.driver == NULL) {
 			dvb_frontend_detach(dvb->fe[0]);
@@ -1731,7 +1731,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
 			strlcpy(info.type, "si2168", I2C_NAME_SIZE);
 			info.addr = 0x64;
 			info.platform_data = &si2168_config;
-			request_module(info.type);
+			request_module("%s", info.type);
 			client = i2c_new_device(&dev->i2c_adap[dev->def_i2c_bus], &info);
 			if (client == NULL || client->dev.driver == NULL) {
 				result = -ENODEV;
@@ -1757,7 +1757,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
 			strlcpy(info.type, "si2157", I2C_NAME_SIZE);
 			info.addr = 0x60;
 			info.platform_data = &si2157_config;
-			request_module(info.type);
+			request_module("%s", info.type);
 			client = i2c_new_device(adapter, &info);
 			if (client == NULL || client->dev.driver == NULL) {
 				module_put(dvb->i2c_client_demod->dev.driver->owner);
@@ -1795,7 +1795,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
 			strlcpy(info.type, "si2168", I2C_NAME_SIZE);
 			info.addr = 0x64;
 			info.platform_data = &si2168_config;
-			request_module(info.type);
+			request_module("%s", info.type);
 			client = i2c_new_device(&dev->i2c_adap[dev->def_i2c_bus], &info);
 			if (client == NULL || client->dev.driver == NULL) {
 				result = -ENODEV;

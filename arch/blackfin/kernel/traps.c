@@ -436,7 +436,7 @@ asmlinkage notrace void trap_c(struct pt_regs *fp)
 
 	if (sig != SIGTRAP) {
 		if (strerror)
-			verbose_printk(strerror);
+			verbose_printk("%s", strerror);
 
 		dump_bfin_process(fp);
 		dump_bfin_mem(fp);

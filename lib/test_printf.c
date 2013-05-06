@@ -150,9 +150,11 @@ static void __init
 test_basic(void)
 {
 	/* Work around annoying "warning: zero-length gnu_printf format string". */
+/*
 	char nul = '\0';
 
 	test("", &nul);
+*/
 	test("100%", "100%%");
 	test("xxx%yyy", "xxx%cyyy", '%');
 	__test("xxx\0yyy", 7, "xxx%cyyy", '\0');

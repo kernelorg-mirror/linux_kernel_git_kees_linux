@@ -2298,7 +2298,7 @@ int qib_cdev_init(int minor, const char *name,
 
 	cdev->owner = THIS_MODULE;
 	cdev->ops = fops;
-	kobject_set_name(&cdev->kobj, name);
+	kobject_set_name(&cdev->kobj, "%s", name);
 
 	ret = cdev_add(cdev, dev, 1);
 	if (ret < 0) {

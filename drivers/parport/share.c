@@ -493,7 +493,7 @@ struct parport *parport_register_port(unsigned long base, int irq, int dma,
 	tmp->name = name;
 	tmp->bus_dev.bus = &parport_bus_type;
 	tmp->bus_dev.release = free_port;
-	dev_set_name(&tmp->bus_dev, name);
+	dev_set_name(&tmp->bus_dev, "%s", name);
 	tmp->bus_dev.type = &parport_device_type;
 
 	for (device = 0; device < 5; device++)

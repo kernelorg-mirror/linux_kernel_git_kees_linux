@@ -2561,7 +2561,7 @@ static void btrfsic_dump_tree_sub(const struct btrfsic_state *state,
 		printk("[...]\n");
 		return;
 	}
-	printk(buf);
+	printk("%s", buf);
 	indent_level += indent_add;
 	if (list_empty(&block->ref_to_list)) {
 		printk("\n");
@@ -2590,7 +2590,7 @@ static void btrfsic_dump_tree_sub(const struct btrfsic_state *state,
 			continue;
 		}
 
-		printk(buf);
+		printk("%s", buf);
 
 		btrfsic_dump_tree_sub(state, l->block_ref_to,
 				      indent_level + indent_add);
