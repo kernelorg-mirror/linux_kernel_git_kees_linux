@@ -333,12 +333,13 @@
 
 #define UART_RSA_TCR_SWITCH (1 << 0) /* Timer on */
 
+#define SERIAL_BAUD_BASE (1843200/16)
 /*
  * The RSA DSV/II board has two fixed clock frequencies.  One is the
  * standard rate, and the other is 8 times faster.
  */
-#define SERIAL_RSA_BAUD_BASE (921600)
-#define SERIAL_RSA_BAUD_BASE_LO (SERIAL_RSA_BAUD_BASE / 8)
+#define SERIAL_RSA_BAUD_BASE_LO SERIAL_BAUD_BASE
+#define SERIAL_RSA_BAUD_BASE (SERIAL_BAUD_BASE * 8)
 
 /*
  * Extra serial register definitions for the internal UARTs

@@ -15,12 +15,10 @@
 
 #include "boot.h"
 
-int early_serial_base;
+unsigned long early_serial_base;
+int early_serial_type;
 
-#define XMTRDY          0x20
-
-#define TXR             0       /*  Transmit register (WRITE) */
-#define LSR             5       /*  Line Status               */
+#include "early_serial_console.h"
 
 /*
  * These functions are in .inittext so they can be used to signal
@@ -31,10 +29,10 @@ static void __attribute__((section(".inittext"))) serial_putchar(int ch)
 {
 	unsigned timeout = 0xffff;
 
-	while ((inb(early_serial_base + LSR) & XMTRDY) == 0 && --timeout)
+	while ((early_serial_in(UART_LSR) & UART_LSR_THRE) == 0 && --timeout)
 		cpu_relax();
 
-	outb(ch, early_serial_base + TXR);
+	early_serial_out(UART_TX, ch);
 }
 
 static void __attribute__((section(".inittext"))) bios_putchar(int ch)

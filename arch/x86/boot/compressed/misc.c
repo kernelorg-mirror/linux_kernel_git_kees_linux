@@ -123,6 +123,8 @@ static char *vidmem;
 static int vidport;
 static int lines, cols;
 
+#include "../early_serial_console.h"
+
 #ifdef CONFIG_KERNEL_GZIP
 #include "../../../../lib/decompress_inflate.c"
 #endif
@@ -156,18 +158,14 @@ static void scroll(void)
 		vidmem[i] = ' ';
 }
 
-#define XMTRDY          0x20
-
-#define TXR             0       /*  Transmit register (WRITE) */
-#define LSR             5       /*  Line Status               */
 static void serial_putchar(int ch)
 {
 	unsigned timeout = 0xffff;
 
-	while ((inb(early_serial_base + LSR) & XMTRDY) == 0 && --timeout)
+	while ((early_serial_in(UART_LSR) & UART_LSR_THRE) == 0 && --timeout)
 		cpu_relax();
 
-	outb(ch, early_serial_base + TXR);
+	early_serial_out(UART_TX, ch);
 }
 
 void __putstr(const char *s)

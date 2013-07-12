@@ -42,7 +42,7 @@
 
 struct early_serial8250_device {
 	struct uart_port port;
-	char options[16];		/* e.g., 115200n8 */
+	char options[32];		/* e.g., 115200n8 */
 	unsigned int baud;
 };
 
@@ -153,11 +153,10 @@ static int __init parse_options(struct early_serial8250_device *device,
 {
 	struct uart_port *port = &device->port;
 	int mmio, mmio32, length;
+	int base_baud = BASE_BAUD;
 
 	if (!options)
 		return -ENODEV;
-
-	port->uartclk = BASE_BAUD * 16;
 
 	mmio = !strncmp(options, "mmio,", 5);
 	mmio32 = !strncmp(options, "mmio32,", 7);
@@ -196,11 +195,17 @@ static int __init parse_options(struct early_serial8250_device *device,
 		length = min(strcspn(options, " ") + 1,
 			     (size_t)(sizeof(device->options)));
 		strlcpy(device->options, options, length);
+		while (*options != ' ' && *options != '\0' && *options != ',')
+			options++;
+		if (*options == ',')
+			base_baud = simple_strtoul(options + 1, NULL, 0);
 	} else {
 		device->baud = probe_baud(port);
 		snprintf(device->options, sizeof(device->options), "%u",
 			device->baud);
 	}
+
+	port->uartclk = base_baud * 16;
 
 	if (mmio || mmio32)
 		printk(KERN_INFO

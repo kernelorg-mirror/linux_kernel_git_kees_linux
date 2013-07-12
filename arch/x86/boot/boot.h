@@ -79,6 +79,23 @@ static inline void io_delay(void)
 	asm volatile("outb %%al,%0" : : "dN" (DELAY_PORT));
 }
 
+/* Minimal mmio functions from include/asm/io.h. */
+#define build_mmio_read(name, size, type, reg, barrier) \
+static inline type name(const volatile void __iomem *addr) \
+{ type ret; asm volatile("mov" size " %1,%0":reg (ret) \
+:"m" (*(volatile type __force *)addr) barrier); return ret; }
+
+#define build_mmio_write(name, size, type, reg, barrier) \
+static inline void name(type val, volatile void __iomem *addr) \
+{ asm volatile("mov" size " %0,%1": :reg (val), \
+"m" (*(volatile type __force *)addr) barrier); }
+
+build_mmio_read(readb, "b", unsigned char, "=q", :"memory")
+build_mmio_read(readl, "l", unsigned int, "=r", :"memory")
+
+build_mmio_write(writeb, "b", unsigned char, "q", :"memory")
+build_mmio_write(writel, "l", unsigned int, "r", :"memory")
+
 /* These functions are used to reference data in other segments. */
 
 static inline u16 ds(void)
@@ -298,7 +315,8 @@ int check_cpu(int *cpu_level_ptr, int *req_level_ptr, u32 **err_flags_ptr);
 int validate_cpu(void);
 
 /* early_serial_console.c */
-extern int early_serial_base;
+extern unsigned long early_serial_base;
+extern int early_serial_type;
 void console_init(void);
 
 /* edd.c */

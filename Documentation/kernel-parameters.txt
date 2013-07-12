@@ -670,11 +670,21 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			alternative.
 
 		uart[8250],io,<addr>[,options]
-		uart[8250],mmio,<addr>[,options]
+		uart[8250],mmio,<addr>[,options[,base_baud]]
 			Start an early, polled-mode console on the 8250/16550
 			UART at the specified I/O port or MMIO address,
 			switching to the matching ttyS device later.  The
 			options are the same as for ttyS, above.
+
+			For x86 early boot mmio uart consoles, the base baud
+			rate (for calculating the UART clock) can be defined
+			as well. This is done after the options above, comma
+			separated. For example "...,115200n8,4000000" would
+			use 4000000 as the base baud rate. Once the real uart
+			driver initializes, this value will be ignored, since
+			it will use the known device-specific value instead.
+			The default is 115200.
+
 		hvc<n>	Use the hypervisor console device <n>. This is for
 			both Xen and PowerPC hypervisors.
 
