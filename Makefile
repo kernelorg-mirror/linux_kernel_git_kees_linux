@@ -400,7 +400,6 @@ KBUILD_CPPFLAGS := -D__KERNEL__
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
-		   -Wno-format-security \
 		   -std=gnu89 $(call cc-option,-fno-PIE)
 
 
@@ -770,6 +769,11 @@ endif
 # arch Makefile may override CC so keep this after arch Makefile is included
 NOSTDINC_FLAGS += -nostdinc -isystem $(shell $(CC) -print-file-name=include)
 CHECKFLAGS     += $(NOSTDINC_FLAGS)
+
+# Enable format-security when it can stop the build, otherwise disable.
+KBUILD_CFLAGS	+= $(call cc-option,\
+			-Wformat -Wformat-security -Werror=format-security,\
+			-Wno-format-security)
 
 # warn about C99 declaration after statement
 KBUILD_CFLAGS += $(call cc-option,-Wdeclaration-after-statement,)
