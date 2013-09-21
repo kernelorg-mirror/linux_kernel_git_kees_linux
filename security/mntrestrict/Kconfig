@@ -1,0 +1,13 @@
+config SECURITY_MNTRESTRICT
+	bool "Restrict mounts on symlinks system-wide"
+	depends on SECURITY
+	help
+	  Enforces the rule that symlinks cannot be used as mount
+	  destinations across the entire system. This is to make sure
+	  it is never possible to redirect locations using symlinks
+	  when the process doing the mount may not be able to strictly
+	  trust the contents of the filesystem where it is happening. For
+	  example, making sure a bind mounted subdirectory in /var is not
+	  redirected into /etc: stops a daemon without full privileges
+	  from elevating to uid-0 by tricking the system init filesystem
+	  mounting infrastructure.

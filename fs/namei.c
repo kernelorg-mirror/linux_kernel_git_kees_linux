@@ -1003,6 +1003,12 @@ static int may_linkat(struct path *link)
 	return -EPERM;
 }
 
+int get_total_link_count(void)
+{
+	return current->nameidata->total_link_count;
+}
+EXPORT_SYMBOL(get_total_link_count);
+
 static __always_inline
 const char *get_link(struct nameidata *nd)
 {
