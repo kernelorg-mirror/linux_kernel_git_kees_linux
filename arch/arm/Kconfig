@@ -1835,6 +1835,14 @@ config XEN
 	help
 	  Say Y if you want to run Linux in a Virtual Machine on Xen on ARM.
 
+config RANDOMIZE_BASE
+	bool "Randomize the base address of loaded modules"
+	depends on MMU
+	default n
+	---help---
+	   Randomizes the base address at which kernel modules are loaded,
+	   with 10 bits of entropy. At most, this will create a 4MiB gap
+	   at the start of the kernel modules virtual address range.
 endmenu
 
 menu "Boot options"
