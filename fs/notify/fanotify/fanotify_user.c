@@ -216,6 +216,7 @@ static ssize_t copy_event_to_user(struct fsnotify_group *group,
 
 	fd = fanotify_event_metadata.fd;
 	ret = -EFAULT;
+	BUG_ON(fanotify_event_metadata.event_len != FAN_EVENT_METADATA_LEN);
 	if (copy_to_user(buf, &fanotify_event_metadata,
 			 fanotify_event_metadata.event_len))
 		goto out_close_fd;
