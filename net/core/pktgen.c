@@ -1217,7 +1217,7 @@ static ssize_t pktgen_if_write(struct file *file,
 	}
 	if (!strcmp(name, "flag")) {
 		char f[32];
-		memset(f, 0, 32);
+		memset(f, 0, sizeof(f));
 		len = strn_len(&user_buffer[i], sizeof(f) - 1);
 		if (len < 0)
 			return len;
@@ -1344,6 +1344,7 @@ static ssize_t pktgen_if_write(struct file *file,
 		return count;
 	}
 	if (!strcmp(name, "dst_min") || !strcmp(name, "dst")) {
+		BUILD_BUG_ON(sizeof(buf) < sizeof(pkt_dev->dst_min));
 		len = strn_len(&user_buffer[i], sizeof(pkt_dev->dst_min) - 1);
 		if (len < 0)
 			return len;
@@ -1364,6 +1365,7 @@ static ssize_t pktgen_if_write(struct file *file,
 		return count;
 	}
 	if (!strcmp(name, "dst_max")) {
+		BUILD_BUG_ON(sizeof(buf) < sizeof(pkt_dev->dst_max));
 		len = strn_len(&user_buffer[i], sizeof(pkt_dev->dst_max) - 1);
 		if (len < 0)
 			return len;
@@ -1475,6 +1477,7 @@ static ssize_t pktgen_if_write(struct file *file,
 		return count;
 	}
 	if (!strcmp(name, "src_min")) {
+		BUILD_BUG_ON(sizeof(buf) < sizeof(pkt_dev->src_min));
 		len = strn_len(&user_buffer[i], sizeof(pkt_dev->src_min) - 1);
 		if (len < 0)
 			return len;
@@ -1495,6 +1498,7 @@ static ssize_t pktgen_if_write(struct file *file,
 		return count;
 	}
 	if (!strcmp(name, "src_max")) {
+		BUILD_BUG_ON(sizeof(buf) < sizeof(pkt_dev->src_max));
 		len = strn_len(&user_buffer[i], sizeof(pkt_dev->src_max) - 1);
 		if (len < 0)
 			return len;
