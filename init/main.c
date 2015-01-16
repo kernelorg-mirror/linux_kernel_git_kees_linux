@@ -658,6 +658,12 @@ asmlinkage __visible void __init start_kernel(void)
 
 	ftrace_init();
 
+	{
+		extern void __attribute__((weak)) nosuchfn(void);
+		if (nosuchfn != NULL)
+			printk(KERN_EMERG "nosuchfn = %p\n", nosuchfn);
+	}
+
 	/* Do the rest non-__init'ed, we're now alive */
 	rest_init();
 }
