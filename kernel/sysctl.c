@@ -1907,7 +1907,7 @@ static int _proc_do_string(char *data, int maxlen, int write,
 				len = maxlen - 1;
 
 			if (*ppos > len)
-				return 0;
+				return -EINVAL;
 			len = *ppos;
 		} else {
 			/* Start writing from beginning of buffer. */
@@ -2184,6 +2184,7 @@ static int __do_proc_dointvec(void *tbl_data, struct ctl_table *table,
 		if (*ppos) {
 			switch (sysctl_writes_strict) {
 			case SYSCTL_WRITES_STRICT:
+				err = -EINVAL;
 				goto out;
 			case SYSCTL_WRITES_WARN:
 				warn_sysctl_write(table);
@@ -2457,6 +2458,7 @@ static int __do_proc_doulongvec_minmax(void *data, struct ctl_table *table, int 
 		if (*ppos) {
 			switch (sysctl_writes_strict) {
 			case SYSCTL_WRITES_STRICT:
+				err = -EINVAL;
 				goto out;
 			case SYSCTL_WRITES_WARN:
 				warn_sysctl_write(table);
