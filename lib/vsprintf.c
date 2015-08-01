@@ -1194,13 +1194,21 @@ char *ip4_addr_string_sa(char *buf, char *end, const struct sockaddr_in *sa,
 	return string(buf, end, ip4_addr, spec);
 }
 
+#define ONLY_NEWLINE	(1 << 0)
+#define ONLY_TAB	(1 << 1)
+#define ONLY_SPACE	(1 << 2)
+#define ONLY_COMMA	(1 << 3)
+#define ONLY_EQUAL	(1 << 4)
+#define ONLY_DBLQUOTE	(1 << 5)
+
 static noinline_for_stack
 char *escaped_string(char *buf, char *end, u8 *addr, struct printf_spec spec,
 		     const char *fmt)
 {
 	bool found = true;
 	int count = 1;
-	unsigned int flags = 0;
+	unsigned int flags = 0, only_flags = 0;
+	char only[8]; /* maximum characters from only_flags == 7 + NULL */
 	int len;
 
 	if (spec.field_width == 0)
@@ -1233,23 +1241,74 @@ char *escaped_string(char *buf, char *end, u8 *addr, struct printf_spec spec,
 		case 's':
 			flags |= ESCAPE_SPACE;
 			break;
+		case 'N':
+			only_flags |= ONLY_NEWLINE;
+			break;
+		case 'T':
+			only_flags |= ONLY_TAB;
+			break;
+		case 'S':
+			only_flags |= ONLY_SPACE;
+			break;
+		case 'C':
+			only_flags |= ONLY_COMMA;
+			break;
+		case 'E':
+			only_flags |= ONLY_EQUAL;
+			break;
+		case 'D':
+			only_flags |= ONLY_DBLQUOTE;
+			break;
 		default:
 			found = false;
 			break;
 		}
 	} while (found);
 
+	if (only_flags) {
+		char *pos = only;
+
+		if (!flags)
+			flags = ESCAPE_ANY;
+
+		/* If we use any escapes, we must include backslash. */
+		*pos++ = '\\';
+
+		if (only_flags & ONLY_NEWLINE)
+			*pos++ = '\n';
+		if (only_flags & ONLY_TAB)
+			*pos++ = '\t';
+		if (only_flags & ONLY_SPACE)
+			*pos++ = ' ';
+		if (only_flags & ONLY_COMMA)
+			*pos++ = ',';
+		if (only_flags & ONLY_DBLQUOTE)
+			*pos++ = '"';
+		if (only_flags & ONLY_EQUAL)
+			*pos++ = '=';
+
+		*pos = '\0';
+	}
+
 	if (!flags)
 		flags = ESCAPE_ANY_NP;
 
-	len = spec.field_width < 0 ? 1 : spec.field_width;
+	if (spec.field_width < 0) {
+		/* Using only_flags expects a string argument, so adjust. */
+		if (only_flags)
+			len = strlen((char *)addr);
+		else
+			len = 1;
+	} else
+		len = spec.field_width;
 
 	/*
 	 * string_escape_mem() writes as many characters as it can to
 	 * the given buffer, and returns the total size of the output
 	 * had the buffer been big enough.
 	 */
-	buf += string_escape_mem(addr, len, buf, buf < end ? end - buf : 0, flags, NULL);
+	buf += string_escape_mem(addr, len, buf, buf < end ? end - buf : 0,
+				 flags, only_flags ? only : NULL);
 
 	return buf;
 }
@@ -1414,6 +1473,16 @@ int kptr_restrict __read_mostly;
  *                  p - ESCAPE_NP
  *                  s - ESCAPE_SPACE
  *                By default ESCAPE_ANY_NP is used.
+ * - 'E[NTSCED]' For an escaped string (using ESCAPE_ANY if not escape class
+ *		 above not specified), but with specific sets of characters
+ *		 being escaped. If any flag below is used, "\\" (backslash)
+ *		 will be implicitly added to the list of escaped characters:
+ *		    N - "\n" (new line)
+ *		    T - "\t" (tab)
+ *		    S - " " (space)
+ *		    C - "," (comma)
+ *		    E - "=" (equal)
+ *		    D - "\"" (double quote)
  * - 'U' For a 16 byte UUID/GUID, it prints the UUID/GUID in the form
  *       "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
  *       Options for %pU are:
@@ -1835,7 +1904,8 @@ qualifier:
  * %piS depending on sa_family of 'struct sockaddr *' print IPv4/IPv6 address
  * %pU[bBlL] print a UUID/GUID in big or little endian using lower or upper
  *   case.
- * %*pE[achnops] print an escaped buffer
+ * %*pE[achnops] print an escaped buffer, with specific field width
+ * %pE[NTSCED] print an escaped string, with strlen as field width
  * %*ph[CDN] a variable-length hex string with a separator (supports up to 64
  *           bytes of the input)
  * %pC output the name (Common Clock Framework) or address (legacy clock
