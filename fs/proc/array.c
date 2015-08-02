@@ -95,15 +95,7 @@ static inline void task_name(struct seq_file *m, struct task_struct *p)
 
 	get_task_comm(tcomm, p);
 
-	seq_puts(m, "Name:\t");
-	buf = m->buf + m->count;
-
-	/* Ignore error for now */
-	buf += string_escape_str(tcomm, buf, m->size - m->count,
-				 ESCAPE_SPACE | ESCAPE_SPECIAL, "\n\\");
-
-	m->count = buf - m->buf;
-	seq_putc(m, '\n');
+	seq_printf(m, "Name:\t%pEN\n", tcomm);
 }
 
 /*
