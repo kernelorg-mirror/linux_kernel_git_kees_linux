@@ -12,6 +12,7 @@
 #include <linux/hugetlb.h>
 #include <linux/shm.h>
 #include <linux/mman.h>
+#include <linux/file.h>
 #include <linux/fs.h>
 #include <linux/highmem.h>
 #include <linux/security.h>
@@ -379,6 +380,7 @@ SYSCALL_DEFINE3(mprotect, unsigned long, start, size_t, len,
 
 	reqprot = prot;
 
+restart:
 	if (down_write_killable(&current->mm->mmap_sem))
 		return -EINTR;
 
@@ -424,6 +426,28 @@ SYSCALL_DEFINE3(mprotect, unsigned long, start, size_t, len,
 		if ((newflags & ~(newflags >> 4)) & (VM_READ | VM_WRITE | VM_EXEC)) {
 			error = -EACCES;
 			goto out;
+		}
+
+		/*
+		 * If we're adding write permissions to a shared file,
+		 * we must clear privileges (like done at mmap time),
+		 * but we have to juggle the locks to avoid holding
+		 * mmap_sem while holding i_mutex.
+		 */
+		if ((vma->vm_flags & VM_SHARED) && vma->vm_file &&
+		    (newflags & VM_WRITE) && !(vma->vm_flags & VM_WRITE) &&
+		    file_needs_remove_privs(vma->vm_file)) {
+			struct file *file = get_file(vma->vm_file);
+
+			start = vma->vm_start;
+			up_write(&current->mm->mmap_sem);
+			inode_lock(file_inode(file));
+			error = file_remove_privs(file);
+			inode_unlock(file_inode(file));
+			fput(file);
+			if (error)
+				return error;
+			goto restart;
 		}
 
 		error = security_file_mprotect(vma, reqprot, prot);
