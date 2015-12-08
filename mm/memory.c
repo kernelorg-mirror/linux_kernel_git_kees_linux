@@ -2043,6 +2043,11 @@ static inline int wp_page_reuse(struct mm_struct *mm,
 
 		if (!page_mkwrite)
 			file_update_time(vma->vm_file);
+		if (unlikely((vma->vm_file->f_flags & O_REMOVEPRIV) == 0)) {
+			spin_lock(&vma->vm_file->f_lock);
+			vma->vm_file->f_flags |= O_REMOVEPRIV;
+			spin_unlock(&vma->vm_file->f_lock);
+		}
 	}
 
 	return VM_FAULT_WRITE;

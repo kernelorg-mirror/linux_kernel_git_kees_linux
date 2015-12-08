@@ -88,6 +88,17 @@
 #define __O_TMPFILE	020000000
 #endif
 
+/*
+ * Reserved arch-specific values for __O_TMPFILE:
+ *			0040000000 (parisc)
+ *			0100000000 (alpha)
+ *			0200000000 (sparc)
+ */
+
+#ifndef O_REMOVEPRIV
+#define O_REMOVEPRIV	0400000000
+#endif
+
 /* a horrid kludge trying to make sure that this will fail on old kernels */
 #define O_TMPFILE (__O_TMPFILE | O_DIRECTORY)
 #define O_TMPFILE_MASK (__O_TMPFILE | O_DIRECTORY | O_CREAT)      

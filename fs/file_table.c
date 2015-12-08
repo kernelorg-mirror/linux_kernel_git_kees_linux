@@ -191,6 +191,21 @@ static void __fput(struct file *file)
 
 	might_sleep();
 
+	/*
+	 * XXX: This is a delayed removal of privs (we've already been
+	 * written to), since we must avoid mmap_sem. But a race shouldn't
+	 * be possible since when open for writing, execve() will fail
+	 * with ETXTBSY (via deny_write_access()). A remaining problem
+	 * is that since we've already been written to, we must ignore the
+	 * return value of file_remove_privs(), since we can't reject the
+	 * writes of the past.
+	 */
+	if (unlikely(file->f_flags & O_REMOVEPRIV)) {
+		mutex_lock(&inode->i_mutex);
+		file_remove_privs(file);
+		mutex_unlock(&inode->i_mutex);
+	}
+
 	fsnotify_close(file);
 	/*
 	 * The function eventpoll_release() should be the first called
