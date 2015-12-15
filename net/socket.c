@@ -1551,7 +1551,7 @@ SYSCALL_DEFINE3(getsockname, int, fd, struct sockaddr __user *, usockaddr,
 {
 	struct socket *sock;
 	struct sockaddr_storage address;
-	int len, err, fput_needed;
+	int len = 0, err, fput_needed;
 
 	sock = sockfd_lookup_light(fd, &err, &fput_needed);
 	if (!sock)
@@ -1561,6 +1561,7 @@ SYSCALL_DEFINE3(getsockname, int, fd, struct sockaddr __user *, usockaddr,
 	if (err)
 		goto out_put;
 
+	memset(&address, 0, sizeof(address));
 	err = sock->ops->getname(sock, (struct sockaddr *)&address, &len, 0);
 	if (err)
 		goto out_put;
@@ -1582,7 +1583,7 @@ SYSCALL_DEFINE3(getpeername, int, fd, struct sockaddr __user *, usockaddr,
 {
 	struct socket *sock;
 	struct sockaddr_storage address;
-	int len, err, fput_needed;
+	int len = 0, err, fput_needed;
 
 	sock = sockfd_lookup_light(fd, &err, &fput_needed);
 	if (sock != NULL) {
@@ -1592,6 +1593,7 @@ SYSCALL_DEFINE3(getpeername, int, fd, struct sockaddr __user *, usockaddr,
 			return err;
 		}
 
+		memset(&address, 0, sizeof(address));
 		err =
 		    sock->ops->getname(sock, (struct sockaddr *)&address, &len,
 				       1);
