@@ -138,6 +138,22 @@ SECCOMP_RET_TRACE:
 	allow use of ptrace, even of other sandboxed processes, without
 	extreme care; ptracers can use this mechanism to escape.)
 
+SECCOMP_RET_ACK:
+	When the SECCOMP_RET_DATA portion is 0, this is the same
+	as SECCOMP_RET_ALLOW. When non-zero, this is the same as
+	SECCOMP_RET_TRAP except the syscall is executed normally
+	and register contents will show the state after the syscall.
+
+	For syscalls that are sensitive to pending signals, the
+	raised signal will interrupt the syscall. If these syscalls
+	are restarted immediately, they will loop forever. Users of
+	SECCOMP_RET_ACK need to add a new filter for each syscall
+	that sets a zero SECCOMP_RET_DATA to disable these kinds of
+	syscalls if they are not explicitly whitelisted to being with.
+
+	Whitelisting sigreturn (and likely prctl) is needed to use
+	SECCOMP_RET_ACK in a meaningful way.
+
 SECCOMP_RET_ALLOW:
 	Results in the system call being executed.
 

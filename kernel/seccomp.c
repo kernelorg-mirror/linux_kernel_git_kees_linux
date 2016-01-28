@@ -631,6 +631,11 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
 
 		return 0;
 
+	case SECCOMP_RET_ACK:
+		/* Post SIGSYS on syscall return, with 16 bits of data. */
+		if (data)
+			seccomp_send_sigsys(this_syscall, data);
+		/* Fall through. */
 	case SECCOMP_RET_ALLOW:
 		return 0;
 
