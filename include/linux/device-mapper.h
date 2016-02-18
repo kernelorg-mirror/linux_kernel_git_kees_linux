@@ -441,6 +441,12 @@ union map_info *dm_get_rq_mapinfo(struct request *rq);
 struct queue_limits *dm_get_queue_limits(struct mapped_device *md);
 
 /*
+ * Lock functions.
+ */
+void dm_lock_md_type(struct mapped_device *md);
+void dm_unlock_md_type(struct mapped_device *md);
+
+/*
  * Geometry functions.
  */
 int dm_get_geometry(struct mapped_device *md, struct hd_geometry *geo);
