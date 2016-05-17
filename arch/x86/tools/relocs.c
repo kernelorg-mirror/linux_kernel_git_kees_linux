@@ -44,6 +44,8 @@ static const char * const sym_regex_kernel[S_NSYMTYPES] = {
 	[S_ABS] =
 	"^(xen_irq_disable_direct_reloc$|"
 	"xen_save_fl_direct_reloc$|"
+	"z_input_len$|"
+	"z_output_len$|"
 	"VDSO|"
 	"__crc_)",
 
@@ -627,7 +629,32 @@ static void print_absolute_relocs(void)
 		printf("\n");
 }
 
-static void add_reloc(struct relocs *r, uint32_t offset)
+/*
+ * As an aid to debugging problems with different linkers
+ * print summary information about the relocs.
+ * Since different linkers tend to emit the sections in
+ * different orders we use the section names in the output.
+ */
+static int reloc_info_head;
+static int do_reloc_info(struct section *sec, Elf_Rel *rel, ElfW(Sym) *sym,
+				const char *symname)
+{
+	if (!reloc_info_head) {
+		printf("reloc section\treloc type\tsymbol\tsymbol section\n");
+		reloc_info_head = 1;
+	}
+	printf("%s\t%s\t%s\t%s\n",
+		sec_name(sec->shdr.sh_info),
+		rel_type(ELF_R_TYPE(rel->r_info)),
+		symname,
+		sec_name(sym->st_shndx));
+	return 0;
+}
+
+static int total_relocs;
+static void add_reloc(struct relocs *r, uint32_t offset, unsigned r_type,
+		      struct section *sec,
+		      Elf_Rel *rel, ElfW(Sym) *sym, const char *symname)
 {
 	if (r->count == r->size) {
 		unsigned long newsize = r->size + 50000;
@@ -640,6 +667,10 @@ static void add_reloc(struct relocs *r, uint32_t offset)
 		r->size = newsize;
 	}
 	r->offset[r->count++] = offset;
+
+	total_relocs++;
+	if (show_required)
+		do_reloc_info(sec, rel, sym, symname);
 }
 
 static void walk_relocs(int (*process)(struct section *sec, Elf_Rel *rel,
@@ -769,12 +800,14 @@ static int do_reloc64(struct section *sec, Elf_Rel *rel, ElfW(Sym) *sym,
 		break;
 
 	case R_X86_64_PC32:
+	case R_X86_64_GOTPCREL:
+	case R_X86_64_PLT32:
 		/*
 		 * PC relative relocations don't need to be adjusted unless
 		 * referencing a percpu symbol.
 		 */
 		if (is_percpu_sym(sym, symname))
-			add_reloc(&relocs32neg, offset);
+			add_reloc(&relocs32neg, offset, r_type, sec, rel, sym, symname);
 		break;
 
 	case R_X86_64_32:
@@ -809,9 +842,9 @@ static int do_reloc64(struct section *sec, Elf_Rel *rel, ElfW(Sym) *sym,
 			die("Relocation offset doesn't fit in 32 bits\n");
 
 		if (r_type == R_X86_64_64)
-			add_reloc(&relocs64, offset);
+			add_reloc(&relocs64, offset, r_type, sec, rel, sym, symname);
 		else
-			add_reloc(&relocs32, offset);
+			add_reloc(&relocs32, offset, r_type, sec, rel, sym, symname);
 		break;
 
 	default:
@@ -836,6 +869,9 @@ static int do_reloc32(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
 	case R_386_PC32:
 	case R_386_PC16:
 	case R_386_PC8:
+	case R_386_GOTPC:
+	case R_386_GOTOFF:
+	case R_386_PLT32:
 		/*
 		 * NONE can be ignored and PC relative relocations don't
 		 * need to be adjusted.
@@ -856,7 +892,7 @@ static int do_reloc32(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
 			break;
 		}
 
-		add_reloc(&relocs32, rel->r_offset);
+		add_reloc(&relocs32, rel->r_offset, r_type, sec, rel, sym, symname);
 		break;
 
 	default:
@@ -895,7 +931,7 @@ static int do_reloc_real(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
 				break;
 
 			if (is_reloc(S_SEG, symname)) {
-				add_reloc(&relocs16, rel->r_offset);
+				add_reloc(&relocs16, rel->r_offset, r_type, sec, rel, sym, symname);
 				break;
 			}
 		} else {
@@ -917,12 +953,12 @@ static int do_reloc_real(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
 				break;
 
 			if (is_reloc(S_REL, symname)) {
-				add_reloc(&relocs32, rel->r_offset);
+				add_reloc(&relocs32, rel->r_offset, r_type, sec, rel, sym, symname);
 				break;
 			}
 		} else {
 			if (is_reloc(S_LIN, symname))
-				add_reloc(&relocs32, rel->r_offset);
+				add_reloc(&relocs32, rel->r_offset, r_type, sec, rel, sym, symname);
 			break;
 		}
 		die("Invalid %s %s relocation: %s\n",
@@ -988,6 +1024,10 @@ static void emit_relocs(int as_text, int use_real_mode)
 	/* Collect up the relocations */
 	walk_relocs(do_reloc);
 
+	/* Do not continue if only reported required relocations. */
+	if (show_required)
+		exit(total_relocs > 0);
+
 	if (relocs16.count && !use_real_mode)
 		die("Segment relocations found but --realmode not specified\n");
 
@@ -1043,26 +1083,8 @@ static void emit_relocs(int as_text, int use_real_mode)
 	}
 }
 
-/*
- * As an aid to debugging problems with different linkers
- * print summary information about the relocs.
- * Since different linkers tend to emit the sections in
- * different orders we use the section names in the output.
- */
-static int do_reloc_info(struct section *sec, Elf_Rel *rel, ElfW(Sym) *sym,
-				const char *symname)
-{
-	printf("%s\t%s\t%s\t%s\n",
-		sec_name(sec->shdr.sh_info),
-		rel_type(ELF_R_TYPE(rel->r_info)),
-		symname,
-		sec_name(sym->st_shndx));
-	return 0;
-}
-
 static void print_reloc_info(void)
 {
-	printf("reloc section\treloc type\tsymbol\tsymbol section\n");
 	walk_relocs(do_reloc_info);
 }
 

@@ -1,5 +1,7 @@
 #include "relocs.h"
 
+int show_required;
+
 void die(char *fmt, ...)
 {
 	va_list ap;
@@ -11,7 +13,7 @@ void die(char *fmt, ...)
 
 static void usage(void)
 {
-	die("relocs [--abs-syms|--abs-relocs|--reloc-info|--text|--realmode]" \
+	die("relocs [--abs-syms|--abs-relocs|--reloc-info|--text|--required|--realmode]" \
 	    " vmlinux\n");
 }
 
@@ -27,6 +29,7 @@ int main(int argc, char **argv)
 	show_absolute_syms = 0;
 	show_absolute_relocs = 0;
 	show_reloc_info = 0;
+	show_required = 0;
 	as_text = 0;
 	use_real_mode = 0;
 	fname = NULL;
@@ -43,6 +46,10 @@ int main(int argc, char **argv)
 			}
 			if (strcmp(arg, "--reloc-info") == 0) {
 				show_reloc_info = 1;
+				continue;
+			}
+			if (strcmp(arg, "--required") == 0) {
+				show_required = 1;
 				continue;
 			}
 			if (strcmp(arg, "--text") == 0) {
