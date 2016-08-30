@@ -130,6 +130,7 @@ extern void dump_gimple_stmt(pretty_printer *, gimple, int, int);
 #endif
 
 #define __unused __attribute__((__unused__))
+#define __visible __attribute__((visibility("default")))
 
 #define DECL_NAME_POINTER(node) IDENTIFIER_POINTER(DECL_NAME(node))
 #define DECL_NAME_LENGTH(node) IDENTIFIER_LENGTH(DECL_NAME(node))
@@ -495,6 +496,14 @@ static inline const greturn *as_a_const_greturn(const_gimple stmt)
 
 typedef struct rtx_def rtx_insn;
 
+static inline const char *get_decl_section_name(const_tree decl)
+{
+        if (DECL_SECTION_NAME(decl) == NULL_TREE)
+                return NULL;
+
+        return TREE_STRING_POINTER(DECL_SECTION_NAME(decl));
+}
+
 static inline void set_decl_section_name(tree node, const char *value)
 {
 	if (value)
@@ -610,6 +619,11 @@ inline bool is_a_helper<const gassign *>::test(const_gimple gs)
 
 #define INSN_DELETED_P(insn) (insn)->deleted()
 
+static inline const char *get_decl_section_name(const_tree decl)
+{
+        return DECL_SECTION_NAME(decl);
+}
+
 /* symtab/cgraph related */
 #define debug_cgraph_node(node) (node)->debug()
 #define cgraph_get_node(decl) cgraph_node::get(decl)
@@ -618,6 +632,7 @@ inline bool is_a_helper<const gassign *>::test(const_gimple gs)
 #define cgraph_n_nodes symtab->cgraph_count
 #define cgraph_max_uid symtab->cgraph_max_uid
 #define varpool_get_node(decl) varpool_node::get(decl)
+#define dump_varpool_node(file, node) (node)->dump(file)
 
 #define cgraph_create_edge(caller, callee, call_stmt, count, freq, nest) \
 	(caller)->create_edge((callee), (call_stmt), (count), (freq))

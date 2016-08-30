@@ -383,6 +383,12 @@ config GCC_PLUGIN_SANCOV
 	  gcc-4.5 on). It is based on the commit "Add fuzzing coverage support"
 	  by Dmitry Vyukov <dvyukov@google.com>.
 
+config GCC_PLUGIN_CONSTIFY
+	bool "Make function pointer structures and other marked variables read-only"
+	depends on GCC_PLUGINS
+	help
+	  Constify...
+
 config HAVE_CC_STACKPROTECTOR
 	bool
 	help

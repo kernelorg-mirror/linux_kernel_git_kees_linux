@@ -5,6 +5,8 @@ ifdef CONFIG_GCC_PLUGINS
   SANCOV_PLUGIN := -fplugin=$(objtree)/scripts/gcc-plugins/sancov_plugin.so
 
   gcc-plugin-$(CONFIG_GCC_PLUGIN_CYC_COMPLEXITY)	+= cyc_complexity_plugin.so
+  gcc-plugin-$(CONFIG_GCC_PLUGIN_CONSTIFY)	+= constify_plugin.so
+  gcc-plugin-$(CONFIG_GCC_PLUGIN_STRUCTLEAK)	+= structleak_plugin.so
 
   ifdef CONFIG_GCC_PLUGIN_SANCOV
     ifeq ($(CFLAGS_KCOV),)
