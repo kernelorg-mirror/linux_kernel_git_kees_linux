@@ -436,6 +436,19 @@ config GCC_PLUGIN_STRUCTLEAK_VERBOSE
 	  initialized. Since not all existing initializers are detected
 	  by the plugin, this can produce false positive warnings.
 
+config GCC_PLUGIN_CONSTIFY
+	bool "Make function pointer structures and marked variables read-only"
+	depends on GCC_PLUGINS && HAVE_ARCH_RARE_WRITE && !UML
+	help
+	  By saying Y here the compiler will automatically constify a class
+	  of types that contain only function pointers, as well as any
+	  manually annotated structures. This reduces the kernel's attack
+	  surface and also produces a better memory layout.
+
+	  This plugin was ported from grsecurity/PaX. More information at:
+	   * https://grsecurity.net/
+	   * https://pax.grsecurity.net/
+
 config HAVE_CC_STACKPROTECTOR
 	bool
 	help

@@ -191,6 +191,11 @@
 
 #if GCC_VERSION >= 40500
 
+#ifdef CONSTIFY_PLUGIN
+#define __no_const __attribute__((no_const))
+#define __do_const __attribute__((do_const))
+#endif
+
 #ifndef __CHECKER__
 #ifdef LATENT_ENTROPY_PLUGIN
 #define __latent_entropy __attribute__((latent_entropy))
