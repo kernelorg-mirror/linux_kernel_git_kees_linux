@@ -135,7 +135,7 @@ void secondary_start_kernel(void)
 
 	/* All kernel threads share the same mm context. */
 
-	atomic_inc(&mm->mm_users);
+	refcount_inc(&mm->mm_users);
 	atomic_inc(&mm->mm_count);
 	current->active_mm = mm;
 	cpumask_set_cpu(cpu, mm_cpumask(mm));

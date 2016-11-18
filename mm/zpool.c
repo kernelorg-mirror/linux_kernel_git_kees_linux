@@ -56,11 +56,11 @@ EXPORT_SYMBOL(zpool_register_driver);
  */
 int zpool_unregister_driver(struct zpool_driver *driver)
 {
-	int ret = 0, refcount;
+	int ret = 0;
+	unsigned int refcount;
 
 	spin_lock(&drivers_lock);
 	refcount = atomic_read(&driver->refcount);
-	WARN_ON(refcount < 0);
 	if (refcount > 0)
 		ret = -EBUSY;
 	else

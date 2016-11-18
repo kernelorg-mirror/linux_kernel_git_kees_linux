@@ -416,8 +416,10 @@ retry:
 			node = &parent->rb_left;
 		else if (congested->blkcg_id > blkcg_id)
 			node = &parent->rb_right;
-		else
-			goto found;
+		else {
+			refcount_inc(&congested->refcnt);
+ 			goto found;
+		}
 	}
 
 	if (new_congested) {
@@ -436,13 +438,12 @@ retry:
 	if (!new_congested)
 		return NULL;
 
-	atomic_set(&new_congested->refcnt, 0);
+	refcount_set(&new_congested->refcnt, 1);
 	new_congested->bdi = bdi;
 	new_congested->blkcg_id = blkcg_id;
 	goto retry;
 
 found:
-	atomic_inc(&congested->refcnt);
 	spin_unlock_irqrestore(&cgwb_lock, flags);
 	kfree(new_congested);
 	return congested;
@@ -459,7 +460,7 @@ void wb_congested_put(struct bdi_writeback_congested *congested)
 	unsigned long flags;
 
 	local_irq_save(flags);
-	if (!atomic_dec_and_lock(&congested->refcnt, &cgwb_lock)) {
+	if (!refcount_dec_and_lock(&congested->refcnt, &cgwb_lock)) {
 		local_irq_restore(flags);
 		return;
 	}

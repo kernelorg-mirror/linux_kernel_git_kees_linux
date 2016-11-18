@@ -30,6 +30,7 @@
 #include <linux/userfaultfd_k.h>
 #include <linux/page_idle.h>
 #include <linux/shmem_fs.h>
+#include <linux/refcount.h>
 
 #include <asm/tlb.h>
 #include <asm/pgalloc.h>
@@ -56,14 +57,14 @@ unsigned long transparent_hugepage_flags __read_mostly =
 
 static struct shrinker deferred_split_shrinker;
 
-static atomic_t huge_zero_refcount;
+static refcount_t huge_zero_refcount;
 struct page *huge_zero_page __read_mostly;
 
 static struct page *get_huge_zero_page(void)
 {
 	struct page *zero_page;
 retry:
-	if (likely(atomic_inc_not_zero(&huge_zero_refcount)))
+	if (likely(refcount_inc_not_zero(&huge_zero_refcount)))
 		return READ_ONCE(huge_zero_page);
 
 	zero_page = alloc_pages((GFP_TRANSHUGE | __GFP_ZERO) & ~__GFP_MOVABLE,
@@ -81,7 +82,7 @@ retry:
 	}
 
 	/* We take additional reference here. It will be put back by shrinker */
-	atomic_set(&huge_zero_refcount, 2);
+	refcount_set(&huge_zero_refcount, 2);
 	preempt_enable();
 	return READ_ONCE(huge_zero_page);
 }
@@ -92,7 +93,7 @@ static void put_huge_zero_page(void)
 	 * Counter should never go to zero here. Only shrinker can put
 	 * last reference.
 	 */
-	BUG_ON(atomic_dec_and_test(&huge_zero_refcount));
+	BUG_ON(refcount_dec_and_test(&huge_zero_refcount));
 }
 
 struct page *mm_get_huge_zero_page(struct mm_struct *mm)
@@ -119,13 +120,16 @@ static unsigned long shrink_huge_zero_page_count(struct shrinker *shrink,
 					struct shrink_control *sc)
 {
 	/* we can free zero page only if last reference remains */
-	return atomic_read(&huge_zero_refcount) == 1 ? HPAGE_PMD_NR : 0;
+	return refcount_read(&huge_zero_refcount) == 1 ? HPAGE_PMD_NR : 0;
 }
 
 static unsigned long shrink_huge_zero_page_scan(struct shrinker *shrink,
 				       struct shrink_control *sc)
 {
-	if (atomic_cmpxchg(&huge_zero_refcount, 1, 0) == 1) {
+	/* the below is probably not fully safe */
+	/* do we need to take a lock? */
+	if (refcount_read(&huge_zero_refcount) == 1) {
+		refcount_set(&huge_zero_refcount, 0);
 		struct page *zero_page = xchg(&huge_zero_page, NULL);
 		BUG_ON(zero_page == NULL);
 		__free_pages(zero_page, compound_order(zero_page));

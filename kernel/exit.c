@@ -396,7 +396,7 @@ retry:
 	 * candidates.  Do not leave the mm pointing to a possibly
 	 * freed task structure.
 	 */
-	if (atomic_read(&mm->mm_users) <= 1) {
+	if (refcount_read(&mm->mm_users) <= 1) {
 		mm->owner = NULL;
 		return;
 	}
@@ -509,7 +509,7 @@ static void exit_mm(struct task_struct *tsk)
 		__set_task_state(tsk, TASK_RUNNING);
 		down_read(&mm->mmap_sem);
 	}
-	atomic_inc(&mm->mm_count);
+	refcount_inc(&mm->mm_count);
 	BUG_ON(mm != tsk->active_mm);
 	/* more a memory barrier than a real lock */
 	task_lock(tsk);

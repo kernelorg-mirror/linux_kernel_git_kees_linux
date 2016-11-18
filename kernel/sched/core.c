@@ -2231,7 +2231,7 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
 #endif
 
 #ifdef CONFIG_NUMA_BALANCING
-	if (p->mm && atomic_read(&p->mm->mm_users) == 1) {
+	if (p->mm && refcount_read(&p->mm->mm_users) == 1) {
 		p->mm->numa_next_scan = jiffies + msecs_to_jiffies(sysctl_numa_balancing_scan_delay);
 		p->mm->numa_scan_seq = 0;
 	}
@@ -2878,7 +2878,7 @@ context_switch(struct rq *rq, struct task_struct *prev,
 
 	if (!mm) {
 		next->active_mm = oldmm;
-		atomic_inc(&oldmm->mm_count);
+		refcount_inc(&oldmm->mm_count);
 		enter_lazy_tlb(oldmm, next);
 	} else
 		switch_mm_irqs_off(oldmm, mm, next);
@@ -6177,6 +6177,7 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
 		cpumask_or(covered, covered, sg_span);
 
 		sg->sgc = *per_cpu_ptr(sdd->sgc, i);
+
 		if (atomic_inc_return(&sg->sgc->ref) == 1)
 			build_group_mask(sd, sg);
 
@@ -7686,7 +7687,7 @@ void __init sched_init(void)
 	/*
 	 * The boot idle thread does lazy MMU switching as well:
 	 */
-	atomic_inc(&init_mm.mm_count);
+	refcount_inc(&init_mm.mm_count);
 	enter_lazy_tlb(&init_mm, current);
 
 	/*

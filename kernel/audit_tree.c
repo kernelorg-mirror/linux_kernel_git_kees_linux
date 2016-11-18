@@ -9,7 +9,7 @@ struct audit_tree;
 struct audit_chunk;
 
 struct audit_tree {
-	atomic_t count;
+	refcount_t count;
 	int goner;
 	struct audit_chunk *root;
 	struct list_head chunks;
@@ -77,7 +77,7 @@ static struct audit_tree *alloc_tree(const char *s)
 
 	tree = kmalloc(sizeof(struct audit_tree) + strlen(s) + 1, GFP_KERNEL);
 	if (tree) {
-		atomic_set(&tree->count, 1);
+		refcount_set(&tree->count, 1);
 		tree->goner = 0;
 		INIT_LIST_HEAD(&tree->chunks);
 		INIT_LIST_HEAD(&tree->rules);
@@ -91,12 +91,12 @@ static struct audit_tree *alloc_tree(const char *s)
 
 static inline void get_tree(struct audit_tree *tree)
 {
-	atomic_inc(&tree->count);
+	refcount_inc(&tree->count);
 }
 
 static inline void put_tree(struct audit_tree *tree)
 {
-	if (atomic_dec_and_test(&tree->count))
+	if (refcount_dec_and_test(&tree->count))
 		kfree_rcu(tree, head);
 }
 
@@ -963,7 +963,7 @@ static void audit_tree_freeing_mark(struct fsnotify_mark *entry, struct fsnotify
 	 * We are guaranteed to have at least one reference to the mark from
 	 * either the inode or the caller of fsnotify_destroy_mark().
 	 */
-	BUG_ON(atomic_read(&entry->refcnt) < 1);
+	BUG_ON(refcount_read(&entry->refcnt) < 1);
 }
 
 static const struct fsnotify_ops audit_tree_ops = {

@@ -352,7 +352,7 @@ static void insert_to_mm_slots_hash(struct mm_struct *mm,
  */
 static inline bool ksm_test_exit(struct mm_struct *mm)
 {
-	return atomic_read(&mm->mm_users) == 0;
+	return refcount_read(&mm->mm_users) == 0;
 }
 
 /*
@@ -1813,7 +1813,7 @@ int __ksm_enter(struct mm_struct *mm)
 	spin_unlock(&ksm_mmlist_lock);
 
 	set_bit(MMF_VM_MERGEABLE, &mm->flags);
-	atomic_inc(&mm->mm_count);
+	refcount_inc(&mm->mm_count);
 
 	if (needs_wakeup)
 		wake_up_interruptible(&ksm_thread_wait);

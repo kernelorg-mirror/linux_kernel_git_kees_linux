@@ -37,6 +37,7 @@
 #include <linux/percpu-rwsem.h>
 #include <linux/task_work.h>
 #include <linux/shmem_fs.h>
+#include <linux/refcount.h>
 
 #include <linux/uprobes.h>
 
@@ -64,7 +65,7 @@ static struct percpu_rw_semaphore dup_mmap_sem;
 
 struct uprobe {
 	struct rb_node		rb_node;	/* node in the rb tree */
-	atomic_t		ref;
+	refcount_t		ref;
 	struct rw_semaphore	register_rwsem;
 	struct rw_semaphore	consumer_rwsem;
 	struct list_head	pending_list;
@@ -363,13 +364,13 @@ set_orig_insn(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long v
 
 static struct uprobe *get_uprobe(struct uprobe *uprobe)
 {
-	atomic_inc(&uprobe->ref);
+	refcount_inc(&uprobe->ref);
 	return uprobe;
 }
 
 static void put_uprobe(struct uprobe *uprobe)
 {
-	if (atomic_dec_and_test(&uprobe->ref))
+	if (refcount_dec_and_test(&uprobe->ref))
 		kfree(uprobe);
 }
 
@@ -451,7 +452,7 @@ static struct uprobe *__insert_uprobe(struct uprobe *uprobe)
 	rb_link_node(&uprobe->rb_node, parent, p);
 	rb_insert_color(&uprobe->rb_node, &uprobes_tree);
 	/* get access + creation ref */
-	atomic_set(&uprobe->ref, 2);
+	refcount_set(&uprobe->ref, 2);
 
 	return u;
 }
@@ -741,7 +742,7 @@ build_map_info(struct address_space *mapping, loff_t offset, bool is_register)
 			continue;
 		}
 
-		if (!atomic_inc_not_zero(&vma->vm_mm->mm_users))
+		if (!refcount_inc_not_zero(&vma->vm_mm->mm_users))
 			continue;
 
 		info = prev;
@@ -1115,7 +1116,7 @@ void uprobe_munmap(struct vm_area_struct *vma, unsigned long start, unsigned lon
 	if (no_uprobe_events() || !valid_vma(vma, false))
 		return;
 
-	if (!atomic_read(&vma->vm_mm->mm_users)) /* called by mmput() ? */
+	if (!refcount_read(&vma->vm_mm->mm_users)) /* called by mmput() ? */
 		return;
 
 	if (!test_bit(MMF_HAS_UPROBES, &vma->vm_mm->flags) ||

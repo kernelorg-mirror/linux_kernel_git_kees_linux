@@ -137,7 +137,7 @@ struct rpc_cred null_cred = {
 	.cr_lru		= LIST_HEAD_INIT(null_cred.cr_lru),
 	.cr_auth	= &null_auth,
 	.cr_ops		= &null_credops,
-	.cr_count	= ATOMIC_INIT(1),
+	.cr_count	= REFCOUNT_INIT(1),
 	.cr_flags	= 1UL << RPCAUTH_CRED_UPTODATE,
 #if IS_ENABLED(CONFIG_SUNRPC_DEBUG)
 	.cr_magic	= RPCAUTH_CRED_MAGIC,
