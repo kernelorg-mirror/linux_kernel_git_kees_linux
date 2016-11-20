@@ -46,7 +46,7 @@ void ieee80211_crypt_deinit_entries(struct ieee80211_device *ieee,
 	     ptr != &ieee->crypt_deinit_list; ptr = n, n = ptr->next) {
 		entry = list_entry(ptr, struct ieee80211_crypt_data, list);
 
-		if (atomic_read(&entry->refcnt) != 0 && !force)
+		if (refcount_read(&entry->refcnt) != 0 && !force)
 			continue;
 
 		list_del(ptr);

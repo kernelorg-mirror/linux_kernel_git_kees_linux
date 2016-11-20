@@ -244,7 +244,7 @@ struct sk_buff *__skb_try_recv_datagram(struct sock *sk, unsigned int flags,
 					}
 				}
 				*peeked = 1;
-				atomic_inc(&skb->users);
+				refcount_inc(&skb->users);
 			} else {
 				__skb_unlink(skb, queue);
 				if (destructor)
@@ -313,9 +313,9 @@ void __skb_free_datagram_locked(struct sock *sk, struct sk_buff *skb, int len)
 {
 	bool slow;
 
-	if (likely(atomic_read(&skb->users) == 1))
+	if (likely(refcount_read(&skb->users) == 1))
 		smp_rmb();
-	else if (likely(!atomic_dec_and_test(&skb->users))) {
+	else if (likely(!refcount_dec_and_test(&skb->users))) {
 		sk_peek_offset_bwd(sk, len);
 		return;
 	}
@@ -341,7 +341,7 @@ int __sk_queue_drop_skb(struct sock *sk, struct sk_buff *skb,
 		spin_lock_bh(&sk->sk_receive_queue.lock);
 		if (skb == skb_peek(&sk->sk_receive_queue)) {
 			__skb_unlink(skb, &sk->sk_receive_queue);
-			atomic_dec(&skb->users);
+			refcount_dec(&skb->users);
 			err = 0;
 		}
 		spin_unlock_bh(&sk->sk_receive_queue.lock);
@@ -591,7 +591,7 @@ int zerocopy_sg_from_iter(struct sk_buff *skb, struct iov_iter *from)
 		skb->data_len += copied;
 		skb->len += copied;
 		skb->truesize += truesize;
-		atomic_add(truesize, &skb->sk->sk_wmem_alloc);
+		refcount_add(truesize, &skb->sk->sk_wmem_alloc);
 		while (copied) {
 			int size = min_t(int, copied, PAGE_SIZE - start);
 			skb_fill_page_desc(skb, frag++, pages[n], start, size);

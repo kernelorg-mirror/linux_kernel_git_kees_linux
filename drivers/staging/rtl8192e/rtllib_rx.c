@@ -310,9 +310,9 @@ rtllib_rx_frame_decrypt(struct rtllib_device *ieee, struct sk_buff *skb,
 	hdr = (struct rtllib_hdr_4addr *) skb->data;
 	hdrlen = rtllib_get_hdrlen(le16_to_cpu(hdr->frame_ctl));
 
-	atomic_inc(&crypt->refcnt);
+	refcount_inc(&crypt->refcnt);
 	res = crypt->ops->decrypt_mpdu(skb, hdrlen, crypt->priv);
-	atomic_dec(&crypt->refcnt);
+	refcount_dec(&crypt->refcnt);
 	if (res < 0) {
 		netdev_dbg(ieee->dev, "decryption failed (SA= %pM) res=%d\n",
 			   hdr->addr2, res);
@@ -350,9 +350,9 @@ rtllib_rx_frame_decrypt_msdu(struct rtllib_device *ieee, struct sk_buff *skb,
 	hdr = (struct rtllib_hdr_4addr *) skb->data;
 	hdrlen = rtllib_get_hdrlen(le16_to_cpu(hdr->frame_ctl));
 
-	atomic_inc(&crypt->refcnt);
+	refcount_inc(&crypt->refcnt);
 	res = crypt->ops->decrypt_msdu(skb, keyidx, hdrlen, crypt->priv);
-	atomic_dec(&crypt->refcnt);
+	refcount_dec(&crypt->refcnt);
 	if (res < 0) {
 		netdev_dbg(ieee->dev,
 			   "MSDU decryption/MIC verification failed (SA= %pM keyidx=%d)\n",

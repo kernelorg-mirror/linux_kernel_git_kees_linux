@@ -23,6 +23,7 @@
 #ifndef IEEE80211_CRYPT_H
 #define IEEE80211_CRYPT_H
 
+#include <linux/refcount.h>
 #include <linux/skbuff.h>
 
 struct ieee80211_crypto_ops {
@@ -72,7 +73,7 @@ struct ieee80211_crypt_data {
 	struct list_head list; /* delayed deletion list */
 	struct ieee80211_crypto_ops *ops;
 	void *priv;
-	atomic_t refcnt;
+	refcount_t refcnt;
 };
 
 int ieee80211_register_crypto_ops(struct ieee80211_crypto_ops *ops);

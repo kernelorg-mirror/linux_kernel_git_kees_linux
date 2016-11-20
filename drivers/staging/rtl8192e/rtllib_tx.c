@@ -190,14 +190,14 @@ int rtllib_encrypt_fragment(struct rtllib_device *ieee, struct sk_buff *frag,
 	/* Host-based IEEE 802.11 fragmentation for TX is not yet supported, so
 	 * call both MSDU and MPDU encryption functions from here.
 	 */
-	atomic_inc(&crypt->refcnt);
+	refcount_inc(&crypt->refcnt);
 	res = 0;
 	if (crypt->ops->encrypt_msdu)
 		res = crypt->ops->encrypt_msdu(frag, hdr_len, crypt->priv);
 	if (res == 0 && crypt->ops->encrypt_mpdu)
 		res = crypt->ops->encrypt_mpdu(frag, hdr_len, crypt->priv);
 
-	atomic_dec(&crypt->refcnt);
+	refcount_dec(&crypt->refcnt);
 	if (res < 0) {
 		netdev_info(ieee->dev, "%s: Encryption failed: len=%d.\n",
 			    ieee->dev->name, frag->len);

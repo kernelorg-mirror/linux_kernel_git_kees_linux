@@ -160,7 +160,7 @@ ip_vs_sip_conn_out(struct ip_vs_service *svc,
 static struct ip_vs_pe ip_vs_sip_pe =
 {
 	.name =			"sip",
-	.refcnt =		ATOMIC_INIT(0),
+	.refcnt =		REFCOUNT_INIT(0),
 	.module =		THIS_MODULE,
 	.n_list =		LIST_HEAD_INIT(ip_vs_sip_pe.n_list),
 	.fill_param =		ip_vs_sip_fill_param,

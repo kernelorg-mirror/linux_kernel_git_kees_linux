@@ -11,6 +11,7 @@
 #include <linux/rcupdate.h>
 #include <linux/jhash.h>
 #include <linux/types.h>
+#include <linux/refcount.h>
 #include <linux/netfilter/ipset/ip_set_timeout.h>
 
 #define __ipset_dereference_protected(p, c)	rcu_dereference_protected(p, c)
@@ -78,8 +79,8 @@ struct hbucket {
 
 /* The hash table: the table size stored here in order to make resizing easy */
 struct htable {
-	atomic_t ref;		/* References for resizing */
-	atomic_t uref;		/* References for dumping */
+	refcount_t ref;		/* References for resizing */
+	refcount_t uref;		/* References for dumping */
 	u8 htable_bits;		/* size of hash table == 2^htable_bits */
 	struct hbucket __rcu *bucket[0]; /* hashtable buckets */
 };
@@ -591,8 +592,8 @@ retry:
 	spin_lock_bh(&set->lock);
 	orig = __ipset_dereference_protected(h->table, 1);
 	/* There can't be another parallel resizing, but dumping is possible */
-	atomic_set(&orig->ref, 1);
-	atomic_inc(&orig->uref);
+	refcount_set(&orig->ref, 1);
+	refcount_inc(&orig->uref);
 	extsize = 0;
 	pr_debug("attempt to resize set %s from %u to %u, t %p\n",
 		 set->name, orig->htable_bits, htable_bits, orig);
@@ -668,7 +669,7 @@ retry:
 	pr_debug("set %s resized from %u (%p) to %u (%p)\n", set->name,
 		 orig->htable_bits, orig, t->htable_bits, t);
 	/* If there's nobody else dumping the table, destroy it */
-	if (atomic_dec_and_test(&orig->uref)) {
+	if (refcount_dec_and_test(&orig->uref)) {
 		pr_debug("Table destroy by resize %p\n", orig);
 		mtype_ahash_destroy(set, orig, false);
 	}
@@ -680,8 +681,8 @@ out:
 	return ret;
 
 cleanup:
-	atomic_set(&orig->ref, 0);
-	atomic_dec(&orig->uref);
+	refcount_set(&orig->ref, 0);
+	refcount_dec(&orig->uref);
 	spin_unlock_bh(&set->lock);
 	mtype_ahash_destroy(set, t, false);
 	if (ret == -EAGAIN)
@@ -1092,12 +1093,12 @@ mtype_uref(struct ip_set *set, struct netlink_callback *cb, bool start)
 	if (start) {
 		rcu_read_lock_bh();
 		t = rcu_dereference_bh_nfnl(h->table);
-		atomic_inc(&t->uref);
+		refcount_inc(&t->uref);
 		cb->args[IPSET_CB_PRIVATE] = (unsigned long)t;
 		rcu_read_unlock_bh();
 	} else if (cb->args[IPSET_CB_PRIVATE]) {
 		t = (struct htable *)cb->args[IPSET_CB_PRIVATE];
-		if (atomic_dec_and_test(&t->uref) && atomic_read(&t->ref)) {
+		if (refcount_dec_and_test(&t->uref) && refcount_read(&t->ref)) {
 			/* Resizing didn't destroy the hash table */
 			pr_debug("Table destroy by dump: %p\n", t);
 			mtype_ahash_destroy(set, t, false);

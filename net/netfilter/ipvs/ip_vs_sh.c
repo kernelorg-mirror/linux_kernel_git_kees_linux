@@ -352,7 +352,7 @@ ip_vs_sh_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
 static struct ip_vs_scheduler ip_vs_sh_scheduler =
 {
 	.name =			"sh",
-	.refcnt =		ATOMIC_INIT(0),
+	.refcnt =		REFCOUNT_INIT(0),
 	.module =		THIS_MODULE,
 	.n_list	 =		LIST_HEAD_INIT(ip_vs_sh_scheduler.n_list),
 	.init_service =		ip_vs_sh_init_svc,

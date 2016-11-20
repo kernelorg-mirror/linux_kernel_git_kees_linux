@@ -92,7 +92,7 @@ static void lib80211_crypt_deinit_entries(struct lib80211_crypt_info *info,
 
 	spin_lock_irqsave(info->lock, flags);
 	list_for_each_entry_safe(entry, next, &info->crypt_deinit_list, list) {
-		if (atomic_read(&entry->refcnt) != 0 && !force)
+		if (refcount_read(&entry->refcnt) != 0 && !force)
 			continue;
 
 		list_del(&entry->list);

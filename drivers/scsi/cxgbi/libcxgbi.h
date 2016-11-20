@@ -378,7 +378,7 @@ static inline void cxgbi_sock_enqueue_wr(struct cxgbi_sock *csk,
 	 * just one user currently so we use atomic_set rather than skb_get
 	 * to avoid the atomic op.
 	 */
-	atomic_set(&skb->users, 2);
+	refcount_set(&skb->users, 2);
 
 	if (!csk->wr_pending_head)
 		csk->wr_pending_head = skb;

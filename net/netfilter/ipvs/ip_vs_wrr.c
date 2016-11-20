@@ -218,7 +218,7 @@ found:
 		      "activeconns %d refcnt %d weight %d\n",
 		      IP_VS_DBG_ADDR(dest->af, &dest->addr), ntohs(dest->port),
 		      atomic_read(&dest->activeconns),
-		      atomic_read(&dest->refcnt),
+		      refcount_read(&dest->refcnt),
 		      atomic_read(&dest->weight));
 	mark->cl = dest;
 
@@ -243,7 +243,7 @@ err_over:
 
 static struct ip_vs_scheduler ip_vs_wrr_scheduler = {
 	.name =			"wrr",
-	.refcnt =		ATOMIC_INIT(0),
+	.refcnt =		REFCOUNT_INIT(0),
 	.module =		THIS_MODULE,
 	.n_list =		LIST_HEAD_INIT(ip_vs_wrr_scheduler.n_list),
 	.init_service =		ip_vs_wrr_init_svc,

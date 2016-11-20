@@ -322,7 +322,7 @@ static int ip_vs_svc_hash(struct ip_vs_service *svc)
 
 	svc->flags |= IP_VS_SVC_F_HASHED;
 	/* increase its refcnt because it is referenced by the svc table */
-	atomic_inc(&svc->refcnt);
+	refcount_inc(&svc->refcnt);
 	return 1;
 }
 
@@ -348,7 +348,7 @@ static int ip_vs_svc_unhash(struct ip_vs_service *svc)
 	}
 
 	svc->flags &= ~IP_VS_SVC_F_HASHED;
-	atomic_dec(&svc->refcnt);
+	refcount_dec(&svc->refcnt);
 	return 1;
 }
 
@@ -458,7 +458,7 @@ ip_vs_service_find(struct netns_ipvs *ipvs, int af, __u32 fwmark, __u16 protocol
 static inline void
 __ip_vs_bind_svc(struct ip_vs_dest *dest, struct ip_vs_service *svc)
 {
-	atomic_inc(&svc->refcnt);
+	refcount_inc(&svc->refcnt);
 	rcu_assign_pointer(dest->svc, svc);
 }
 
@@ -478,7 +478,7 @@ static void ip_vs_service_rcu_free(struct rcu_head *head)
 
 static void __ip_vs_svc_put(struct ip_vs_service *svc, bool do_delay)
 {
-	if (atomic_dec_and_test(&svc->refcnt)) {
+	if (refcount_dec_and_test(&svc->refcnt)) {
 		IP_VS_DBG_BUF(3, "Removing service %u/%s:%u\n",
 			      svc->fwmark,
 			      IP_VS_DBG_ADDR(svc->af, &svc->addr),
@@ -700,7 +700,7 @@ ip_vs_trash_get_dest(struct ip_vs_service *svc, int dest_af,
 			      dest->vfwmark,
 			      IP_VS_DBG_ADDR(dest->af, &dest->addr),
 			      ntohs(dest->port),
-			      atomic_read(&dest->refcnt));
+			      refcount_read(&dest->refcnt));
 		if (dest->af == dest_af &&
 		    ip_vs_addr_equal(dest_af, &dest->addr, daddr) &&
 		    dest->port == dport &&
@@ -936,7 +936,7 @@ ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest,
 	atomic_set(&dest->activeconns, 0);
 	atomic_set(&dest->inactconns, 0);
 	atomic_set(&dest->persistconns, 0);
-	atomic_set(&dest->refcnt, 1);
+	refcount_set(&dest->refcnt, 1);
 
 	INIT_HLIST_NODE(&dest->d_list);
 	spin_lock_init(&dest->dst_lock);
@@ -1000,7 +1000,7 @@ ip_vs_add_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
 		IP_VS_DBG_BUF(3, "Get destination %s:%u from trash, "
 			      "dest->refcnt=%d, service %u/%s:%u\n",
 			      IP_VS_DBG_ADDR(udest->af, &daddr), ntohs(dport),
-			      atomic_read(&dest->refcnt),
+			      refcount_read(&dest->refcnt),
 			      dest->vfwmark,
 			      IP_VS_DBG_ADDR(svc->af, &dest->vaddr),
 			      ntohs(dest->vport));
@@ -1076,7 +1076,7 @@ static void __ip_vs_del_dest(struct netns_ipvs *ipvs, struct ip_vs_dest *dest,
 	spin_lock_bh(&ipvs->dest_trash_lock);
 	IP_VS_DBG_BUF(3, "Moving dest %s:%u into trash, dest->refcnt=%d\n",
 		      IP_VS_DBG_ADDR(dest->af, &dest->addr), ntohs(dest->port),
-		      atomic_read(&dest->refcnt));
+		      refcount_read(&dest->refcnt));
 	if (list_empty(&ipvs->dest_trash) && !cleanup)
 		mod_timer(&ipvs->dest_trash_timer,
 			  jiffies + (IP_VS_DEST_TRASH_PERIOD >> 1));
@@ -1160,7 +1160,7 @@ static void ip_vs_dest_trash_expire(unsigned long data)
 
 	spin_lock(&ipvs->dest_trash_lock);
 	list_for_each_entry_safe(dest, next, &ipvs->dest_trash, t_list) {
-		if (atomic_read(&dest->refcnt) > 0)
+		if (refcount_read(&dest->refcnt) > 0)
 			continue;
 		if (dest->idle_start) {
 			if (time_before(now, dest->idle_start +
@@ -1250,7 +1250,7 @@ ip_vs_add_service(struct netns_ipvs *ipvs, struct ip_vs_service_user_kern *u,
 
 
 	/* I'm the first user of the service */
-	atomic_set(&svc->refcnt, 0);
+	refcount_set(&svc->refcnt, 0);
 
 	svc->af = u->af;
 	svc->protocol = u->protocol;
@@ -1465,7 +1465,7 @@ static void __ip_vs_del_service(struct ip_vs_service *svc, bool cleanup)
 static void ip_vs_unlink_service(struct ip_vs_service *svc, bool cleanup)
 {
 	/* Hold svc to avoid double release from dest_trash */
-	atomic_inc(&svc->refcnt);
+	refcount_inc(&svc->refcnt);
 	/*
 	 * Unhash it from the service table
 	 */
@@ -1548,7 +1548,7 @@ ip_vs_forget_dev(struct ip_vs_dest *dest, struct net_device *dev)
 			      dev->name,
 			      IP_VS_DBG_ADDR(dest->af, &dest->addr),
 			      ntohs(dest->port),
-			      atomic_read(&dest->refcnt));
+			      refcount_read(&dest->refcnt));
 		__ip_vs_dst_cache_reset(dest);
 	}
 	spin_unlock_bh(&dest->dst_lock);

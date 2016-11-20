@@ -161,12 +161,12 @@ static int libipw_encrypt_fragment(struct libipw_device *ieee,
 
 	/* To encrypt, frame format is:
 	 * IV (4 bytes), clear payload (including SNAP), ICV (4 bytes) */
-	atomic_inc(&crypt->refcnt);
+	refcount_inc(&crypt->refcnt);
 	res = 0;
 	if (crypt->ops && crypt->ops->encrypt_mpdu)
 		res = crypt->ops->encrypt_mpdu(frag, hdr_len, crypt->priv);
 
-	atomic_dec(&crypt->refcnt);
+	refcount_dec(&crypt->refcnt);
 	if (res < 0) {
 		printk(KERN_INFO "%s: Encryption failed: len=%d.\n",
 		       ieee->dev->name, frag->len);

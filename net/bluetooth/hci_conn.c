@@ -397,7 +397,7 @@ static void hci_conn_timeout(struct work_struct *work)
 {
 	struct hci_conn *conn = container_of(work, struct hci_conn,
 					     disc_work.work);
-	int refcnt = atomic_read(&conn->refcnt);
+	int refcnt = refcount_read(&conn->refcnt);
 
 	BT_DBG("hcon %p state %s", conn, state_to_string(conn->state));
 
@@ -553,7 +553,7 @@ struct hci_conn *hci_conn_add(struct hci_dev *hdev, int type, bdaddr_t *dst,
 	INIT_DELAYED_WORK(&conn->le_conn_timeout, le_conn_timeout);
 	INIT_WORK(&conn->le_scan_cleanup, le_scan_cleanup);
 
-	atomic_set(&conn->refcnt, 0);
+	refcount_set(&conn->refcnt, 0);
 
 	hci_dev_hold(hdev);
 

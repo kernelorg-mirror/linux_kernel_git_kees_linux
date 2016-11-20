@@ -361,9 +361,9 @@ ieee80211_rx_frame_decrypt(struct ieee80211_device *ieee, struct sk_buff *skb,
 		return -1;
 	}
 
-	atomic_inc(&crypt->refcnt);
+	refcount_inc(&crypt->refcnt);
 	res = crypt->ops->decrypt_mpdu(skb, hdrlen, crypt->priv);
-	atomic_dec(&crypt->refcnt);
+	refcount_dec(&crypt->refcnt);
 	if (res < 0) {
 		IEEE80211_DEBUG_DROP(
 			"decryption failed (SA=%pM"
@@ -399,9 +399,9 @@ ieee80211_rx_frame_decrypt_msdu(struct ieee80211_device *ieee, struct sk_buff *s
 	hdr = (struct rtl_80211_hdr_4addr *) skb->data;
 	hdrlen = ieee80211_get_hdrlen(le16_to_cpu(hdr->frame_ctl));
 
-	atomic_inc(&crypt->refcnt);
+	refcount_inc(&crypt->refcnt);
 	res = crypt->ops->decrypt_msdu(skb, keyidx, hdrlen, crypt->priv);
-	atomic_dec(&crypt->refcnt);
+	refcount_dec(&crypt->refcnt);
 	if (res < 0) {
 		printk(KERN_DEBUG "%s: MSDU decryption/MIC verification failed"
 		       " (SA=%pM keyidx=%d)\n",

@@ -359,13 +359,13 @@ static struct sk_buff * hostap_tx_encrypt(struct sk_buff *skb,
 
 	/* Host-based IEEE 802.11 fragmentation for TX is not yet supported, so
 	 * call both MSDU and MPDU encryption functions from here. */
-	atomic_inc(&crypt->refcnt);
+	refcount_inc(&crypt->refcnt);
 	res = 0;
 	if (crypt->ops->encrypt_msdu)
 		res = crypt->ops->encrypt_msdu(skb, hdr_len, crypt->priv);
 	if (res == 0 && crypt->ops->encrypt_mpdu)
 		res = crypt->ops->encrypt_mpdu(skb, hdr_len, crypt->priv);
-	atomic_dec(&crypt->refcnt);
+	refcount_dec(&crypt->refcnt);
 	if (res < 0) {
 		kfree_skb(skb);
 		return NULL;

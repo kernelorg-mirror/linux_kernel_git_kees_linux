@@ -93,7 +93,7 @@ struct lib80211_crypt_data {
 	struct list_head list;	/* delayed deletion list */
 	struct lib80211_crypto_ops *ops;
 	void *priv;
-	atomic_t refcnt;
+	refcount_t refcnt;
 };
 
 struct lib80211_crypt_info {

@@ -422,7 +422,7 @@ struct hci_dev {
 struct hci_conn {
 	struct list_head list;
 
-	atomic_t	refcnt;
+	refcount_t	refcnt;
 
 	bdaddr_t	dst;
 	__u8		dst_type;
@@ -942,17 +942,17 @@ static inline void hci_conn_put(struct hci_conn *conn)
 
 static inline void hci_conn_hold(struct hci_conn *conn)
 {
-	BT_DBG("hcon %p orig refcnt %d", conn, atomic_read(&conn->refcnt));
+	BT_DBG("hcon %p orig refcnt %d", conn, refcount_read(&conn->refcnt));
 
-	atomic_inc(&conn->refcnt);
+	refcount_inc(&conn->refcnt);
 	cancel_delayed_work(&conn->disc_work);
 }
 
 static inline void hci_conn_drop(struct hci_conn *conn)
 {
-	BT_DBG("hcon %p orig refcnt %d", conn, atomic_read(&conn->refcnt));
+	BT_DBG("hcon %p orig refcnt %d", conn, refcount_read(&conn->refcnt));
 
-	if (atomic_dec_and_test(&conn->refcnt)) {
+	if (refcount_dec_and_test(&conn->refcnt)) {
 		unsigned long timeo;
 
 		switch (conn->type) {

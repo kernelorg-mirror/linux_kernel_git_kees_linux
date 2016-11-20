@@ -111,7 +111,7 @@ ip_vs_sed_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
 		      IP_VS_DBG_ADDR(least->af, &least->addr),
 		      ntohs(least->port),
 		      atomic_read(&least->activeconns),
-		      atomic_read(&least->refcnt),
+		      refcount_read(&least->refcnt),
 		      atomic_read(&least->weight), loh);
 
 	return least;
@@ -121,7 +121,7 @@ ip_vs_sed_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
 static struct ip_vs_scheduler ip_vs_sed_scheduler =
 {
 	.name =			"sed",
-	.refcnt =		ATOMIC_INIT(0),
+	.refcnt =		REFCOUNT_INIT(0),
 	.module =		THIS_MODULE,
 	.n_list =		LIST_HEAD_INIT(ip_vs_sed_scheduler.n_list),
 	.schedule =		ip_vs_sed_schedule,

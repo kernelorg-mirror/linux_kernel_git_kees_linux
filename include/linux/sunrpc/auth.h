@@ -15,7 +15,7 @@
 #include <linux/sunrpc/msg_prot.h>
 #include <linux/sunrpc/xdr.h>
 
-#include <linux/atomic.h>
+#include <linux/refcount.h>
 #include <linux/rcupdate.h>
 #include <linux/uidgid.h>
 #include <linux/utsname.h>
@@ -68,7 +68,7 @@ struct rpc_cred {
 #endif
 	unsigned long		cr_expire;	/* when to gc */
 	unsigned long		cr_flags;	/* various flags */
-	atomic_t		cr_count;	/* ref count */
+	refcount_t		cr_count;	/* ref count */
 
 	kuid_t			cr_uid;
 
@@ -103,7 +103,7 @@ struct rpc_auth {
 						 * differ from the flavor in
 						 * au_ops->au_flavor in gss
 						 * case) */
-	atomic_t		au_count;	/* Reference counter */
+	refcount_t		au_count;	/* Reference counter */
 
 	struct rpc_cred_cache *	au_credcache;
 	/* per-flavor data */
@@ -209,7 +209,7 @@ static inline
 struct rpc_cred *	get_rpccred(struct rpc_cred *cred)
 {
 	if (cred != NULL)
-		atomic_inc(&cred->cr_count);
+		refcount_inc(&cred->cr_count);
 	return cred;
 }
 
@@ -226,7 +226,7 @@ struct rpc_cred *	get_rpccred(struct rpc_cred *cred)
 static inline struct rpc_cred *
 get_rpccred_rcu(struct rpc_cred *cred)
 {
-	if (atomic_inc_not_zero(&cred->cr_count))
+	if (refcount_inc_not_zero(&cred->cr_count))
 		return cred;
 	return NULL;
 }

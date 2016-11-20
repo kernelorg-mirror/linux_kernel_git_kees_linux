@@ -64,7 +64,7 @@ ip_vs_ovf_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
 
 static struct ip_vs_scheduler ip_vs_ovf_scheduler = {
 	.name =			"ovf",
-	.refcnt =		ATOMIC_INIT(0),
+	.refcnt =		REFCOUNT_INIT(0),
 	.module =		THIS_MODULE,
 	.n_list =		LIST_HEAD_INIT(ip_vs_ovf_scheduler.n_list),
 	.schedule =		ip_vs_ovf_schedule,

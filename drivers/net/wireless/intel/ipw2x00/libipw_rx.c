@@ -281,9 +281,9 @@ libipw_rx_frame_decrypt(struct libipw_device *ieee, struct sk_buff *skb,
 	hdr = (struct libipw_hdr_3addr *)skb->data;
 	hdrlen = libipw_get_hdrlen(le16_to_cpu(hdr->frame_ctl));
 
-	atomic_inc(&crypt->refcnt);
+	refcount_inc(&crypt->refcnt);
 	res = crypt->ops->decrypt_mpdu(skb, hdrlen, crypt->priv);
-	atomic_dec(&crypt->refcnt);
+	refcount_dec(&crypt->refcnt);
 	if (res < 0) {
 		LIBIPW_DEBUG_DROP("decryption failed (SA=%pM) res=%d\n",
 				     hdr->addr2, res);
@@ -313,9 +313,9 @@ libipw_rx_frame_decrypt_msdu(struct libipw_device *ieee,
 	hdr = (struct libipw_hdr_3addr *)skb->data;
 	hdrlen = libipw_get_hdrlen(le16_to_cpu(hdr->frame_ctl));
 
-	atomic_inc(&crypt->refcnt);
+	refcount_inc(&crypt->refcnt);
 	res = crypt->ops->decrypt_msdu(skb, keyidx, hdrlen, crypt->priv);
-	atomic_dec(&crypt->refcnt);
+	refcount_dec(&crypt->refcnt);
 	if (res < 0) {
 		printk(KERN_DEBUG "%s: MSDU decryption/MIC verification failed"
 		       " (SA=%pM keyidx=%d)\n", ieee->dev->name, hdr->addr2,

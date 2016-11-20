@@ -927,7 +927,7 @@ static void sk_filter_release_rcu(struct rcu_head *rcu)
  */
 static void sk_filter_release(struct sk_filter *fp)
 {
-	if (atomic_dec_and_test(&fp->refcnt))
+	if (refcount_dec_and_test(&fp->refcnt))
 		call_rcu(&fp->rcu, sk_filter_release_rcu);
 }
 
@@ -949,7 +949,7 @@ bool sk_filter_charge(struct sock *sk, struct sk_filter *fp)
 	/* same check as in sock_kmalloc() */
 	if (filter_size <= sysctl_optmem_max &&
 	    atomic_read(&sk->sk_omem_alloc) + filter_size < sysctl_optmem_max) {
-		atomic_inc(&fp->refcnt);
+		refcount_set(&fp->refcnt, 1);
 		atomic_add(filter_size, &sk->sk_omem_alloc);
 		return true;
 	}
@@ -1178,7 +1178,7 @@ static int __sk_attach_prog(struct bpf_prog *prog, struct sock *sk)
 		return -ENOMEM;
 
 	fp->prog = prog;
-	atomic_set(&fp->refcnt, 0);
+	refcount_set(&fp->refcnt, 0);
 
 	if (!sk_filter_charge(sk, fp)) {
 		kfree(fp);

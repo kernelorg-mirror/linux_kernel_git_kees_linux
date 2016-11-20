@@ -287,7 +287,7 @@ EXPORT_SYMBOL_GPL(rpcauth_create);
 void
 rpcauth_release(struct rpc_auth *auth)
 {
-	if (!atomic_dec_and_test(&auth->au_count))
+	if (!refcount_dec_and_test(&auth->au_count))
 		return;
 	auth->au_ops->destroy(auth);
 }
@@ -310,7 +310,7 @@ rpcauth_unhash_cred(struct rpc_cred *cred)
 
 	cache_lock = &cred->cr_auth->au_credcache->lock;
 	spin_lock(cache_lock);
-	ret = atomic_read(&cred->cr_count) == 0;
+	ret = refcount_read(&cred->cr_count) == 0;
 	if (ret)
 		rpcauth_unhash_cred_locked(cred);
 	spin_unlock(cache_lock);
@@ -470,12 +470,12 @@ rpcauth_prune_expired(struct list_head *free, int nr_to_scan)
 		list_del_init(&cred->cr_lru);
 		number_cred_unused--;
 		freed++;
-		if (atomic_read(&cred->cr_count) != 0)
+		if (refcount_read(&cred->cr_count) != 0)
 			continue;
 
 		cache_lock = &cred->cr_auth->au_credcache->lock;
 		spin_lock(cache_lock);
-		if (atomic_read(&cred->cr_count) == 0) {
+		if (refcount_read(&cred->cr_count) == 0) {
 			get_rpccred(cred);
 			list_add_tail(&cred->cr_lru, free);
 			rpcauth_unhash_cred_locked(cred);
@@ -642,7 +642,7 @@ rpcauth_init_cred(struct rpc_cred *cred, const struct auth_cred *acred,
 {
 	INIT_HLIST_NODE(&cred->cr_hash);
 	INIT_LIST_HEAD(&cred->cr_lru);
-	atomic_set(&cred->cr_count, 1);
+	refcount_set(&cred->cr_count, 1);
 	cred->cr_auth = auth;
 	cred->cr_ops = ops;
 	cred->cr_expire = jiffies;
@@ -715,12 +715,12 @@ put_rpccred(struct rpc_cred *cred)
 		return;
 	/* Fast path for unhashed credentials */
 	if (test_bit(RPCAUTH_CRED_HASHED, &cred->cr_flags) == 0) {
-		if (atomic_dec_and_test(&cred->cr_count))
+		if (refcount_dec_and_test(&cred->cr_count))
 			cred->cr_ops->crdestroy(cred);
 		return;
 	}
 
-	if (!atomic_dec_and_lock(&cred->cr_count, &rpc_credcache_lock))
+	if (!refcount_dec_and_lock(&cred->cr_count, &rpc_credcache_lock))
 		return;
 	if (!list_empty(&cred->cr_lru)) {
 		number_cred_unused--;

@@ -669,9 +669,9 @@ hostap_rx_frame_decrypt(local_info_t *local, struct sk_buff *skb,
 		return -1;
 	}
 
-	atomic_inc(&crypt->refcnt);
+	refcount_inc(&crypt->refcnt);
 	res = crypt->ops->decrypt_mpdu(skb, hdrlen, crypt->priv);
-	atomic_dec(&crypt->refcnt);
+	refcount_dec(&crypt->refcnt);
 	if (res < 0) {
 		printk(KERN_DEBUG "%s: decryption failed (SA=%pM) res=%d\n",
 		       local->dev->name, hdr->addr2, res);
@@ -697,9 +697,9 @@ hostap_rx_frame_decrypt_msdu(local_info_t *local, struct sk_buff *skb,
 	hdr = (struct ieee80211_hdr *) skb->data;
 	hdrlen = hostap_80211_get_hdrlen(hdr->frame_control);
 
-	atomic_inc(&crypt->refcnt);
+	refcount_inc(&crypt->refcnt);
 	res = crypt->ops->decrypt_msdu(skb, keyidx, hdrlen, crypt->priv);
-	atomic_dec(&crypt->refcnt);
+	refcount_dec(&crypt->refcnt);
 	if (res < 0) {
 		printk(KERN_DEBUG "%s: MSDU decryption/MIC verification failed"
 		       " (SA=%pM keyidx=%d)\n",
