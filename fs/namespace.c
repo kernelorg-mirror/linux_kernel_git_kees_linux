@@ -1010,7 +1010,7 @@ static struct mount *clone_mnt(struct mount *old, struct dentry *root,
 	    (!(flag & CL_EXPIRE) || list_empty(&old->mnt_expire)))
 		mnt->mnt.mnt_flags |= MNT_LOCKED;
 
-	atomic_inc(&sb->s_active);
+	refcount_inc(&sb->s_active);
 	mnt->mnt.mnt_sb = sb;
 	mnt->mnt.mnt_root = dget(root);
 	mnt->mnt_mountpoint = mnt->mnt.mnt_root;
@@ -2837,7 +2837,7 @@ static struct mnt_namespace *alloc_mnt_ns(struct user_namespace *user_ns)
 	}
 	new_ns->ns.ops = &mntns_operations;
 	new_ns->seq = atomic64_add_return(1, &mnt_ns_seq);
-	atomic_set(&new_ns->count, 1);
+	refcount_set(&new_ns->count, 1);
 	new_ns->root = NULL;
 	INIT_LIST_HEAD(&new_ns->list);
 	init_waitqueue_head(&new_ns->poll);
@@ -2964,7 +2964,7 @@ struct dentry *mount_subtree(struct vfsmount *mnt, const char *name)
 
 	/* trade a vfsmount reference for active sb one */
 	s = path.mnt->mnt_sb;
-	atomic_inc(&s->s_active);
+	refcount_inc(&s->s_active);
 	mntput(path.mnt);
 	/* lock the sucker */
 	down_write(&s->s_umount);
@@ -3227,7 +3227,7 @@ void __init mnt_init(void)
 
 void put_mnt_ns(struct mnt_namespace *ns)
 {
-	if (!atomic_dec_and_test(&ns->count))
+	if (!refcount_dec_and_test(&ns->count))
 		return;
 	drop_collected_mounts(&ns->root->mnt);
 	free_mnt_ns(ns);

@@ -21,6 +21,7 @@
 #include <linux/fscache.h>
 #include <linux/sched.h>
 #include <linux/workqueue.h>
+#include <linux/refcount.h>
 
 #define NR_MAXCACHES BITS_PER_LONG
 
@@ -37,7 +38,7 @@ struct fscache_cache_tag {
 	struct fscache_cache	*cache;		/* cache referred to by this tag */
 	unsigned long		flags;
 #define FSCACHE_TAG_RESERVED	0		/* T if tag is reserved for a cache */
-	atomic_t		usage;
+	refcount_t		usage;
 	char			name[0];	/* tag name */
 };
 
@@ -102,7 +103,7 @@ struct fscache_operation {
 #define FSCACHE_OP_KEEP_FLAGS	0x00f0	/* flags to keep when repurposing an op */
 
 	enum fscache_operation_state state;
-	atomic_t		usage;
+	refcount_t		usage;
 	unsigned		debug_id;	/* debugging ID */
 
 	/* operation processor callback
@@ -160,7 +161,7 @@ typedef int (*fscache_pages_retrieval_func_t)(struct fscache_retrieval *op,
 static inline
 struct fscache_retrieval *fscache_get_retrieval(struct fscache_retrieval *op)
 {
-	atomic_inc(&op->op.usage);
+	refcount_inc(&op->op.usage);
 	return op;
 }
 

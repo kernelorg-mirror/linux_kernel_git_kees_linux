@@ -400,7 +400,7 @@ nfs4_find_state_owner_locked(struct nfs_server *server, struct rpc_cred *cred)
 		else {
 			if (!list_empty(&sp->so_lru))
 				list_del_init(&sp->so_lru);
-			atomic_inc(&sp->so_count);
+			refcount_inc(&sp->so_count);
 			return sp;
 		}
 	}
@@ -427,7 +427,7 @@ nfs4_insert_state_owner_locked(struct nfs4_state_owner *new)
 		else {
 			if (!list_empty(&sp->so_lru))
 				list_del_init(&sp->so_lru);
-			atomic_inc(&sp->so_count);
+			refcount_inc(&sp->so_count);
 			return sp;
 		}
 	}
@@ -486,7 +486,7 @@ nfs4_alloc_state_owner(struct nfs_server *server,
 	spin_lock_init(&sp->so_lock);
 	INIT_LIST_HEAD(&sp->so_states);
 	nfs4_init_seqid_counter(&sp->so_seqid);
-	atomic_set(&sp->so_count, 1);
+	refcount_set(&sp->so_count, 1);
 	INIT_LIST_HEAD(&sp->so_lru);
 	seqcount_init(&sp->so_reclaim_seqcount);
 	mutex_init(&sp->so_delegreturn_mutex);
@@ -593,7 +593,7 @@ void nfs4_put_state_owner(struct nfs4_state_owner *sp)
 	struct nfs_server *server = sp->so_server;
 	struct nfs_client *clp = server->nfs_client;
 
-	if (!atomic_dec_and_lock(&sp->so_count, &clp->cl_lock))
+	if (!refcount_dec_and_lock(&sp->so_count, &clp->cl_lock))
 		return;
 
 	sp->so_expires = jiffies;
@@ -635,7 +635,7 @@ nfs4_alloc_open_state(void)
 	state = kzalloc(sizeof(*state), GFP_NOFS);
 	if (!state)
 		return NULL;
-	atomic_set(&state->count, 1);
+	refcount_set(&state->count, 1);
 	INIT_LIST_HEAD(&state->lock_states);
 	spin_lock_init(&state->state_lock);
 	seqlock_init(&state->seqlock);
@@ -668,7 +668,7 @@ __nfs4_find_state_byowner(struct inode *inode, struct nfs4_state_owner *owner)
 			continue;
 		if (!nfs4_valid_open_stateid(state))
 			continue;
-		if (atomic_inc_not_zero(&state->count))
+		if (refcount_inc_not_zero(&state->count))
 			return state;
 	}
 	return NULL;
@@ -698,7 +698,7 @@ nfs4_get_open_state(struct inode *inode, struct nfs4_state_owner *owner)
 	if (state == NULL && new != NULL) {
 		state = new;
 		state->owner = owner;
-		atomic_inc(&owner->so_count);
+		refcount_inc(&owner->so_count);
 		list_add(&state->inode_states, &nfsi->open_states);
 		ihold(inode);
 		state->inode = inode;
@@ -722,7 +722,7 @@ void nfs4_put_open_state(struct nfs4_state *state)
 	struct inode *inode = state->inode;
 	struct nfs4_state_owner *owner = state->owner;
 
-	if (!atomic_dec_and_lock(&state->count, &owner->so_lock))
+	if (!refcount_dec_and_lock(&state->count, &owner->so_lock))
 		return;
 	spin_lock(&inode->i_lock);
 	list_del(&state->inode_states);
@@ -744,7 +744,7 @@ static void __nfs4_close(struct nfs4_state *state,
 	int call_close = 0;
 	fmode_t newstate;
 
-	atomic_inc(&owner->so_count);
+	refcount_inc(&owner->so_count);
 	/* Protect against nfs4_find_state() */
 	spin_lock(&owner->so_lock);
 	switch (fmode & (FMODE_READ | FMODE_WRITE)) {
@@ -819,7 +819,7 @@ __nfs4_find_lock_state(struct nfs4_state *state,
 			ret = pos;
 	}
 	if (ret)
-		atomic_inc(&ret->ls_count);
+		refcount_inc(&ret->ls_count);
 	return ret;
 }
 
@@ -837,7 +837,7 @@ static struct nfs4_lock_state *nfs4_alloc_lock_state(struct nfs4_state *state, f
 	if (lsp == NULL)
 		return NULL;
 	nfs4_init_seqid_counter(&lsp->ls_seqid);
-	atomic_set(&lsp->ls_count, 1);
+	refcount_set(&lsp->ls_count, 1);
 	lsp->ls_state = state;
 	lsp->ls_owner = fl_owner;
 	lsp->ls_seqid.owner_id = ida_simple_get(&server->lockowner_id, 0, 0, GFP_NOFS);
@@ -901,7 +901,7 @@ void nfs4_put_lock_state(struct nfs4_lock_state *lsp)
 	if (lsp == NULL)
 		return;
 	state = lsp->ls_state;
-	if (!atomic_dec_and_lock(&lsp->ls_count, &state->state_lock))
+	if (!refcount_dec_and_lock(&lsp->ls_count, &state->state_lock))
 		return;
 	list_del(&lsp->ls_locks);
 	if (list_empty(&state->lock_states))
@@ -921,7 +921,7 @@ static void nfs4_fl_copy_lock(struct file_lock *dst, struct file_lock *src)
 	struct nfs4_lock_state *lsp = src->fl_u.nfs4_fl.owner;
 
 	dst->fl_u.nfs4_fl.owner = lsp;
-	atomic_inc(&lsp->ls_count);
+	refcount_inc(&lsp->ls_count);
 }
 
 static void nfs4_fl_release_lock(struct file_lock *fl)
@@ -1170,7 +1170,7 @@ void nfs4_schedule_state_manager(struct nfs_client *clp)
 	if (test_and_set_bit(NFS4CLNT_MANAGER_RUNNING, &clp->cl_state) != 0)
 		return;
 	__module_get(THIS_MODULE);
-	atomic_inc(&clp->cl_count);
+	refcount_inc(&clp->cl_count);
 
 	/* The rcu_read_lock() is not strictly necessary, as the state
 	 * manager is the only thread that ever changes the rpc_xprt
@@ -1262,7 +1262,7 @@ int nfs4_wait_clnt_recover(struct nfs_client *clp)
 
 	might_sleep();
 
-	atomic_inc(&clp->cl_count);
+	refcount_inc(&clp->cl_count);
 	res = wait_on_bit_action(&clp->cl_state, NFS4CLNT_MANAGER_RUNNING,
 				 nfs_wait_bit_killable, TASK_KILLABLE);
 	if (res)
@@ -1519,7 +1519,7 @@ restart:
 			continue;
 		if (state->state == 0)
 			continue;
-		atomic_inc(&state->count);
+		refcount_inc(&state->count);
 		spin_unlock(&sp->so_lock);
 		status = ops->recover_open(sp, state);
 		if (status >= 0) {
@@ -1778,7 +1778,7 @@ restart:
 			if (!test_and_clear_bit(ops->owner_flag_bit,
 							&sp->so_flags))
 				continue;
-			if (!atomic_inc_not_zero(&sp->so_count))
+			if (!refcount_inc_not_zero(&sp->so_count))
 				continue;
 			spin_unlock(&clp->cl_lock);
 			rcu_read_unlock();
@@ -2498,7 +2498,7 @@ static void nfs4_state_manager(struct nfs_client *clp)
 			break;
 		if (test_and_set_bit(NFS4CLNT_MANAGER_RUNNING, &clp->cl_state) != 0)
 			break;
-	} while (atomic_read(&clp->cl_count) > 1);
+	} while (refcount_read(&clp->cl_count) > 1);
 	return;
 out_error:
 	if (strlen(section))

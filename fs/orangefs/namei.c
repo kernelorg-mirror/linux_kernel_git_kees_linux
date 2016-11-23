@@ -202,14 +202,14 @@ static struct dentry *orangefs_lookup(struct inode *dir, struct dentry *dentry,
 		     __func__,
 		     __LINE__,
 		     inode->i_ino,
-		     (int)atomic_read(&inode->i_count));
+		     (int)refcount_read(&inode->i_count));
 
 	/* update dentry/inode pair into dcache */
 	res = d_splice_alias(inode, dentry);
 
 	gossip_debug(GOSSIP_NAME_DEBUG,
 		     "Lookup success (inode ct = %d)\n",
-		     (int)atomic_read(&inode->i_count));
+		     (int)refcount_read(&inode->i_count));
 out:
 	op_release(new_op);
 	return res;

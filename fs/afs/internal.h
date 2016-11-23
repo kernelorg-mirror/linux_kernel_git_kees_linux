@@ -187,7 +187,7 @@ struct afs_cache_cell {
  * AFS cell record
  */
 struct afs_cell {
-	atomic_t		usage;
+	refcount_t		usage;
 	struct list_head	link;		/* main cell list link */
 	struct key		*anonymous_key;	/* anonymous user key for this cell */
 	struct list_head	proc_link;	/* /proc cell list link */
@@ -241,7 +241,7 @@ struct afs_cache_vhash {
  * AFS volume location record
  */
 struct afs_vlocation {
-	atomic_t		usage;
+	refcount_t		usage;
 	time_t			time_of_death;	/* time at which put reduced usage to 0 */
 	struct list_head	link;		/* link in cell volume location list */
 	struct list_head	grave;		/* link in master graveyard list */
@@ -265,7 +265,7 @@ struct afs_vlocation {
  * AFS fileserver record
  */
 struct afs_server {
-	atomic_t		usage;
+	refcount_t		usage;
 	time_t			time_of_death;	/* time at which put reduced usage to 0 */
 	struct in_addr		addr;		/* server address */
 	struct afs_cell		*cell;		/* cell in which server resides */
@@ -297,7 +297,7 @@ struct afs_server {
  * AFS volume access record
  */
 struct afs_volume {
-	atomic_t		usage;
+	refcount_t		usage;
 	struct afs_cell		*cell;		/* cell to which belongs (unrefd ptr) */
 	struct afs_vlocation	*vlocation;	/* volume location */
 #ifdef CONFIG_AFS_FSCACHE
@@ -464,7 +464,7 @@ extern void afs_callback_update_kill(void);
 extern struct rw_semaphore afs_proc_cells_sem;
 extern struct list_head afs_proc_cells;
 
-#define afs_get_cell(C) do { atomic_inc(&(C)->usage); } while(0)
+#define afs_get_cell(C) do { refcount_inc(&(C)->usage); } while(0)
 extern int afs_cell_init(char *);
 extern struct afs_cell *afs_cell_create(const char *, unsigned, char *, bool);
 extern struct afs_cell *afs_cell_lookup(const char *, unsigned, bool);
@@ -636,8 +636,8 @@ extern spinlock_t afs_server_peer_lock;
 
 #define afs_get_server(S)					\
 do {								\
-	_debug("GET SERVER %d", atomic_read(&(S)->usage));	\
-	atomic_inc(&(S)->usage);				\
+	_debug("GET SERVER %d", refcount_read(&(S)->usage));	\
+	refcount_inc(&(S)->usage);				\
 } while(0)
 
 extern struct afs_server *afs_lookup_server(struct afs_cell *,
@@ -672,7 +672,7 @@ extern int afs_vl_get_entry_by_id(struct in_addr *, struct key *,
 /*
  * vlocation.c
  */
-#define afs_get_vlocation(V) do { atomic_inc(&(V)->usage); } while(0)
+#define afs_get_vlocation(V) do { refcount_inc(&(V)->usage); } while(0)
 
 extern int __init afs_vlocation_update_init(void);
 extern struct afs_vlocation *afs_vlocation_lookup(struct afs_cell *,
@@ -725,7 +725,7 @@ extern int afs_vnode_release_lock(struct afs_vnode *, struct key *);
 /*
  * volume.c
  */
-#define afs_get_volume(V) do { atomic_inc(&(V)->usage); } while(0)
+#define afs_get_volume(V) do { refcount_inc(&(V)->usage); } while(0)
 
 extern void afs_put_volume(struct afs_volume *);
 extern struct afs_volume *afs_volume_lookup(struct afs_mount_params *);

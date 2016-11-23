@@ -2808,7 +2808,7 @@ cifs_put_tlink(struct tcon_link *tlink)
 	if (!tlink || IS_ERR(tlink))
 		return;
 
-	if (!atomic_dec_and_test(&tlink->tl_count) ||
+	if (!refcount_dec_and_test(&tlink->tl_count) ||
 	    test_bit(TCON_LINK_IN_TREE, &tlink->tl_flags)) {
 		tlink->tl_time = jiffies;
 		return;
@@ -4349,7 +4349,7 @@ cifs_prune_tlinks(struct work_struct *work)
 		tlink = rb_entry(tmp, struct tcon_link, tl_rbnode);
 
 		if (test_bit(TCON_LINK_MASTER, &tlink->tl_flags) ||
-		    atomic_read(&tlink->tl_count) != 0 ||
+		    refcount_read(&tlink->tl_count) != 0 ||
 		    time_after(tlink->tl_time + TLINK_IDLE_EXPIRE, jiffies))
 			continue;
 

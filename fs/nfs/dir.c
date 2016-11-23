@@ -145,7 +145,7 @@ struct nfs_cache_array_entry {
 };
 
 struct nfs_cache_array {
-	atomic_t refcount;
+	refcount_t refcount;
 	int size;
 	int eof_index;
 	u64 last_cookie;
@@ -201,7 +201,7 @@ void nfs_readdir_clear_array(struct page *page)
 	int i;
 
 	array = kmap_atomic(page);
-	if (atomic_dec_and_test(&array->refcount))
+	if (refcount_dec_and_test(&array->refcount))
 		for (i = 0; i < array->size; i++)
 			kfree(array->array[i].string.name);
 	kunmap_atomic(array);
@@ -210,7 +210,7 @@ void nfs_readdir_clear_array(struct page *page)
 static bool grab_page(struct page *page)
 {
 	struct nfs_cache_array *array = kmap_atomic(page);
-	bool res = atomic_inc_not_zero(&array->refcount);
+	bool res = refcount_inc_not_zero(&array->refcount);
 	kunmap_atomic(array);
 	return res;
 }
@@ -680,7 +680,7 @@ int nfs_readdir_xdr_to_array(nfs_readdir_descriptor_t *desc, struct page *page, 
 		goto out_label_free;
 	}
 	memset(array, 0, sizeof(struct nfs_cache_array));
-	atomic_set(&array->refcount, 1);
+	refcount_set(&array->refcount, 1);
 	array->eof_index = -1;
 
 	status = nfs_readdir_alloc_pages(pages, array_size);

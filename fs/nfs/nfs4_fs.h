@@ -22,6 +22,7 @@
 #define NFS4_MAX_LOOP_ON_RECOVER (10)
 
 #include <linux/seqlock.h>
+#include <linux/refcount.h>
 
 struct idmap;
 
@@ -107,7 +108,7 @@ struct nfs4_state_owner {
 	struct rpc_cred	     *so_cred;	 /* Associated cred */
 
 	spinlock_t	     so_lock;
-	atomic_t	     so_count;
+	refcount_t	     so_count;
 	unsigned long	     so_flags;
 	struct list_head     so_states;
 	struct nfs_seqid_counter so_seqid;
@@ -144,7 +145,7 @@ struct nfs4_lock_state {
 	unsigned long		ls_flags;
 	struct nfs_seqid_counter	ls_seqid;
 	nfs4_stateid		ls_stateid;
-	atomic_t		ls_count;
+	refcount_t		ls_count;
 	fl_owner_t		ls_owner;
 };
 
@@ -183,7 +184,7 @@ struct nfs4_state {
 	unsigned int n_wronly;		/* Number of write-only references */
 	unsigned int n_rdwr;		/* Number of read/write references */
 	fmode_t state;			/* State on the server (R,W, or RW) */
-	atomic_t count;
+	refcount_t count;
 };
 
 

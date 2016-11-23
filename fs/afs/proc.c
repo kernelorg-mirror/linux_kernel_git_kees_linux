@@ -212,7 +212,7 @@ static int afs_proc_cells_show(struct seq_file *m, void *v)
 
 	/* display one cell per line on subsequent lines */
 	seq_printf(m, "%3d %s\n",
-		   atomic_read(&cell->usage), cell->name);
+		   refcount_read(&cell->usage), cell->name);
 	return 0;
 }
 
@@ -461,7 +461,7 @@ static int afs_proc_cell_volumes_show(struct seq_file *m, void *v)
 
 	/* display one cell per line on subsequent lines */
 	seq_printf(m, "%3d %s %08x %08x %08x %s\n",
-		   atomic_read(&vlocation->usage),
+		   refcount_read(&vlocation->usage),
 		   afs_vlocation_states[vlocation->state],
 		   vlocation->vldb.vid[0],
 		   vlocation->vldb.vid[1],
@@ -647,7 +647,7 @@ static int afs_proc_cell_servers_show(struct seq_file *m, void *v)
 	/* display one cell per line on subsequent lines */
 	sprintf(ipaddr, "%pI4", &server->addr);
 	seq_printf(m, "%3d %-15.15s %5d\n",
-		   atomic_read(&server->usage), ipaddr, server->fs_state);
+		   refcount_read(&server->usage), ipaddr, server->fs_state);
 
 	return 0;
 }

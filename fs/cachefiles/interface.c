@@ -51,7 +51,7 @@ static struct fscache_object *cachefiles_alloc_object(
 	ASSERTCMP(object->backer, ==, NULL);
 
 	BUG_ON(test_bit(CACHEFILES_OBJECT_ACTIVE, &object->flags));
-	atomic_set(&object->usage, 1);
+	refcount_set(&object->usage, 1);
 
 	fscache_object_init(&object->fscache, cookie, &cache->cache);
 
@@ -182,13 +182,13 @@ struct fscache_object *cachefiles_grab_object(struct fscache_object *_object)
 	struct cachefiles_object *object =
 		container_of(_object, struct cachefiles_object, fscache);
 
-	_enter("{OBJ%x,%d}", _object->debug_id, atomic_read(&object->usage));
+	_enter("{OBJ%x,%d}", _object->debug_id, refcount_read(&object->usage));
 
 #ifdef CACHEFILES_DEBUG_SLAB
-	ASSERT((atomic_read(&object->usage) & 0xffff0000) != 0x6b6b0000);
+	ASSERT((refcount_read(&object->usage) & 0xffff0000) != 0x6b6b0000);
 #endif
 
-	atomic_inc(&object->usage);
+	refcount_inc(&object->usage);
 	return &object->fscache;
 }
 
@@ -261,13 +261,13 @@ static void cachefiles_drop_object(struct fscache_object *_object)
 	object = container_of(_object, struct cachefiles_object, fscache);
 
 	_enter("{OBJ%x,%d}",
-	       object->fscache.debug_id, atomic_read(&object->usage));
+	       object->fscache.debug_id, refcount_read(&object->usage));
 
 	cache = container_of(object->fscache.cache,
 			     struct cachefiles_cache, cache);
 
 #ifdef CACHEFILES_DEBUG_SLAB
-	ASSERT((atomic_read(&object->usage) & 0xffff0000) != 0x6b6b0000);
+	ASSERT((refcount_read(&object->usage) & 0xffff0000) != 0x6b6b0000);
 #endif
 
 	/* We need to tidy the object up if we did in fact manage to open it.
@@ -319,16 +319,16 @@ static void cachefiles_put_object(struct fscache_object *_object)
 	object = container_of(_object, struct cachefiles_object, fscache);
 
 	_enter("{OBJ%x,%d}",
-	       object->fscache.debug_id, atomic_read(&object->usage));
+	       object->fscache.debug_id, refcount_read(&object->usage));
 
 #ifdef CACHEFILES_DEBUG_SLAB
-	ASSERT((atomic_read(&object->usage) & 0xffff0000) != 0x6b6b0000);
+	ASSERT((refcount_read(&object->usage) & 0xffff0000) != 0x6b6b0000);
 #endif
 
 	ASSERTIFCMP(object->fscache.parent,
 		    object->fscache.parent->n_children, >, 0);
 
-	if (atomic_dec_and_test(&object->usage)) {
+	if (refcount_dec_and_test(&object->usage)) {
 		_debug("- kill object OBJ%x", object->fscache.debug_id);
 
 		ASSERT(!test_bit(CACHEFILES_OBJECT_ACTIVE, &object->flags));

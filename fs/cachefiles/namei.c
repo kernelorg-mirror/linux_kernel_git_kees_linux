@@ -197,7 +197,7 @@ wait_for_old_object:
 		cachefiles_printk_object(object, xobject);
 		BUG();
 	}
-	atomic_inc(&xobject->usage);
+	refcount_inc(&xobject->usage);
 	write_unlock(&cache->active_lock);
 
 	if (test_bit(CACHEFILES_OBJECT_ACTIVE, &xobject->flags)) {

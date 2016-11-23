@@ -28,6 +28,7 @@
 #include <linux/ipx.h>
 #include <linux/poll.h>
 #include <linux/file.h>
+#include <linux/refcount.h>
 
 #include "ncp_fs.h"
 
@@ -58,7 +59,7 @@ static int _send(struct socket *sock, const void *buff, int len)
 struct ncp_request_reply {
 	struct list_head req;
 	wait_queue_head_t wq;
-	atomic_t refs;
+	refcount_t refs;
 	unsigned char* reply_buf;
 	size_t datalen;
 	int result;
@@ -80,7 +81,7 @@ static inline struct ncp_request_reply* ncp_alloc_req(void)
 		return NULL;
 
 	init_waitqueue_head(&req->wq);
-	atomic_set(&req->refs, (1));
+	refcount_set(&req->refs, (1));
 	req->status = RQ_IDLE;
 
 	return req;
@@ -88,12 +89,12 @@ static inline struct ncp_request_reply* ncp_alloc_req(void)
 
 static void ncp_req_get(struct ncp_request_reply *req)
 {
-	atomic_inc(&req->refs);
+	refcount_inc(&req->refs);
 }
 
 static void ncp_req_put(struct ncp_request_reply *req)
 {
-	if (atomic_dec_and_test(&req->refs))
+	if (refcount_dec_and_test(&req->refs))
 		kfree(req);
 }
 

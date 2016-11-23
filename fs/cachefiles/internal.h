@@ -21,6 +21,7 @@
 #include <linux/wait.h>
 #include <linux/workqueue.h>
 #include <linux/security.h>
+#include <linux/refcount.h>
 
 struct cachefiles_cache;
 struct cachefiles_object;
@@ -43,7 +44,7 @@ struct cachefiles_object {
 	loff_t				i_size;		/* object size */
 	unsigned long			flags;
 #define CACHEFILES_OBJECT_ACTIVE	0		/* T if marked active */
-	atomic_t			usage;		/* object usage count */
+	refcount_t			usage;		/* object usage count */
 	uint8_t				type;		/* object type */
 	uint8_t				new;		/* T if object new */
 	spinlock_t			work_lock;

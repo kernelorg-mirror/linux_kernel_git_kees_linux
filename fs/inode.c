@@ -397,7 +397,8 @@ void __iget(struct inode *inode)
  */
 void ihold(struct inode *inode)
 {
-	WARN_ON(atomic_inc_return(&inode->i_count) < 2);
+	atomic_inc(&inode->i_count);
+	WARN_ON(atomic_read(&inode->i_count) < 2);
 }
 EXPORT_SYMBOL(ihold);
 

@@ -319,7 +319,7 @@ struct super_block *kernfs_pin_sb(struct kernfs_root *root, const void *ns)
 	list_for_each_entry(info, &root->supers, node) {
 		if (info->ns == ns) {
 			sb = info->sb;
-			if (!atomic_inc_not_zero(&info->sb->s_active))
+			if (!refcount_inc_not_zero(&info->sb->s_active))
 				sb = ERR_PTR(-EINVAL);
 			break;
 		}

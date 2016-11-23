@@ -480,8 +480,8 @@ static void kernfs_drain(struct kernfs_node *kn)
 void kernfs_get(struct kernfs_node *kn)
 {
 	if (kn) {
-		WARN_ON(!atomic_read(&kn->count));
-		atomic_inc(&kn->count);
+		WARN_ON(!refcount_read(&kn->count));
+		refcount_inc(&kn->count);
 	}
 }
 EXPORT_SYMBOL_GPL(kernfs_get);
@@ -497,7 +497,7 @@ void kernfs_put(struct kernfs_node *kn)
 	struct kernfs_node *parent;
 	struct kernfs_root *root;
 
-	if (!kn || !atomic_dec_and_test(&kn->count))
+	if (!kn || !refcount_dec_and_test(&kn->count))
 		return;
 	root = kernfs_root(kn);
  repeat:
@@ -528,7 +528,7 @@ void kernfs_put(struct kernfs_node *kn)
 
 	kn = parent;
 	if (kn) {
-		if (atomic_dec_and_test(&kn->count))
+		if (refcount_dec_and_test(&kn->count))
 			goto repeat;
 	} else {
 		/* just released the root kn, free @root too */
@@ -625,7 +625,7 @@ static struct kernfs_node *__kernfs_new_node(struct kernfs_root *root,
 		goto err_out2;
 	kn->ino = ret;
 
-	atomic_set(&kn->count, 1);
+	refcount_set(&kn->count, 1);
 	atomic_set(&kn->active, KN_DEACTIVATED_BIAS);
 	RB_CLEAR_NODE(&kn->rb);
 
