@@ -7,6 +7,7 @@
 #include <linux/uaccess.h>
 #include <linux/slab.h>
 #include <linux/security.h>
+#include <linux/refcount.h>
 #include "common.h"
 
 /* String table for operation mode. */
@@ -1907,7 +1908,7 @@ static DEFINE_SPINLOCK(tomoyo_query_list_lock);
  * Number of "struct file" referring /sys/kernel/security/tomoyo/query
  * interface.
  */
-static atomic_t tomoyo_query_observers = ATOMIC_INIT(0);
+static refcount_t tomoyo_query_observers = REFCOUNT_INIT(0);
 
 /**
  * tomoyo_truncate - Truncate a line.
@@ -2015,7 +2016,7 @@ int tomoyo_supervisor(struct tomoyo_request_info *r, const char *fmt, ...)
 	switch (r->mode) {
 	case TOMOYO_CONFIG_ENFORCING:
 		error = -EPERM;
-		if (atomic_read(&tomoyo_query_observers))
+		if (refcount_read(&tomoyo_query_observers))
 			break;
 		goto out;
 	case TOMOYO_CONFIG_LEARNING:
@@ -2059,7 +2060,7 @@ int tomoyo_supervisor(struct tomoyo_request_info *r, const char *fmt, ...)
 		wake_up_all(&tomoyo_query_wait);
 		if (wait_event_interruptible_timeout
 		    (tomoyo_answer_wait, entry.answer ||
-		     !atomic_read(&tomoyo_query_observers), HZ))
+		     !refcount_read(&tomoyo_query_observers), HZ))
 			break;
 		else
 			entry.timer++;
@@ -2437,7 +2438,7 @@ int tomoyo_open_control(const u8 type, struct file *file)
 	 * there is some process monitoring /sys/kernel/security/tomoyo/query.
 	 */
 	if (type == TOMOYO_QUERY)
-		atomic_inc(&tomoyo_query_observers);
+		refcount_inc(&tomoyo_query_observers);
 	file->private_data = head;
 	tomoyo_notify_gc(head, true);
 	return 0;
@@ -2687,7 +2688,7 @@ void tomoyo_close_control(struct tomoyo_io_buffer *head)
 	 * observer counter.
 	 */
 	if (head->type == TOMOYO_QUERY &&
-	    atomic_dec_and_test(&tomoyo_query_observers))
+	    refcount_dec_and_test(&tomoyo_query_observers))
 		wake_up_all(&tomoyo_answer_wait);
 	tomoyo_notify_gc(head, false);
 }

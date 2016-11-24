@@ -83,6 +83,7 @@
 #include <linux/export.h>
 #include <linux/msg.h>
 #include <linux/shm.h>
+#include <linux/refcount.h>
 
 #include "avc.h"
 #include "objsec.h"
@@ -95,7 +96,7 @@
 #include "avc_ss.h"
 
 /* SECMARK reference count */
-static atomic_t selinux_secmark_refcount = ATOMIC_INIT(0);
+static refcount_t selinux_secmark_refcount = REFCOUNT_INIT(0);
 
 #ifdef CONFIG_SECURITY_SELINUX_DEVELOP
 int selinux_enforcing;
@@ -141,7 +142,7 @@ static struct kmem_cache *file_security_cache;
  */
 static int selinux_secmark_enabled(void)
 {
-	return (selinux_policycap_alwaysnetwork || atomic_read(&selinux_secmark_refcount));
+	return (selinux_policycap_alwaysnetwork || refcount_read(&selinux_secmark_refcount));
 }
 
 /**
@@ -4915,12 +4916,12 @@ static int selinux_secmark_relabel_packet(u32 sid)
 
 static void selinux_secmark_refcount_inc(void)
 {
-	atomic_inc(&selinux_secmark_refcount);
+	refcount_inc(&selinux_secmark_refcount);
 }
 
 static void selinux_secmark_refcount_dec(void)
 {
-	atomic_dec(&selinux_secmark_refcount);
+	refcount_dec(&selinux_secmark_refcount);
 }
 
 static void selinux_req_classify_flow(const struct request_sock *req,

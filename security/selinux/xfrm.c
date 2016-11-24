@@ -44,13 +44,14 @@
 #include <net/checksum.h>
 #include <net/udp.h>
 #include <linux/atomic.h>
+#include <linux/refcount.h>
 
 #include "avc.h"
 #include "objsec.h"
 #include "xfrm.h"
 
 /* Labeled XFRM instance counter */
-atomic_t selinux_xfrm_refcount = ATOMIC_INIT(0);
+refcount_t selinux_xfrm_refcount = REFCOUNT_INIT(0);
 
 /*
  * Returns true if the context is an LSM/SELinux context.
@@ -111,7 +112,7 @@ static int selinux_xfrm_alloc_user(struct xfrm_sec_ctx **ctxp,
 		goto err;
 
 	*ctxp = ctx;
-	atomic_inc(&selinux_xfrm_refcount);
+	refcount_inc(&selinux_xfrm_refcount);
 	return 0;
 
 err:
@@ -127,7 +128,7 @@ static void selinux_xfrm_free(struct xfrm_sec_ctx *ctx)
 	if (!ctx)
 		return;
 
-	atomic_dec(&selinux_xfrm_refcount);
+	refcount_dec(&selinux_xfrm_refcount);
 	kfree(ctx);
 }
 
@@ -302,7 +303,7 @@ int selinux_xfrm_policy_clone(struct xfrm_sec_ctx *old_ctx,
 			  GFP_ATOMIC);
 	if (!new_ctx)
 		return -ENOMEM;
-	atomic_inc(&selinux_xfrm_refcount);
+	refcount_inc(&selinux_xfrm_refcount);
 	*new_ctxp = new_ctx;
 
 	return 0;
@@ -369,7 +370,7 @@ int selinux_xfrm_state_alloc_acquire(struct xfrm_state *x,
 	memcpy(ctx->ctx_str, ctx_str, str_len);
 
 	x->security = ctx;
-	atomic_inc(&selinux_xfrm_refcount);
+	refcount_inc(&selinux_xfrm_refcount);
 out:
 	kfree(ctx_str);
 	return rc;

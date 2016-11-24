@@ -8,6 +8,7 @@
 #define _SELINUX_XFRM_H_
 
 #include <net/flow.h>
+#include <linux/refcount.h>
 
 int selinux_xfrm_policy_alloc(struct xfrm_sec_ctx **ctxp,
 			      struct xfrm_user_sec_ctx *uctx,
@@ -28,11 +29,11 @@ int selinux_xfrm_state_pol_flow_match(struct xfrm_state *x,
 				      const struct flowi *fl);
 
 #ifdef CONFIG_SECURITY_NETWORK_XFRM
-extern atomic_t selinux_xfrm_refcount;
+extern refcount_t selinux_xfrm_refcount;
 
 static inline int selinux_xfrm_enabled(void)
 {
-	return (atomic_read(&selinux_xfrm_refcount) > 0);
+	return (refcount_read(&selinux_xfrm_refcount) > 0);
 }
 
 int selinux_xfrm_sock_rcv_skb(u32 sk_sid, struct sk_buff *skb,
