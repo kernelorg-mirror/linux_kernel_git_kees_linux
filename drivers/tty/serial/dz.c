@@ -49,7 +49,7 @@
 #include <linux/tty.h>
 #include <linux/tty_flip.h>
 
-#include <linux/atomic.h>
+#include <linux/refcount.h>
 #include <asm/bootinfo.h>
 #include <asm/io.h>
 
@@ -78,8 +78,8 @@ struct dz_port {
 
 struct dz_mux {
 	struct dz_port		dport[DZ_NB_PORT];
-	atomic_t		map_guard;
-	atomic_t		irq_guard;
+	refcount_t		map_guard;
+	refcount_t		irq_guard;
 	int			initialised;
 };
 
@@ -403,18 +403,17 @@ static int dz_startup(struct uart_port *uport)
 	struct dz_port *dport = to_dport(uport);
 	struct dz_mux *mux = dport->mux;
 	unsigned long flags;
-	int irq_guard;
 	int ret;
 	u16 tmp;
 
-	irq_guard = atomic_add_return(1, &mux->irq_guard);
-	if (irq_guard != 1)
+	refcount_inc(&mux->irq_guard);
+	if (refcount_read(&mux->irq_guard) != 1)
 		return 0;
 
 	ret = request_irq(dport->port.irq, dz_interrupt,
 			  IRQF_SHARED, "dz", mux);
 	if (ret) {
-		atomic_add(-1, &mux->irq_guard);
+		refcount_dec(&mux->irq_guard);
 		printk(KERN_ERR "dz: Cannot get IRQ %d!\n", dport->port.irq);
 		return ret;
 	}
@@ -444,15 +443,13 @@ static void dz_shutdown(struct uart_port *uport)
 	struct dz_port *dport = to_dport(uport);
 	struct dz_mux *mux = dport->mux;
 	unsigned long flags;
-	int irq_guard;
 	u16 tmp;
 
 	spin_lock_irqsave(&dport->port.lock, flags);
 	dz_stop_tx(&dport->port);
 	spin_unlock_irqrestore(&dport->port.lock, flags);
 
-	irq_guard = atomic_add_return(-1, &mux->irq_guard);
-	if (!irq_guard) {
+	if (refcount_dec_and_test(&mux->irq_guard)) {
 		/* Disable interrupts.  */
 		tmp = dz_in(dport, DZ_CSR);
 		tmp &= ~(DZ_RIE | DZ_TIE);
@@ -663,13 +660,11 @@ static const char *dz_type(struct uart_port *uport)
 static void dz_release_port(struct uart_port *uport)
 {
 	struct dz_mux *mux = to_dport(uport)->mux;
-	int map_guard;
 
 	iounmap(uport->membase);
 	uport->membase = NULL;
 
-	map_guard = atomic_add_return(-1, &mux->map_guard);
-	if (!map_guard)
+	if (refcount_dec_and_test(&mux->map_guard))
 		release_mem_region(uport->mapbase, dec_kn_slot_size);
 }
 
@@ -688,14 +683,13 @@ static int dz_map_port(struct uart_port *uport)
 static int dz_request_port(struct uart_port *uport)
 {
 	struct dz_mux *mux = to_dport(uport)->mux;
-	int map_guard;
 	int ret;
 
-	map_guard = atomic_add_return(1, &mux->map_guard);
-	if (map_guard == 1) {
+	refcount_inc(&mux->map_guard);
+	if (refcount_read(&mux->map_guard) == 1) {
 		if (!request_mem_region(uport->mapbase, dec_kn_slot_size,
 					"dz")) {
-			atomic_add(-1, &mux->map_guard);
+			refcount_dec(&mux->map_guard);
 			printk(KERN_ERR
 			       "dz: Unable to reserve MMIO resource\n");
 			return -EBUSY;
@@ -703,8 +697,7 @@ static int dz_request_port(struct uart_port *uport)
 	}
 	ret = dz_map_port(uport);
 	if (ret) {
-		map_guard = atomic_add_return(-1, &mux->map_guard);
-		if (!map_guard)
+		if (refcount_dec_and_test(&mux->map_guard))
 			release_mem_region(uport->mapbase, dec_kn_slot_size);
 		return ret;
 	}

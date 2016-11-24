@@ -555,7 +555,7 @@ static struct qeth_reply *qeth_alloc_reply(struct qeth_card *card)
 
 	reply = kzalloc(sizeof(struct qeth_reply), GFP_ATOMIC);
 	if (reply) {
-		atomic_set(&reply->refcnt, 1);
+		refcount_set(&reply->refcnt, 1);
 		atomic_set(&reply->received, 0);
 		reply->card = card;
 	}
@@ -564,14 +564,14 @@ static struct qeth_reply *qeth_alloc_reply(struct qeth_card *card)
 
 static void qeth_get_reply(struct qeth_reply *reply)
 {
-	WARN_ON(atomic_read(&reply->refcnt) <= 0);
-	atomic_inc(&reply->refcnt);
+	WARN_ON(refcount_read(&reply->refcnt) == 0);
+	refcount_inc(&reply->refcnt);
 }
 
 static void qeth_put_reply(struct qeth_reply *reply)
 {
-	WARN_ON(atomic_read(&reply->refcnt) <= 0);
-	if (atomic_dec_and_test(&reply->refcnt))
+	WARN_ON(refcount_read(&reply->refcnt) == 0);
+	if (refcount_dec_and_test(&reply->refcnt))
 		kfree(reply);
 }
 

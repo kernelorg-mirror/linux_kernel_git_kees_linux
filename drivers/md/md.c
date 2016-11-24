@@ -459,7 +459,7 @@ EXPORT_SYMBOL(md_unplug);
 
 static inline struct mddev *mddev_get(struct mddev *mddev)
 {
-	atomic_inc(&mddev->active);
+	refcount_inc(&mddev->active);
 	return mddev;
 }
 
@@ -469,7 +469,7 @@ static void mddev_put(struct mddev *mddev)
 {
 	struct bio_set *bs = NULL;
 
-	if (!atomic_dec_and_lock(&mddev->active, &all_mddevs_lock))
+	if (!refcount_dec_and_lock(&mddev->active, &all_mddevs_lock))
 		return;
 	if (!mddev->raid_disks && list_empty(&mddev->disks) &&
 	    mddev->ctime == 0 && !mddev->hold_active) {
@@ -505,7 +505,7 @@ void mddev_init(struct mddev *mddev)
 	INIT_LIST_HEAD(&mddev->all_mddevs);
 	setup_timer(&mddev->safemode_timer, md_safemode_timeout,
 		    (unsigned long) mddev);
-	atomic_set(&mddev->active, 1);
+	refcount_set(&mddev->active, 1);
 	atomic_set(&mddev->openers, 0);
 	atomic_set(&mddev->active_io, 0);
 	spin_lock_init(&mddev->lock);

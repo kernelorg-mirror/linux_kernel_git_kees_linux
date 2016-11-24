@@ -324,8 +324,8 @@ err:
 static void btree_complete_write(struct btree *b, struct btree_write *w)
 {
 	if (w->prio_blocked &&
-	    !atomic_sub_return(w->prio_blocked, &b->c->prio_blocked))
-		wake_up_allocators(b->c);
+		refcount_sub_and_test(w->prio_blocked, &b->c->prio_blocked))
+				wake_up_allocators(b->c);
 
 	if (w->journal) {
 		atomic_dec_bug(w->journal);
@@ -1126,7 +1126,7 @@ static void make_btree_freeing_key(struct btree *b, struct bkey *k)
 
 	mutex_lock(&b->c->bucket_lock);
 
-	atomic_inc(&b->c->prio_blocked);
+	refcount_inc(&b->c->prio_blocked);
 
 	bkey_copy(k, &b->key);
 	bkey_copy_key(k, &ZERO_KEY);
@@ -1446,7 +1446,7 @@ out_nocoalesce:
 
 	while ((k = bch_keylist_pop(&keylist)))
 		if (!bkey_cmp(k, &ZERO_KEY))
-			atomic_dec(&b->c->prio_blocked);
+			refcount_dec(&b->c->prio_blocked);
 
 	for (i = 0; i < nodes; i++)
 		if (!IS_ERR_OR_NULL(new_nodes[i])) {

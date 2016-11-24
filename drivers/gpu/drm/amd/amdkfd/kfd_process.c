@@ -204,7 +204,7 @@ static void kfd_process_destroy_delayed(struct rcu_head *rcu)
 	BUG_ON(!kfd_process_wq);
 
 	p = container_of(rcu, struct kfd_process, rcu);
-	BUG_ON(atomic_read(&p->mm->mm_count) <= 0);
+	BUG_ON(refcount_read(&p->mm->mm_count) == 0);
 
 	mmdrop(p->mm);
 
@@ -262,7 +262,7 @@ static void kfd_process_notifier_release(struct mmu_notifier *mn,
 	 * and because the mmu_notifier_unregister function also drop
 	 * mm_count we need to take an extra count here.
 	 */
-	atomic_inc(&p->mm->mm_count);
+	refcount_inc(&p->mm->mm_count);
 	mmu_notifier_unregister_no_release(&p->mmu_notifier, p->mm);
 	mmu_notifier_call_srcu(&p->rcu, &kfd_process_destroy_delayed);
 }

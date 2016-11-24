@@ -456,7 +456,7 @@ TRACE_EVENT(bcache_alloc_fail,
 		__entry->dev		= ca->bdev->bd_dev;
 		__entry->free		= fifo_used(&ca->free[reserve]);
 		__entry->free_inc	= fifo_used(&ca->free_inc);
-		__entry->blocked	= atomic_read(&ca->set->prio_blocked);
+		__entry->blocked	= refcount_read(&ca->set->prio_blocked);
 	),
 
 	TP_printk("alloc fail %d,%d free %u free_inc %u blocked %u",

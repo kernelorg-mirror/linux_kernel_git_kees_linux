@@ -353,7 +353,7 @@ retry_invalidate:
 		 * Now, we write their new gens to disk so we can start writing
 		 * new stuff to them:
 		 */
-		allocator_wait(ca, !atomic_read(&ca->set->prio_blocked));
+		allocator_wait(ca, !refcount_read(&ca->set->prio_blocked));
 		if (CACHE_SYNC(&ca->set->sb)) {
 			/*
 			 * This could deadlock if an allocation with a btree

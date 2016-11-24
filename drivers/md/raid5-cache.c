@@ -906,7 +906,7 @@ int r5l_write_stripe(struct r5l_log *log, struct stripe_head *sh)
 	 * don't delay.
 	 */
 	clear_bit(STRIPE_DELAYED, &sh->state);
-	atomic_inc(&sh->count);
+	refcount_inc(&sh->count);
 
 	mutex_lock(&log->io_mutex);
 	/* meta + data */
@@ -1248,7 +1248,7 @@ static void r5c_flush_stripe(struct r5conf *conf, struct stripe_head *sh)
 	assert_spin_locked(&conf->device_lock);
 
 	list_del_init(&sh->lru);
-	atomic_inc(&sh->count);
+	refcount_inc(&sh->count);
 
 	set_bit(STRIPE_HANDLE, &sh->state);
 	atomic_inc(&conf->active_stripes);
@@ -1343,7 +1343,7 @@ static void r5c_do_reclaim(struct r5conf *conf)
 			 */
 			if (!list_empty(&sh->lru) &&
 			    !test_bit(STRIPE_HANDLE, &sh->state) &&
-			    atomic_read(&sh->count) == 0) {
+			    refcount_read(&sh->count) == 0) {
 				r5c_flush_stripe(conf, sh);
 			}
 			if (count++ >= R5C_RECLAIM_STRIPE_GROUP)
@@ -2459,7 +2459,7 @@ r5c_cache_data(struct r5l_log *log, struct stripe_head *sh,
 	 * don't delay.
 	 */
 	clear_bit(STRIPE_DELAYED, &sh->state);
-	atomic_inc(&sh->count);
+	refcount_inc(&sh->count);
 
 	mutex_lock(&log->io_mutex);
 	/* meta + data */

@@ -257,7 +257,7 @@ static const char *fc_exch_rctl_name(unsigned int op)
  */
 static inline void fc_exch_hold(struct fc_exch *ep)
 {
-	atomic_inc(&ep->ex_refcnt);
+	refcount_inc(&ep->ex_refcnt);
 }
 
 /**
@@ -323,7 +323,7 @@ static void fc_exch_release(struct fc_exch *ep)
 {
 	struct fc_exch_mgr *mp;
 
-	if (atomic_dec_and_test(&ep->ex_refcnt)) {
+	if (refcount_dec_and_test(&ep->ex_refcnt)) {
 		mp = ep->em;
 		if (ep->destructor)
 			ep->destructor(&ep->seq, ep->arg);
@@ -340,7 +340,7 @@ static inline void fc_exch_timer_cancel(struct fc_exch *ep)
 {
 	if (cancel_delayed_work(&ep->timeout_work)) {
 		FC_EXCH_DBG(ep, "Exchange timer canceled\n");
-		atomic_dec(&ep->ex_refcnt); /* drop hold for timer */
+		refcount_dec(&ep->ex_refcnt); /* drop hold for timer */
 	}
 }
 
@@ -1899,7 +1899,7 @@ static void fc_exch_reset(struct fc_exch *ep)
 	ep->state |= FC_EX_RST_CLEANUP;
 	fc_exch_timer_cancel(ep);
 	if (ep->esb_stat & ESB_ST_REC_QUAL)
-		atomic_dec(&ep->ex_refcnt);	/* drop hold for rec_qual */
+		refcount_dec(&ep->ex_refcnt);	/* drop hold for rec_qual */
 	ep->esb_stat &= ~ESB_ST_REC_QUAL;
 	sp = &ep->seq;
 	rc = fc_exch_done_locked(ep);
@@ -2328,7 +2328,7 @@ static void fc_exch_els_rrq(struct fc_frame *fp)
 	 */
 	if (ep->esb_stat & ESB_ST_REC_QUAL) {
 		ep->esb_stat &= ~ESB_ST_REC_QUAL;
-		atomic_dec(&ep->ex_refcnt);	/* drop hold for rec qual */
+		refcount_dec(&ep->ex_refcnt);	/* drop hold for rec qual */
 	}
 	if (ep->esb_stat & ESB_ST_COMPLETE)
 		fc_exch_timer_cancel(ep);

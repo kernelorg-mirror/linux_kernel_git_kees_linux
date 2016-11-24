@@ -21,6 +21,7 @@
 #include <linux/delay.h>
 #include <linux/wait.h>
 #include <linux/pr.h>
+#include <linux/refcount.h>
 
 #define DM_MSG_PREFIX "core"
 
@@ -97,7 +98,7 @@ struct dm_md_mempools {
 
 struct table_device {
 	struct list_head list;
-	atomic_t count;
+	refcount_t count;
 	struct dm_dev dm_dev;
 };
 
@@ -313,7 +314,7 @@ static int dm_blk_open(struct block_device *bdev, fmode_t mode)
 	}
 
 	dm_get(md);
-	atomic_inc(&md->open_count);
+	refcount_inc(&md->open_count);
 out:
 	spin_unlock(&_minor_lock);
 
@@ -330,7 +331,7 @@ static void dm_blk_close(struct gendisk *disk, fmode_t mode)
 	if (WARN_ON(!md))
 		goto out;
 
-	if (atomic_dec_and_test(&md->open_count) &&
+	if (refcount_dec_and_test(&md->open_count) &&
 	    (test_bit(DMF_DEFERRED_REMOVE, &md->flags)))
 		queue_work(deferred_remove_workqueue, &deferred_remove_work);
 
@@ -341,7 +342,7 @@ out:
 
 int dm_open_count(struct mapped_device *md)
 {
-	return atomic_read(&md->open_count);
+	return refcount_read(&md->open_count);
 }
 
 /*
@@ -678,10 +679,10 @@ int dm_get_table_device(struct mapped_device *md, dev_t dev, fmode_t mode,
 
 		format_dev_t(td->dm_dev.name, dev);
 
-		atomic_set(&td->count, 0);
+		refcount_set(&td->count, 0);
 		list_add(&td->list, &md->table_devices);
 	}
-	atomic_inc(&td->count);
+	refcount_inc(&td->count);
 	mutex_unlock(&md->table_devices_lock);
 
 	*result = &td->dm_dev;
@@ -694,7 +695,7 @@ void dm_put_table_device(struct mapped_device *md, struct dm_dev *d)
 	struct table_device *td = container_of(d, struct table_device, dm_dev);
 
 	mutex_lock(&md->table_devices_lock);
-	if (atomic_dec_and_test(&td->count)) {
+	if (refcount_dec_and_test(&td->count)) {
 		close_table_device(td, md);
 		list_del(&td->list);
 		kfree(td);
@@ -711,7 +712,7 @@ static void free_table_devices(struct list_head *devices)
 		struct table_device *td = list_entry(tmp, struct table_device, list);
 
 		DMWARN("dm_destroy: %s still exists with %d references",
-		       td->dm_dev.name, atomic_read(&td->count));
+		       td->dm_dev.name, refcount_read(&td->count));
 		kfree(td);
 	}
 }
@@ -1483,7 +1484,7 @@ static struct mapped_device *alloc_dev(int minor)
 	mutex_init(&md->table_devices_lock);
 	spin_lock_init(&md->deferred_lock);
 	atomic_set(&md->holders, 1);
-	atomic_set(&md->open_count, 0);
+	refcount_set(&md->open_count, 0);
 	atomic_set(&md->event_nr, 0);
 	atomic_set(&md->uevent_seq, 0);
 	INIT_LIST_HEAD(&md->uevent_list);
