@@ -45,6 +45,7 @@
 #include <linux/slab.h>
 #include <linux/io.h>
 #include <linux/crc32c.h>
+#include <linux/refcount.h>
 #include <rdma/ib_smi.h>
 #include <rdma/ib_verbs.h>
 #include <rdma/ib_pack.h>
@@ -140,7 +141,7 @@ struct i40iw_cqp_request {
 	struct cqp_commands_info info;
 	wait_queue_head_t waitq;
 	struct list_head list;
-	atomic_t refcount;
+	refcount_t refcount;
 	void (*callback_fcn)(struct i40iw_cqp_request*, u32);
 	void *param;
 	struct i40iw_cqp_compl_info compl_info;

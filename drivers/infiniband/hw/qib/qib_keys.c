@@ -172,7 +172,7 @@ int qib_rkey_ok(struct rvt_qp *qp, struct rvt_sge *sge,
 		mr = rcu_dereference(dev->dma_mr);
 		if (!mr)
 			goto bail;
-		if (unlikely(!atomic_inc_not_zero(&mr->refcount)))
+		if (unlikely(!refcount_inc_not_zero(&mr->refcount)))
 			goto bail;
 		rcu_read_unlock();
 
@@ -194,7 +194,7 @@ int qib_rkey_ok(struct rvt_qp *qp, struct rvt_sge *sge,
 	if (unlikely(vaddr < mr->iova || off + len > mr->length ||
 		     (mr->access_flags & acc) == 0))
 		goto bail;
-	if (unlikely(!atomic_inc_not_zero(&mr->refcount)))
+	if (unlikely(!refcount_inc_not_zero(&mr->refcount)))
 		goto bail;
 	rcu_read_unlock();
 

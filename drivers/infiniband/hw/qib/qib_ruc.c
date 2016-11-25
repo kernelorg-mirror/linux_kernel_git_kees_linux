@@ -808,7 +808,7 @@ void qib_send_complete(struct rvt_qp *qp, struct rvt_swqe *wqe,
 	if (qp->ibqp.qp_type == IB_QPT_UD ||
 	    qp->ibqp.qp_type == IB_QPT_SMI ||
 	    qp->ibqp.qp_type == IB_QPT_GSI)
-		atomic_dec(&ibah_to_rvtah(wqe->ud_wr.ah)->refcount);
+		refcount_dec(&ibah_to_rvtah(wqe->ud_wr.ah)->refcount);
 
 	rvt_qp_swqe_complete(qp, wqe, status);
 

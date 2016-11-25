@@ -85,7 +85,7 @@
  */
 
 struct ib_uverbs_device {
-	atomic_t				refcount;
+	refcount_t				refcount;
 	int					num_comp_vectors;
 	struct completion			comp;
 	struct device			       *dev;
@@ -149,7 +149,7 @@ struct ib_uevent_object {
 
 struct ib_uxrcd_object {
 	struct ib_uobject	uobject;
-	atomic_t		refcnt;
+	refcount_t		refcnt;
 };
 
 struct ib_usrq_object {

@@ -141,7 +141,7 @@ static int rvt_init_mregion(struct rvt_mregion *mr, struct ib_pd *pd,
 	}
 	init_completion(&mr->comp);
 	/* count returning the ptr to user */
-	atomic_set(&mr->refcount, 1);
+	refcount_set(&mr->refcount, 1);
 	atomic_set(&mr->lkey_invalid, 0);
 	mr->pd = pd;
 	mr->max_segs = count;
@@ -446,7 +446,7 @@ int rvt_dereg_mr(struct ib_mr *ibmr)
 	if (!timeout) {
 		rvt_pr_err(rdi,
 			   "rvt_dereg_mr timeout mr %p pd %p refcount %u\n",
-			   mr, mr->mr.pd, atomic_read(&mr->mr.refcount));
+			   mr, mr->mr.pd, refcount_read(&mr->mr.refcount));
 		rvt_get_mr(&mr->mr);
 		ret = -EBUSY;
 		goto out;
@@ -678,7 +678,7 @@ int rvt_map_phys_fmr(struct ib_fmr *ibfmr, u64 *page_list,
 	u32 ps;
 	struct rvt_dev_info *rdi = ib_to_rvt(ibfmr->device);
 
-	i = atomic_read(&fmr->mr.refcount);
+	i = refcount_read(&fmr->mr.refcount);
 	if (i > 2)
 		return -EBUSY;
 

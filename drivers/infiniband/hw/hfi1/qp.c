@@ -748,7 +748,7 @@ void qp_iter_print(struct seq_file *s, struct qp_iter *iter)
 		   iter->n,
 		   qp_idle(qp) ? "I" : "B",
 		   qp->ibqp.qp_num,
-		   atomic_read(&qp->refcount),
+		   refcount_read(&qp->refcount),
 		   qp_type_str[qp->ibqp.qp_type],
 		   qp->state,
 		   wqe ? wqe->wr.opcode : 0,

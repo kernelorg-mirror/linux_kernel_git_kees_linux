@@ -43,6 +43,7 @@
 #include <linux/inetdevice.h>
 #include <linux/slab.h>
 #include <linux/module.h>
+#include <linux/refcount.h>
 #include <net/route.h>
 
 #include <net/net_namespace.h>
@@ -195,7 +196,7 @@ struct cma_device {
 	struct list_head	list;
 	struct ib_device	*device;
 	struct completion	comp;
-	atomic_t		refcount;
+	refcount_t		refcount;
 	struct list_head	id_list;
 	enum ib_gid_type	*default_gid_type;
 };
@@ -243,7 +244,7 @@ enum {
 
 void cma_ref_dev(struct cma_device *cma_dev)
 {
-	atomic_inc(&cma_dev->refcount);
+	refcount_inc(&cma_dev->refcount);
 }
 
 struct cma_device *cma_enum_devices_by_ibdev(cma_device_filter	filter,
@@ -324,7 +325,7 @@ struct rdma_id_private {
 	struct mutex		qp_mutex;
 
 	struct completion	comp;
-	atomic_t		refcount;
+	refcount_t		refcount;
 	struct mutex		handler_mutex;
 
 	int			backlog;
@@ -498,7 +499,7 @@ static void cma_attach_to_dev(struct rdma_id_private *id_priv,
 
 void cma_deref_dev(struct cma_device *cma_dev)
 {
-	if (atomic_dec_and_test(&cma_dev->refcount))
+	if (refcount_dec_and_test(&cma_dev->refcount))
 		complete(&cma_dev->comp);
 }
 
@@ -757,7 +758,7 @@ found:
 
 static void cma_deref_id(struct rdma_id_private *id_priv)
 {
-	if (atomic_dec_and_test(&id_priv->refcount))
+	if (refcount_dec_and_test(&id_priv->refcount))
 		complete(&id_priv->comp);
 }
 
@@ -781,7 +782,7 @@ struct rdma_cm_id *rdma_create_id(struct net *net,
 	spin_lock_init(&id_priv->lock);
 	mutex_init(&id_priv->qp_mutex);
 	init_completion(&id_priv->comp);
-	atomic_set(&id_priv->refcount, 1);
+	refcount_set(&id_priv->refcount, 1);
 	mutex_init(&id_priv->handler_mutex);
 	INIT_LIST_HEAD(&id_priv->listen_list);
 	INIT_LIST_HEAD(&id_priv->mc_list);
@@ -1966,7 +1967,7 @@ static int cma_req_handler(struct ib_cm_id *cm_id, struct ib_cm_event *ib_event)
 	 * Protect against the user destroying conn_id from another thread
 	 * until we're done accessing it.
 	 */
-	atomic_inc(&conn_id->refcount);
+	refcount_inc(&conn_id->refcount);
 	ret = conn_id->id.event_handler(&conn_id->id, &event);
 	if (ret)
 		goto err3;
@@ -2142,7 +2143,7 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
 	 * Protect against the user destroying conn_id from another thread
 	 * until we're done accessing it.
 	 */
-	atomic_inc(&conn_id->refcount);
+	refcount_inc(&conn_id->refcount);
 	ret = conn_id->id.event_handler(&conn_id->id, &event);
 	if (ret) {
 		/* User wants to destroy the CM ID */
@@ -2239,7 +2240,7 @@ static void cma_listen_on_dev(struct rdma_id_private *id_priv,
 
 	_cma_attach_to_dev(dev_id_priv, cma_dev);
 	list_add_tail(&dev_id_priv->listen_list, &id_priv->listen_list);
-	atomic_inc(&id_priv->refcount);
+	refcount_inc(&id_priv->refcount);
 	dev_id_priv->internal_id = 1;
 	dev_id_priv->afonly = id_priv->afonly;
 
@@ -2611,7 +2612,7 @@ int rdma_resolve_route(struct rdma_cm_id *id, int timeout_ms)
 	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_RESOLVED, RDMA_CM_ROUTE_QUERY))
 		return -EINVAL;
 
-	atomic_inc(&id_priv->refcount);
+	refcount_inc(&id_priv->refcount);
 	if (rdma_cap_ib_sa(id->device, id->port_num))
 		ret = cma_resolve_ib_route(id_priv, timeout_ms);
 	else if (rdma_protocol_roce(id->device, id->port_num))
@@ -2844,7 +2845,7 @@ int rdma_resolve_addr(struct rdma_cm_id *id, struct sockaddr *src_addr,
 	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_ADDR_QUERY))
 		return -EINVAL;
 
-	atomic_inc(&id_priv->refcount);
+	refcount_inc(&id_priv->refcount);
 	memcpy(cma_dst_addr(id_priv), dst_addr, rdma_addr_size(dst_addr));
 	if (cma_any_addr(dst_addr)) {
 		ret = cma_resolve_loopback(id_priv);
@@ -4175,7 +4176,7 @@ static int cma_netdev_change(struct net_device *ndev, struct rdma_id_private *id
 		INIT_WORK(&work->work, cma_ndev_work_handler);
 		work->id = id_priv;
 		work->event.event = RDMA_CM_EVENT_ADDR_CHANGE;
-		atomic_inc(&id_priv->refcount);
+		refcount_inc(&id_priv->refcount);
 		queue_work(cma_wq, &work->work);
 	}
 
@@ -4240,7 +4241,7 @@ static void cma_add_one(struct ib_device *device)
 	}
 
 	init_completion(&cma_dev->comp);
-	atomic_set(&cma_dev->refcount, 1);
+	refcount_set(&cma_dev->refcount, 1);
 	INIT_LIST_HEAD(&cma_dev->id_list);
 	ib_set_client_data(device, &cma_client, cma_dev);
 
@@ -4289,7 +4290,7 @@ static void cma_process_remove(struct cma_device *cma_dev)
 
 		list_del(&id_priv->listen_list);
 		list_del_init(&id_priv->list);
-		atomic_inc(&id_priv->refcount);
+		refcount_inc(&id_priv->refcount);
 		mutex_unlock(&lock);
 
 		ret = id_priv->internal_id ? 1 : cma_remove_id_dev(id_priv);

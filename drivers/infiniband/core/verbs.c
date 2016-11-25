@@ -240,7 +240,7 @@ struct ib_pd *__ib_alloc_pd(struct ib_device *device, unsigned int flags,
 	pd->device = device;
 	pd->uobject = NULL;
 	pd->__internal_mr = NULL;
-	atomic_set(&pd->usecnt, 0);
+	refcount_set(&pd->usecnt, 0);
 	pd->flags = flags;
 
 	if (device->attrs.device_cap_flags & IB_DEVICE_LOCAL_DMA_LKEY)
@@ -300,7 +300,7 @@ void ib_dealloc_pd(struct ib_pd *pd)
 
 	/* uverbs manipulates usecnt with proper locking, while the kabi
 	   requires the caller to guarantee we can't race here. */
-	WARN_ON(atomic_read(&pd->usecnt));
+	WARN_ON(refcount_read(&pd->usecnt));
 
 	/* Making delalloc_pd a void return is a WIP, no driver should return
 	   an error here. */
@@ -321,7 +321,7 @@ struct ib_ah *ib_create_ah(struct ib_pd *pd, struct ib_ah_attr *ah_attr)
 		ah->device  = pd->device;
 		ah->pd      = pd;
 		ah->uobject = NULL;
-		atomic_inc(&pd->usecnt);
+		refcount_inc(&pd->usecnt);
 	}
 
 	return ah;
@@ -595,7 +595,7 @@ int ib_destroy_ah(struct ib_ah *ah)
 	pd = ah->pd;
 	ret = ah->device->destroy_ah(ah);
 	if (!ret)
-		atomic_dec(&pd->usecnt);
+		refcount_dec(&pd->usecnt);
 
 	return ret;
 }
@@ -623,11 +623,11 @@ struct ib_srq *ib_create_srq(struct ib_pd *pd,
 		if (srq->srq_type == IB_SRQT_XRC) {
 			srq->ext.xrc.xrcd = srq_init_attr->ext.xrc.xrcd;
 			srq->ext.xrc.cq   = srq_init_attr->ext.xrc.cq;
-			atomic_inc(&srq->ext.xrc.xrcd->usecnt);
-			atomic_inc(&srq->ext.xrc.cq->usecnt);
+			refcount_inc(&srq->ext.xrc.xrcd->usecnt);
+			refcount_inc(&srq->ext.xrc.cq->usecnt);
 		}
-		atomic_inc(&pd->usecnt);
-		atomic_set(&srq->usecnt, 0);
+		refcount_inc(&pd->usecnt);
+		refcount_set(&srq->usecnt, 0);
 	}
 
 	return srq;
@@ -660,7 +660,7 @@ int ib_destroy_srq(struct ib_srq *srq)
 	struct ib_cq *uninitialized_var(cq);
 	int ret;
 
-	if (atomic_read(&srq->usecnt))
+	if (refcount_read(&srq->usecnt))
 		return -EBUSY;
 
 	pd = srq->pd;
@@ -672,10 +672,10 @@ int ib_destroy_srq(struct ib_srq *srq)
 
 	ret = srq->device->destroy_srq(srq);
 	if (!ret) {
-		atomic_dec(&pd->usecnt);
+		refcount_dec(&pd->usecnt);
 		if (srq_type == IB_SRQT_XRC) {
-			atomic_dec(&xrcd->usecnt);
-			atomic_dec(&cq->usecnt);
+			refcount_dec(&xrcd->usecnt);
+			refcount_dec(&cq->usecnt);
 		}
 	}
 
@@ -716,7 +716,7 @@ static struct ib_qp *__ib_open_qp(struct ib_qp *real_qp,
 		return ERR_PTR(-ENOMEM);
 
 	qp->real_qp = real_qp;
-	atomic_inc(&real_qp->usecnt);
+	refcount_inc(&real_qp->usecnt);
 	qp->device = real_qp->device;
 	qp->event_handler = event_handler;
 	qp->qp_context = qp_context;
@@ -763,7 +763,7 @@ static struct ib_qp *ib_create_xrc_qp(struct ib_qp *qp,
 	qp->send_cq = qp->recv_cq = NULL;
 	qp->srq = NULL;
 	qp->xrcd = qp_init_attr->xrcd;
-	atomic_inc(&qp_init_attr->xrcd->usecnt);
+	refcount_inc(&qp_init_attr->xrcd->usecnt);
 	INIT_LIST_HEAD(&qp->open_list);
 
 	qp = __ib_open_qp(real_qp, qp_init_attr->event_handler,
@@ -807,7 +807,7 @@ struct ib_qp *ib_create_qp(struct ib_pd *pd,
 	qp->qp_type    = qp_init_attr->qp_type;
 	qp->rwq_ind_tbl = qp_init_attr->rwq_ind_tbl;
 
-	atomic_set(&qp->usecnt, 0);
+	refcount_set(&qp->usecnt, 0);
 	qp->mrs_used = 0;
 	spin_lock_init(&qp->mr_lock);
 	INIT_LIST_HEAD(&qp->rdma_mrs);
@@ -824,21 +824,21 @@ struct ib_qp *ib_create_qp(struct ib_pd *pd,
 	} else {
 		qp->recv_cq = qp_init_attr->recv_cq;
 		if (qp_init_attr->recv_cq)
-			atomic_inc(&qp_init_attr->recv_cq->usecnt);
+			refcount_inc(&qp_init_attr->recv_cq->usecnt);
 		qp->srq = qp_init_attr->srq;
 		if (qp->srq)
-			atomic_inc(&qp_init_attr->srq->usecnt);
+			refcount_inc(&qp_init_attr->srq->usecnt);
 	}
 
 	qp->pd	    = pd;
 	qp->send_cq = qp_init_attr->send_cq;
 	qp->xrcd    = NULL;
 
-	atomic_inc(&pd->usecnt);
+	refcount_inc(&pd->usecnt);
 	if (qp_init_attr->send_cq)
-		atomic_inc(&qp_init_attr->send_cq->usecnt);
+		refcount_inc(&qp_init_attr->send_cq->usecnt);
 	if (qp_init_attr->rwq_ind_tbl)
-		atomic_inc(&qp->rwq_ind_tbl->usecnt);
+		refcount_inc(&qp->rwq_ind_tbl->usecnt);
 
 	if (qp_init_attr->cap.max_rdma_ctxs) {
 		ret = rdma_rw_init_mrs(qp, qp_init_attr);
@@ -1289,7 +1289,7 @@ int ib_close_qp(struct ib_qp *qp)
 	list_del(&qp->open_list);
 	spin_unlock_irqrestore(&real_qp->device->event_handler_lock, flags);
 
-	atomic_dec(&real_qp->usecnt);
+	refcount_dec(&real_qp->usecnt);
 	kfree(qp);
 
 	return 0;
@@ -1307,7 +1307,7 @@ static int __ib_destroy_shared_qp(struct ib_qp *qp)
 
 	mutex_lock(&xrcd->tgt_qp_mutex);
 	ib_close_qp(qp);
-	if (atomic_read(&real_qp->usecnt) == 0)
+	if (refcount_read(&real_qp->usecnt) == 0)
 		list_del(&real_qp->xrcd_list);
 	else
 		real_qp = NULL;
@@ -1316,7 +1316,7 @@ static int __ib_destroy_shared_qp(struct ib_qp *qp)
 	if (real_qp) {
 		ret = ib_destroy_qp(real_qp);
 		if (!ret)
-			atomic_dec(&xrcd->usecnt);
+			refcount_dec(&xrcd->usecnt);
 		else
 			__ib_insert_xrcd_qp(xrcd, real_qp);
 	}
@@ -1334,7 +1334,7 @@ int ib_destroy_qp(struct ib_qp *qp)
 
 	WARN_ON_ONCE(qp->mrs_used > 0);
 
-	if (atomic_read(&qp->usecnt))
+	if (refcount_read(&qp->usecnt))
 		return -EBUSY;
 
 	if (qp->real_qp != qp)
@@ -1352,15 +1352,15 @@ int ib_destroy_qp(struct ib_qp *qp)
 	ret = qp->device->destroy_qp(qp);
 	if (!ret) {
 		if (pd)
-			atomic_dec(&pd->usecnt);
+			refcount_dec(&pd->usecnt);
 		if (scq)
-			atomic_dec(&scq->usecnt);
+			refcount_dec(&scq->usecnt);
 		if (rcq)
-			atomic_dec(&rcq->usecnt);
+			refcount_dec(&rcq->usecnt);
 		if (srq)
-			atomic_dec(&srq->usecnt);
+			refcount_dec(&srq->usecnt);
 		if (ind_tbl)
-			atomic_dec(&ind_tbl->usecnt);
+			refcount_dec(&ind_tbl->usecnt);
 	}
 
 	return ret;
@@ -1385,7 +1385,7 @@ struct ib_cq *ib_create_cq(struct ib_device *device,
 		cq->comp_handler  = comp_handler;
 		cq->event_handler = event_handler;
 		cq->cq_context    = cq_context;
-		atomic_set(&cq->usecnt, 0);
+		refcount_set(&cq->usecnt, 0);
 	}
 
 	return cq;
@@ -1401,7 +1401,7 @@ EXPORT_SYMBOL(ib_modify_cq);
 
 int ib_destroy_cq(struct ib_cq *cq)
 {
-	if (atomic_read(&cq->usecnt))
+	if (refcount_read(&cq->usecnt))
 		return -EBUSY;
 
 	return cq->device->destroy_cq(cq);
@@ -1424,7 +1424,7 @@ int ib_dereg_mr(struct ib_mr *mr)
 
 	ret = mr->device->dereg_mr(mr);
 	if (!ret)
-		atomic_dec(&pd->usecnt);
+		refcount_dec(&pd->usecnt);
 
 	return ret;
 }
@@ -1456,7 +1456,7 @@ struct ib_mr *ib_alloc_mr(struct ib_pd *pd,
 		mr->device  = pd->device;
 		mr->pd      = pd;
 		mr->uobject = NULL;
-		atomic_inc(&pd->usecnt);
+		refcount_inc(&pd->usecnt);
 		mr->need_inval = false;
 	}
 
@@ -1479,7 +1479,7 @@ struct ib_fmr *ib_alloc_fmr(struct ib_pd *pd,
 	if (!IS_ERR(fmr)) {
 		fmr->device = pd->device;
 		fmr->pd     = pd;
-		atomic_inc(&pd->usecnt);
+		refcount_inc(&pd->usecnt);
 	}
 
 	return fmr;
@@ -1506,7 +1506,7 @@ int ib_dealloc_fmr(struct ib_fmr *fmr)
 	pd = fmr->pd;
 	ret = fmr->device->dealloc_fmr(fmr);
 	if (!ret)
-		atomic_dec(&pd->usecnt);
+		refcount_dec(&pd->usecnt);
 
 	return ret;
 }
@@ -1525,7 +1525,7 @@ int ib_attach_mcast(struct ib_qp *qp, union ib_gid *gid, u16 lid)
 
 	ret = qp->device->attach_mcast(qp, gid, lid);
 	if (!ret)
-		atomic_inc(&qp->usecnt);
+		refcount_inc(&qp->usecnt);
 	return ret;
 }
 EXPORT_SYMBOL(ib_attach_mcast);
@@ -1541,7 +1541,7 @@ int ib_detach_mcast(struct ib_qp *qp, union ib_gid *gid, u16 lid)
 
 	ret = qp->device->detach_mcast(qp, gid, lid);
 	if (!ret)
-		atomic_dec(&qp->usecnt);
+		refcount_dec(&qp->usecnt);
 	return ret;
 }
 EXPORT_SYMBOL(ib_detach_mcast);
@@ -1557,7 +1557,7 @@ struct ib_xrcd *ib_alloc_xrcd(struct ib_device *device)
 	if (!IS_ERR(xrcd)) {
 		xrcd->device = device;
 		xrcd->inode = NULL;
-		atomic_set(&xrcd->usecnt, 0);
+		refcount_set(&xrcd->usecnt, 0);
 		mutex_init(&xrcd->tgt_qp_mutex);
 		INIT_LIST_HEAD(&xrcd->tgt_qp_list);
 	}
@@ -1571,7 +1571,7 @@ int ib_dealloc_xrcd(struct ib_xrcd *xrcd)
 	struct ib_qp *qp;
 	int ret;
 
-	if (atomic_read(&xrcd->usecnt))
+	if (refcount_read(&xrcd->usecnt))
 		return -EBUSY;
 
 	while (!list_empty(&xrcd->tgt_qp_list)) {
@@ -1616,9 +1616,9 @@ struct ib_wq *ib_create_wq(struct ib_pd *pd,
 		wq->device = pd->device;
 		wq->pd = pd;
 		wq->uobject = NULL;
-		atomic_inc(&pd->usecnt);
-		atomic_inc(&wq_attr->cq->usecnt);
-		atomic_set(&wq->usecnt, 0);
+		refcount_inc(&pd->usecnt);
+		refcount_inc(&wq_attr->cq->usecnt);
+		refcount_set(&wq->usecnt, 0);
 	}
 	return wq;
 }
@@ -1634,13 +1634,13 @@ int ib_destroy_wq(struct ib_wq *wq)
 	struct ib_cq *cq = wq->cq;
 	struct ib_pd *pd = wq->pd;
 
-	if (atomic_read(&wq->usecnt))
+	if (refcount_read(&wq->usecnt))
 		return -EBUSY;
 
 	err = wq->device->destroy_wq(wq);
 	if (!err) {
-		atomic_dec(&pd->usecnt);
-		atomic_dec(&cq->usecnt);
+		refcount_dec(&pd->usecnt);
+		refcount_dec(&cq->usecnt);
 	}
 	return err;
 }
@@ -1697,10 +1697,10 @@ struct ib_rwq_ind_table *ib_create_rwq_ind_table(struct ib_device *device,
 	rwq_ind_table->log_ind_tbl_size = init_attr->log_ind_tbl_size;
 	rwq_ind_table->device = device;
 	rwq_ind_table->uobject = NULL;
-	atomic_set(&rwq_ind_table->usecnt, 0);
+	refcount_set(&rwq_ind_table->usecnt, 0);
 
 	for (i = 0; i < table_size; i++)
-		atomic_inc(&rwq_ind_table->ind_tbl[i]->usecnt);
+		refcount_inc(&rwq_ind_table->ind_tbl[i]->usecnt);
 
 	return rwq_ind_table;
 }
@@ -1716,13 +1716,13 @@ int ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *rwq_ind_table)
 	u32 table_size = (1 << rwq_ind_table->log_ind_tbl_size);
 	struct ib_wq **ind_tbl = rwq_ind_table->ind_tbl;
 
-	if (atomic_read(&rwq_ind_table->usecnt))
+	if (refcount_read(&rwq_ind_table->usecnt))
 		return -EBUSY;
 
 	err = rwq_ind_table->device->destroy_rwq_ind_table(rwq_ind_table);
 	if (!err) {
 		for (i = 0; i < table_size; i++)
-			atomic_dec(&ind_tbl[i]->usecnt);
+			refcount_dec(&ind_tbl[i]->usecnt);
 	}
 
 	return err;
@@ -1739,7 +1739,7 @@ struct ib_flow *ib_create_flow(struct ib_qp *qp,
 
 	flow_id = qp->device->create_flow(qp, flow_attr, domain);
 	if (!IS_ERR(flow_id)) {
-		atomic_inc(&qp->usecnt);
+		refcount_inc(&qp->usecnt);
 		flow_id->qp = qp;
 	}
 	return flow_id;
@@ -1753,7 +1753,7 @@ int ib_destroy_flow(struct ib_flow *flow_id)
 
 	err = qp->device->destroy_flow(flow_id);
 	if (!err)
-		atomic_dec(&qp->usecnt);
+		refcount_dec(&qp->usecnt);
 	return err;
 }
 EXPORT_SYMBOL(ib_destroy_flow);

@@ -34,6 +34,7 @@
 
 #include <linux/list.h>
 #include <linux/spinlock.h>
+#include <linux/refcount.h>
 #include <rdma/ib_verbs.h>
 #include <asm/types.h>
 #include "t3cdev.h"
@@ -106,7 +107,7 @@ struct iwch_cq {
 	struct t3_cq cq;
 	spinlock_t lock;
 	spinlock_t comp_handler_lock;
-	atomic_t refcnt;
+	refcount_t refcnt;
 	wait_queue_head_t wait;
 	u32 __user *user_rptr_addr;
 };
@@ -165,7 +166,7 @@ struct iwch_qp {
 	struct iwch_qp_attributes attr;
 	struct t3_wq wq;
 	spinlock_t lock;
-	atomic_t refcnt;
+	refcount_t refcnt;
 	wait_queue_head_t wait;
 	enum IWCH_QP_FLAGS flags;
 	struct timer_list timer;

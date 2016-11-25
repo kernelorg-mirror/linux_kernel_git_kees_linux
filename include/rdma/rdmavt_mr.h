@@ -83,7 +83,7 @@ struct rvt_mregion {
 	u8  lkey_published;     /* in global table */
 	atomic_t lkey_invalid;	/* true if current lkey is invalid */
 	struct completion comp; /* complete when refcount goes to zero */
-	atomic_t refcount;
+	refcount_t refcount;
 	struct rvt_segarray *map[0];    /* the segments */
 };
 
@@ -123,13 +123,13 @@ struct rvt_sge_state {
 
 static inline void rvt_put_mr(struct rvt_mregion *mr)
 {
-	if (unlikely(atomic_dec_and_test(&mr->refcount)))
+	if (unlikely(refcount_dec_and_test(&mr->refcount)))
 		complete(&mr->comp);
 }
 
 static inline void rvt_get_mr(struct rvt_mregion *mr)
 {
-	atomic_inc(&mr->refcount);
+	refcount_inc(&mr->refcount);
 }
 
 static inline void rvt_put_ss(struct rvt_sge_state *ss)

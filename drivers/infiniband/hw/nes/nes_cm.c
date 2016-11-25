@@ -814,7 +814,7 @@ static void handle_recv_entry(struct nes_cm_node *cm_node, u32 rem_node)
 				  "refcount = %d: HIT A "
 				  "NES_TIMER_TYPE_CLOSE with something "
 				  "to do!!!\n", nesqp->hwqp.qp_id, cm_id,
-				  atomic_read(&nesqp->refcount));
+				  refcount_read(&nesqp->refcount));
 			nesqp->hw_tcp_state = NES_AEQE_TCP_STATE_CLOSED;
 			nesqp->last_aeq = NES_AEQE_AEID_RESET_SENT;
 			nesqp->ibqp_state = IB_QPS_ERR;
@@ -826,7 +826,7 @@ static void handle_recv_entry(struct nes_cm_node *cm_node, u32 rem_node)
 				  "refcount = %d: HIT A "
 				  "NES_TIMER_TYPE_CLOSE with nothing "
 				  "to do!!!\n", nesqp->hwqp.qp_id, cm_id,
-				  atomic_read(&nesqp->refcount));
+				  refcount_read(&nesqp->refcount));
 		}
 	} else if (rem_node) {
 		/* TIME_WAIT state */
@@ -1186,7 +1186,7 @@ static struct nes_cm_listener *find_listener(struct nes_cm_core *cm_core,
 		     listen_addr == 0x00000000) &&
 		    (listen_port == dst_port) &&
 		    (listener_state & listen_node->listener_state)) {
-			atomic_inc(&listen_node->ref_count);
+			refcount_inc(&listen_node->ref_count);
 			spin_unlock_irqrestore(&cm_core->listen_list_lock, flags);
 			return listen_node;
 		}
@@ -1240,7 +1240,7 @@ static int mini_cm_dec_refcnt_listen(struct nes_cm_core *cm_core,
 
 	nes_debug(NES_DBG_CM, "attempting listener= %p free_nodes= %d, "
 		  "refcnt=%d\n", listener, free_hanging_nodes,
-		  atomic_read(&listener->ref_count));
+		  refcount_read(&listener->ref_count));
 	/* free non-accelerated child nodes for this listener */
 	INIT_LIST_HEAD(&reset_list);
 	if (free_hanging_nodes) {
@@ -1309,7 +1309,7 @@ static int mini_cm_dec_refcnt_listen(struct nes_cm_core *cm_core,
 	}
 
 	spin_lock_irqsave(&cm_core->listen_list_lock, flags);
-	if (!atomic_dec_return(&listener->ref_count)) {
+	if (refcount_dec_and_test(&listener->ref_count)) {
 		list_del(&listener->list);
 
 		/* decrement our listen node count */
@@ -1496,7 +1496,7 @@ static struct nes_cm_node *make_cm_node(struct nes_cm_core *cm_core,
 	spin_lock_init(&cm_node->retrans_list_lock);
 
 	cm_node->loopbackpartner = NULL;
-	atomic_set(&cm_node->ref_count, 1);
+	refcount_set(&cm_node->ref_count, 1);
 	/* associate our parent CM core */
 	cm_node->cm_core = cm_core;
 	cm_node->tcp_cntxt.loc_id = NES_CM_DEF_LOCAL_ID;
@@ -1548,7 +1548,7 @@ static struct nes_cm_node *make_cm_node(struct nes_cm_core *cm_core,
  */
 static int add_ref_cm_node(struct nes_cm_node *cm_node)
 {
-	atomic_inc(&cm_node->ref_count);
+	refcount_inc(&cm_node->ref_count);
 	return 0;
 }
 
@@ -1566,7 +1566,7 @@ static int rem_ref_cm_node(struct nes_cm_core *cm_core,
 		return -EINVAL;
 
 	spin_lock_irqsave(&cm_node->cm_core->ht_lock, flags);
-	if (atomic_dec_return(&cm_node->ref_count)) {
+	if (!refcount_dec_and_test(&cm_node->ref_count)) {
 		spin_unlock_irqrestore(&cm_node->cm_core->ht_lock, flags);
 		return 0;
 	}
@@ -1668,7 +1668,7 @@ static void handle_fin_pkt(struct nes_cm_node *cm_node)
 {
 	nes_debug(NES_DBG_CM, "Received FIN, cm_node = %p, state = %u. "
 		  "refcnt=%d\n", cm_node, cm_node->state,
-		  atomic_read(&cm_node->ref_count));
+		  refcount_read(&cm_node->ref_count));
 	switch (cm_node->state) {
 	case NES_CM_STATE_SYN_RCVD:
 	case NES_CM_STATE_SYN_SENT:
@@ -1726,7 +1726,7 @@ static void handle_rst_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 	atomic_inc(&cm_resets_recvd);
 	nes_debug(NES_DBG_CM, "Received Reset, cm_node = %p, state = %u."
 			" refcnt=%d\n", cm_node, cm_node->state,
-			atomic_read(&cm_node->ref_count));
+			refcount_read(&cm_node->ref_count));
 	cleanup_retrans_entry(cm_node);
 	switch (cm_node->state) {
 	case NES_CM_STATE_SYN_SENT:
@@ -2274,7 +2274,7 @@ static struct nes_cm_listener *mini_cm_listen(struct nes_cm_core *cm_core,
 
 	if (listener && listener->listener_state == NES_CM_LISTENER_ACTIVE_STATE) {
 		/* find automatically incs ref count ??? */
-		atomic_dec(&listener->ref_count);
+		refcount_dec(&listener->ref_count);
 		nes_debug(NES_DBG_CM, "Not creating listener since it already exists\n");
 		return NULL;
 	}
@@ -2289,7 +2289,7 @@ static struct nes_cm_listener *mini_cm_listen(struct nes_cm_core *cm_core,
 		listener->loc_port = cm_info->loc_port;
 		listener->reused_node = 0;
 
-		atomic_set(&listener->ref_count, 1);
+		refcount_set(&listener->ref_count, 1);
 	}
 	/* pasive case */
 	/* find already inc'ed the ref count */
@@ -2624,7 +2624,7 @@ static int mini_cm_recv_pkt(struct nes_cm_core *cm_core,
 				nes_debug(NES_DBG_CM, "Unable to allocate "
 					  "node\n");
 				cm_packets_dropped++;
-				atomic_dec(&listener->ref_count);
+				refcount_dec(&listener->ref_count);
 				dev_kfree_skb_any(skb);
 				break;
 			}
@@ -2976,7 +2976,7 @@ static int nes_cm_disconn_true(struct nes_qp *nesqp)
 				  "cm_id = %p, refcount = %u.\n",
 				  nesqp->hwqp.qp_id, nesqp->hwqp.sq_head,
 				  nesqp->hwqp.sq_tail, cm_id,
-				  atomic_read(&nesqp->refcount));
+				  refcount_read(&nesqp->refcount));
 
 			ret = cm_id->event_handler(cm_id, &cm_event);
 			if (ret)

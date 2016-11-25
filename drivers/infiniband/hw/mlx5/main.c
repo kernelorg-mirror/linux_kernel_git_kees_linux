@@ -2645,7 +2645,7 @@ static int create_dev_resources(struct mlx5_ib_resources *devr)
 	}
 	devr->p0->device  = &dev->ib_dev;
 	devr->p0->uobject = NULL;
-	atomic_set(&devr->p0->usecnt, 0);
+	refcount_set(&devr->p0->usecnt, 0);
 
 	devr->c0 = mlx5_ib_create_cq(&dev->ib_dev, &cq_attr, NULL, NULL);
 	if (IS_ERR(devr->c0)) {
@@ -2657,7 +2657,7 @@ static int create_dev_resources(struct mlx5_ib_resources *devr)
 	devr->c0->comp_handler  = NULL;
 	devr->c0->event_handler = NULL;
 	devr->c0->cq_context    = NULL;
-	atomic_set(&devr->c0->usecnt, 0);
+	refcount_set(&devr->c0->usecnt, 0);
 
 	devr->x0 = mlx5_ib_alloc_xrcd(&dev->ib_dev, NULL, NULL);
 	if (IS_ERR(devr->x0)) {
@@ -2666,7 +2666,7 @@ static int create_dev_resources(struct mlx5_ib_resources *devr)
 	}
 	devr->x0->device = &dev->ib_dev;
 	devr->x0->inode = NULL;
-	atomic_set(&devr->x0->usecnt, 0);
+	refcount_set(&devr->x0->usecnt, 0);
 	mutex_init(&devr->x0->tgt_qp_mutex);
 	INIT_LIST_HEAD(&devr->x0->tgt_qp_list);
 
@@ -2677,7 +2677,7 @@ static int create_dev_resources(struct mlx5_ib_resources *devr)
 	}
 	devr->x1->device = &dev->ib_dev;
 	devr->x1->inode = NULL;
-	atomic_set(&devr->x1->usecnt, 0);
+	refcount_set(&devr->x1->usecnt, 0);
 	mutex_init(&devr->x1->tgt_qp_mutex);
 	INIT_LIST_HEAD(&devr->x1->tgt_qp_list);
 
@@ -2701,10 +2701,10 @@ static int create_dev_resources(struct mlx5_ib_resources *devr)
 	devr->s0->srq_type      = IB_SRQT_XRC;
 	devr->s0->ext.xrc.xrcd	= devr->x0;
 	devr->s0->ext.xrc.cq	= devr->c0;
-	atomic_inc(&devr->s0->ext.xrc.xrcd->usecnt);
-	atomic_inc(&devr->s0->ext.xrc.cq->usecnt);
-	atomic_inc(&devr->p0->usecnt);
-	atomic_set(&devr->s0->usecnt, 0);
+	refcount_inc(&devr->s0->ext.xrc.xrcd->usecnt);
+	refcount_inc(&devr->s0->ext.xrc.cq->usecnt);
+	refcount_inc(&devr->p0->usecnt);
+	refcount_set(&devr->s0->usecnt, 0);
 
 	memset(&attr, 0, sizeof(attr));
 	attr.attr.max_sge = 1;
@@ -2722,8 +2722,8 @@ static int create_dev_resources(struct mlx5_ib_resources *devr)
 	devr->s1->srq_context   = NULL;
 	devr->s1->srq_type      = IB_SRQT_BASIC;
 	devr->s1->ext.xrc.cq	= devr->c0;
-	atomic_inc(&devr->p0->usecnt);
-	atomic_set(&devr->s0->usecnt, 0);
+	refcount_inc(&devr->p0->usecnt);
+	refcount_set(&devr->s0->usecnt, 0);
 
 	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port) {
 		INIT_WORK(&devr->ports[port].pkey_change_work,

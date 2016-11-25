@@ -572,7 +572,7 @@ ssize_t ib_uverbs_alloc_pd(struct ib_uverbs_file *file,
 	pd->device  = ib_dev;
 	pd->uobject = uobj;
 	pd->__internal_mr = NULL;
-	atomic_set(&pd->usecnt, 0);
+	refcount_set(&pd->usecnt, 0);
 
 	uobj->object = pd;
 	ret = idr_add_uobj(&ib_uverbs_pd_idr, uobj);
@@ -627,7 +627,7 @@ ssize_t ib_uverbs_dealloc_pd(struct ib_uverbs_file *file,
 		return -EINVAL;
 	pd = uobj->object;
 
-	if (atomic_read(&pd->usecnt)) {
+	if (refcount_read(&pd->usecnt)) {
 		ret = -EBUSY;
 		goto err_put;
 	}
@@ -808,13 +808,13 @@ ssize_t ib_uverbs_open_xrcd(struct ib_uverbs_file *file,
 
 		xrcd->inode   = inode;
 		xrcd->device  = ib_dev;
-		atomic_set(&xrcd->usecnt, 0);
+		refcount_set(&xrcd->usecnt, 0);
 		mutex_init(&xrcd->tgt_qp_mutex);
 		INIT_LIST_HEAD(&xrcd->tgt_qp_list);
 		new_xrcd = 1;
 	}
 
-	atomic_set(&obj->refcnt, 0);
+	refcount_set(&obj->refcnt, 0);
 	obj->uobject.object = xrcd;
 	ret = idr_add_uobj(&ib_uverbs_xrcd_idr, &obj->uobject);
 	if (ret)
@@ -830,7 +830,7 @@ ssize_t ib_uverbs_open_xrcd(struct ib_uverbs_file *file,
 			if (ret)
 				goto err_insert_xrcd;
 		}
-		atomic_inc(&xrcd->usecnt);
+		refcount_inc(&xrcd->usecnt);
 	}
 
 	if (copy_to_user((void __user *) (unsigned long) cmd.response,
@@ -856,7 +856,7 @@ err_copy:
 	if (inode) {
 		if (new_xrcd)
 			xrcd_table_delete(file->device, inode);
-		atomic_dec(&xrcd->usecnt);
+		refcount_dec(&xrcd->usecnt);
 	}
 
 err_insert_xrcd:
@@ -903,13 +903,13 @@ ssize_t ib_uverbs_close_xrcd(struct ib_uverbs_file *file,
 	xrcd  = uobj->object;
 	inode = xrcd->inode;
 	obj   = container_of(uobj, struct ib_uxrcd_object, uobject);
-	if (atomic_read(&obj->refcnt)) {
+	if (refcount_read(&obj->refcnt)) {
 		put_uobj_write(uobj);
 		ret = -EBUSY;
 		goto out;
 	}
 
-	if (!inode || atomic_dec_and_test(&xrcd->usecnt)) {
+	if (!inode || refcount_dec_and_test(&xrcd->usecnt)) {
 		ret = ib_dealloc_xrcd(uobj->object);
 		if (!ret)
 			uobj->live = 0;
@@ -917,7 +917,7 @@ ssize_t ib_uverbs_close_xrcd(struct ib_uverbs_file *file,
 
 	live = uobj->live;
 	if (inode && ret)
-		atomic_inc(&xrcd->usecnt);
+		refcount_inc(&xrcd->usecnt);
 
 	put_uobj_write(uobj);
 
@@ -946,7 +946,7 @@ void ib_uverbs_dealloc_xrcd(struct ib_uverbs_device *dev,
 	struct inode *inode;
 
 	inode = xrcd->inode;
-	if (inode && !atomic_dec_and_test(&xrcd->usecnt))
+	if (inode && !refcount_dec_and_test(&xrcd->usecnt))
 		return;
 
 	ib_dealloc_xrcd(xrcd);
@@ -1017,7 +1017,7 @@ ssize_t ib_uverbs_reg_mr(struct ib_uverbs_file *file,
 	mr->device  = pd->device;
 	mr->pd      = pd;
 	mr->uobject = uobj;
-	atomic_inc(&pd->usecnt);
+	refcount_inc(&pd->usecnt);
 
 	uobj->object = mr;
 	ret = idr_add_uobj(&ib_uverbs_mr_idr, uobj);
@@ -1121,9 +1121,9 @@ ssize_t ib_uverbs_rereg_mr(struct ib_uverbs_file *file,
 					cmd.access_flags, pd, &udata);
 	if (!ret) {
 		if (cmd.flags & IB_MR_REREG_PD) {
-			atomic_inc(&pd->usecnt);
+			refcount_inc(&pd->usecnt);
 			mr->pd = pd;
-			atomic_dec(&old_pd->usecnt);
+			refcount_dec(&old_pd->usecnt);
 		}
 	} else {
 		goto put_uobj_pd;
@@ -1235,7 +1235,7 @@ ssize_t ib_uverbs_alloc_mw(struct ib_uverbs_file *file,
 	mw->device  = pd->device;
 	mw->pd      = pd;
 	mw->uobject = uobj;
-	atomic_inc(&pd->usecnt);
+	refcount_inc(&pd->usecnt);
 
 	uobj->object = mw;
 	ret = idr_add_uobj(&ib_uverbs_mw_idr, uobj);
@@ -1417,7 +1417,7 @@ static struct ib_ucq_object *create_cq(struct ib_uverbs_file *file,
 	cq->comp_handler  = ib_uverbs_comp_handler;
 	cq->event_handler = ib_uverbs_cq_event_handler;
 	cq->cq_context    = ev_file;
-	atomic_set(&cq->usecnt, 0);
+	refcount_set(&cq->usecnt, 0);
 
 	obj->uobject.object = cq;
 	ret = idr_add_uobj(&ib_uverbs_cq_idr, &obj->uobject);
@@ -1925,16 +1925,16 @@ static int create_qp(struct ib_uverbs_file *file,
 		qp->event_handler = attr.event_handler;
 		qp->qp_context	  = attr.qp_context;
 		qp->qp_type	  = attr.qp_type;
-		atomic_set(&qp->usecnt, 0);
-		atomic_inc(&pd->usecnt);
+		refcount_set(&qp->usecnt, 0);
+		refcount_inc(&pd->usecnt);
 		if (attr.send_cq)
-			atomic_inc(&attr.send_cq->usecnt);
+			refcount_inc(&attr.send_cq->usecnt);
 		if (attr.recv_cq)
-			atomic_inc(&attr.recv_cq->usecnt);
+			refcount_inc(&attr.recv_cq->usecnt);
 		if (attr.srq)
-			atomic_inc(&attr.srq->usecnt);
+			refcount_inc(&attr.srq->usecnt);
 		if (ind_tbl)
-			atomic_inc(&ind_tbl->usecnt);
+			refcount_inc(&ind_tbl->usecnt);
 	}
 	qp->uobject = &obj->uevent.uobject;
 
@@ -1962,7 +1962,7 @@ static int create_qp(struct ib_uverbs_file *file,
 	if (xrcd) {
 		obj->uxrcd = container_of(xrcd_uobj, struct ib_uxrcd_object,
 					  uobject);
-		atomic_inc(&obj->uxrcd->refcnt);
+		refcount_inc(&obj->uxrcd->refcnt);
 		put_xrcd_read(xrcd_uobj);
 	}
 
@@ -2188,7 +2188,7 @@ ssize_t ib_uverbs_open_qp(struct ib_uverbs_file *file,
 	}
 
 	obj->uxrcd = container_of(xrcd_uobj, struct ib_uxrcd_object, uobject);
-	atomic_inc(&obj->uxrcd->refcnt);
+	refcount_inc(&obj->uxrcd->refcnt);
 	put_xrcd_read(xrcd_uobj);
 
 	mutex_lock(&file->mutex);
@@ -2519,7 +2519,7 @@ ssize_t ib_uverbs_destroy_qp(struct ib_uverbs_file *file,
 		return ret;
 
 	if (obj->uxrcd)
-		atomic_dec(&obj->uxrcd->refcnt);
+		refcount_dec(&obj->uxrcd->refcnt);
 
 	idr_remove_uobj(&ib_uverbs_qp_idr, uobj);
 
@@ -2978,7 +2978,7 @@ ssize_t ib_uverbs_create_ah(struct ib_uverbs_file *file,
 
 	ah->device  = pd->device;
 	ah->pd      = pd;
-	atomic_inc(&pd->usecnt);
+	refcount_inc(&pd->usecnt);
 	ah->uobject  = uobj;
 	uobj->object = ah;
 
@@ -3340,9 +3340,9 @@ int ib_uverbs_ex_create_wq(struct ib_uverbs_file *file,
 	wq->pd = pd;
 	wq->device = pd->device;
 	wq->wq_context = wq_init_attr.wq_context;
-	atomic_set(&wq->usecnt, 0);
-	atomic_inc(&pd->usecnt);
-	atomic_inc(&cq->usecnt);
+	refcount_set(&wq->usecnt, 0);
+	refcount_inc(&pd->usecnt);
+	refcount_inc(&cq->usecnt);
 	wq->uobject = &obj->uevent.uobject;
 	obj->uevent.uobject.object = wq;
 	err = idr_add_uobj(&ib_uverbs_wq_idr, &obj->uevent.uobject);
@@ -3599,10 +3599,10 @@ int ib_uverbs_ex_create_rwq_ind_table(struct ib_uverbs_file *file,
 	rwq_ind_tbl->uobject = uobj;
 	uobj->object = rwq_ind_tbl;
 	rwq_ind_tbl->device = ib_dev;
-	atomic_set(&rwq_ind_tbl->usecnt, 0);
+	refcount_set(&rwq_ind_tbl->usecnt, 0);
 
 	for (i = 0; i < num_wq_handles; i++)
-		atomic_inc(&wqs[i]->usecnt);
+		refcount_inc(&wqs[i]->usecnt);
 
 	err = idr_add_uobj(&ib_uverbs_rwq_ind_tbl_idr, uobj);
 	if (err)
@@ -3941,7 +3941,7 @@ static int __uverbs_create_xsrq(struct ib_uverbs_file *file,
 		}
 
 		obj->uxrcd = container_of(xrcd_uobj, struct ib_uxrcd_object, uobject);
-		atomic_inc(&obj->uxrcd->refcnt);
+		refcount_inc(&obj->uxrcd->refcnt);
 
 		attr.ext.xrc.cq  = idr_read_cq(cmd->cq_handle, file->ucontext, 0);
 		if (!attr.ext.xrc.cq) {
@@ -3982,12 +3982,12 @@ static int __uverbs_create_xsrq(struct ib_uverbs_file *file,
 	if (cmd->srq_type == IB_SRQT_XRC) {
 		srq->ext.xrc.cq   = attr.ext.xrc.cq;
 		srq->ext.xrc.xrcd = attr.ext.xrc.xrcd;
-		atomic_inc(&attr.ext.xrc.cq->usecnt);
-		atomic_inc(&attr.ext.xrc.xrcd->usecnt);
+		refcount_inc(&attr.ext.xrc.cq->usecnt);
+		refcount_inc(&attr.ext.xrc.xrcd->usecnt);
 	}
 
-	atomic_inc(&pd->usecnt);
-	atomic_set(&srq->usecnt, 0);
+	refcount_inc(&pd->usecnt);
+	refcount_set(&srq->usecnt, 0);
 
 	obj->uevent.uobject.object = srq;
 	ret = idr_add_uobj(&ib_uverbs_srq_idr, &obj->uevent.uobject);
@@ -4038,7 +4038,7 @@ err_put_cq:
 
 err_put_xrcd:
 	if (cmd->srq_type == IB_SRQT_XRC) {
-		atomic_dec(&obj->uxrcd->refcnt);
+		refcount_dec(&obj->uxrcd->refcnt);
 		put_uobj_read(xrcd_uobj);
 	}
 
@@ -4218,7 +4218,7 @@ ssize_t ib_uverbs_destroy_srq(struct ib_uverbs_file *file,
 
 	if (srq_type == IB_SRQT_XRC) {
 		us = container_of(obj, struct ib_usrq_object, uevent);
-		atomic_dec(&us->uxrcd->refcnt);
+		refcount_dec(&us->uxrcd->refcnt);
 	}
 
 	idr_remove_uobj(&ib_uverbs_srq_idr, uobj);

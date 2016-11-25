@@ -58,6 +58,7 @@
 
 #include <linux/if_link.h>
 #include <linux/atomic.h>
+#include <linux/refcount.h>
 #include <linux/mmu_notifier.h>
 #include <linux/uaccess.h>
 
@@ -1389,7 +1390,7 @@ struct ib_pd {
 	u32			flags;
 	struct ib_device       *device;
 	struct ib_uobject      *uobject;
-	atomic_t          	usecnt; /* count all resources */
+	refcount_t          	usecnt; /* count all resources */
 
 	u32			unsafe_global_rkey;
 
@@ -1401,7 +1402,7 @@ struct ib_pd {
 
 struct ib_xrcd {
 	struct ib_device       *device;
-	atomic_t		usecnt; /* count all exposed resources */
+	refcount_t		usecnt; /* count all exposed resources */
 	struct inode	       *inode;
 
 	struct mutex		tgt_qp_mutex;
@@ -1429,7 +1430,7 @@ struct ib_cq {
 	void                  (*event_handler)(struct ib_event *, void *);
 	void                   *cq_context;
 	int               	cqe;
-	atomic_t          	usecnt; /* count number of work queues */
+	refcount_t          	usecnt; /* count number of work queues */
 	enum ib_poll_context	poll_ctx;
 	struct ib_wc		*wc;
 	union {
@@ -1445,7 +1446,7 @@ struct ib_srq {
 	void		      (*event_handler)(struct ib_event *, void *);
 	void		       *srq_context;
 	enum ib_srq_type	srq_type;
-	atomic_t		usecnt;
+	refcount_t		usecnt;
 
 	union {
 		struct {
@@ -1476,7 +1477,7 @@ struct ib_wq {
 	u32		wq_num;
 	enum ib_wq_state       state;
 	enum ib_wq_type	wq_type;
-	atomic_t		usecnt;
+	refcount_t		usecnt;
 };
 
 struct ib_wq_init_attr {
@@ -1501,7 +1502,7 @@ struct ib_wq_attr {
 struct ib_rwq_ind_table {
 	struct ib_device	*device;
 	struct ib_uobject      *uobject;
-	atomic_t		usecnt;
+	refcount_t		usecnt;
 	u32		ind_tbl_num;
 	u32		log_ind_tbl_size;
 	struct ib_wq	**ind_tbl;
@@ -1531,7 +1532,7 @@ struct ib_qp {
 	struct list_head	xrcd_list;
 
 	/* count times opened, mcast attaches, flow attaches */
-	atomic_t		usecnt;
+	refcount_t		usecnt;
 	struct list_head	open_list;
 	struct ib_qp           *real_qp;
 	struct ib_uobject      *uobject;

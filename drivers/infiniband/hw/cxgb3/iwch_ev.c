@@ -74,7 +74,7 @@ static void post_qp_event(struct iwch_dev *rnicp, struct iwch_cq *chp,
 	       CQE_STATUS(rsp_msg->cqe), CQE_TYPE(rsp_msg->cqe),
 	       CQE_WRID_HI(rsp_msg->cqe), CQE_WRID_LOW(rsp_msg->cqe));
 
-	atomic_inc(&qhp->refcnt);
+	refcount_inc(&qhp->refcnt);
 	spin_unlock(&rnicp->lock);
 
 	if (qhp->attr.state == IWCH_QP_STATE_RTS) {
@@ -99,7 +99,7 @@ static void post_qp_event(struct iwch_dev *rnicp, struct iwch_cq *chp,
 	(*chp->ibcq.comp_handler)(&chp->ibcq, chp->ibcq.cq_context);
 	spin_unlock_irqrestore(&chp->comp_handler_lock, flag);
 
-	if (atomic_dec_and_test(&qhp->refcnt))
+	if (refcount_dec_and_test(&qhp->refcnt))
 		wake_up(&qhp->wait);
 }
 
@@ -127,7 +127,7 @@ void iwch_ev_dispatch(struct cxio_rdev *rdev_p, struct sk_buff *skb)
 		goto out;
 	}
 	iwch_qp_add_ref(&qhp->ibqp);
-	atomic_inc(&chp->refcnt);
+	refcount_inc(&chp->refcnt);
 	spin_unlock(&rnicp->lock);
 
 	/*
@@ -224,7 +224,7 @@ void iwch_ev_dispatch(struct cxio_rdev *rdev_p, struct sk_buff *skb)
 		break;
 	}
 done:
-	if (atomic_dec_and_test(&chp->refcnt))
+	if (refcount_dec_and_test(&chp->refcnt))
 	        wake_up(&chp->wait);
 	iwch_qp_rem_ref(&qhp->ibqp);
 out:

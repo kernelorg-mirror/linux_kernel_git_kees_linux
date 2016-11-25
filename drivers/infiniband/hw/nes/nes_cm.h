@@ -34,6 +34,8 @@
 #ifndef NES_CM_H
 #define NES_CM_H
 
+#include <linux/refcount.h>
+
 #define QUEUE_EVENTS
 
 #define NES_MANAGE_APBVT_DEL 0
@@ -297,7 +299,7 @@ struct nes_cm_listener {
 	u16                        loc_port;
 	struct iw_cm_id            *cm_id;
 	enum nes_cm_conn_type      conn_type;
-	atomic_t                   ref_count;
+	refcount_t                   ref_count;
 	struct nes_vnic            *nesvnic;
 	atomic_t                   pend_accepts_cnt;
 	int                        backlog;
@@ -318,7 +320,7 @@ struct nes_cm_node {
 	struct nes_cm_tcp_context tcp_cntxt;
 	struct nes_cm_core        *cm_core;
 	struct sk_buff_head       resend_list;
-	atomic_t                  ref_count;
+	refcount_t                  ref_count;
 	struct net_device         *netdev;
 
 	struct nes_cm_node        *loopbackpartner;

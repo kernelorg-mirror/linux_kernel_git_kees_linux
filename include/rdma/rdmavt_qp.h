@@ -304,7 +304,7 @@ struct rvt_qp {
 	u8 s_draining;
 
 	/* start of read/write fields */
-	atomic_t refcount ____cacheline_aligned_in_smp;
+	refcount_t refcount ____cacheline_aligned_in_smp;
 	wait_queue_head_t wait;
 
 	struct rvt_ack_entry *s_ack_queue;
@@ -472,7 +472,7 @@ static inline struct rvt_rwqe *rvt_get_rwqe_ptr(struct rvt_rq *rq, unsigned n)
  */
 static inline void rvt_get_qp(struct rvt_qp *qp)
 {
-	atomic_inc(&qp->refcount);
+	refcount_inc(&qp->refcount);
 }
 
 /**
@@ -481,7 +481,7 @@ static inline void rvt_get_qp(struct rvt_qp *qp)
  */
 static inline void rvt_put_qp(struct rvt_qp *qp)
 {
-	if (qp && atomic_dec_and_test(&qp->refcount))
+	if (qp && refcount_dec_and_test(&qp->refcount))
 		wake_up(&qp->wait);
 }
 

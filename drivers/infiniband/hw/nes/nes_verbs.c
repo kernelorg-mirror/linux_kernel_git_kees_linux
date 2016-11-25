@@ -124,7 +124,7 @@ static struct ib_mw *nes_alloc_mw(struct ib_pd *ibpd, enum ib_mw_type type,
 	set_wqe_32bit_value(cqp_wqe->wqe_words, NES_CQP_STAG_WQE_LEN_HIGH_PD_IDX, (nespd->pd_id & 0x00007fff));
 	set_wqe_32bit_value(cqp_wqe->wqe_words, NES_CQP_STAG_WQE_STAG_IDX, stag);
 
-	atomic_set(&cqp_request->refcount, 2);
+	refcount_set(&cqp_request->refcount, 2);
 	nes_post_cqp_request(nesdev, cqp_request);
 
 	/* Wait for CQP */
@@ -181,7 +181,7 @@ static int nes_dealloc_mw(struct ib_mw *ibmw)
 	set_wqe_32bit_value(cqp_wqe->wqe_words, NES_CQP_WQE_OPCODE_IDX, NES_CQP_DEALLOCATE_STAG);
 	set_wqe_32bit_value(cqp_wqe->wqe_words, NES_CQP_STAG_WQE_STAG_IDX, ibmw->rkey);
 
-	atomic_set(&cqp_request->refcount, 2);
+	refcount_set(&cqp_request->refcount, 2);
 	nes_post_cqp_request(nesdev, cqp_request);
 
 	/* Wait for CQP */
@@ -274,7 +274,7 @@ static int alloc_fast_reg_mr(struct nes_device *nesdev, struct nes_pd *nespd,
 	cqp_wqe->wqe_words[NES_CQP_WQE_OPCODE_IDX] |= cpu_to_le32(NES_CQP_STAG_PBL_BLK_SIZE);
 	barrier();
 
-	atomic_set(&cqp_request->refcount, 2);
+	refcount_set(&cqp_request->refcount, 2);
 	nes_post_cqp_request(nesdev, cqp_request);
 
 	/* Wait for CQP */
@@ -592,7 +592,7 @@ static struct ib_ucontext *nes_alloc_ucontext(struct ib_device *ibdev,
 
 	INIT_LIST_HEAD(&nes_ucontext->cq_reg_mem_list);
 	INIT_LIST_HEAD(&nes_ucontext->qp_reg_mem_list);
-	atomic_set(&nes_ucontext->usecnt, 1);
+	refcount_set(&nes_ucontext->usecnt, 1);
 	return &nes_ucontext->ibucontext;
 }
 
@@ -606,7 +606,7 @@ static int nes_dealloc_ucontext(struct ib_ucontext *context)
 	/* struct nes_device *nesdev = nesvnic->nesdev; */
 	struct nes_ucontext *nes_ucontext = to_nesucontext(context);
 
-	if (!atomic_dec_and_test(&nes_ucontext->usecnt))
+	if (!refcount_dec_and_test(&nes_ucontext->usecnt))
 	  return 0;
 	kfree(nes_ucontext);
 	return 0;
@@ -1263,7 +1263,7 @@ static struct ib_qp *nes_create_qp(struct ib_pd *ibpd,
 			u64temp = (u64)nesqp->nesqp_context_pbase;
 			set_wqe_64bit_value(cqp_wqe->wqe_words, NES_CQP_QP_WQE_CONTEXT_LOW_IDX, u64temp);
 
-			atomic_set(&cqp_request->refcount, 2);
+			refcount_set(&cqp_request->refcount, 2);
 			nes_post_cqp_request(nesdev, cqp_request);
 
 			/* Wait for CQP */
@@ -1398,7 +1398,7 @@ static int nes_destroy_qp(struct ib_qp *ibqp)
 
 		nes_debug(NES_DBG_QP, "Generating a CM Timeout Event for "
 				"QP%u. cm_id = %p, refcount = %u. \n",
-				nesqp->hwqp.qp_id, cm_id, atomic_read(&nesqp->refcount));
+				nesqp->hwqp.qp_id, cm_id, refcount_read(&nesqp->refcount));
 
 		cm_id->rem_ref(cm_id);
 		ret = cm_id->event_handler(cm_id, &cm_event);
@@ -1647,7 +1647,7 @@ static struct ib_cq *nes_create_cq(struct ib_device *ibdev,
 	cqp_wqe->wqe_words[NES_CQP_CQ_WQE_CQ_CONTEXT_HIGH_IDX] =
 			cpu_to_le32(((u32)((u64temp) >> 33)) & 0x7FFFFFFF);
 
-	atomic_set(&cqp_request->refcount, 2);
+	refcount_set(&cqp_request->refcount, 2);
 	nes_post_cqp_request(nesdev, cqp_request);
 
 	/* Wait for CQP */
@@ -1751,7 +1751,7 @@ static int nes_destroy_cq(struct ib_cq *ib_cq)
 	if (!nescq->mcrqf)
 		nes_free_resource(nesadapter, nesadapter->allocated_cqs, nescq->hw_cq.cq_number);
 
-	atomic_set(&cqp_request->refcount, 2);
+	refcount_set(&cqp_request->refcount, 2);
 	nes_post_cqp_request(nesdev, cqp_request);
 
 	/* Wait for CQP */
@@ -1963,7 +1963,7 @@ static int nes_reg_mr(struct nes_device *nesdev, struct nes_pd *nespd,
 	}
 	barrier();
 
-	atomic_set(&cqp_request->refcount, 2);
+	refcount_set(&cqp_request->refcount, 2);
 	nes_post_cqp_request(nesdev, cqp_request);
 
 	/* Wait for CQP */
@@ -2531,7 +2531,7 @@ static int nes_dereg_mr(struct ib_mr *ib_mr)
 			NES_CQP_STAG_DEALLOC_PBLS | NES_CQP_STAG_MR);
 	set_wqe_32bit_value(cqp_wqe->wqe_words, NES_CQP_STAG_WQE_STAG_IDX, ib_mr->rkey);
 
-	atomic_set(&cqp_request->refcount, 2);
+	refcount_set(&cqp_request->refcount, 2);
 	nes_post_cqp_request(nesdev, cqp_request);
 
 	/* Wait for CQP */
@@ -2679,7 +2679,7 @@ int nes_hw_modify_qp(struct nes_device *nesdev, struct nes_qp *nesqp,
 	u16 major_code;
 
 	nes_debug(NES_DBG_MOD_QP, "QP%u, refcount=%d\n",
-			nesqp->hwqp.qp_id, atomic_read(&nesqp->refcount));
+			nesqp->hwqp.qp_id, refcount_read(&nesqp->refcount));
 
 	cqp_request = nes_get_cqp_request(nesdev);
 	if (cqp_request == NULL) {
@@ -2708,7 +2708,7 @@ int nes_hw_modify_qp(struct nes_device *nesdev, struct nes_qp *nesqp,
 		set_wqe_32bit_value(cqp_wqe->wqe_words, NES_CQP_QP_WQE_NEW_MSS_IDX, termlen);
 	}
 
-	atomic_set(&cqp_request->refcount, 2);
+	refcount_set(&cqp_request->refcount, 2);
 	nes_post_cqp_request(nesdev, cqp_request);
 
 	/* Wait for CQP */
@@ -2764,7 +2764,7 @@ int nes_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
 	nes_debug(NES_DBG_MOD_QP, "QP%u: QP State=%u, cur QP State=%u,"
 			" iwarp_state=0x%X, refcount=%d\n",
 			nesqp->hwqp.qp_id, attr->qp_state, nesqp->ibqp_state,
-			nesqp->iwarp_state, atomic_read(&nesqp->refcount));
+			nesqp->iwarp_state, refcount_read(&nesqp->refcount));
 
 	spin_lock_irqsave(&nesqp->lock, qplockflags);
 
@@ -2956,14 +2956,14 @@ int nes_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
 	if ((issue_modify_qp) && (nesqp->ibqp_state > IB_QPS_RTS)) {
 		nes_debug(NES_DBG_MOD_QP, "QP%u Issued ModifyQP refcount (%d),"
 				" original_last_aeq = 0x%04X. last_aeq = 0x%04X.\n",
-				nesqp->hwqp.qp_id, atomic_read(&nesqp->refcount),
+				nesqp->hwqp.qp_id, refcount_read(&nesqp->refcount),
 				original_last_aeq, nesqp->last_aeq);
 		if (!ret || original_last_aeq != NES_AEQE_AEID_RDMAP_ROE_BAD_LLP_CLOSE) {
 			if (dont_wait) {
 				if (nesqp->cm_id && nesqp->hw_tcp_state != 0) {
 					nes_debug(NES_DBG_MOD_QP, "QP%u Queuing fake disconnect for QP refcount (%d),"
 							" original_last_aeq = 0x%04X. last_aeq = 0x%04X.\n",
-							nesqp->hwqp.qp_id, atomic_read(&nesqp->refcount),
+							nesqp->hwqp.qp_id, refcount_read(&nesqp->refcount),
 							original_last_aeq, nesqp->last_aeq);
 					/* this one is for the cm_disconnect thread */
 					spin_lock_irqsave(&nesqp->lock, qplockflags);
@@ -2973,7 +2973,7 @@ int nes_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
 					nes_cm_disconn(nesqp);
 				} else {
 					nes_debug(NES_DBG_MOD_QP, "QP%u No fake disconnect, QP refcount=%d\n",
-							nesqp->hwqp.qp_id, atomic_read(&nesqp->refcount));
+							nesqp->hwqp.qp_id, refcount_read(&nesqp->refcount));
 				}
 			} else {
 				spin_lock_irqsave(&nesqp->lock, qplockflags);
@@ -2984,7 +2984,7 @@ int nes_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
 						nes_debug(NES_DBG_MOD_QP, "QP%u Not decrementing QP refcount (%d),"
 								" need ae to finish up, original_last_aeq = 0x%04X."
 								" last_aeq = 0x%04X, scheduling timer.\n",
-								nesqp->hwqp.qp_id, atomic_read(&nesqp->refcount),
+								nesqp->hwqp.qp_id, refcount_read(&nesqp->refcount),
 								original_last_aeq, nesqp->last_aeq);
 						schedule_nes_timer(nesqp->cm_node, (struct sk_buff *) nesqp, NES_TIMER_TYPE_CLOSE, 1, 0);
 					}
@@ -2994,27 +2994,27 @@ int nes_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
 					nes_debug(NES_DBG_MOD_QP, "QP%u Not decrementing QP refcount (%d),"
 							" need ae to finish up, original_last_aeq = 0x%04X."
 							" last_aeq = 0x%04X.\n",
-							nesqp->hwqp.qp_id, atomic_read(&nesqp->refcount),
+							nesqp->hwqp.qp_id, refcount_read(&nesqp->refcount),
 							original_last_aeq, nesqp->last_aeq);
 				}
 			}
 		} else {
 			nes_debug(NES_DBG_MOD_QP, "QP%u Decrementing QP refcount (%d), No ae to finish up,"
 					" original_last_aeq = 0x%04X. last_aeq = 0x%04X.\n",
-					nesqp->hwqp.qp_id, atomic_read(&nesqp->refcount),
+					nesqp->hwqp.qp_id, refcount_read(&nesqp->refcount),
 					original_last_aeq, nesqp->last_aeq);
 		}
 	} else {
 		nes_debug(NES_DBG_MOD_QP, "QP%u Decrementing QP refcount (%d), No ae to finish up,"
 				" original_last_aeq = 0x%04X. last_aeq = 0x%04X.\n",
-				nesqp->hwqp.qp_id, atomic_read(&nesqp->refcount),
+				nesqp->hwqp.qp_id, refcount_read(&nesqp->refcount),
 				original_last_aeq, nesqp->last_aeq);
 	}
 
 	err = 0;
 
 	nes_debug(NES_DBG_MOD_QP, "QP%u Leaving, refcount=%d\n",
-			nesqp->hwqp.qp_id, atomic_read(&nesqp->refcount));
+			nesqp->hwqp.qp_id, refcount_read(&nesqp->refcount));
 
 	return err;
 }

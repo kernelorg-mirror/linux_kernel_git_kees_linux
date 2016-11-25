@@ -128,7 +128,7 @@ struct ib_ah *rvt_create_ah(struct ib_pd *pd,
 	spin_unlock_irqrestore(&dev->n_ahs_lock, flags);
 
 	ah->attr = *ah_attr;
-	atomic_set(&ah->refcount, 0);
+	refcount_set(&ah->refcount, 0);
 
 	if (dev->driver_f.notify_new_ah)
 		dev->driver_f.notify_new_ah(pd->device, ah_attr, ah);
@@ -148,7 +148,7 @@ int rvt_destroy_ah(struct ib_ah *ibah)
 	struct rvt_ah *ah = ibah_to_rvtah(ibah);
 	unsigned long flags;
 
-	if (atomic_read(&ah->refcount) != 0)
+	if (refcount_read(&ah->refcount) != 0)
 		return -EBUSY;
 
 	spin_lock_irqsave(&dev->n_ahs_lock, flags);

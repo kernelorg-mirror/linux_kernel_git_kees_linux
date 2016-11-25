@@ -35,6 +35,8 @@
 #ifndef NES_VERBS_H
 #define NES_VERBS_H
 
+#include <linux/refcount.h>
+
 struct nes_device;
 
 #define NES_MAX_USER_DB_REGIONS  4096
@@ -59,7 +61,7 @@ struct nes_ucontext {
 	struct list_head   cq_reg_mem_list;
 	struct list_head   qp_reg_mem_list;
 	u32                mcrqf;
-	atomic_t	   usecnt;
+	refcount_t	   usecnt;
 };
 
 struct nes_pd {
@@ -154,7 +156,7 @@ struct nes_qp {
 	u32                   hte_index;
 	u32                   last_aeq;
 	u32                   qp_mem_size;
-	atomic_t              refcount;
+	refcount_t              refcount;
 	atomic_t              close_timer_started;
 	u32                   mmap_sq_db_index;
 	u32                   mmap_rq_db_index;

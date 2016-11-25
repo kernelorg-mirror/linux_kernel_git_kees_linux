@@ -142,7 +142,7 @@ struct ib_cq *ib_alloc_cq(struct ib_device *dev, void *private,
 	cq->event_handler = NULL;
 	cq->cq_context = private;
 	cq->poll_ctx = poll_ctx;
-	atomic_set(&cq->usecnt, 0);
+	refcount_set(&cq->usecnt, 0);
 
 	cq->wc = kmalloc_array(IB_POLL_BATCH, sizeof(*cq->wc), GFP_KERNEL);
 	if (!cq->wc)
@@ -186,7 +186,7 @@ void ib_free_cq(struct ib_cq *cq)
 {
 	int ret;
 
-	if (WARN_ON_ONCE(atomic_read(&cq->usecnt)))
+	if (WARN_ON_ONCE(refcount_read(&cq->usecnt)))
 		return;
 
 	switch (cq->poll_ctx) {
