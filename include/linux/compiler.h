@@ -577,4 +577,12 @@ static __always_inline void __write_once_size(volatile void *p, void *res, int s
 	(_________p1); \
 })
 
+#ifdef CONFIG_HAVE_ARCH_RARE_WRITE
+# define __wr_rare	__ro_after_init
+# define __wr_rare_type	const
+#else
+# define __wr_rare
+# define __wr_rare_type
+#endif
+
 #endif /* __LINUX_COMPILER_H */

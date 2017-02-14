@@ -258,10 +258,12 @@ do { \
 /*
  * Modules have no business playing preemption tricks.
  */
-#undef sched_preempt_enable_no_resched
-#undef preempt_enable_no_resched
 #undef preempt_enable_no_resched_notrace
 #undef preempt_check_resched
+#ifndef CONFIG_HAVE_ARCH_RARE_WRITE
+#undef sched_preempt_enable_no_resched
+#undef preempt_enable_no_resched
+#endif
 #endif
 
 #define preempt_set_need_resched() \

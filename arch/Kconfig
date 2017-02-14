@@ -847,4 +847,27 @@ config STRICT_MODULE_RWX
 config ARCH_WANT_RELAX_ORDER
 	bool
 
+config HAVE_ARCH_RARE_WRITE
+	def_bool n
+	help
+	  An arch should select this option if it has defined the functions
+	  __arch_rare_write_begin() and __arch_rare_write_end() to
+	  respectively enable and disable writing to read-only memory. The
+	  routines must meet the following requirements:
+	  - read-only memory writing must only be available on the current
+	    CPU (to make sure other CPUs can't race to make changes too).
+	  - the routines must be declared inline (to discourage ROP use).
+	  - the routines must validate expected state (e.g. when enabling
+	    writes, BUG() if writes are already enabled).
+
+config HAVE_ARCH_RARE_WRITE_MEMCPY
+	def_bool n
+	depends on HAVE_ARCH_RARE_WRITE
+	help
+	  An arch should select this option if a special accessor is needed
+	  to write to otherwise read-only memory, defined by the function
+	  __arch_rare_write_memcpy(). Without this, the write-rarely
+	  infrastructure will just attempt to write directly to the memory
+	  using a const-ignoring assignment.
+
 source "kernel/gcov/Kconfig"
