@@ -10,7 +10,10 @@
 #include <linux/bug.h>
 #include <linux/kernel.h>
 #include <linux/rculist.h>
+#include <linux/mm.h>
+#include <linux/write-rarely.h>
 
+#ifdef CONFIG_DEBUG_LIST
 /*
  * Check that the data structures for the list manipulations are reasonably
  * valid. Failures here indicate memory corruption (and possibly an exploit
@@ -60,3 +63,38 @@ bool __list_del_entry_valid(struct list_head *entry)
 
 }
 EXPORT_SYMBOL(__list_del_entry_valid);
+
+#endif /* CONFIG_DEBUG_LIST */
+
+void __rare_list_add(struct list_head *new, struct list_head *prev,
+		     struct list_head *next)
+{
+	if (!__list_add_valid(new, prev, next))
+		return;
+
+	rare_write_begin();
+	__rare_write(next->prev, new);
+	__rare_write(new->next, next);
+	__rare_write(new->prev, prev);
+	__rare_write(prev->next, new);
+	rare_write_end();
+}
+EXPORT_SYMBOL(__rare_list_add);
+
+void rare_list_del(__wr_rare_type struct list_head *entry_const)
+{
+	struct list_head *entry = (struct list_head *)entry_const;
+	struct list_head *prev = entry->prev;
+	struct list_head *next = entry->next;
+
+	if (!__list_del_entry_valid(entry))
+		return;
+
+	rare_write_begin();
+	__rare_write(next->prev, prev);
+	__rare_write(prev->next, next);
+	__rare_write(entry->next, LIST_POISON1);
+	__rare_write(entry->prev, LIST_POISON2);
+	rare_write_end();
+}
+EXPORT_SYMBOL(rare_list_del);

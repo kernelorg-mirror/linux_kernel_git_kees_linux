@@ -126,6 +126,23 @@ static inline void list_del(struct list_head *entry)
 	entry->prev = LIST_POISON2;
 }
 
+extern void __rare_list_add(struct list_head *new,
+			    struct list_head *prev,
+			    struct list_head *next);
+
+static inline void
+rare_list_add(__wr_rare_type struct list_head *new, struct list_head *head)
+{
+	__rare_list_add((struct list_head *)new, head, head->next);
+}
+static inline void
+rare_list_add_tail(__wr_rare_type struct list_head *new, struct list_head *head)
+{
+	__rare_list_add((struct list_head *)new, head->prev, head);
+}
+
+extern void rare_list_del(__wr_rare_type struct list_head *entry);
+
 /**
  * list_replace - replace old entry by new one
  * @old : the element to be replaced
