@@ -91,6 +91,26 @@ extern struct mm_struct *pgd_page_get_mm(struct page *page);
 
 #endif	/* CONFIG_PARAVIRT */
 
+static __always_inline unsigned long __arch_rare_write_begin(void)
+{
+	unsigned long cr0;
+
+	cr0 = read_cr0() ^ X86_CR0_WP;
+	BUG_ON(cr0 & X86_CR0_WP);
+	write_cr0(cr0);
+	return cr0 ^ X86_CR0_WP;
+}
+
+static __always_inline unsigned long __arch_rare_write_end(void)
+{
+	unsigned long cr0;
+
+	cr0 = read_cr0() ^ X86_CR0_WP;
+	BUG_ON(!(cr0 & X86_CR0_WP));
+	write_cr0(cr0);
+	return cr0 ^ X86_CR0_WP;
+}
+
 /*
  * The following only work if pte_present() is true.
  * Undefined behaviour if not..
