@@ -54,6 +54,7 @@
 #include <linux/proc_ns.h>
 #include <linux/nsproxy.h>
 #include <linux/file.h>
+#include <linux/write-rarely.h>
 #include <net/sock.h>
 
 #define CREATE_TRACE_POINTS
@@ -3058,11 +3059,11 @@ static int cgroup_add_file(struct cgroup_subsys_state *css, struct cgroup *cgrp,
 	int ret;
 
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
-	key = &cft->lockdep_key;
+	key = (struct lock_class_key *)&cft->lockdep_key;
 #endif
 	kn = __kernfs_create_file(cgrp->kn, cgroup_file_name(cgrp, cft, name),
-				  cgroup_file_mode(cft), 0, cft->kf_ops, cft,
-				  NULL, key);
+				  cgroup_file_mode(cft), 0, cft->kf_ops,
+				  (void *)cft, NULL, key);
 	if (IS_ERR(kn))
 		return PTR_ERR(kn);
 
@@ -3165,11 +3166,16 @@ static void cgroup_exit_cftypes(struct cftype *cfts)
 		/* free copy for custom atomic_write_len, see init_cftypes() */
 		if (cft->max_write_len && cft->max_write_len != PAGE_SIZE)
 			kfree(cft->kf_ops);
-		cft->kf_ops = NULL;
-		cft->ss = NULL;
+
+		rare_write_begin();
+		__rare_write(cft->kf_ops, NULL);
+		__rare_write(cft->ss, NULL);
 
 		/* revert flags set by cgroup core while adding @cfts */
-		cft->flags &= ~(__CFTYPE_ONLY_ON_DFL | __CFTYPE_NOT_ON_DFL);
+		__rare_write(cft->flags,
+			     cft->flags & ~(__CFTYPE_ONLY_ON_DFL |
+					    __CFTYPE_NOT_ON_DFL));
+		rare_write_end();
 	}
 }
 
@@ -3200,8 +3206,10 @@ static int cgroup_init_cftypes(struct cgroup_subsys *ss, struct cftype *cfts)
 			kf_ops->atomic_write_len = cft->max_write_len;
 		}
 
-		cft->kf_ops = kf_ops;
-		cft->ss = ss;
+		rare_write_begin();
+		__rare_write(cft->kf_ops, kf_ops);
+		__rare_write(cft->ss, ss);
+		rare_write_end();
 	}
 
 	return 0;
@@ -3214,7 +3222,7 @@ static int cgroup_rm_cftypes_locked(struct cftype *cfts)
 	if (!cfts || !cfts[0].ss)
 		return -ENOENT;
 
-	list_del(&cfts->node);
+	rare_list_del(&cfts->node);
 	cgroup_apply_cftypes(cfts, false);
 	cgroup_exit_cftypes(cfts);
 	return 0;
@@ -3271,7 +3279,7 @@ static int cgroup_add_cftypes(struct cgroup_subsys *ss, struct cftype *cfts)
 
 	mutex_lock(&cgroup_mutex);
 
-	list_add_tail(&cfts->node, &ss->cfts);
+	rare_list_add_tail(&cfts->node, &ss->cfts);
 	ret = cgroup_apply_cftypes(cfts, true);
 	if (ret)
 		cgroup_rm_cftypes_locked(cfts);
@@ -3292,8 +3300,10 @@ int cgroup_add_dfl_cftypes(struct cgroup_subsys *ss, struct cftype *cfts)
 {
 	struct cftype *cft;
 
+	rare_write_begin();
 	for (cft = cfts; cft && cft->name[0] != '\0'; cft++)
-		cft->flags |= __CFTYPE_ONLY_ON_DFL;
+		__rare_write(cft->flags, cft->flags | __CFTYPE_ONLY_ON_DFL);
+	rare_write_end();
 	return cgroup_add_cftypes(ss, cfts);
 }
 
@@ -3309,8 +3319,10 @@ int cgroup_add_legacy_cftypes(struct cgroup_subsys *ss, struct cftype *cfts)
 {
 	struct cftype *cft;
 
+	rare_write_begin();
 	for (cft = cfts; cft && cft->name[0] != '\0'; cft++)
-		cft->flags |= __CFTYPE_NOT_ON_DFL;
+		__rare_write(cft->flags, cft->flags | __CFTYPE_NOT_ON_DFL);
+	rare_write_end();
 	return cgroup_add_cftypes(ss, cfts);
 }
 
