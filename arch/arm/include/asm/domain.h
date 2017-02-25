@@ -54,6 +54,7 @@
 #define DOMAIN_MANAGER	3
 #else
 #define DOMAIN_MANAGER	1
+#define DOMAIN_FORCE_MANAGER 3
 #endif
 
 #define domain_mask(dom)	((3) << (2 * (dom)))
@@ -118,7 +119,7 @@ static inline void set_domain(unsigned val)
 }
 #endif
 
-#ifdef CONFIG_CPU_USE_DOMAINS
+#if defined(CONFIG_CPU_USE_DOMAINS) || defined(CONFIG_HAVE_ARCH_RARE_WRITE)
 #define modify_domain(dom,type)					\
 	do {							\
 		unsigned int domain = get_domain();		\

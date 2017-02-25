@@ -57,6 +57,30 @@ extern void __pgd_error(const char *file, int line, pgd_t);
 #define pmd_ERROR(pmd)		__pmd_error(__FILE__, __LINE__, pmd)
 #define pgd_ERROR(pgd)		__pgd_error(__FILE__, __LINE__, pgd)
 
+#ifdef CONFIG_HAVE_ARCH_RARE_WRITE
+#include <asm/domain.h>
+
+static inline int test_domain(int domain, int domaintype)
+{
+	return (get_domain() & domain_val(domain, 3)) ==
+		domain_val(domain, domaintype);
+}
+
+static inline unsigned long __arch_rare_write_begin(void)
+{
+	BUG_ON(test_domain(DOMAIN_WR_RARE, DOMAIN_FORCE_MANAGER));
+	modify_domain(DOMAIN_WR_RARE, DOMAIN_FORCE_MANAGER);
+	return 0;
+}
+
+static inline unsigned long __arch_rare_write_end(void)
+{
+	BUG_ON(test_domain(DOMAIN_WR_RARE, DOMAIN_CLIENT));
+	modify_domain(DOMAIN_WR_RARE, DOMAIN_CLIENT);
+	return 0;
+}
+#endif
+
 /*
  * This is the lowest virtual address we can permit any user space
  * mapping to be mapped at.  This is particularly important for
