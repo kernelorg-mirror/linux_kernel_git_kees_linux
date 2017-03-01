@@ -1995,9 +1995,12 @@ config BUG_ON_DATA_CORRUPTION
 	bool "Trigger a BUG when data corruption is detected"
 	select DEBUG_LIST
 	help
-	  Select this option if the kernel should BUG when it encounters
-	  data corruption in kernel memory structures when they get checked
-	  for validity.
+	  This option enables several inexpensive data corruption checks.
+	  Most of these checks normally just WARN and try to further avoid
+	  the corruption. Selecting this option upgrades these to BUGs so
+	  that the offending process is killed. Additionally, the system
+	  owner can further configure the system for immediate reboots
+	  (via panic_on_oops sysctl) or crash dumps.
 
 	  If unsure, say N.
 
