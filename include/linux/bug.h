@@ -130,15 +130,15 @@ static inline enum bug_trap_type report_bug(unsigned long bug_addr,
 static inline __must_check bool check_data_corruption(bool v) { return v; }
 #define CHECK_DATA_CORRUPTION(condition, fmt, ...)			 \
 	check_data_corruption(({					 \
-		bool corruption = unlikely(condition);			 \
-		if (corruption) {					 \
+		bool corruption = !!(condition);			 \
+		if (unlikely(corruption)) {				 \
 			if (IS_ENABLED(CONFIG_BUG_ON_DATA_CORRUPTION)) { \
 				pr_err(fmt, ##__VA_ARGS__);		 \
 				BUG();					 \
 			} else						 \
 				WARN(1, fmt, ##__VA_ARGS__);		 \
 		}							 \
-		corruption;						 \
+		unlikely(corruption);					 \
 	}))
 
 #endif	/* _LINUX_BUG_H */
