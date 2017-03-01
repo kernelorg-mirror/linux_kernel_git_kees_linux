@@ -84,8 +84,9 @@ static int notifier_call_chain(struct notifier_block **nl,
 		next_nb = rcu_dereference_raw(nb->next);
 
 #ifdef CONFIG_DEBUG_NOTIFIERS
-		if (unlikely(!func_ptr_is_kernel_text(nb->notifier_call))) {
-			WARN(1, "Invalid notifier called!");
+		if (CHECK_DATA_CORRUPTION(
+				!func_ptr_is_kernel_text(nb->notifier_call),
+				"Invalid notifier called!")) {
 			nb = next_nb;
 			continue;
 		}

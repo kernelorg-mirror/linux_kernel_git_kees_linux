@@ -1277,7 +1277,7 @@ config DEBUG_SG
 
 config DEBUG_NOTIFIERS
 	bool "Debug notifier call chains"
-	depends on DEBUG_KERNEL
+	depends on DEBUG_KERNEL || BUG_ON_DATA_CORRUPTION
 	help
 	  Enable this to turn on sanity checking for notifier call chains.
 	  This is most useful for kernel developers to make sure that
@@ -1995,6 +1995,7 @@ config BUG_ON_DATA_CORRUPTION
 	bool "Trigger a BUG when data corruption is detected"
 	select DEBUG_CREDENTIALS
 	select DEBUG_LIST
+	select DEBUG_NOTIFIERS
 	select DEBUG_SG
 	help
 	  This option enables several inexpensive data corruption checks.
