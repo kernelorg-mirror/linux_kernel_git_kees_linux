@@ -1287,7 +1287,7 @@ config DEBUG_NOTIFIERS
 
 config DEBUG_CREDENTIALS
 	bool "Debug credential management"
-	depends on DEBUG_KERNEL
+	depends on DEBUG_KERNEL || BUG_ON_DATA_CORRUPTION
 	help
 	  Enable this to turn on some debug checking for credential
 	  management.  The additional code keeps track of the number of
@@ -1993,6 +1993,7 @@ config TEST_STATIC_KEYS
 
 config BUG_ON_DATA_CORRUPTION
 	bool "Trigger a BUG when data corruption is detected"
+	select DEBUG_CREDENTIALS
 	select DEBUG_LIST
 	help
 	  This option enables several inexpensive data corruption checks.
