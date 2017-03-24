@@ -136,7 +136,7 @@ static inline __must_check bool check_data_corruption(bool v) { return v; }
 				pr_err(fmt, ##__VA_ARGS__);		 \
 				BUG();					 \
 			} else						 \
-				WARN(1, fmt, ##__VA_ARGS__);		 \
+				WARN_ONCE(1, fmt, ##__VA_ARGS__);	 \
 		}							 \
 		unlikely(corruption);					 \
 	}))
