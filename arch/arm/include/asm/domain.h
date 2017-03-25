@@ -43,6 +43,7 @@
 #define DOMAIN_IO	0
 #endif
 #define DOMAIN_VECTORS	3
+#define DOMAIN_WR_RARE	4
 
 /*
  * Domain types
@@ -69,11 +70,13 @@
 #define DACR_INIT \
 	(__DACR_INIT_USER | \
 	 domain_val(DOMAIN_KERNEL, DOMAIN_MANAGER) | \
+	 domain_val(DOMAIN_WR_RARE, DOMAIN_CLIENT) | \
 	 domain_val(DOMAIN_IO, DOMAIN_CLIENT) | \
 	 domain_val(DOMAIN_VECTORS, DOMAIN_CLIENT))
 
 #define __DACR_DEFAULT \
 	domain_val(DOMAIN_KERNEL, DOMAIN_CLIENT) | \
+	domain_val(DOMAIN_WR_RARE, DOMAIN_CLIENT) | \
 	domain_val(DOMAIN_IO, DOMAIN_CLIENT) | \
 	domain_val(DOMAIN_VECTORS, DOMAIN_CLIENT)
 

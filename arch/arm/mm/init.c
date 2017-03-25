@@ -642,9 +642,10 @@ static struct section_perm ro_perms[] = {
 		.mask   = ~L_PMD_SECT_RDONLY,
 		.prot   = L_PMD_SECT_RDONLY,
 #else
-		.mask   = ~(PMD_SECT_APX | PMD_SECT_AP_WRITE),
-		.prot   = PMD_SECT_APX | PMD_SECT_AP_WRITE,
-		.clear  = PMD_SECT_AP_WRITE,
+		.mask   = ~(PMD_SECT_APX | PMD_SECT_AP_WRITE | PMD_DOMAIN_MASK),
+		.prot   = PMD_SECT_APX | PMD_SECT_AP_WRITE | \
+			  PMD_DOMAIN(DOMAIN_WR_RARE),
+		.clear  = PMD_SECT_AP_WRITE | PMD_DOMAIN(DOMAIN_KERNEL),
 #endif
 	},
 };

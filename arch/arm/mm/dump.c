@@ -288,6 +288,8 @@ static const char *get_domain_name(pmd_t *pmd)
 		return "IO     ";
 	case PMD_DOMAIN(DOMAIN_VECTORS):
 		return "VECTORS";
+	case PMD_DOMAIN(DOMAIN_WR_RARE):
+		return "WR_RARE";
 	default:
 		return "unknown";
 	}
