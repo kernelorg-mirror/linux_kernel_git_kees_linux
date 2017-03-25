@@ -59,18 +59,18 @@
 #define domain_val(dom,type)	((type) << (2 * (dom)))
 
 #ifdef CONFIG_CPU_SW_DOMAIN_PAN
-#define DACR_INIT \
-	(domain_val(DOMAIN_USER, DOMAIN_NOACCESS) | \
-	 domain_val(DOMAIN_KERNEL, DOMAIN_MANAGER) | \
-	 domain_val(DOMAIN_IO, DOMAIN_CLIENT) | \
-	 domain_val(DOMAIN_VECTORS, DOMAIN_CLIENT))
+#define __DACR_INIT_USER \
+	domain_val(DOMAIN_USER, DOMAIN_NOACCESS)
 #else
+#define __DACR_INIT_USER \
+	domain_val(DOMAIN_USER, DOMAIN_CLIENT)
+#endif
+
 #define DACR_INIT \
-	(domain_val(DOMAIN_USER, DOMAIN_CLIENT) | \
+	(__DACR_INIT_USER | \
 	 domain_val(DOMAIN_KERNEL, DOMAIN_MANAGER) | \
 	 domain_val(DOMAIN_IO, DOMAIN_CLIENT) | \
 	 domain_val(DOMAIN_VECTORS, DOMAIN_CLIENT))
-#endif
 
 #define __DACR_DEFAULT \
 	domain_val(DOMAIN_KERNEL, DOMAIN_CLIENT) | \
