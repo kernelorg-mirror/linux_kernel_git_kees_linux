@@ -241,6 +241,8 @@ extern int core_kernel_text(unsigned long addr);
 extern int __kernel_text_address(unsigned long addr);
 extern int kernel_text_address(unsigned long addr);
 extern int func_ptr_is_kernel_text(void *ptr);
+extern int core_kernel_rodata(unsigned long addr);
+extern int kernel_ro_address(unsigned long addr);
 
 extern void bust_spinlocks(int yes);
 
