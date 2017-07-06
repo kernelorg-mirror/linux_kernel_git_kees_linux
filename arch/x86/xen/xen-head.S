@@ -25,14 +25,15 @@ ENTRY(startup_xen)
 
 	/* Clear .bss */
 	xor %eax,%eax
-	mov $__bss_start, %_ASM_DI
-	mov $__bss_stop, %_ASM_CX
+	_ASM_GET_PTR(__bss_start, %_ASM_DI)
+	_ASM_GET_PTR(__bss_stop, %_ASM_CX)
 	sub %_ASM_DI, %_ASM_CX
 	shr $__ASM_SEL(2, 3), %_ASM_CX
 	rep __ASM_SIZE(stos)
 
-	mov %_ASM_SI, xen_start_info
-	mov $init_thread_union+THREAD_SIZE, %_ASM_SP
+	_ASM_GET_PTR(xen_start_info, %_ASM_AX)
+	mov %_ASM_SI, (%_ASM_AX)
+	_ASM_GET_PTR(init_thread_union+THREAD_SIZE, %_ASM_SP)
 
 	jmp xen_start_kernel
 END(startup_xen)
