@@ -57,6 +57,19 @@
 # define CC_OUT(c) [_cc_ ## c] "=qm"
 #endif
 
+/* Macros to get a global variable address with PIE support on 64-bit */
+#ifdef CONFIG_X86_32
+#define __ASM_GET_PTR_PRE(_src) __ASM_FORM_COMMA(movl $##_src)
+#else
+#ifdef __ASSEMBLY__
+#define __ASM_GET_PTR_PRE(_src) __ASM_FORM_COMMA(leaq (_src)(%rip))
+#else
+#define __ASM_GET_PTR_PRE(_src) __ASM_FORM_COMMA(leaq (_src)(%%rip))
+#endif
+#endif
+#define _ASM_GET_PTR(_src, _dst) \
+		__ASM_GET_PTR_PRE(_src) __ASM_FORM(_dst)
+
 /* Exception table entry */
 #ifdef __ASSEMBLY__
 # define _ASM_EXTABLE_HANDLE(from, to, handler)			\
