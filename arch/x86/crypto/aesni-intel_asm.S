@@ -325,7 +325,8 @@ _get_AAD_rest0\num_initial_blocks\operation:
 	vpshufb and an array of shuffle masks */
 	movq	   %r12, %r11
 	salq	   $4, %r11
-	movdqu	   aad_shift_arr(%r11), \TMP1
+	leaq	   aad_shift_arr(%rip), %rax
+	movdqu	   (%rax,%r11,), \TMP1
 	PSHUFB_XMM \TMP1, %xmm\i
 _get_AAD_rest_final\num_initial_blocks\operation:
 	PSHUFB_XMM   %xmm14, %xmm\i # byte-reflect the AAD data
@@ -584,7 +585,8 @@ _get_AAD_rest0\num_initial_blocks\operation:
 	vpshufb and an array of shuffle masks */
 	movq	   %r12, %r11
 	salq	   $4, %r11
-	movdqu	   aad_shift_arr(%r11), \TMP1
+	leaq	   aad_shift_arr(%rip), %rax
+	movdqu	   (%rax,%r11,), \TMP1
 	PSHUFB_XMM \TMP1, %xmm\i
 _get_AAD_rest_final\num_initial_blocks\operation:
 	PSHUFB_XMM   %xmm14, %xmm\i # byte-reflect the AAD data
@@ -2722,7 +2724,7 @@ ENDPROC(aesni_cbc_dec)
  */
 .align 4
 _aesni_inc_init:
-	movaps .Lbswap_mask, BSWAP_MASK
+	movaps .Lbswap_mask(%rip), BSWAP_MASK
 	movaps IV, CTR
 	PSHUFB_XMM BSWAP_MASK CTR
 	mov $1, TCTR_LOW
@@ -2850,12 +2852,12 @@ ENTRY(aesni_xts_crypt8)
 	cmpb $0, %cl
 	movl $0, %ecx
 	movl $240, %r10d
-	leaq _aesni_enc4, %r11
-	leaq _aesni_dec4, %rax
+	leaq _aesni_enc4(%rip), %r11
+	leaq _aesni_dec4(%rip), %rax
 	cmovel %r10d, %ecx
 	cmoveq %rax, %r11
 
-	movdqa .Lgf128mul_x_ble_mask, GF128MUL_MASK
+	movdqa .Lgf128mul_x_ble_mask(%rip), GF128MUL_MASK
 	movups (IVP), IV
 
 	mov 480(KEYP), KLEN
