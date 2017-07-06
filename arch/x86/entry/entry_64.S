@@ -194,12 +194,15 @@ entry_SYSCALL_64_fastpath:
 	ja	1f				/* return -ENOSYS (already in pt_regs->ax) */
 	movq	%r10, %rcx
 
+	/* Ensures the call is position independent */
+	leaq	sys_call_table(%rip), %r11
+
 	/*
 	 * This call instruction is handled specially in stub_ptregs_64.
 	 * It might end up jumping to the slow path.  If it jumps, RAX
 	 * and all argument registers are clobbered.
 	 */
-	call	*sys_call_table(, %rax, 8)
+	call	*(%r11, %rax, 8)
 .Lentry_SYSCALL_64_after_fastpath_call:
 
 	movq	%rax, RAX(%rsp)
@@ -334,7 +337,8 @@ ENTRY(stub_ptregs_64)
 	 * RAX stores a pointer to the C function implementing the syscall.
 	 * IRQs are on.
 	 */
-	cmpq	$.Lentry_SYSCALL_64_after_fastpath_call, (%rsp)
+	leaq	.Lentry_SYSCALL_64_after_fastpath_call(%rip), %r11
+	cmpq	%r11, (%rsp)
 	jne	1f
 
 	/*
@@ -1172,7 +1176,8 @@ ENTRY(error_entry)
 	movl	%ecx, %eax			/* zero extend */
 	cmpq	%rax, RIP+8(%rsp)
 	je	.Lbstep_iret
-	cmpq	$.Lgs_change, RIP+8(%rsp)
+	leaq	.Lgs_change(%rip), %rcx
+	cmpq	%rcx, RIP+8(%rsp)
 	jne	.Lerror_entry_done
 
 	/*
@@ -1383,10 +1388,10 @@ ENTRY(nmi)
 	 * resume the outer NMI.
 	 */
 
-	movq	$repeat_nmi, %rdx
+	leaq	repeat_nmi(%rip), %rdx
 	cmpq	8(%rsp), %rdx
 	ja	1f
-	movq	$end_repeat_nmi, %rdx
+	leaq	end_repeat_nmi(%rip), %rdx
 	cmpq	8(%rsp), %rdx
 	ja	nested_nmi_out
 1:
@@ -1440,7 +1445,8 @@ nested_nmi:
 	pushq	%rdx
 	pushfq
 	pushq	$__KERNEL_CS
-	pushq	$repeat_nmi
+	leaq	repeat_nmi(%rip), %rdx
+	pushq	%rdx
 
 	/* Put stack back */
 	addq	$(6*8), %rsp
@@ -1479,7 +1485,9 @@ first_nmi:
 	addq	$8, (%rsp)	/* Fix up RSP */
 	pushfq			/* RFLAGS */
 	pushq	$__KERNEL_CS	/* CS */
-	pushq	$1f		/* RIP */
+	pushq	%rax		/* Support Position Independent Code */
+	leaq	1f(%rip), %rax	/* RIP */
+	xchgq	%rax, (%rsp)	/* Restore RAX, put 1f */
 	INTERRUPT_RETURN	/* continues at repeat_nmi below */
 	UNWIND_HINT_IRET_REGS
 1:
