@@ -86,8 +86,21 @@ startup_64:
 	popq	%rsi
 
 	/* Form the CR3 value being sure to include the CR3 modifier */
-	addq	$(early_top_pgt - __START_KERNEL_map), %rax
+	addq    _early_top_pgt_offset(%rip), %rax
 	jmp 1f
+
+	/*
+	 * Position Independent Code takes only relative references in code
+	 * meaning a global variable address is relative to RIP and not its
+	 * future virtual address. Global variables can be used instead as they
+	 * are still relocated on the expected kernel mapping address.
+	 */
+	.align 8
+_early_top_pgt_offset:
+	.quad early_top_pgt - __START_KERNEL_map
+_init_top_offset:
+	.quad init_top_pgt - __START_KERNEL_map
+
 ENTRY(secondary_startup_64)
 	UNWIND_HINT_EMPTY
 	/*
@@ -116,7 +129,7 @@ ENTRY(secondary_startup_64)
 	popq	%rsi
 
 	/* Form the CR3 value being sure to include the CR3 modifier */
-	addq	$(init_top_pgt - __START_KERNEL_map), %rax
+	addq    _init_top_offset(%rip), %rax
 1:
 
 	/* Enable PAE mode, PGE and LA57 */
@@ -131,7 +144,7 @@ ENTRY(secondary_startup_64)
 	movq	%rax, %cr3
 
 	/* Ensure I am executing from virtual addresses */
-	movq	$1f, %rax
+	movabs  $1f, %rax
 	jmp	*%rax
 1:
 	UNWIND_HINT_EMPTY
@@ -230,11 +243,12 @@ ENTRY(secondary_startup_64)
 	 *	REX.W + FF /5 JMP m16:64 Jump far, absolute indirect,
 	 *		address given in m16:64.
 	 */
-	pushq	$.Lafter_lret	# put return address on stack for unwinder
+	leaq	.Lafter_lret(%rip), %rax
+	pushq	%rax		# put return address on stack for unwinder
 	xorq	%rbp, %rbp	# clear frame pointer
-	movq	initial_code(%rip), %rax
+	leaq	initial_code(%rip), %rax
 	pushq	$__KERNEL_CS	# set correct cs
-	pushq	%rax		# target address in negative space
+	pushq	(%rax)		# target address in negative space
 	lretq
 .Lafter_lret:
 END(secondary_startup_64)
