@@ -42,11 +42,20 @@ pmdval_t early_pmd_flags = __PAGE_KERNEL_LARGE & ~(_PAGE_GLOBAL | _PAGE_NX);
 
 static void __head *fixup_pointer(void *ptr, unsigned long physaddr)
 {
+	if (IS_ENABLED(CONFIG_X86_PIE))
+		return ptr;
 	return ptr - (void *)_text + (void *)physaddr;
 }
 
-unsigned long __head __startup_64(unsigned long physaddr,
-				  struct boot_params *bp)
+/*
+ * Use a global variable to properly calculate _text delta on PIE. By default
+ * a PIE binary do a RIP relative difference instead of the relocated address.
+ */
+unsigned long _text_abs = (unsigned long)_text;
+unsigned long _end_abs = (unsigned long)_text;
+
+unsigned long __head notrace __startup_64(unsigned long physaddr,
+					  struct boot_params *bp)
 {
 	unsigned long load_delta, *p;
 	unsigned long pgtable_flags;
@@ -65,7 +74,7 @@ unsigned long __head __startup_64(unsigned long physaddr,
 	 * Compute the delta between the address I am compiled to run at
 	 * and the address I am actually running at.
 	 */
-	load_delta = physaddr - (unsigned long)(_text - __START_KERNEL_map);
+	load_delta = physaddr - (_text_abs - __START_KERNEL_map);
 
 	/* Is the address not 2M aligned? */
 	if (load_delta & ~PMD_PAGE_MASK)
@@ -131,7 +140,7 @@ unsigned long __head __startup_64(unsigned long physaddr,
 	pmd_entry += sme_get_me_mask();
 	pmd_entry +=  physaddr;
 
-	for (i = 0; i < DIV_ROUND_UP(_end - _text, PMD_SIZE); i++) {
+	for (i = 0; i < DIV_ROUND_UP(_end_abs - _text_abs, PMD_SIZE); i++) {
 		int idx = i + (physaddr >> PMD_SHIFT) % PTRS_PER_PMD;
 		pmd[idx] = pmd_entry + i * PMD_SIZE;
 	}
