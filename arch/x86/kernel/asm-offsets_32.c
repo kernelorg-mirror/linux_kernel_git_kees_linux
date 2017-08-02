@@ -54,7 +54,8 @@ void foo(void)
 	/* Size of SYSENTER_stack */
 	DEFINE(SIZEOF_SYSENTER_stack, sizeof(((struct tss_struct *)0)->SYSENTER_stack));
 
-#ifdef CONFIG_CC_STACKPROTECTOR
+#if defined(CONFIG_CC_STACKPROTECTOR) && \
+	!defined(CONFIG_X86_GLOBAL_STACKPROTECTOR)
 	BLANK();
 	OFFSET(stack_canary_offset, stack_canary, canary);
 #endif
