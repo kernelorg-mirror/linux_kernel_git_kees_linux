@@ -19,7 +19,7 @@ extern struct mm_struct init_mm;
 #include <asm/pgalloc.h>
 #include <asm/desc.h>
 
-int kaiser_enabled __read_mostly = 1;
+int kaiser_enabled __read_mostly = KAISER_WITH_NOKAISER_NOGLOBALS;
 EXPORT_SYMBOL(kaiser_enabled);	/* for inlined TLB flush functions */
 
 __visible
@@ -272,6 +272,11 @@ void __init kaiser_init(void)
 
 	if (!kaiser_enabled)
 		return;
+
+	/* Avoid special cases in more commonly executed code */
+	if (nokaiser_uses_globals() && !cpu_has_pge)
+		kaiser_enabled = KAISER_WITH_NOKAISER_NOGLOBALS;
+
 	kaiser_init_all_pgds();
 
 	for_each_possible_cpu(cpu) {

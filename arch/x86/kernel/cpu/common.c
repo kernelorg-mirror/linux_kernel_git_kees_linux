@@ -35,6 +35,7 @@
 #include <linux/numa.h>
 #include <asm/asm.h>
 #include <asm/cpu.h>
+#include <asm/kaiser.h>
 #include <asm/mce.h>
 #include <asm/msr.h>
 #include <asm/pat.h>
@@ -189,13 +190,25 @@ __setup("nopcid", x86_pcid_setup);
 
 static int __init x86_nokaiser_setup(char *s)
 {
-	/* nokaiser doesn't accept parameters */
-	if (s)
-		return -EINVAL;
+	int kaiser = NOKAISER_BOOT_OPTION;
+
+	/*
+	 * For ease of testing some possibilities, allow "nokaiser=N";
+	 * though it is treated as the inverse, as "kaiser_enabled=N".
+	 */
+	if (s) {
+		if (get_option(&s, &kaiser) != 1)
+			return -EINVAL;
+		if (kaiser < NOKAISER_BOOT_OPTION ||
+		    kaiser > KAISER_MAX_BOOT_OPTION)
+			return -ERANGE;
+	}
 #ifdef CONFIG_KAISER
-	kaiser_enabled = 0;
-	setup_clear_cpu_cap(X86_FEATURE_KAISER);
-	pr_info("nokaiser: KAISER feature disabled\n");
+	kaiser_enabled = kaiser;
+	if (!kaiser_enabled) {
+		setup_clear_cpu_cap(X86_FEATURE_KAISER);
+		pr_info("nokaiser: KAISER feature disabled\n");
+	}
 #endif
 	return 0;
 }
@@ -1341,7 +1354,7 @@ void cpu_init(void)
 	 * try to read it.
 	 */
 	cr4_init_shadow();
-	if (!kaiser_enabled) {
+	if (cpu_has_pge && nokaiser_uses_globals()) {
 		/*
 		 * secondary_startup_64() deferred setting PGE in cr4:
 		 * probe_page_size_mask() sets it on the boot cpu,

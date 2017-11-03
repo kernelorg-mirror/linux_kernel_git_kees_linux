@@ -276,7 +276,7 @@ static void pgd_prepopulate_pmd(struct mm_struct *mm, pgd_t *pgd, pmd_t *pmds[])
  * both 8k in size and 8k-aligned.  That lets us just flip bit 12
  * in a pointer to swap between the two 4k halves.
  */
-#define PGD_ALLOCATION_ORDER	kaiser_enabled
+#define PGD_ALLOCATION_ORDER	(!!kaiser_enabled)
 
 static inline pgd_t *_pgd_alloc(void)
 {
