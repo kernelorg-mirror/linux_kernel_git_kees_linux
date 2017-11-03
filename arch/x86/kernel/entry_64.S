@@ -326,6 +326,7 @@ ENTRY(save_paranoid)
 	 * should be done on return (conveyed to paranoid_exit in %ebx).
 	 */
 	ALTERNATIVE "jmp 2f", "movq %cr3, %rax", X86_FEATURE_KAISER
+	/* If this is a nokaiser task, or already in kernel, skip cr3 update */
 	testl	$KAISER_SHADOW_PGD_OFFSET, %eax
 	jz	2f
 	orl	$2, %ebx
@@ -1605,6 +1606,9 @@ ENTRY(nmi)
 	/* If PCID enabled, NOFLUSH now and NOFLUSH on return */
 	ALTERNATIVE "", "bts $63, %rax", X86_FEATURE_PCID
 	pushq	%rax
+	/* If this is a nokaiser task, skip cr3 update */
+	testq	$KAISER_SHADOW_PGD_OFFSET, %rax
+	jz	2f
 	/* mask off "user" bit of pgd address and 12 PCID bits: */
 	andq	$(~(X86_CR3_PCID_ASID_MASK | KAISER_SHADOW_PGD_OFFSET)), %rax
 	movq	%rax, %cr3
@@ -1613,12 +1617,12 @@ ENTRY(nmi)
 	call	do_nmi
 
 #ifdef CONFIG_KAISER
-	/*
-	 * Unconditionally restore CR3.  I know we return to
-	 * kernel code that needs user CR3, but do we ever return
-	 * to "user mode" where we need the kernel CR3?
-	 */
-	ALTERNATIVE "", "popq %rax; movq %rax, %cr3", X86_FEATURE_KAISER
+	ALTERNATIVE "jmp 3f", "popq %rax", X86_FEATURE_KAISER
+	/* If this is a nokaiser task, skip cr3 update */
+	testq	$KAISER_SHADOW_PGD_OFFSET, %rax
+	jz	3f
+	movq	%rax, %cr3
+3:
 #endif
 
 	/*
@@ -1853,6 +1857,9 @@ end_repeat_nmi:
 	/* If PCID enabled, NOFLUSH now and NOFLUSH on return */
 	ALTERNATIVE "", "bts $63, %rax", X86_FEATURE_PCID
 	pushq	%rax
+	/* If this is a nokaiser task, or already in kernel, skip cr3 update */
+	testq	$KAISER_SHADOW_PGD_OFFSET, %rax
+	jz	2f
 	/* mask off "user" bit of pgd address and 12 PCID bits: */
 	andq	$(~(X86_CR3_PCID_ASID_MASK | KAISER_SHADOW_PGD_OFFSET)), %rax
 	movq	%rax, %cr3
@@ -1864,12 +1871,12 @@ end_repeat_nmi:
 	call	do_nmi
 
 #ifdef CONFIG_KAISER
-	/*
-	 * Unconditionally restore CR3.  We might be returning to
-	 * kernel code that needs user CR3, like just just before
-	 * a sysret.
-	 */
-	ALTERNATIVE "", "popq %rax; movq %rax, %cr3", X86_FEATURE_KAISER
+	ALTERNATIVE "jmp 3f", "popq %rax", X86_FEATURE_KAISER
+	/* If this is a nokaiser task or returning to kernel, skip cr3 update */
+	testq	$KAISER_SHADOW_PGD_OFFSET, %rax
+	jz	3f
+	movq	%rax, %cr3
+3:
 #endif
 
 	testl %ebx,%ebx				/* swapgs needed? */
