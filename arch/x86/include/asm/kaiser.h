@@ -23,11 +23,16 @@
 #ifdef CONFIG_KAISER
 
 .macro _SWITCH_TO_KERNEL_CR3 reg
+/* ALTERNATIVEs prevent reaching this macro when booted "nokaiser" */
 movq %cr3, \reg
+/* If this is a nokaiser task, or already in kernel, skip cr3 update */
+testq $KAISER_SHADOW_PGD_OFFSET, \reg
+jz   7f
 andq $(~(X86_CR3_PCID_ASID_MASK | KAISER_SHADOW_PGD_OFFSET)), \reg
 /* If PCID enabled, set X86_CR3_PCID_NOFLUSH_BIT */
 ALTERNATIVE "", "bts $63, \reg", X86_FEATURE_PCID
 movq \reg, %cr3
+7:
 .endm
 
 .macro _SWITCH_TO_USER_CR3 reg regb
@@ -36,14 +41,19 @@ movq \reg, %cr3
  * for the low byte of the user PCID to serve as the high byte of NOFLUSH
  * (0x80 for each when PCID is enabled, or 0x00 when PCID and NOFLUSH are
  * not enabled): so that the one register can update both memory and cr3.
+ * ALTERNATIVEs prevent reaching this macro when booted "nokaiser".
  */
 movq %cr3, \reg
 orq  PER_CPU_VAR(x86_cr3_pcid_user), \reg
 js   9f
+/* If this is a nokaiser task, skip cr3 update */
+testq $KAISER_SHADOW_PGD_OFFSET, \reg
+jz   7f
 /* If PCID enabled, FLUSH this time, reset to NOFLUSH for next time */
 movb \regb, PER_CPU_VAR(x86_cr3_pcid_user+7)
 9:
 movq \reg, %cr3
+7:
 .endm
 
 .macro SWITCH_KERNEL_CR3
