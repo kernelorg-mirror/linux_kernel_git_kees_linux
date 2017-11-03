@@ -37,6 +37,7 @@
 #include <asm/processor.h>
 #include <asm/bios_ebda.h>
 #include <asm/uaccess.h>
+#include <asm/kaiser.h>
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
 #include <asm/dma.h>
@@ -407,7 +408,7 @@ void __init cleanup_highmap(void)
 			continue;
 		if (vaddr < (unsigned long) _text || vaddr > end)
 			set_pmd(pmd, __pmd(0));
-		else if (kaiser_enabled) {
+		else if (!nokaiser_uses_globals()) {
 			/*
 			 * level2_kernel_pgt is initialized with _PAGE_GLOBAL:
 			 * clear that now.  This is not important, so long as

@@ -82,6 +82,18 @@ movq PER_CPU_VAR(unsafe_stack_register_backup), %rax
 
 #else /* __ASSEMBLY__ */
 
+/*
+ * Increasing levels of strictness of kaiser_enabled.
+ * For ease of testing these possibilities, allow undocumented boot option
+ * "nokaiser=N": confusingly treated as the inverse, as "kaiser_enabled=N";
+ * so the documented "nokaiser" option is equivalent to "nokaiser=0".
+ */
+#define NOKAISER_BOOT_OPTION		0
+#define KAISER_WITH_NOKAISER_GLOBALS	1
+#define KAISER_WITH_NOKAISER_NOGLOBALS	2
+#define KAISER_NEVER_NOKAISER		3
+#define KAISER_MAX_BOOT_OPTION		KAISER_NEVER_NOKAISER
+
 #ifdef CONFIG_KAISER
 /*
  * Upon kernel/user mode switch, it may happen that the address
@@ -99,6 +111,11 @@ extern int kaiser_enabled;
 #else
 #define kaiser_enabled	0
 #endif /* CONFIG_KAISER */
+
+static inline bool nokaiser_uses_globals(void)
+{
+	return kaiser_enabled <= KAISER_WITH_NOKAISER_GLOBALS;
+}
 
 /*
  * Kaiser function prototypes are needed even when CONFIG_KAISER is not set,
