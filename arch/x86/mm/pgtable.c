@@ -301,6 +301,8 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
 		goto out;
 
 	mm->pgd = pgd;
+	if (kaiser_enabled)
+		set_bit(MMF_KAISER, &mm->flags);
 
 	if (preallocate_pmds(pmds) != 0)
 		goto out_free_pgd;
