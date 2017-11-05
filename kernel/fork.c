@@ -589,6 +589,12 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p)
 
 	if (mm_alloc_pgd(mm))
 		goto fail_nopgd;
+	/*
+	 * Temporary hack for testing the coexistence of kaiser and
+	 * nokaiser processes: exec() force even pids to be nokaiser.
+	 */
+	if (p == current && !(p->pid & 1))
+		clear_bit(MMF_KAISER, &mm->flags);
 
 	if (init_new_context(p, mm))
 		goto fail_nocontext;

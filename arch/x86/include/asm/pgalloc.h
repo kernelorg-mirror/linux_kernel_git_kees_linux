@@ -119,8 +119,23 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
 #if PAGETABLE_LEVELS > 3
 static inline void pgd_populate(struct mm_struct *mm, pgd_t *pgd, pud_t *pud)
 {
+/*
+ * Duplicate definition from include/linux/sched.h, not everywhere includes
+ * that: don't use #ifndef, force an error if definitions get out of synch.
+ */
+#define MMF_KAISER		26	/* kernel mapping removed from user */
+
 	paravirt_alloc_pud(mm, __pa(pud) >> PAGE_SHIFT);
 	set_pgd(pgd, __pgd(_PAGE_TABLE | __pa(pud)));
+	if (mm && test_bit(MMF_KAISER, &mm->flags)) {
+		/*
+		 * Even if the entry is *mapping* userspace, ensure
+		 * that userspace can not use it.  This way, if we
+		 * get out to userspace running on the kernel CR3,
+		 * userspace will crash instead of running.
+		 */
+		pgd->pgd |= _PAGE_NX;
+	}
 }
 
 static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long addr)

@@ -363,16 +363,8 @@ pgd_t kaiser_set_shadow_pgd(pgd_t *pgdp, pgd_t pgd)
 	 * skip cases like kexec and EFI which make temporary low mappings.
 	 */
 	if (pgd.pgd & _PAGE_USER) {
-		if (is_userspace_pgd(pgdp)) {
+		if (is_userspace_pgd(pgdp))
 			native_get_shadow_pgd(pgdp)->pgd = pgd.pgd;
-			/*
-			 * Even if the entry is *mapping* userspace, ensure
-			 * that userspace can not use it.  This way, if we
-			 * get out to userspace running on the kernel CR3,
-			 * userspace will crash instead of running.
-			 */
-			pgd.pgd |= _PAGE_NX;
-		}
 	} else if (!pgd.pgd) {
 		/*
 		 * pgd_clear() cannot check _PAGE_USER, and is even used to
