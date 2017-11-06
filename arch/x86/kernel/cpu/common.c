@@ -396,7 +396,6 @@ static void setup_pcid(struct cpuinfo_x86 *c)
 			clear_cpu_cap(c, X86_FEATURE_PCID);
 		}
 	}
-	kaiser_setup_pcid();
 }
 
 /*
