@@ -379,17 +379,50 @@ pgd_t kaiser_set_shadow_pgd(pgd_t *pgdp, pgd_t pgd)
 	return pgd;
 }
 
-void kaiser_setup_pcid(void)
+bool kaiser_switch_mm(struct mm_struct *mm, unsigned long *kern_cr3)
 {
-	unsigned long user_cr3 = KAISER_SHADOW_PGD_OFFSET;
+	bool prev_is_kaiser, next_is_kaiser;
+	unsigned long user_cr3;
+	bool do_cr4_pge;
 
-	if (this_cpu_has(X86_FEATURE_PCID))
-		user_cr3 |= X86_CR3_PCID_USER_NOFLUSH;
 	/*
-	 * These variables are used by the entry/exit
-	 * code to change PCID and pgd and TLB flushing.
+	 * Since init_mm has no userspace, switch to init_mm needs no change;
+	 * but notice how a switch from init_mm may later say prev_is_kaiser.
 	 */
+	if (mm == &init_mm)
+		return false;
+
+	prev_is_kaiser = this_cpu_read(x86_cr3_pcid_user);
+	next_is_kaiser = test_bit(MMF_KAISER, &mm->flags);
+	/* If both are nokaiser, caller's cr3 switch will be enough */
+	if (!prev_is_kaiser && !next_is_kaiser)
+		return false;
+
+	do_cr4_pge = (kaiser_enabled == KAISER_WITH_NOKAISER_GLOBALS);
+	if (do_cr4_pge) {
+		bool pge = (this_cpu_read(cpu_tlbstate.cr4) & X86_CR4_PGE);
+		/* Do not ask caller to flip cr4 if it is already correct */
+		do_cr4_pge = (pge == next_is_kaiser);
+	} else {
+		VM_BUG_ON(this_cpu_read(cpu_tlbstate.cr4) & X86_CR4_PGE);
+	}
+
+	if (!next_is_kaiser) {
+		user_cr3 = 0;
+		if (do_cr4_pge && this_cpu_has(X86_FEATURE_PCID))
+			*kern_cr3 |= X86_CR3_PCID_KERN_NOFLUSH;
+	} else if (this_cpu_has(X86_FEATURE_PCID)) {
+		user_cr3 = KAISER_SHADOW_PGD_OFFSET | X86_CR3_PCID_USER_FLUSH;
+		/* No need to flush on return if we are flushing all anyway */
+		if (do_cr4_pge) {
+			*kern_cr3 |= X86_CR3_PCID_KERN_NOFLUSH;
+			user_cr3 |= X86_CR3_PCID_USER_NOFLUSH;
+		}
+	} else
+		user_cr3 = KAISER_SHADOW_PGD_OFFSET;
+
 	this_cpu_write(x86_cr3_pcid_user, user_cr3);
+	return do_cr4_pge;
 }
 
 /*
@@ -398,6 +431,8 @@ void kaiser_setup_pcid(void)
  */
 void kaiser_flush_tlb_on_return_to_user(void)
 {
+	if (!this_cpu_read(x86_cr3_pcid_user))
+		return;
 	if (this_cpu_has(X86_FEATURE_PCID))
 		this_cpu_write(x86_cr3_pcid_user,
 			X86_CR3_PCID_USER_FLUSH | KAISER_SHADOW_PGD_OFFSET);

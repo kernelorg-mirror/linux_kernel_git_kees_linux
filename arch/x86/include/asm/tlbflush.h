@@ -137,17 +137,20 @@ static inline void cr4_set_bits_and_update_boot(unsigned long mask)
  */
 #ifdef CONFIG_KAISER
 extern int kaiser_enabled;
-extern void kaiser_setup_pcid(void);
+extern bool kaiser_switch_mm(struct mm_struct *mm, unsigned long *cr3);
 extern void kaiser_flush_tlb_on_return_to_user(void);
 #else
 #define kaiser_enabled 0
-static inline void kaiser_setup_pcid(void)
+static inline bool kaiser_switch_mm(struct mm_struct *mm, unsigned long *cr3)
 {
+	return false;
 }
 static inline void kaiser_flush_tlb_on_return_to_user(void)
 {
 }
 #endif
+/* Repeat declaration from asm/kaiser.h, allowing !CONFIG_KAISER build */
+DECLARE_PER_CPU(unsigned long, x86_cr3_pcid_user);
 
 static inline void __native_flush_tlb(void)
 {
@@ -231,7 +234,7 @@ static inline void __native_flush_tlb_single(unsigned long addr)
 	 * Make sure to do only a single invpcid when KAISER is
 	 * disabled and we have only a single ASID.
 	 */
-	if (kaiser_enabled)
+	if (kaiser_enabled && this_cpu_read(x86_cr3_pcid_user))
 		invpcid_flush_one(X86_CR3_PCID_ASID_USER, addr);
 	invpcid_flush_one(X86_CR3_PCID_ASID_KERN, addr);
 }

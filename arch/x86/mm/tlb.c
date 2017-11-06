@@ -35,9 +35,10 @@ struct flush_tlb_info {
 	unsigned long flush_end;
 };
 
-static void load_new_mm_cr3(pgd_t *pgdir)
+static void load_new_mm_crs(struct mm_struct *mm)
 {
-	unsigned long new_mm_cr3 = __pa(pgdir);
+	unsigned long new_mm_cr3 = __pa(mm->pgd);
+	bool do_cr4_pge = false;
 
 	if (kaiser_enabled) {
 		/*
@@ -54,7 +55,7 @@ static void load_new_mm_cr3(pgd_t *pgdir)
 		 * would be needed in the write_cr3() below - if PCIDs enabled.
 		 */
 		BUILD_BUG_ON(X86_CR3_PCID_KERN_FLUSH);
-		kaiser_flush_tlb_on_return_to_user();
+		do_cr4_pge = kaiser_switch_mm(mm, &new_mm_cr3);
 	}
 
 	/*
@@ -63,6 +64,14 @@ static void load_new_mm_cr3(pgd_t *pgdir)
 	 * fills with respect to the mm_cpumask writes.
 	 */
 	write_cr3(new_mm_cr3);
+
+	if (do_cr4_pge) {
+		unsigned long cr4 = this_cpu_read(cpu_tlbstate.cr4);
+
+		cr4 ^= X86_CR4_PGE;
+		this_cpu_write(cpu_tlbstate.cr4, cr4);
+		__write_cr4(cr4);
+	}
 }
 
 /*
@@ -76,7 +85,7 @@ void leave_mm(int cpu)
 		BUG();
 	if (cpumask_test_cpu(cpu, mm_cpumask(active_mm))) {
 		cpumask_clear_cpu(cpu, mm_cpumask(active_mm));
-		load_new_mm_cr3(swapper_pg_dir);
+		load_new_mm_crs(&init_mm);
 		/*
 		 * This gets called in the idle path where RCU
 		 * functions differently.  Tracing normally
@@ -109,7 +118,7 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
 		cpumask_set_cpu(cpu, mm_cpumask(next));
 
 		/* Re-load page tables */
-		load_new_mm_cr3(next->pgd);
+		load_new_mm_crs(next);
 		trace_tlb_flush(TLB_FLUSH_ON_TASK_SWITCH, TLB_FLUSH_ALL);
 
 		/* Stop flush ipis for the previous mm */
@@ -136,7 +145,7 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
 			 * tlb flush IPI delivery. We must reload CR3
 			 * to make sure to use no freed page tables.
 			 */
-			load_new_mm_cr3(next->pgd);
+			load_new_mm_crs(next);
 			trace_tlb_flush(TLB_FLUSH_ON_TASK_SWITCH, TLB_FLUSH_ALL);
 			load_mm_ldt(next);
 		}
