@@ -65,6 +65,7 @@
 #include <linux/mm.h>
 #include <linux/swap.h>
 #include <linux/rcupdate.h>
+#include <linux/kaiser.h>
 #include <linux/kallsyms.h>
 #include <linux/stacktrace.h>
 #include <linux/resource.h>
@@ -2326,7 +2327,138 @@ static const struct file_operations proc_coredump_filter_operations = {
 	.write		= proc_coredump_filter_write,
 	.llseek		= generic_file_llseek,
 };
-#endif
+#endif /* CONFIG_ELF_CORE */
+
+#ifdef CONFIG_KAISER
+/* Static function, but could be made available to others in future */
+static int kaiser_read(struct task_struct *task)
+{
+	struct mm_struct *mm;
+	int ret;
+
+	ret = mutex_lock_killable(&task->signal->cred_guard_mutex);
+	if (ret)
+		return ret;
+
+	mm = get_task_mm(task);
+	if (!mm)
+		ret = -ESRCH;
+	else {
+		/*
+		 * CAP_SYS_ADMIN gives permission to read kaiser from any task.
+		 * But any task may read kaiser from itself (most will already
+		 * be kaiser anyway), or from any task in its ptrace-read group.
+		 */
+		if (mm != current->mm && !capable(CAP_SYS_ADMIN) &&
+		    !ptrace_may_access(task, PTRACE_MODE_READ))
+			ret = -EPERM;
+		else
+			ret = !!test_bit(MMF_KAISER, &mm->flags);
+		mmput(mm);
+	}
+
+	mutex_unlock(&task->signal->cred_guard_mutex);
+	return ret;
+}
+
+static ssize_t proc_kaiser_read(struct file *file, char __user *buf,
+				size_t count, loff_t *ppos)
+{
+	struct task_struct *task;
+	int ret;
+
+	task = get_proc_task(file_inode(file));
+	if (!task)
+		return -ESRCH;
+
+	ret = kaiser_read(task);
+	if (ret >= 0) {
+		char buffer[2];
+
+		buffer[0] = '0' + ret;
+		buffer[1] = '\n';
+		ret = simple_read_from_buffer(buf, count, ppos, buffer, 2);
+	}
+
+	put_task_struct(task);
+	return ret;
+}
+
+/* Static function, but could be made available to others later */
+static int kaiser_write(struct task_struct *task, unsigned int enable_kaiser)
+{
+	struct mm_struct *mm;
+	int ret;
+
+	ret = mutex_lock_killable(&task->signal->cred_guard_mutex);
+	if (ret)
+		return ret;
+
+	mm = get_task_mm(task);
+	if (!mm)
+		ret = -ESRCH;
+	else if (enable_kaiser) {
+		/*
+		 * CAP_SYS_ADMIN gives permission to enable kaiser on any task.
+		 * But any task may enable kaiser on itself (most will already
+		 * be kaiser anyway), or on any task in its ptrace-attach group.
+		 * This lets a nokaiser parent enable kaiser on its children,
+		 * who inherited nokaiser by default, but may need restriction.
+		 */
+		if (mm != current->mm && !capable(CAP_SYS_ADMIN) &&
+		    !ptrace_may_access(task, PTRACE_MODE_ATTACH))
+			ret = -EPERM;
+	} else {
+		/* Only CAP_SYS_ADMIN gives permission to disable kaiser */
+		if (!capable(CAP_SYS_ADMIN))
+			ret = -EPERM;
+	}
+
+	if (!ret)
+		ret = enable_kaiser ? kaiser_enable(mm) : kaiser_disable(mm);
+
+	/*
+	 * flush_old_exec(bprm)->exec_mmap(mm) is where tsk->mm is updated from
+	 * old_mm to new mm, and that is done before install_exec_creds(bprm)
+	 * unlocks the cred_guard_mutex: so hold on to cred_guard_mutex while
+	 * changing kaiserness, to ensure it's not lost between old and new mm.
+	 */
+	mutex_unlock(&task->signal->cred_guard_mutex);
+
+	if (mm)
+		mmput(mm);
+	return ret;
+}
+
+static ssize_t proc_kaiser_write(struct file *file, const char __user *buf,
+				 size_t count, loff_t *ppos)
+{
+	struct task_struct *task;
+	unsigned int enable_kaiser;
+	int ret;
+
+	ret = kstrtouint_from_user(buf, count, 0, &enable_kaiser);
+	if (ret < 0)
+		return ret;
+	if (enable_kaiser > 1)
+		return -ERANGE;
+
+	task = get_proc_task(file_inode(file));
+	if (!task)
+		return -ESRCH;
+
+	ret = kaiser_write(task, enable_kaiser);
+
+	put_task_struct(task);
+	return ret ? ret : count;
+}
+
+static const struct file_operations proc_kaiser_operations = {
+	.read		= proc_kaiser_read,
+	.write		= proc_kaiser_write,
+	.llseek		= generic_file_llseek,
+};
+#endif /* CONFIG_KAISER */
 
 #ifdef CONFIG_TASK_IO_ACCOUNTING
 static int do_io_accounting(struct task_struct *task, struct seq_file *m, int whole)
@@ -2613,6 +2745,9 @@ static const struct pid_entry tgid_base_stuff[] = {
 #endif
 #ifdef CONFIG_ELF_CORE
 	REG("coredump_filter", S_IRUGO|S_IWUSR, proc_coredump_filter_operations),
+#endif
+#ifdef CONFIG_KAISER
+	REG("kaiser", S_IRUSR|S_IWUSR, proc_kaiser_operations),
 #endif
 #ifdef CONFIG_TASK_IO_ACCOUNTING
 	ONE("io",	S_IRUSR, proc_tgid_io_accounting),
