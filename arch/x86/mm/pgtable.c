@@ -301,7 +301,13 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
 		goto out;
 
 	mm->pgd = pgd;
-	if (kaiser_enabled)
+
+	/*
+	 * Inherit kaiserness from parent mm when forking,
+	 * or carry it across from current mm when execing.
+	 */
+	if (kaiser_enabled &&
+	    (!current->mm || test_bit(MMF_KAISER, &current->mm->flags)))
 		set_bit(MMF_KAISER, &mm->flags);
 
 	if (preallocate_pmds(pmds) != 0)

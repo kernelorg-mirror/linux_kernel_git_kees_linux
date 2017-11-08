@@ -161,6 +161,11 @@ extern void kaiser_remove_mapping(unsigned long start, unsigned long size);
  */
 extern void kaiser_init(void);
 
+/*
+ * Disable or re-enable Kaiser protection on all tasks sharing mm.
+ */
+extern int kaiser_disable(struct mm_struct *mm);
+extern int kaiser_enable(struct mm_struct *mm);
 #endif /* __ASSEMBLY */
 
 #endif /* _ASM_X86_KAISER_H */

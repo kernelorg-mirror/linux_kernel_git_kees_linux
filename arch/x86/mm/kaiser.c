@@ -379,6 +379,61 @@ pgd_t kaiser_set_shadow_pgd(pgd_t *pgdp, pgd_t pgd)
 	return pgd;
 }
 
+int kaiser_disable(struct mm_struct *mm)
+{
+	pgd_t *pgd = mm->pgd;
+	int i;
+
+	/* Kaiser Permanente? */
+	if (kaiser_enabled >= KAISER_NEVER_NOKAISER)
+		return -EOPNOTSUPP;
+	if (!test_bit(MMF_KAISER, &mm->flags))
+		return 0;
+
+	spin_lock(&mm->page_table_lock);
+	/* Which locks out calls to pgd_populate() */
+
+	for (i = 0; i < PTRS_PER_PGD / 2; i++) {
+		if (pgd[i].pgd & _PAGE_NX)
+			pgd[i].pgd &= ~_PAGE_NX;
+	}
+
+	/* Ensure clearing visible on other cpus first */
+	smp_wmb();
+	clear_bit(MMF_KAISER, &mm->flags);
+
+	/*
+	 * Usually we don't have to flush TLB when relaxing permissions;
+	 * but in this case, the spurious fault from a stale TLB entry
+	 * of user NX would get mishandled in arch/x86/mm/fault.c.
+	 *
+	 * And furthermore, just in case tasks sharing this mm are running
+	 * without a break, this is used to communicate the new kaiser
+	 * status to their cpus immediately, before they have to reschedule:
+	 * see the "unlikely" block in kaiser_flush_tlb_on_return_to_user().
+	 */
+	flush_tlb_mm(mm);
+	spin_unlock(&mm->page_table_lock);
+	return 0;
+}
+
+int kaiser_enable(struct mm_struct *mm)
+{
+	if (!kaiser_enabled)
+		return -EOPNOTSUPP;
+	/*
+	 * Sorry, given the races when this mm is active on another cpu,
+	 * we simply never attempt to restore those _PAGE_NXes, which are
+	 * anyway not important to the primary layer of Kaiser protection:
+	 * they just block another avenue if something else went wrong.
+	 */
+	spin_lock(&mm->page_table_lock);
+	set_bit(MMF_KAISER, &mm->flags);
+	flush_tlb_mm(mm);
+	spin_unlock(&mm->page_table_lock);
+	return 0;
+}
+
 bool kaiser_switch_mm(struct mm_struct *mm, unsigned long *kern_cr3)
 {
 	bool prev_is_kaiser, next_is_kaiser;
@@ -431,10 +486,60 @@ bool kaiser_switch_mm(struct mm_struct *mm, unsigned long *kern_cr3)
  */
 void kaiser_flush_tlb_on_return_to_user(void)
 {
-	if (!this_cpu_read(x86_cr3_pcid_user))
+	struct mm_struct *mm = this_cpu_read(cpu_tlbstate.active_mm);
+	bool prev_is_kaiser = this_cpu_read(x86_cr3_pcid_user);
+	bool next_is_kaiser = test_bit(MMF_KAISER, &mm->flags);
+
+	/*
+	 * This unlikely block is for when kaiser_disable() or kaiser_enable()
+	 * calls flush_tlb_mm(), immediately after flipping mm's MMF_KAISER
+	 * (but a TLB flush from some other caller might reach here first).
+	 * At all other times, prev_is_kaiser and next_is_kaiser should be
+	 * consistent: check that (approximately) by testing page_table_lock
+	 * (which is not used all that often when USE_SPLIT_PTE_PTLOCKS).
+	 */
+	if (unlikely(prev_is_kaiser != next_is_kaiser)) {
+		unsigned long ignore_cr3, cr4;
+		unsigned long irq_flags;
+
+		/*
+		 * Note on the test for init_mm below: although init_mm never
+		 * has MMF_KAISER set, x86_cr3_pcid_user is not updated when
+		 * switching to it (possibly that's a misguided optimization).
+		 * So a TLB flush might then find prev_is_kaiser different from
+		 * next_is_kaiser here, yet it would not be reason to complain.
+		 * Now, when do we ever flush TLB on init_mm?
+		 *
+		 * This WARN_ON_ONCE() started out as a VM_BUG_ON(): but that's
+		 * unsafe, when CONFIG_DEBUG_PAGEALLOC does __kernel_map_pages()
+		 * to unmap at interrupt time, and the machine does not support
+		 * invpcid, so __flush_tlb_all() comes this way.  The temporary
+		 * inconsistency resolves itself, so merely warn (as check that
+		 * kaiser_en/disable() is enacted immediately on all mm's cpus).
+		 */
+		WARN_ON_ONCE(NR_CPUS != 1 && mm != &init_mm &&
+			     !spin_is_locked(&mm->page_table_lock));
+
+		local_irq_save(irq_flags);
+		if (kaiser_switch_mm(mm, &ignore_cr3)) {
+			/*
+			 * kaiser_switch_mm() updates x86_cr3_pcid_user,
+			 * but relies on its caller to write cr3 and cr4:
+			 * there is no need to optimize out our caller's
+			 * cr3 flush here, but we must get cr4 right.
+			 */
+			cr4 = this_cpu_read(cpu_tlbstate.cr4);
+			cr4 ^= X86_CR4_PGE;
+			this_cpu_write(cpu_tlbstate.cr4, cr4);
+			native_write_cr4(cr4);
+		}
+		local_irq_restore(irq_flags);
 		return;
-	if (this_cpu_has(X86_FEATURE_PCID))
+	}
+
+	if (prev_is_kaiser && this_cpu_has(X86_FEATURE_PCID)) {
 		this_cpu_write(x86_cr3_pcid_user,
 			X86_CR3_PCID_USER_FLUSH | KAISER_SHADOW_PGD_OFFSET);
+	}
 }
 EXPORT_SYMBOL(kaiser_flush_tlb_on_return_to_user);
