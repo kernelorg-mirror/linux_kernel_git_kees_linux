@@ -25,16 +25,6 @@ __visible
 DEFINE_PER_CPU_USER_MAPPED(unsigned long, unsafe_stack_register_backup);
 
 /*
- * These can have bit 63 set, so we can not just use a plain "or"
- * instruction to get their value or'd into CR3.  It would take
- * another register.  So, we use a memory reference to these instead.
- *
- * This is also handy because systems that do not support PCIDs
- * just end up or'ing a 0 into their CR3, which does no harm.
- */
-DEFINE_PER_CPU(unsigned long, x86_cr3_pcid_user);
-
-/*
  * At runtime, the only things we map are some things for CPU
  * hotplug, and stacks for new processes.  No two CPUs will ever
  * be populating the same addresses, so we only need to ensure
@@ -446,7 +436,7 @@ bool kaiser_switch_mm(struct mm_struct *mm, unsigned long *kern_cr3)
 	if (mm == &init_mm)
 		return false;
 
-	prev_is_kaiser = this_cpu_read(x86_cr3_pcid_user);
+	prev_is_kaiser = this_cpu_read(cpu_tlbstate.kaiser_cr3_pcid_user);
 	next_is_kaiser = test_bit(MMF_KAISER, &mm->flags);
 	/* If both are nokaiser, caller's cr3 switch will be enough */
 	if (!prev_is_kaiser && !next_is_kaiser)
@@ -475,7 +465,7 @@ bool kaiser_switch_mm(struct mm_struct *mm, unsigned long *kern_cr3)
 	} else
 		user_cr3 = KAISER_SHADOW_PGD_OFFSET;
 
-	this_cpu_write(x86_cr3_pcid_user, user_cr3);
+	this_cpu_write(cpu_tlbstate.kaiser_cr3_pcid_user, user_cr3);
 	return do_cr4_pge;
 }
 
@@ -486,7 +476,7 @@ bool kaiser_switch_mm(struct mm_struct *mm, unsigned long *kern_cr3)
 void kaiser_flush_tlb_on_return_to_user(void)
 {
 	struct mm_struct *mm = this_cpu_read(cpu_tlbstate.active_mm);
-	bool prev_is_kaiser = this_cpu_read(x86_cr3_pcid_user);
+	bool prev_is_kaiser = this_cpu_read(cpu_tlbstate.kaiser_cr3_pcid_user);
 	bool next_is_kaiser = test_bit(MMF_KAISER, &mm->flags);
 
 	/*
@@ -503,7 +493,7 @@ void kaiser_flush_tlb_on_return_to_user(void)
 
 		/*
 		 * Note on the test for init_mm below: although init_mm never
-		 * has MMF_KAISER set, x86_cr3_pcid_user is not updated when
+		 * has MMF_KAISER set, kaiser_cr3_pcid_user is not updated when
 		 * switching to it (possibly that's a misguided optimization).
 		 * So a TLB flush might then find prev_is_kaiser different from
 		 * next_is_kaiser here, yet it would not be reason to complain.
@@ -522,7 +512,7 @@ void kaiser_flush_tlb_on_return_to_user(void)
 		local_irq_save(irq_flags);
 		if (kaiser_switch_mm(mm, &ignore_cr3)) {
 			/*
-			 * kaiser_switch_mm() updates x86_cr3_pcid_user,
+			 * kaiser_switch_mm() updates kaiser_cr3_pcid_user,
 			 * but relies on its caller to write cr3 and cr4:
 			 * there is no need to optimize out our caller's
 			 * cr3 flush here, but we must get cr4 right.
@@ -537,7 +527,7 @@ void kaiser_flush_tlb_on_return_to_user(void)
 	}
 
 	if (prev_is_kaiser && this_cpu_has(X86_FEATURE_PCID)) {
-		this_cpu_write(x86_cr3_pcid_user,
+		this_cpu_write(cpu_tlbstate.kaiser_cr3_pcid_user,
 			X86_CR3_PCID_USER_FLUSH | KAISER_SHADOW_PGD_OFFSET);
 	}
 }
