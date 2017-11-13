@@ -44,13 +44,13 @@ movq \reg, %cr3
  * ALTERNATIVEs prevent reaching this macro when booted "nokaiser".
  */
 movq %cr3, \reg
-orq  PER_CPU_VAR(x86_cr3_pcid_user), \reg
+orq  PER_CPU_VAR(cpu_tlbstate+TLB_kaiser_cr3_pcid_user), \reg
 js   9f
 /* If this is a nokaiser task, skip cr3 update */
 testq $KAISER_SHADOW_PGD_OFFSET, \reg
 jz   7f
 /* If PCID enabled, FLUSH this time, reset to NOFLUSH for next time */
-movb \regb, PER_CPU_VAR(x86_cr3_pcid_user+7)
+movb \regb, PER_CPU_VAR(cpu_tlbstate+TLB_kaiser_cr3_pcid_user+7)
 9:
 movq \reg, %cr3
 7:
@@ -112,8 +112,6 @@ movq PER_CPU_VAR(unsafe_stack_register_backup), %rax
  * needed.  A register therefore has to be stored/restored.
 */
 DECLARE_PER_CPU_USER_MAPPED(unsigned long, unsafe_stack_register_backup);
-
-DECLARE_PER_CPU(unsigned long, x86_cr3_pcid_user);
 
 extern char __per_cpu_user_mapped_start[], __per_cpu_user_mapped_end[];
 

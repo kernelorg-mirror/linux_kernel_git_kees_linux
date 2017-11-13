@@ -13,6 +13,7 @@
 #include <linux/kbuild.h>
 #include <asm/processor.h>
 #include <asm/thread_info.h>
+#include <asm/tlbflush.h>
 #include <asm/sigframe.h>
 #include <asm/bootparam.h>
 #include <asm/suspend.h>
@@ -68,6 +69,9 @@ void common(void) {
 	OFFSET(BP_kernel_alignment, boot_params, hdr.kernel_alignment);
 	OFFSET(BP_pref_address, boot_params, hdr.pref_address);
 	OFFSET(BP_code32_start, boot_params, hdr.code32_start);
+
+	BLANK();
+	OFFSET(TLB_kaiser_cr3_pcid_user, tlb_state, kaiser_cr3_pcid_user);
 
 	BLANK();
 	DEFINE(PTREGS_SIZE, sizeof(struct pt_regs));
