@@ -1321,6 +1321,8 @@ void __cpuinit cpu_init(void)
 
 	if (is_uv_system())
 		uv_cpu_init();
+
+	WARN_ON((unsigned long) &t->x86_tss & ~PAGE_MASK);
 }
 
 #else
