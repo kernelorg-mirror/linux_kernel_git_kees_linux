@@ -30,6 +30,7 @@ struct mm_struct;
 #include <linux/init.h>
 #include <linux/err.h>
 #include <linux/irqflags.h>
+#include <linux/magic.h>
 
 /*
  * We handle most unaligned accesses in hardware.  On the other hand
@@ -921,7 +922,8 @@ extern unsigned long thread_saved_pc(struct task_struct *tsk);
 }
 
 #define INIT_TSS  { \
-	.x86_tss.sp0 = (unsigned long)&init_stack + sizeof(init_stack) \
+	.x86_tss.sp0 = (unsigned long)&init_stack + sizeof(init_stack), \
+	.stack_canary		= STACK_END_MAGIC, \
 }
 
 /*
