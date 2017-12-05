@@ -278,6 +278,7 @@ struct tss_struct {
 	/*
 	 * .. and then another 0x100 bytes for the emergency kernel stack:
 	 */
+	unsigned long		stack_canary;
 	unsigned long		stack[64];
 
 } ____cacheline_aligned;

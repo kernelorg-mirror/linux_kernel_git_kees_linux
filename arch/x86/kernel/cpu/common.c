@@ -1307,7 +1307,9 @@ void __cpuinit cpu_init(void)
 	BUG_ON(me->mm);
 	enter_lazy_tlb(&init_mm, me);
 
-	load_sp0(t, &current->thread);
+	__this_cpu_write(init_tss.x86_tss.sp0,
+			 (unsigned long) t + offsetofend(struct tss_struct,
+							 stack));
 	set_tss_desc(cpu, t);
 	load_TR_desc();
 	load_LDT(&init_mm.context);
