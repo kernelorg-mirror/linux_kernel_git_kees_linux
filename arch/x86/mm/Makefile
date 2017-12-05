@@ -15,6 +15,7 @@ obj-$(CONFIG_HUGETLB_PAGE)	+= hugetlbpage.o
 obj-$(CONFIG_X86_PTDUMP)	+= dump_pagetables.o
 
 obj-$(CONFIG_HIGHMEM)		+= highmem_32.o
+obj-$(CONFIG_KAISER)		+= kaiser.o
 
 obj-$(CONFIG_KMEMCHECK)		+= kmemcheck/
 
