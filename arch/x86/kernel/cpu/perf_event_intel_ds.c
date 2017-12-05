@@ -1,11 +1,15 @@
 #include <linux/bitops.h>
 #include <linux/types.h>
 #include <linux/slab.h>
+#include <linux/kaiser.h>
 
 #include <asm/perf_event.h>
 #include <asm/insn.h>
 
 #include "perf_event.h"
+
+static
+DEFINE_PER_CPU_SHARED_ALIGNED_USER_MAPPED(struct debug_store, cpu_debug_store);
 
 /* The size of a BTS record in bytes: */
 #define BTS_RECORD_SIZE		24
@@ -194,6 +198,31 @@ void fini_debug_store_on_cpu(int cpu)
 	wrmsr_on_cpu(cpu, MSR_IA32_DS_AREA, 0, 0);
 }
 
+static void *dsalloc(size_t size, gfp_t flags, int node)
+{
+	unsigned int order = get_order(size);
+	struct page *page;
+	unsigned long addr;
+
+	page = alloc_pages_node(node, flags | __GFP_ZERO, order);
+	if (!page)
+		return NULL;
+	addr = (unsigned long)page_address(page);
+	if (kaiser_add_mapping(addr, size, __PAGE_KERNEL | _PAGE_GLOBAL) < 0) {
+		__free_pages(page, order);
+		addr = 0;
+	}
+	return (void *)addr;
+}
+
+static void dsfree(const void *buffer, size_t size)
+{
+	if (!buffer)
+		return;
+	kaiser_remove_mapping((unsigned long)buffer, size);
+	free_pages((unsigned long)buffer, get_order(size));
+}
+
 static int alloc_pebs_buffer(int cpu)
 {
 	struct debug_store *ds = per_cpu(cpu_hw_events, cpu).ds;
@@ -204,7 +233,7 @@ static int alloc_pebs_buffer(int cpu)
 	if (!x86_pmu.pebs)
 		return 0;
 
-	buffer = kmalloc_node(PEBS_BUFFER_SIZE, GFP_KERNEL | __GFP_ZERO, node);
+	buffer = dsalloc(PEBS_BUFFER_SIZE, GFP_KERNEL | __GFP_ZERO, node);
 	if (unlikely(!buffer))
 		return -ENOMEM;
 
@@ -228,7 +257,7 @@ static void release_pebs_buffer(int cpu)
 	if (!ds || !x86_pmu.pebs)
 		return;
 
-	kfree((void *)(unsigned long)ds->pebs_buffer_base);
+	dsfree((void *)(unsigned long)ds->pebs_buffer_base, BTS_BUFFER_SIZE);
 	ds->pebs_buffer_base = 0;
 }
 
@@ -242,7 +271,7 @@ static int alloc_bts_buffer(int cpu)
 	if (!x86_pmu.bts)
 		return 0;
 
-	buffer = kmalloc_node(BTS_BUFFER_SIZE, GFP_KERNEL | __GFP_ZERO, node);
+	buffer = dsalloc(BTS_BUFFER_SIZE, GFP_KERNEL | __GFP_ZERO, node);
 	if (unlikely(!buffer))
 		return -ENOMEM;
 
@@ -266,19 +295,15 @@ static void release_bts_buffer(int cpu)
 	if (!ds || !x86_pmu.bts)
 		return;
 
-	kfree((void *)(unsigned long)ds->bts_buffer_base);
+	dsfree((void *)(unsigned long)ds->bts_buffer_base, BTS_BUFFER_SIZE);
 	ds->bts_buffer_base = 0;
 }
 
 static int alloc_ds_buffer(int cpu)
 {
-	int node = cpu_to_node(cpu);
-	struct debug_store *ds;
+	struct debug_store *ds = per_cpu_ptr(&cpu_debug_store, cpu);
 
-	ds = kmalloc_node(sizeof(*ds), GFP_KERNEL | __GFP_ZERO, node);
-	if (unlikely(!ds))
-		return -ENOMEM;
-
+	memset(ds, 0, sizeof(*ds));
 	per_cpu(cpu_hw_events, cpu).ds = ds;
 
 	return 0;
@@ -292,7 +317,6 @@ static void release_ds_buffer(int cpu)
 		return;
 
 	per_cpu(cpu_hw_events, cpu).ds = NULL;
-	kfree(ds);
 }
 
 void release_ds_buffers(void)
