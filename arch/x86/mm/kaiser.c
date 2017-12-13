@@ -42,6 +42,7 @@
 #include <asm/tlbflush.h>
 #include <asm/vsyscall.h>
 #include <asm/desc.h>
+#include <asm/kvmclock.h>
 
 #define KAISER_WALK_ATOMIC  0x1
 
@@ -369,12 +370,12 @@ void kaiser_add_mapping_cpu_entry(int cpu)
  */
 void __init kaiser_init(void)
 {
-	int cpu;
+	int idx;
 
 	kaiser_init_all_pgds();
 
-	for_each_possible_cpu(cpu)
-		kaiser_add_mapping_cpu_entry(cpu);
+	for_each_possible_cpu(idx)
+		kaiser_add_mapping_cpu_entry(idx);
 
 	kaiser_add_user_map_ptrs_early(__entry_text_start, __entry_text_end,
 				       __PAGE_KERNEL_RX | _PAGE_GLOBAL);
@@ -410,6 +411,14 @@ void __init kaiser_init(void)
 	kaiser_add_user_map_early((void *)VSYSCALL_START, PAGE_SIZE,
 				  vsyscall_pgprot | _PAGE_GLOBAL);
 
+#ifdef CONFIG_PARAVIRT_CLOCK
+	for (idx = 0; kvm_clock.archdata.vclock_mode == VCLOCK_PVCLOCK &&
+		      idx <= (PVCLOCK_FIXMAP_END-PVCLOCK_FIXMAP_BEGIN); idx++) {
+		kaiser_add_user_map_early((void *)__fix_to_virt(PVCLOCK_FIXMAP_BEGIN + idx),
+					  PAGE_SIZE,
+					  __PAGE_KERNEL_VVAR | _PAGE_GLOBAL);
+	}
+#endif
 }
 
 int kaiser_add_mapping(unsigned long addr, unsigned long size,
