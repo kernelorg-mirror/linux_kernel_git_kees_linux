@@ -10,6 +10,9 @@
 #include <linux/mm.h>
 #include <linux/uaccess.h>
 
+#undef pr_fmt
+#define pr_fmt(fmt)     "Kernel/User page tables isolation: " fmt
+
 extern struct mm_struct init_mm;
 
 #include <asm/kaiser.h>
@@ -305,6 +308,8 @@ void __init kaiser_init(void)
 	kaiser_add_user_map_early(&debug_idt_table,
 				  sizeof(gate_desc) * NR_VECTORS,
 				  __PAGE_KERNEL);
+
+	pr_info("enabled\n");
 }
 
 /* Add a mapping to the shadow mapping, and synchronize the mappings */
