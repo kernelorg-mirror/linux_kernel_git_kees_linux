@@ -1232,10 +1232,12 @@ static int parse_cgroupfs_options(char *data, struct cgroup_sb_opts *opts)
 	 * otherwise if 'none', 'name=' and a subsystem name options
 	 * were not specified, let's default to 'all'
 	 */
-	if (all_ss || (!one_ss && !opts->none && !opts->name))
-		for_each_subsys(ss, i)
+	if (all_ss || (!one_ss && !opts->none && !opts->name)) {
+		for_each_subsys(ss, i) {
 			if (!ss->disabled)
 				set_bit(i, &opts->subsys_mask);
+		}
+	}
 
 	/* Consistency checks */
 
