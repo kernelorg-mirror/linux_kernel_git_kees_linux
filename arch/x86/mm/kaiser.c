@@ -37,6 +37,9 @@
 #include <linux/uaccess.h>
 #include <linux/stop_machine.h>
 
+#undef pr_fmt
+#define pr_fmt(fmt)     "Kernel/User page tables isolation: " fmt
+
 #include <asm/kaiser.h>
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
@@ -475,12 +478,11 @@ void __init kaiser_init(void)
 #endif
 
 	if (is_xen_pv_domain()) {
-		pr_info("x86/kpti: Xen PV detected, disabling "
-			"KPTI protection\n");
+		pr_info("Xen PV detected, disabling\n");
 	} else if ((kpti_force_enabled > 0) ||
 		   (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL &&
 		   !kpti_force_enabled)) {
-		pr_info("x86/kpti: Unmapping kernel while in userspace\n");
+		pr_info("enabled\n");
 		kaiser_enable_pcp(true);
 		kaiser_enabled = 1;
 	}
