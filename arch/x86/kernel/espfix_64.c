@@ -132,7 +132,7 @@ void __init init_espfix_bsp(void)
 	 * area to ensure it is mapped into the shadow user page
 	 * tables.
 	 */
-	if (IS_ENABLED(CONFIG_KAISER))
+	if (IS_ENABLED(CONFIG_PAGE_TABLE_ISOLATION))
 		set_pgd(native_get_shadow_pgd(pgd_p),
 			__pgd(_KERNPG_TABLE | __pa((pud_t *)espfix_pud_page)));
 

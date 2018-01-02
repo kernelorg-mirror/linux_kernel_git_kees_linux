@@ -341,7 +341,7 @@ static inline void _pgd_free(pgd_t *pgd)
 }
 #else
 
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 /*
  * Instead of one pmd, we aquire two pmds.  Being order-1, it is
  * both 8k in size and 8k-aligned.  That lets us just flip bit 12
