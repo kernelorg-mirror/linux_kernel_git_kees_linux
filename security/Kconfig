@@ -48,7 +48,7 @@ config SECURITY_NETWORK
 	  implement socket and networking access controls.
 	  If you are unsure how to answer this question, answer N.
 
-config KAISER
+config PAGE_TABLE_ISOLATION
 	bool "Remove the kernel mapping in user mode"
 	depends on X86_64 && SMP && STOP_MACHINE
 	help

@@ -1,4 +1,4 @@
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 
 /* KAISER PGDs are 8k.  Flip bit 12 to switch between the two halves: */
 #define KAISER_SWITCH_MASK (1<<PAGE_SHIFT)
@@ -67,7 +67,7 @@
 .Lnokaiser_\@:
 .endm
 
-#else /* CONFIG_KAISER=n: */
+#else /* CONFIG_PAGE_TABLE_ISOLATION=n: */
 
 .macro SWITCH_TO_KERNEL_CR3
 .endm

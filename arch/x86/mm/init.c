@@ -121,7 +121,7 @@ static int page_size_mask;
 
 static void enable_global_pages(void)
 {
-#ifndef CONFIG_KAISER
+#ifndef CONFIG_PAGE_TABLE_ISOLATION
 	__supported_pte_mask |= _PAGE_GLOBAL;
 #endif
 }
