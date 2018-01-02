@@ -20,7 +20,7 @@
 #define KAISER_SHADOW_PGD_OFFSET 0x1000
 
 #ifdef __ASSEMBLY__
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 
 .macro _SWITCH_TO_KERNEL_CR3 reg
 movq %cr3, \reg
@@ -63,7 +63,7 @@ _SWITCH_TO_KERNEL_CR3 %rax
 movq PER_CPU_VAR(unsafe_stack_register_backup), %rax
 .endm
 
-#else /* CONFIG_KAISER */
+#else /* CONFIG_PAGE_TABLE_ISOLATION */
 
 .macro SWITCH_KERNEL_CR3 reg
 .endm
@@ -72,11 +72,11 @@ movq PER_CPU_VAR(unsafe_stack_register_backup), %rax
 .macro SWITCH_KERNEL_CR3_NO_STACK
 .endm
 
-#endif /* CONFIG_KAISER */
+#endif /* CONFIG_PAGE_TABLE_ISOLATION */
 
 #else /* __ASSEMBLY__ */
 
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 /*
  * Upon kernel/user mode switch, it may happen that the address
  * space has to be switched before the registers have been
@@ -119,7 +119,7 @@ extern void kaiser_remove_mapping(unsigned long start, unsigned long size);
  */
 extern void kaiser_init(void);
 
-#endif /* CONFIG_KAISER */
+#endif /* CONFIG_PAGE_TABLE_ISOLATION */
 
 #endif /* __ASSEMBLY */
 

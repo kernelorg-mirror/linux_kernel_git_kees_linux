@@ -16,7 +16,7 @@
 #include <asm/pgalloc.h>
 #include <asm/desc.h>
 
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 __visible
 DEFINE_PER_CPU_USER_MAPPED(unsigned long, unsafe_stack_register_backup);
 
@@ -399,4 +399,4 @@ void kaiser_flush_tlb_on_return_to_user(void)
 			X86_CR3_PCID_USER_FLUSH | KAISER_SHADOW_PGD_OFFSET);
 }
 EXPORT_SYMBOL(kaiser_flush_tlb_on_return_to_user);
-#endif /* CONFIG_KAISER */
+#endif /* CONFIG_PAGE_TABLE_ISOLATION */
