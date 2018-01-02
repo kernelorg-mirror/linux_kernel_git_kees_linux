@@ -5,6 +5,7 @@
 #include <linux/types.h>
 #include <linux/bug.h>
 #include <linux/init.h>
+#include <linux/ftrace.h>
 #include <linux/interrupt.h>
 #include <linux/spinlock.h>
 #include <linux/mm.h>
