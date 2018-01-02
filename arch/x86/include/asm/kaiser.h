@@ -20,7 +20,7 @@
 #define KAISER_SHADOW_PGD_OFFSET 0x1000
 
 #ifdef __ASSEMBLY__
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 
 .macro _SWITCH_TO_KERNEL_CR3 reg
 /* ALTERNATIVEs prevent reaching this macro when booted "nokaiser" */
@@ -79,7 +79,7 @@ movq PER_CPU_VAR(unsafe_stack_register_backup), %rax
 8:
 .endm
 
-#else /* CONFIG_KAISER */
+#else /* CONFIG_PAGE_TABLE_ISOLATION */
 
 .macro SWITCH_KERNEL_CR3
 .endm
@@ -88,7 +88,7 @@ movq PER_CPU_VAR(unsafe_stack_register_backup), %rax
 .macro SWITCH_KERNEL_CR3_NO_STACK
 .endm
 
-#endif /* CONFIG_KAISER */
+#endif /* CONFIG_PAGE_TABLE_ISOLATION */
 
 #else /* __ASSEMBLY__ */
 
@@ -104,7 +104,7 @@ movq PER_CPU_VAR(unsafe_stack_register_backup), %rax
 #define KAISER_NEVER_NOKAISER		3
 #define KAISER_MAX_BOOT_OPTION		KAISER_NEVER_NOKAISER
 
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 /*
  * Upon kernel/user mode switch, it may happen that the address
  * space has to be switched before the registers have been
@@ -118,7 +118,7 @@ extern char __per_cpu_user_mapped_start[], __per_cpu_user_mapped_end[];
 extern int kaiser_enabled;
 #else
 #define kaiser_enabled	0
-#endif /* CONFIG_KAISER */
+#endif /* CONFIG_PAGE_TABLE_ISOLATION */
 
 static inline bool nokaiser_uses_globals(void)
 {
@@ -126,7 +126,7 @@ static inline bool nokaiser_uses_globals(void)
 }
 
 /*
- * Kaiser function prototypes are needed even when CONFIG_KAISER is not set,
+ * Kaiser function prototypes are needed even when CONFIG_PAGE_TABLE_ISOLATION is not set,
  * so as to build with tests on kaiser_enabled instead of #ifdefs.
  */
 

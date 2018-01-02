@@ -203,7 +203,7 @@ static int __init x86_nokaiser_setup(char *s)
 		    kaiser > KAISER_MAX_BOOT_OPTION)
 			return -ERANGE;
 	}
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 	kaiser_enabled = kaiser;
 	if (!kaiser_enabled) {
 		setup_clear_cpu_cap(X86_FEATURE_KAISER);
@@ -761,7 +761,7 @@ void get_cpu_cap(struct cpuinfo_x86 *c)
 		c->x86_power = cpuid_edx(0x80000007);
 
 	init_scattered_cpuid_features(c);
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 	if (kaiser_enabled)
 		set_cpu_cap(c, X86_FEATURE_KAISER);
 #endif
