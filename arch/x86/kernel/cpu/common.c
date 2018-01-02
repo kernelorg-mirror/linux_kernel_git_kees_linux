@@ -195,7 +195,7 @@ static int __init x86_nokaiser_setup(char *s)
 	int kaiser = NOKAISER_BOOT_OPTION;
 
 	/*
-	 * For ease of testing some possibilities, allow "nokaiser=N";
+	 * For ease of testing some possibilities, allow "nopti=N";
 	 * though it is treated as the inverse, as "kaiser_enabled=N".
 	 */
 	if (s) {
@@ -205,16 +205,16 @@ static int __init x86_nokaiser_setup(char *s)
 		    kaiser > KAISER_MAX_BOOT_OPTION)
 			return -ERANGE;
 	}
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 	kaiser_enabled = kaiser;
 	if (!kaiser_enabled) {
 		setup_clear_cpu_cap(X86_FEATURE_KAISER);
-		pr_info("nokaiser: KAISER feature disabled\n");
+		pr_info("nopti: KAISER feature disabled\n");
 	}
 #endif
 	return 0;
 }
-early_param("nokaiser", x86_nokaiser_setup);
+early_param("nopti", x86_nokaiser_setup);
 #endif
 
 static int __init x86_noinvpcid_setup(char *s)
@@ -763,7 +763,7 @@ void get_cpu_cap(struct cpuinfo_x86 *c)
 		c->x86_power = cpuid_edx(0x80000007);
 
 	init_scattered_cpuid_features(c);
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 	if (kaiser_enabled)
 		set_cpu_cap(c, X86_FEATURE_KAISER);
 #endif

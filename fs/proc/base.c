@@ -2329,7 +2329,7 @@ static const struct file_operations proc_coredump_filter_operations = {
 };
 #endif /* CONFIG_ELF_CORE */
 
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 /* Static function, but could be made available to others in future */
 static int kaiser_read(struct task_struct *task)
 {
@@ -2458,7 +2458,7 @@ static const struct file_operations proc_kaiser_operations = {
 	.write		= proc_kaiser_write,
 	.llseek		= generic_file_llseek,
 };
-#endif /* CONFIG_KAISER */
+#endif /* CONFIG_PAGE_TABLE_ISOLATION */
 
 #ifdef CONFIG_TASK_IO_ACCOUNTING
 static int do_io_accounting(struct task_struct *task, struct seq_file *m, int whole)
@@ -2746,7 +2746,7 @@ static const struct pid_entry tgid_base_stuff[] = {
 #ifdef CONFIG_ELF_CORE
 	REG("coredump_filter", S_IRUGO|S_IWUSR, proc_coredump_filter_operations),
 #endif
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 	REG("kaiser", S_IRUSR|S_IWUSR, proc_kaiser_operations),
 #endif
 #ifdef CONFIG_TASK_IO_ACCOUNTING

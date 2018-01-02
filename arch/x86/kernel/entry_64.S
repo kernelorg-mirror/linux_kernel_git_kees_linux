@@ -317,7 +317,7 @@ ENTRY(save_paranoid)
 	SWAPGS
 	xorl %ebx,%ebx
 1:
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 	/*
 	 * We might have come in between a swapgs and a SWITCH_KERNEL_CR3
 	 * on entry, or between a SWITCH_USER_CR3 and a swapgs on exit.
@@ -1341,7 +1341,7 @@ ENTRY(paranoid_exit)
 paranoid_kernel:
 	movq	%r12, %rbx		/* restore after paranoid_userspace */
 	TRACE_IRQS_IRETQ_DEBUG 0
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 	/* No ALTERNATIVE for X86_FEATURE_KAISER: paranoid_entry sets %ebx */
 	testl	$2, %ebx			/* SWITCH_USER_CR3 needed? */
 	jz	paranoid_exit_no_switch
@@ -1599,7 +1599,7 @@ ENTRY(nmi)
 
 	movq	%rsp, %rdi
 	movq	$-1, %rsi
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 	/* Unconditionally use kernel CR3 for do_nmi() */
 	/* %rax is saved above, so OK to clobber here */
 	ALTERNATIVE "jmp 2f", "movq %cr3, %rax", X86_FEATURE_KAISER
@@ -1616,7 +1616,7 @@ ENTRY(nmi)
 #endif
 	call	do_nmi
 
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 	ALTERNATIVE "jmp 3f", "popq %rax", X86_FEATURE_KAISER
 	/* If this is a nokaiser task, skip cr3 update */
 	testq	$KAISER_SHADOW_PGD_OFFSET, %rax
@@ -1850,7 +1850,7 @@ end_repeat_nmi:
 1:
 	movq	%rsp,%rdi
 	movq	$-1,%rsi
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 	/* Unconditionally use kernel CR3 for do_nmi() */
 	/* %rax is saved above, so OK to clobber here */
 	ALTERNATIVE "jmp 2f", "movq %cr3, %rax", X86_FEATURE_KAISER
@@ -1870,7 +1870,7 @@ end_repeat_nmi:
 	/* paranoidentry do_nmi, 0; without TRACE_IRQS_OFF */
 	call	do_nmi
 
-#ifdef CONFIG_KAISER
+#ifdef CONFIG_PAGE_TABLE_ISOLATION
 	ALTERNATIVE "jmp 3f", "popq %rax", X86_FEATURE_KAISER
 	/* If this is a nokaiser task or returning to kernel, skip cr3 update */
 	testq	$KAISER_SHADOW_PGD_OFFSET, %rax
