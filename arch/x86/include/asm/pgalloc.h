@@ -134,7 +134,8 @@ static inline void pgd_populate(struct mm_struct *mm, pgd_t *pgd, pud_t *pud)
 		 * get out to userspace running on the kernel CR3,
 		 * userspace will crash instead of running.
 		 */
-		pgd->pgd |= _PAGE_NX;
+		if (__supported_pte_mask & _PAGE_NX)
+			pgd->pgd |= _PAGE_NX;
 	}
 }
 
