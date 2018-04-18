@@ -29,7 +29,7 @@ static void seq_set_overflow(struct seq_file *m)
 
 static void *seq_buf_alloc(unsigned long size)
 {
-	return kvmalloc(size, GFP_KERNEL_ACCOUNT);
+	return kvmalloc(size, GFP_KERNEL_ACCOUNT | GFP_USERCOPY);
 }
 
 /**

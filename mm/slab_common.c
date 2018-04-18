@@ -50,7 +50,7 @@ static DECLARE_WORK(slab_caches_to_rcu_destroy_work,
  */
 #define SLAB_NEVER_MERGE (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER | \
 		SLAB_TRACE | SLAB_TYPESAFE_BY_RCU | SLAB_NOLEAKTRACE | \
-		SLAB_FAILSLAB | SLAB_KASAN)
+		SLAB_FAILSLAB | SLAB_KASAN | SLAB_NO_MERGE)
 
 #define SLAB_MERGE_SAME (SLAB_RECLAIM_ACCOUNT | SLAB_CACHE_DMA | \
 			 SLAB_ACCOUNT)
@@ -946,6 +946,11 @@ struct kmem_cache *kmalloc_dma_caches[KMALLOC_SHIFT_HIGH + 1] __ro_after_init;
 EXPORT_SYMBOL(kmalloc_dma_caches);
 #endif
 
+#ifdef CONFIG_HARDENED_USERCOPY_SPLIT_KMALLOC
+struct kmem_cache *kmalloc_usersized_caches[KMALLOC_SHIFT_HIGH + 1] __ro_after_init;
+EXPORT_SYMBOL(kmalloc_usersized_caches);
+#endif
+
 /*
  * Conversion table for small slabs sizes / 8 to the index in the
  * kmalloc array. This is necessary for slabs < 192 since we have non power
@@ -1010,6 +1015,12 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
 		return kmalloc_dma_caches[index];
 
 #endif
+
+#ifdef CONFIG_HARDENED_USERCOPY_SPLIT_KMALLOC
+	if (unlikely((flags & GFP_USERCOPY)))
+		return kmalloc_usersized_caches[index];
+#endif
+
 	return kmalloc_caches[index];
 }
 
@@ -1131,6 +1142,22 @@ void __init create_kmalloc_caches(slab_flags_t flags)
 		}
 	}
 #endif
+
+#ifdef CONFIG_HARDENED_USERCOPY_SPLIT_KMALLOC
+	for (i = 0; i <= KMALLOC_SHIFT_HIGH; i++) {
+		struct kmem_cache *s = kmalloc_caches[i];
+
+		if (s) {
+			int size = kmalloc_size(i);
+			char *n = kasprintf(GFP_NOWAIT,
+				"usersized-kmalloc-%d", size);
+
+			BUG_ON(!n);
+			kmalloc_usersized_caches[i] = create_kmalloc_cache(n,
+				size, SLAB_NO_MERGE | flags, 0, size);
+		}
+	}
+#endif /* CONFIG_HARDENED_USERCOPY_SPLIT_KMALLOC */
 }
 #endif /* !CONFIG_SLOB */
 

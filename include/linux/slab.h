@@ -31,6 +31,8 @@
 #define SLAB_HWCACHE_ALIGN	((slab_flags_t __force)0x00002000U)
 /* Use GFP_DMA memory */
 #define SLAB_CACHE_DMA		((slab_flags_t __force)0x00004000U)
+/* Keep this cache unmerged */
+#define SLAB_NO_MERGE		((slab_flags_t __force)0x00008000U)
 /* DEBUG: Store the last owner for bug hunting */
 #define SLAB_STORE_USER		((slab_flags_t __force)0x00010000U)
 /* Panic if kmem_cache_create() fails */
@@ -298,6 +300,17 @@ static inline void __check_heap_object(const void *ptr, unsigned long n,
 extern struct kmem_cache *kmalloc_caches[KMALLOC_SHIFT_HIGH + 1];
 #ifdef CONFIG_ZONE_DMA
 extern struct kmem_cache *kmalloc_dma_caches[KMALLOC_SHIFT_HIGH + 1];
+#endif
+
+/*
+ * Some userspace APIs (ipc, seq_file) provide precise control over
+ * the size of kernel kmallocs, which provides a trivial way to perform
+ * heap overflow attacks where the attacker must control neighboring
+ * allocations.  Instead, move these APIs into their own cache so they
+ * cannot interfere with standard kmallocs.
+ */
+#ifdef CONFIG_HARDENED_USERCOPY_SPLIT_KMALLOC
+extern struct kmem_cache *kmalloc_usersized_caches[KMALLOC_SHIFT_HIGH + 1];
 #endif
 
 /*
