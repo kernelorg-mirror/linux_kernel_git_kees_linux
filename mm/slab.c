@@ -4399,6 +4399,27 @@ static int __init slab_proc_init(void)
 module_init(slab_proc_init);
 
 #ifdef CONFIG_HARDENED_USERCOPY
+size_t __heap_size(const void *ptr, struct page *page)
+{
+	struct kmem_cache *cachep;
+	unsigned int objnr;
+	unsigned long offset;
+
+	/* Find and validate object. */
+	cachep = page->slab_cache;
+	objnr = obj_to_index(cachep, page, (void *)ptr);
+	BUG_ON(objnr >= cachep->num);
+
+	/* Find offset within object. */
+	offset = ptr - index_to_obj(cachep, page, objnr) - obj_offset(cachep);
+
+	/* Freak out if we're past the end of the object size. */
+	if (offset >= cachep->object_size)
+		usercopy_warn("SLAB object", cachep->name, false, offset, -1);
+
+	return cachep->object_size - offset;
+}
+
 /*
  * Rejects incorrectly sized objects and objects that are to be copied
  * to/from userspace but do not fall entirely within the containing slab

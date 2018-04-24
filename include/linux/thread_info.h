@@ -100,6 +100,7 @@ static inline int arch_within_stack_frames(const void * const stack,
 #ifdef CONFIG_HARDENED_USERCOPY
 extern void __check_object_size(const void *ptr, unsigned long n,
 					bool to_user);
+extern size_t get_heap_size(const void *ptr);
 
 static __always_inline void check_object_size(const void *ptr, unsigned long n,
 					      bool to_user)
@@ -111,6 +112,10 @@ static __always_inline void check_object_size(const void *ptr, unsigned long n,
 static inline void check_object_size(const void *ptr, unsigned long n,
 				     bool to_user)
 { }
+static inline size_t get_heap_size(const void *ptr)
+{
+	return (size_t)-1;
+}
 #endif /* CONFIG_HARDENED_USERCOPY */
 
 extern void __compiletime_error("copy source size is too small")

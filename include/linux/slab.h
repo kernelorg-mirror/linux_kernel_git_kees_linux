@@ -186,9 +186,14 @@ size_t ksize(const void *);
 #ifdef CONFIG_HAVE_HARDENED_USERCOPY_ALLOCATOR
 void __check_heap_object(const void *ptr, unsigned long n, struct page *page,
 			bool to_user);
+size_t __heap_size(const void *ptr, struct page *page);
 #else
 static inline void __check_heap_object(const void *ptr, unsigned long n,
 				       struct page *page, bool to_user) { }
+static inline size_t __heap_size(const void *ptr, struct page *page)
+{
+	return (size_t)-1;
+}
 #endif
 
 /*

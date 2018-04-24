@@ -221,6 +221,23 @@ static inline void check_page_span(const void *ptr, unsigned long n,
 #endif
 }
 
+size_t get_heap_size(const void *ptr)
+{
+	struct page *page;
+
+	if (!virt_addr_valid(ptr))
+		return (size_t)-1;
+
+	page = virt_to_head_page(ptr);
+
+	if (!PageSlab(page))
+		return (size_t)-1;
+
+	/* Check slab allocator for flags and size. */
+	return __heap_size(ptr, page);
+}
+EXPORT_SYMBOL(get_heap_size);
+
 static inline void check_heap_object(const void *ptr, unsigned long n,
 				     bool to_user)
 {

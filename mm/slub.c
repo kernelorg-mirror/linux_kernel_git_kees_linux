@@ -3839,6 +3839,41 @@ EXPORT_SYMBOL(__kmalloc_node);
 #endif
 
 #ifdef CONFIG_HARDENED_USERCOPY
+size_t __heap_size(const void *ptr, struct page *page)
+{
+	struct kmem_cache *s;
+	unsigned int offset;
+	size_t object_size;
+
+	/* Find object and usable object size. */
+	s = page->slab_cache;
+
+	/* Reject impossible pointers. */
+	if (ptr < page_address(page))
+		usercopy_abort("SLUB object not in SLUB page?!", NULL,
+			       false, 0, -1);
+
+	/* Find offset within object. */
+	offset = (ptr - page_address(page)) % s->size;
+
+	/* Adjust for redzone and reject if within the redzone. */
+	if (kmem_cache_debug(s) && s->flags & SLAB_RED_ZONE) {
+		if (offset < s->red_left_pad)
+			usercopy_abort("SLUB object in left red zone",
+				       s->name, false, offset, -1);
+		offset -= s->red_left_pad;
+	}
+
+	/*
+	 * If the copy is outside the allocated object, freak out.
+	 */
+	object_size = slab_ksize(s);
+	if (offset >= object_size)
+		usercopy_abort("SLUB object", s->name, false, offset, -1);
+
+	return object_size - offset;
+}
+
 /*
  * Rejects incorrectly sized objects and objects that are to be copied
  * to/from userspace but do not fall entirely within the containing slab
