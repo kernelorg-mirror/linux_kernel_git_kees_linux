@@ -8,7 +8,7 @@ static __init int memset16_selftest(void)
 	unsigned i, j, k;
 	u16 v, *p;
 
-	p = kmalloc(256 * 2 * 2, GFP_KERNEL);
+	p = kmalloc_array(2, 256 * 2, GFP_KERNEL);
 	if (!p)
 		return -1;
 
@@ -44,7 +44,7 @@ static __init int memset32_selftest(void)
 	unsigned i, j, k;
 	u32 v, *p;
 
-	p = kmalloc(256 * 2 * 4, GFP_KERNEL);
+	p = kmalloc_array(4, 256 * 2, GFP_KERNEL);
 	if (!p)
 		return -1;
 
@@ -80,7 +80,7 @@ static __init int memset64_selftest(void)
 	unsigned i, j, k;
 	u64 v, *p;
 
-	p = kmalloc(256 * 2 * 8, GFP_KERNEL);
+	p = kmalloc_array(8, 256 * 2, GFP_KERNEL);
 	if (!p)
 		return -1;
 

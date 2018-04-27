@@ -398,7 +398,7 @@ static int dao_rsc_init(struct dao *dao,
 	if (err)
 		return err;
 
-	dao->imappers = kzalloc(sizeof(void *)*desc->msr*2, GFP_KERNEL);
+	dao->imappers = kcalloc(desc->msr * 2, sizeof(void *), GFP_KERNEL);
 	if (!dao->imappers) {
 		err = -ENOMEM;
 		goto error1;

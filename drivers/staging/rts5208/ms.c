@@ -1049,7 +1049,7 @@ static int ms_read_attribute_info(struct rtsx_chip *chip)
 		return STATUS_FAIL;
 	}
 
-	buf = kmalloc(64 * 512, GFP_KERNEL);
+	buf = kmalloc_array(64, 512, GFP_KERNEL);
 	if (!buf) {
 		rtsx_trace(chip);
 		return STATUS_ERROR;

@@ -1739,7 +1739,7 @@ static int adpt_i2o_passthru(adpt_hba* pHba, u32 __user *arg)
 		reply_size = REPLY_FRAME_SIZE;
 	}
 	reply_size *= 4;
-	reply = kzalloc(REPLY_FRAME_SIZE*4, GFP_KERNEL);
+	reply = kcalloc(REPLY_FRAME_SIZE, 4, GFP_KERNEL);
 	if(reply == NULL) {
 		printk(KERN_WARNING"%s: Could not allocate reply buffer\n",pHba->name);
 		return -ENOMEM;

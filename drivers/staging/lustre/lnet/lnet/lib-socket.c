@@ -170,7 +170,7 @@ lnet_ipif_enumerate(char ***namesp)
 			      nalloc);
 		}
 
-		ifr = kzalloc(nalloc * sizeof(*ifr), GFP_KERNEL);
+		ifr = kcalloc(nalloc, sizeof(*ifr), GFP_KERNEL);
 		if (!ifr) {
 			CERROR("ENOMEM enumerating up to %d interfaces\n",
 			       nalloc);
@@ -202,7 +202,7 @@ lnet_ipif_enumerate(char ***namesp)
 	if (!nfound)
 		goto out1;
 
-	names = kzalloc(nfound * sizeof(*names), GFP_KERNEL);
+	names = kcalloc(nfound, sizeof(*names), GFP_KERNEL);
 	if (!names) {
 		rc = -ENOMEM;
 		goto out1;

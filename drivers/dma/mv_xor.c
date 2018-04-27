@@ -777,11 +777,11 @@ static int mv_chan_memcpy_self_test(struct mv_xor_chan *mv_chan)
 	struct dmaengine_unmap_data *unmap;
 	int err = 0;
 
-	src = kmalloc(sizeof(u8) * PAGE_SIZE, GFP_KERNEL);
+	src = kmalloc_array(PAGE_SIZE, sizeof(u8), GFP_KERNEL);
 	if (!src)
 		return -ENOMEM;
 
-	dest = kzalloc(sizeof(u8) * PAGE_SIZE, GFP_KERNEL);
+	dest = kcalloc(PAGE_SIZE, sizeof(u8), GFP_KERNEL);
 	if (!dest) {
 		kfree(src);
 		return -ENOMEM;

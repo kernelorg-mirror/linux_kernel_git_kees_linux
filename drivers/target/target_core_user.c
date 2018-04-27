@@ -1692,7 +1692,7 @@ static int tcmu_configure_device(struct se_device *dev)
 
 	info = &udev->uio_info;
 
-	udev->data_bitmap = kzalloc(BITS_TO_LONGS(udev->max_blocks) *
+	udev->data_bitmap = kcalloc(BITS_TO_LONGS(udev->max_blocks),
 				    sizeof(unsigned long), GFP_KERNEL);
 	if (!udev->data_bitmap) {
 		ret = -ENOMEM;

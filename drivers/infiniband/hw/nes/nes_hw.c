@@ -1001,8 +1001,9 @@ int nes_init_cqp(struct nes_device *nesdev)
 	}
 
 	/* Allocate a twice the number of CQP requests as the SQ size */
-	nesdev->nes_cqp_requests = kzalloc(sizeof(struct nes_cqp_request) *
-			2 * NES_CQP_SQ_SIZE, GFP_KERNEL);
+	nesdev->nes_cqp_requests = kcalloc(2 * NES_CQP_SQ_SIZE,
+					   sizeof(struct nes_cqp_request),
+					   GFP_KERNEL);
 	if (!nesdev->nes_cqp_requests) {
 		pci_free_consistent(nesdev->pcidev, nesdev->cqp_mem_size, nesdev->cqp.sq_vbase,
 				nesdev->cqp.sq_pbase);

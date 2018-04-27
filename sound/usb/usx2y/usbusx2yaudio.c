@@ -662,7 +662,8 @@ static int usX2Y_rate_set(struct usX2Ydev *usX2Y, int rate)
 			err = -ENOMEM;
 			goto cleanup;
 		}
-		usbdata = kmalloc(sizeof(int) * NOOF_SETRATE_URBS, GFP_KERNEL);
+		usbdata = kmalloc_array(NOOF_SETRATE_URBS, sizeof(int),
+					GFP_KERNEL);
 		if (NULL == usbdata) {
 			err = -ENOMEM;
 			goto cleanup;

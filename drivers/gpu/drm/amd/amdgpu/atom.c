@@ -1221,7 +1221,7 @@ static int amdgpu_atom_execute_table_locked(struct atom_context *ctx, int index,
 	ectx.abort = false;
 	ectx.last_jump = 0;
 	if (ws)
-		ectx.ws = kzalloc(4 * ws, GFP_KERNEL);
+		ectx.ws = kcalloc(4, ws, GFP_KERNEL);
 	else
 		ectx.ws = NULL;
 
@@ -1282,7 +1282,7 @@ static int atom_iio_len[] = { 1, 2, 3, 3, 3, 3, 4, 4, 4, 3 };
 
 static void atom_index_iio(struct atom_context *ctx, int base)
 {
-	ctx->iio = kzalloc(2 * 256, GFP_KERNEL);
+	ctx->iio = kcalloc(2, 256, GFP_KERNEL);
 	if (!ctx->iio)
 		return;
 	while (CU8(base) == ATOM_IIO_START) {

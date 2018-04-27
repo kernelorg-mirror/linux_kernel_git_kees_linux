@@ -1958,7 +1958,7 @@ static int carl9170_parse_eeprom(struct ar9170 *ar)
 	if (!bands)
 		return -EINVAL;
 
-	ar->survey = kzalloc(sizeof(struct survey_info) * chans, GFP_KERNEL);
+	ar->survey = kcalloc(chans, sizeof(struct survey_info), GFP_KERNEL);
 	if (!ar->survey)
 		return -ENOMEM;
 	ar->num_channels = chans;
@@ -1988,7 +1988,7 @@ int carl9170_register(struct ar9170 *ar)
 	if (WARN_ON(ar->mem_bitmap))
 		return -EINVAL;
 
-	ar->mem_bitmap = kzalloc(roundup(ar->fw.mem_blocks, BITS_PER_LONG) *
+	ar->mem_bitmap = kcalloc(roundup(ar->fw.mem_blocks, BITS_PER_LONG),
 				 sizeof(unsigned long), GFP_KERNEL);
 
 	if (!ar->mem_bitmap)

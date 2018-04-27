@@ -5265,7 +5265,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
 		insn->imm = 1;
 	}
 
-	func = kzalloc(sizeof(prog) * (env->subprog_cnt + 1), GFP_KERNEL);
+	func = kcalloc((env->subprog_cnt + 1), sizeof(prog), GFP_KERNEL);
 	if (!func)
 		return -ENOMEM;
 

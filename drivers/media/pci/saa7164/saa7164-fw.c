@@ -89,7 +89,7 @@ static int saa7164_downloadimage(struct saa7164_dev *dev, u8 *src, u32 srcsize,
 		goto out;
 	}
 
-	srcbuf = kzalloc(4 * 1048576, GFP_KERNEL);
+	srcbuf = kcalloc(4, 1048576, GFP_KERNEL);
 	if (NULL == srcbuf) {
 		ret = -ENOMEM;
 		goto out;

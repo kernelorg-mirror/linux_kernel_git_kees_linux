@@ -2400,7 +2400,7 @@ static int isp1362_chip_test(struct isp1362_hcd *isp1362_hcd)
 	u16 *ref;
 	unsigned long flags;
 
-	ref = kmalloc(2 * ISP1362_BUF_SIZE, GFP_KERNEL);
+	ref = kmalloc_array(2, ISP1362_BUF_SIZE, GFP_KERNEL);
 	if (ref) {
 		int offset;
 		u16 *tst = &ref[ISP1362_BUF_SIZE / 2];

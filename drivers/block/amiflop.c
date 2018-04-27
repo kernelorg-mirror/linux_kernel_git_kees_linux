@@ -1727,7 +1727,7 @@ static int __init fd_probe_drives(void)
 		}
 
 		drives++;
-		if ((unit[drive].trackbuf = kmalloc(FLOPPY_MAX_SECTORS * 512, GFP_KERNEL)) == NULL) {
+		if ((unit[drive].trackbuf = kmalloc_array(FLOPPY_MAX_SECTORS, 512, GFP_KERNEL)) == NULL) {
 			printk("no mem for ");
 			unit[drive].type = &drive_types[num_dr_types - 1]; /* FD_NODRIVE */
 			drives--;

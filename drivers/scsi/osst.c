@@ -381,7 +381,7 @@ static int osst_execute(struct osst_request *SRpnt, const unsigned char *cmd,
 		struct scatterlist *sg, *sgl = (struct scatterlist *)buffer;
 		int i;
 
-		pages = kzalloc(use_sg * sizeof(struct page *), GFP_KERNEL);
+		pages = kcalloc(use_sg, sizeof(struct page *), GFP_KERNEL);
 		if (!pages)
 			goto free_req;
 
@@ -5856,7 +5856,9 @@ static int osst_probe(struct device *dev)
 	/* if this is the first attach, build the infrastructure */
 	write_lock(&os_scsi_tapes_lock);
 	if (os_scsi_tapes == NULL) {
-		os_scsi_tapes = kmalloc(osst_max_dev * sizeof(struct osst_tape *), GFP_ATOMIC);
+		os_scsi_tapes = kmalloc_array(osst_max_dev,
+                                              sizeof(struct osst_tape *),
+                                              GFP_ATOMIC);
 		if (os_scsi_tapes == NULL) {
 			write_unlock(&os_scsi_tapes_lock);
 			printk(KERN_ERR "osst :E: Unable to allocate array for OnStream SCSI tapes.\n");

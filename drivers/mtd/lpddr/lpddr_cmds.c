@@ -78,8 +78,8 @@ struct mtd_info *lpddr_cmdset(struct map_info *map)
 	mtd->erasesize = 1 << lpddr->qinfo->UniformBlockSizeShift;
 	mtd->writesize = 1 << lpddr->qinfo->BufSizeShift;
 
-	shared = kmalloc(sizeof(struct flchip_shared) * lpddr->numchips,
-						GFP_KERNEL);
+	shared = kmalloc_array(lpddr->numchips, sizeof(struct flchip_shared),
+			       GFP_KERNEL);
 	if (!shared) {
 		kfree(lpddr);
 		kfree(mtd);

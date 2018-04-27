@@ -125,8 +125,9 @@ struct mod_stats *mod_stats_create(struct dc *dc)
 			core_stats->entries = reg_data;
 	}
 
-	core_stats->time = kzalloc(sizeof(struct stats_time_cache) * core_stats->entries,
-					GFP_KERNEL);
+	core_stats->time = kcalloc(core_stats->entries,
+				   sizeof(struct stats_time_cache),
+				   GFP_KERNEL);
 
 	if (core_stats->time == NULL)
 		goto fail_construct;

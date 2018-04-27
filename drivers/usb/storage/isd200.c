@@ -1458,7 +1458,7 @@ static int isd200_init_info(struct us_data *us)
 	if (!info)
 		return ISD200_ERROR;
 
-	info->id = kzalloc(ATA_ID_WORDS * 2, GFP_KERNEL);
+	info->id = kcalloc(ATA_ID_WORDS, 2, GFP_KERNEL);
 	info->RegsBuf = kmalloc(sizeof(info->ATARegs), GFP_KERNEL);
 	info->srb.sense_buffer = kmalloc(SCSI_SENSE_BUFFERSIZE, GFP_KERNEL);
 

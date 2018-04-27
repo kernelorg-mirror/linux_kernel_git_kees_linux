@@ -1046,7 +1046,7 @@ sg_ioctl(struct file *filp, unsigned int cmd_in, unsigned long arg)
 		else {
 			sg_req_info_t *rinfo;
 
-			rinfo = kzalloc(SZ_SG_REQ_INFO * SG_MAX_QUEUE,
+			rinfo = kcalloc(SZ_SG_REQ_INFO, SG_MAX_QUEUE,
 					GFP_KERNEL);
 			if (!rinfo)
 				return -ENOMEM;

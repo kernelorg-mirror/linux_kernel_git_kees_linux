@@ -61,7 +61,7 @@ static int __init test_user_copy_init(void)
 	u64 val_u64;
 #endif
 
-	kmem = kmalloc(PAGE_SIZE * 2, GFP_KERNEL);
+	kmem = kmalloc_array(PAGE_SIZE, 2, GFP_KERNEL);
 	if (!kmem)
 		return -ENOMEM;
 

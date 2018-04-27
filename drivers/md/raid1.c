@@ -126,8 +126,8 @@ static void * r1buf_pool_alloc(gfp_t gfp_flags, void *data)
 	if (!r1_bio)
 		return NULL;
 
-	rps = kmalloc(sizeof(struct resync_pages) * pi->raid_disks,
-		      gfp_flags);
+	rps = kmalloc_array(pi->raid_disks, sizeof(struct resync_pages),
+			    gfp_flags);
 	if (!rps)
 		goto out_free_r1bio;
 
@@ -2939,9 +2939,8 @@ static struct r1conf *setup_conf(struct mddev *mddev)
 	if (!conf->barrier)
 		goto abort;
 
-	conf->mirrors = kzalloc(sizeof(struct raid1_info)
-				* mddev->raid_disks * 2,
-				 GFP_KERNEL);
+	conf->mirrors = kcalloc(mddev->raid_disks * 2,
+				sizeof(struct raid1_info), GFP_KERNEL);
 	if (!conf->mirrors)
 		goto abort;
 
@@ -3243,7 +3242,7 @@ static int raid1_reshape(struct mddev *mddev)
 		kfree(newpoolinfo);
 		return -ENOMEM;
 	}
-	newmirrors = kzalloc(sizeof(struct raid1_info) * raid_disks * 2,
+	newmirrors = kcalloc(raid_disks * 2, sizeof(struct raid1_info),
 			     GFP_KERNEL);
 	if (!newmirrors) {
 		kfree(newpoolinfo);

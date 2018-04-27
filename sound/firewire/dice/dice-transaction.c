@@ -170,7 +170,7 @@ static int register_notification_address(struct snd_dice *dice, bool retry)
 
 	retries = (retry) ? 3 : 0;
 
-	buffer = kmalloc(2 * 8, GFP_KERNEL);
+	buffer = kmalloc_array(2, 8, GFP_KERNEL);
 	if (!buffer)
 		return -ENOMEM;
 
@@ -220,7 +220,7 @@ static void unregister_notification_address(struct snd_dice *dice)
 	struct fw_device *device = fw_parent_device(dice->unit);
 	__be64 *buffer;
 
-	buffer = kmalloc(2 * 8, GFP_KERNEL);
+	buffer = kmalloc_array(2, 8, GFP_KERNEL);
 	if (buffer == NULL)
 		return;
 

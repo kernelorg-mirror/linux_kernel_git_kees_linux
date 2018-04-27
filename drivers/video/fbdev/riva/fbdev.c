@@ -1909,7 +1909,7 @@ static int rivafb_probe(struct pci_dev *pd, const struct pci_device_id *ent)
 	default_par = info->par;
 	default_par->pdev = pd;
 
-	info->pixmap.addr = kzalloc(8 * 1024, GFP_KERNEL);
+	info->pixmap.addr = kcalloc(8, 1024, GFP_KERNEL);
 	if (info->pixmap.addr == NULL) {
 	    	ret = -ENOMEM;
 		goto err_framebuffer_release;

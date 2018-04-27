@@ -235,7 +235,7 @@ static int ast_detect_chip(struct drm_device *dev, bool *need_post)
 			ast->tx_chip_type = AST_TX_SIL164;
 			break;
 		case 0x08:
-			ast->dp501_fw_addr = kzalloc(32*1024, GFP_KERNEL);
+			ast->dp501_fw_addr = kcalloc(32, 1024, GFP_KERNEL);
 			if (ast->dp501_fw_addr) {
 				/* backup firmware */
 				if (ast_backup_fw(dev, ast->dp501_fw_addr, 32*1024)) {

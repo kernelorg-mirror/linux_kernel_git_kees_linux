@@ -1513,7 +1513,7 @@ static int i810fb_cursor(struct fb_info *info, struct fb_cursor *cursor)
 		int size = ((cursor->image.width + 7) >> 3) *
 			cursor->image.height;
 		int i;
-		u8 *data = kmalloc(64 * 8, GFP_ATOMIC);
+		u8 *data = kmalloc_array(64, 8, GFP_ATOMIC);
 
 		if (data == NULL)
 			return -ENOMEM;
@@ -2023,7 +2023,7 @@ static int i810fb_init_pci(struct pci_dev *dev,
 	par = info->par;
 	par->dev = dev;
 
-	if (!(info->pixmap.addr = kzalloc(8*1024, GFP_KERNEL))) {
+	if (!(info->pixmap.addr = kcalloc(8, 1024, GFP_KERNEL))) {
 		i810fb_release_resource(info, par);
 		return -ENOMEM;
 	}

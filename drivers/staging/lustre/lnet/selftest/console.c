@@ -861,8 +861,9 @@ lstcon_batch_add(char *name)
 		return -ENOMEM;
 	}
 
-	bat->bat_cli_hash = kmalloc(sizeof(struct list_head) * LST_NODE_HASHSIZE,
-				    GFP_KERNEL);
+	bat->bat_cli_hash = kmalloc_array(LST_NODE_HASHSIZE,
+					  sizeof(struct list_head),
+					  GFP_KERNEL);
 	if (!bat->bat_cli_hash) {
 		CERROR("Can't allocate hash for batch %s\n", name);
 		kfree(bat);
@@ -870,8 +871,9 @@ lstcon_batch_add(char *name)
 		return -ENOMEM;
 	}
 
-	bat->bat_srv_hash = kmalloc(sizeof(struct list_head) * LST_NODE_HASHSIZE,
-				    GFP_KERNEL);
+	bat->bat_srv_hash = kmalloc_array(LST_NODE_HASHSIZE,
+					  sizeof(struct list_head),
+					  GFP_KERNEL);
 	if (!bat->bat_srv_hash) {
 		CERROR("Can't allocate hash for batch %s\n", name);
 		kfree(bat->bat_cli_hash);
@@ -2024,7 +2026,8 @@ lstcon_console_init(void)
 	INIT_LIST_HEAD(&console_session.ses_trans_list);
 
 	console_session.ses_ndl_hash =
-		kmalloc(sizeof(struct list_head) * LST_GLOBAL_HASHSIZE, GFP_KERNEL);
+		kmalloc_array(LST_GLOBAL_HASHSIZE, sizeof(struct list_head),
+			      GFP_KERNEL);
 	if (!console_session.ses_ndl_hash)
 		return -ENOMEM;
 

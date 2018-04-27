@@ -1162,7 +1162,7 @@ static int qat_uclo_map_suof(struct icp_qat_fw_loader_handle *handle,
 	suof_handle->img_table.num_simgs = suof_ptr->num_chunks - 1;
 
 	if (suof_handle->img_table.num_simgs != 0) {
-		suof_img_hdr = kzalloc(suof_handle->img_table.num_simgs *
+		suof_img_hdr = kcalloc(suof_handle->img_table.num_simgs,
 				       sizeof(img_header), GFP_KERNEL);
 		if (!suof_img_hdr)
 			return -ENOMEM;

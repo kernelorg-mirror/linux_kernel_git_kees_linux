@@ -182,7 +182,7 @@ static int mt7601u_init_wcid_mem(struct mt7601u_dev *dev)
 	u32 *vals;
 	int i, ret;
 
-	vals = kmalloc(sizeof(*vals) * N_WCIDS * 2, GFP_KERNEL);
+	vals = kmalloc_array(N_WCIDS * 2, sizeof(*vals), GFP_KERNEL);
 	if (!vals)
 		return -ENOMEM;
 
@@ -211,7 +211,7 @@ static int mt7601u_init_wcid_attr_mem(struct mt7601u_dev *dev)
 	u32 *vals;
 	int i, ret;
 
-	vals = kmalloc(sizeof(*vals) * N_WCIDS * 2, GFP_KERNEL);
+	vals = kmalloc_array(N_WCIDS * 2, sizeof(*vals), GFP_KERNEL);
 	if (!vals)
 		return -ENOMEM;
 

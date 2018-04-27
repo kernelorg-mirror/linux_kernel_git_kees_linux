@@ -67,7 +67,7 @@ static int ide_get_identity_ioctl(ide_drive_t *drive, unsigned int cmd,
 	}
 
 	/* ata_id_to_hd_driveid() relies on 'id' to be fully allocated. */
-	id = kmalloc(ATA_ID_WORDS * 2, GFP_KERNEL);
+	id = kmalloc_array(ATA_ID_WORDS, 2, GFP_KERNEL);
 	if (id == NULL) {
 		rc = -ENOMEM;
 		goto out;

@@ -397,7 +397,7 @@ static ssize_t rt2x00debug_read_crypto_stats(struct file *file,
 	if (*offset)
 		return 0;
 
-	data = kzalloc((1 + CIPHER_MAX) * MAX_LINE_LENGTH, GFP_KERNEL);
+	data = kcalloc(MAX_LINE_LENGTH, (1 + CIPHER_MAX), GFP_KERNEL);
 	if (!data)
 		return -ENOMEM;
 
@@ -597,7 +597,7 @@ static struct dentry *rt2x00debug_create_file_driver(const char *name,
 {
 	char *data;
 
-	data = kzalloc(3 * MAX_LINE_LENGTH, GFP_KERNEL);
+	data = kcalloc(3, MAX_LINE_LENGTH, GFP_KERNEL);
 	if (!data)
 		return NULL;
 
@@ -619,7 +619,7 @@ static struct dentry *rt2x00debug_create_file_chipset(const char *name,
 	const struct rt2x00debug *debug = intf->debug;
 	char *data;
 
-	data = kzalloc(9 * MAX_LINE_LENGTH, GFP_KERNEL);
+	data = kcalloc(9, MAX_LINE_LENGTH, GFP_KERNEL);
 	if (!data)
 		return NULL;
 

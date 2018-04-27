@@ -995,7 +995,8 @@ static int svm_cpu_init(int cpu)
 
 	if (svm_sev_enabled()) {
 		r = -ENOMEM;
-		sd->sev_vmcbs = kmalloc((max_sev_asid + 1) * sizeof(void *), GFP_KERNEL);
+		sd->sev_vmcbs = kmalloc_array((max_sev_asid + 1),
+					      sizeof(void *), GFP_KERNEL);
 		if (!sd->sev_vmcbs)
 			goto err_1;
 	}

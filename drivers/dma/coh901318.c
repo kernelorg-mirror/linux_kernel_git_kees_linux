@@ -1345,7 +1345,7 @@ static ssize_t coh901318_debugfs_read(struct file *file, char __user *buf,
 	int ret;
 	int i;
 
-	dev_buf = kmalloc(4*1024, GFP_KERNEL);
+	dev_buf = kmalloc_array(4, 1024, GFP_KERNEL);
 	if (dev_buf == NULL)
 		return -ENOMEM;
 	tmp = dev_buf;

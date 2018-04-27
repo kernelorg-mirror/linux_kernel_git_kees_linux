@@ -265,7 +265,7 @@ nv50_grctx_fill(struct nvkm_device *device, struct nvkm_gpuobj *mem)
 int
 nv50_grctx_init(struct nvkm_device *device, u32 *size)
 {
-	u32 *ctxprog = kmalloc(512 * 4, GFP_KERNEL), i;
+	u32 *ctxprog = kmalloc_array(512, 4, GFP_KERNEL), i;
 	struct nvkm_grctx ctx = {
 		.device = device,
 		.mode = NVKM_GRCTX_PROG,

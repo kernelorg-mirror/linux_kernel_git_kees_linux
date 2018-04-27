@@ -321,7 +321,7 @@ static int __wl12xx_spi_raw_write(struct device *child, int addr,
 	int i;
 
 	/* SPI write buffers - 2 for each chunk */
-	t = kzalloc(sizeof(*t) * 2 * WSPI_MAX_NUM_OF_CHUNKS, GFP_KERNEL);
+	t = kcalloc(WSPI_MAX_NUM_OF_CHUNKS, sizeof(*t) * 2, GFP_KERNEL);
 	if (!t)
 		return -ENOMEM;
 

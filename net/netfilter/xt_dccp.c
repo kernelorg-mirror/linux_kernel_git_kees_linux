@@ -165,7 +165,7 @@ static int __init dccp_mt_init(void)
 	/* doff is 8 bits, so the maximum option size is (4*256).  Don't put
 	 * this in BSS since DaveM is worried about locked TLB's for kernel
 	 * BSS. */
-	dccp_optbuf = kmalloc(256 * 4, GFP_KERNEL);
+	dccp_optbuf = kmalloc_array(256, 4, GFP_KERNEL);
 	if (!dccp_optbuf)
 		return -ENOMEM;
 	ret = xt_register_matches(dccp_mt_reg, ARRAY_SIZE(dccp_mt_reg));

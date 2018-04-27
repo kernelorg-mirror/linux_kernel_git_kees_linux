@@ -682,7 +682,7 @@ gss_krb5_cts_crypt(struct crypto_skcipher *cipher, struct xdr_buf *buf,
 		WARN_ON(0);
 		return -ENOMEM;
 	}
-	data = kmalloc(GSS_KRB5_MAX_BLOCKSIZE * 2, GFP_NOFS);
+	data = kmalloc_array(GSS_KRB5_MAX_BLOCKSIZE, 2, GFP_NOFS);
 	if (!data)
 		return -ENOMEM;
 

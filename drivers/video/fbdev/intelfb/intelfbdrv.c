@@ -506,7 +506,7 @@ static int intelfb_pci_register(struct pci_dev *pdev,
 	dinfo->pdev  = pdev;
 
 	/* Reserve pixmap space. */
-	info->pixmap.addr = kzalloc(64 * 1024, GFP_KERNEL);
+	info->pixmap.addr = kcalloc(64, 1024, GFP_KERNEL);
 	if (info->pixmap.addr == NULL) {
 		ERR_MSG("Cannot reserve pixmap memory.\n");
 		goto err_out_pixmap;

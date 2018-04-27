@@ -2101,8 +2101,9 @@ static int mwifiex_init_sdio(struct mwifiex_adapter *adapter)
 		return -ENOMEM;
 	}
 
-	card->mpa_rx.len_arr = kzalloc(sizeof(*card->mpa_rx.len_arr) *
-				       card->mp_agg_pkt_limit, GFP_KERNEL);
+	card->mpa_rx.len_arr = kcalloc(card->mp_agg_pkt_limit,
+				       sizeof(*card->mpa_rx.len_arr),
+				       GFP_KERNEL);
 	if (!card->mpa_rx.len_arr) {
 		kfree(card->mp_regs);
 		kfree(card->mpa_rx.skb_arr);

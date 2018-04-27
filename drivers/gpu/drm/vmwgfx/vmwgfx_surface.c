@@ -811,7 +811,7 @@ int vmw_surface_define_ioctl(struct drm_device *dev, void *data,
 	    srf->sizes[0].height == 64 &&
 	    srf->format == SVGA3D_A8R8G8B8) {
 
-		srf->snooper.image = kzalloc(64 * 64 * 4, GFP_KERNEL);
+		srf->snooper.image = kcalloc(4, 64 * 64, GFP_KERNEL);
 		if (!srf->snooper.image) {
 			DRM_ERROR("Failed to allocate cursor_image\n");
 			ret = -ENOMEM;

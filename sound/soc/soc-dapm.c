@@ -3057,9 +3057,9 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
 			continue;
 
 		if (w->num_kcontrols) {
-			w->kcontrols = kzalloc(w->num_kcontrols *
-						sizeof(struct snd_kcontrol *),
-						GFP_KERNEL);
+			w->kcontrols = kcalloc(w->num_kcontrols,
+					       sizeof(struct snd_kcontrol *),
+					       GFP_KERNEL);
 			if (!w->kcontrols) {
 				mutex_unlock(&card->dapm_mutex);
 				return -ENOMEM;

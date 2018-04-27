@@ -656,7 +656,7 @@ static int he_init_cs_block_rcm(struct he_dev *he_dev)
 	unsigned long long rate_cps;
 	int mult, buf, buf_limit = 4;
 
-	rategrid = kmalloc( sizeof(unsigned) * 16 * 16, GFP_KERNEL);
+	rategrid = kmalloc_array(16, sizeof(unsigned) * 16, GFP_KERNEL);
 	if (!rategrid)
 		return -ENOMEM;
 

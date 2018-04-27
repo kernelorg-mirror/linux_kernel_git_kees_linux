@@ -366,8 +366,8 @@ static int pblk_core_init(struct pblk *pblk)
 		return -EINVAL;
 	}
 
-	pblk->pad_dist = kzalloc((pblk->min_write_pgs - 1) * sizeof(atomic64_t),
-								GFP_KERNEL);
+	pblk->pad_dist = kcalloc((pblk->min_write_pgs - 1),
+				 sizeof(atomic64_t), GFP_KERNEL);
 	if (!pblk->pad_dist)
 		return -ENOMEM;
 
@@ -814,8 +814,8 @@ static int pblk_alloc_line_meta(struct pblk *pblk, struct pblk_line *line)
 		return -ENOMEM;
 	}
 
-	line->chks = kmalloc(lm->blk_per_line * sizeof(struct nvm_chk_meta),
-								GFP_KERNEL);
+	line->chks = kmalloc_array(lm->blk_per_line,
+				   sizeof(struct nvm_chk_meta), GFP_KERNEL);
 	if (!line->chks) {
 		kfree(line->erase_bitmap);
 		kfree(line->blk_bitmap);

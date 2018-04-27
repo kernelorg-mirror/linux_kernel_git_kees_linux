@@ -547,7 +547,7 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
 	if (testmgr_alloc_buf(xoutbuf))
 		goto out_nooutbuf;
 
-	sg = kmalloc(sizeof(*sg) * 9 * 2, GFP_KERNEL);
+	sg = kmalloc_array(9 * 2, sizeof(*sg), GFP_KERNEL);
 	if (!sg)
 		goto out_nosg;
 	sgout = &sg[9];

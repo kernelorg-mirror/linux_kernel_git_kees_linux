@@ -475,7 +475,7 @@ static int fb_show_logo_line(struct fb_info *info, int rotate,
 
 	if (fb_logo.needs_truepalette ||
 	    fb_logo.needs_directpalette) {
-		palette = kmalloc(256 * 4, GFP_KERNEL);
+		palette = kmalloc_array(256, 4, GFP_KERNEL);
 		if (palette == NULL)
 			return 0;
 

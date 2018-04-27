@@ -617,7 +617,7 @@ static int broadsheet_spiflash_rewrite_sector(struct broadsheetfb_par *par,
 	int tail_start_addr;
 	int start_sector_addr;
 
-	sector_buffer = kzalloc(sizeof(char)*sector_size, GFP_KERNEL);
+	sector_buffer = kcalloc(sector_size, sizeof(char), GFP_KERNEL);
 	if (!sector_buffer)
 		return -ENOMEM;
 
