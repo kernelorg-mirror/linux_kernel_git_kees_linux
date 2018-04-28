@@ -6658,7 +6658,7 @@ static int alloc_thread_groups(struct r5conf *conf, int cnt,
 	}
 	*group_cnt = num_possible_nodes();
 	size = sizeof(struct r5worker) * cnt;
-	workers = kzalloc(size * *group_cnt, GFP_NOIO);
+	workers = kcalloc(size, *group_cnt, GFP_NOIO);
 	*worker_groups = kcalloc(*group_cnt, sizeof(struct r5worker_group),
 				 GFP_NOIO);
 	if (!*worker_groups || !workers) {

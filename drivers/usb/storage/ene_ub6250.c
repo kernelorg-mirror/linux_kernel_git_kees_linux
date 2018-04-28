@@ -1115,7 +1115,9 @@ static int ms_lib_alloc_writebuf(struct us_data *us)
 
 	info->MS_Lib.wrtblk = (u16)-1;
 
-	info->MS_Lib.blkpag = kmalloc(info->MS_Lib.PagesPerBlock * info->MS_Lib.BytesPerSector, GFP_KERNEL);
+	info->MS_Lib.blkpag = kmalloc_array(info->MS_Lib.PagesPerBlock,
+					    info->MS_Lib.BytesPerSector,
+					    GFP_KERNEL);
 	info->MS_Lib.blkext = kmalloc_array(info->MS_Lib.PagesPerBlock,
 					    sizeof(struct ms_lib_type_extdat),
 					    GFP_KERNEL);

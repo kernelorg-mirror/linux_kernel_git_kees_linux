@@ -115,7 +115,7 @@ static void __init alchemy_setup_uarts(int ctype)
 	uartclk = clk_get_rate(clk);
 	clk_put(clk);
 
-	ports = kzalloc(s * (c + 1), GFP_KERNEL);
+	ports = kcalloc(s, (c + 1), GFP_KERNEL);
 	if (!ports) {
 		printk(KERN_INFO "Alchemy: no memory for UART data\n");
 		return;

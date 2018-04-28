@@ -2094,7 +2094,7 @@ static int mwifiex_init_sdio(struct mwifiex_adapter *adapter)
 		return -ENOMEM;
 
 	/* Allocate skb pointer buffers */
-	card->mpa_rx.skb_arr = kzalloc((sizeof(void *)) *
+	card->mpa_rx.skb_arr = kcalloc((sizeof(void *)),
 				       card->mp_agg_pkt_limit, GFP_KERNEL);
 	if (!card->mpa_rx.skb_arr) {
 		kfree(card->mp_regs);
