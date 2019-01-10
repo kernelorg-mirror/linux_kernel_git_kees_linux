@@ -1207,6 +1207,15 @@ struct task_struct {
 #endif
 
 	/*
+	 * When a full TLB flush is needed to flush stale TLB entries
+	 * for pages that have been mapped into userspace and unmapped
+	 * from kernel space, this TLB flush will be delayed until the
+	 * task is scheduled on that CPU. Keep track of CPUs with
+	 * pending full TLB flush forced by xpfo.
+	 */
+	cpumask_t			pending_xpfo_flush;
+
+	/*
 	 * New fields for task_struct should be added above here, so that
 	 * they are included in the randomized portion of task_struct.
 	 */

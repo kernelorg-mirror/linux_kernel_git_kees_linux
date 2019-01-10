@@ -319,6 +319,15 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
 		__flush_tlb_all();
 	}
 #endif
+
+	/* If there is a pending TLB flush for this CPU due to XPFO
+	 * flush, do it now.
+	 */
+	if (tsk && cpumask_test_and_clear_cpu(cpu, &tsk->pending_xpfo_flush)) {
+		count_vm_tlb_event(NR_TLB_REMOTE_FLUSH_RECEIVED);
+		__flush_tlb_all();
+	}
+
 	this_cpu_write(cpu_tlbstate.is_lazy, false);
 
 	/*
@@ -799,6 +808,24 @@ void flush_tlb_kernel_range(unsigned long start, unsigned long end)
 		info.end = end;
 		on_each_cpu(do_kernel_range_flush, &info, 1);
 	}
+}
+
+void xpfo_flush_tlb_kernel_range(unsigned long start, unsigned long end)
+{
+
+	/* Balance as user space task's flush, a bit conservative */
+	if (end == TLB_FLUSH_ALL ||
+	    (end - start) > tlb_single_page_flush_ceiling << PAGE_SHIFT) {
+		do_flush_tlb_all(NULL);
+	} else {
+		struct flush_tlb_info info;
+
+		info.start = start;
+		info.end = end;
+		do_kernel_range_flush(&info);
+	}
+	cpumask_setall(&current->pending_xpfo_flush);
+	cpumask_clear_cpu(smp_processor_id(), &current->pending_xpfo_flush);
 }
 
 void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
