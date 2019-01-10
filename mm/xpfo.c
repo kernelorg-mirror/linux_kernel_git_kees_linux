@@ -148,6 +148,8 @@ EXPORT_SYMBOL(xpfo_kmap);
 
 void xpfo_kunmap(void *kaddr, struct page *page)
 {
+	bool flush_tlb = false;
+
 	if (!static_branch_unlikely(&xpfo_inited))
 		return;
 
@@ -168,10 +170,13 @@ void xpfo_kunmap(void *kaddr, struct page *page)
 		if (atomic_read(&page->xpfo_mapcount) == 0) {
 			SetPageXpfoUnmapped(page);
 			set_kpte(kaddr, page, __pgprot(0));
-			xpfo_cond_flush_kernel_tlb(page, 0);
+			flush_tlb = true;
 		}
 		spin_unlock(&page->xpfo_lock);
 	}
+
+	if (flush_tlb)
+		xpfo_cond_flush_kernel_tlb(page, 0);
 }
 EXPORT_SYMBOL(xpfo_kunmap);
 
