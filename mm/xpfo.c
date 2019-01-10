@@ -149,22 +149,24 @@ void xpfo_kunmap(void *kaddr, struct page *page)
 	if (!PageXpfoUser(page))
 		return;
 
-	spin_lock(&page->xpfo_lock);
-
 	/*
 	 * The page is to be allocated back to user space, so unmap it from the
 	 * kernel, flush the TLB and tag it as a user page.
 	 */
 	if (atomic_dec_return(&page->xpfo_mapcount) == 0) {
-#ifdef CONFIG_XPFO_DEBUG
-		BUG_ON(PageXpfoUnmapped(page));
-#endif
-		SetPageXpfoUnmapped(page);
-		set_kpte(kaddr, page, __pgprot(0));
-		xpfo_cond_flush_kernel_tlb(page, 0);
-	}
+		spin_lock(&page->xpfo_lock);
 
-	spin_unlock(&page->xpfo_lock);
+		/*
+		 * In the case, where we raced with kmap after the
+		 * atomic_dec_return, we must not nuke the mapping.
+		 */
+		if (atomic_read(&page->xpfo_mapcount) == 0) {
+			SetPageXpfoUnmapped(page);
+			set_kpte(kaddr, page, __pgprot(0));
+			xpfo_cond_flush_kernel_tlb(page, 0);
+		}
+		spin_unlock(&page->xpfo_lock);
+	}
 }
 EXPORT_SYMBOL(xpfo_kunmap);
 
