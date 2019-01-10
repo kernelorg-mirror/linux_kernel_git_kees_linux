@@ -54,6 +54,8 @@ bool xpfo_enabled(void);
 
 phys_addr_t user_virt_to_phys(unsigned long addr);
 
+bool xpfo_spurious_fault(unsigned long addr);
+
 #else /* !CONFIG_XPFO */
 
 static inline void xpfo_init_single_page(struct page *page) { }
@@ -80,6 +82,8 @@ static inline void xpfo_temp_unmap(const void *addr, size_t size,
 static inline bool xpfo_enabled(void) { return false; }
 
 static inline phys_addr_t user_virt_to_phys(unsigned long addr) { return 0; }
+
+static inline bool xpfo_spurious_fault(unsigned long addr) { return false; }
 
 #endif /* CONFIG_XPFO */
 

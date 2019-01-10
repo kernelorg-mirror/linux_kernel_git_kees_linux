@@ -119,6 +119,16 @@ void xpfo_free_pages(struct page *page, int order)
 	}
 }
 
+static void xpfo_do_map(void *kaddr, struct page *page)
+{
+	spin_lock(&page->xpfo_lock);
+	if (PageXpfoUnmapped(page)) {
+		set_kpte(kaddr, page, PAGE_KERNEL);
+		ClearPageXpfoUnmapped(page);
+	}
+	spin_unlock(&page->xpfo_lock);
+}
+
 void xpfo_kmap(void *kaddr, struct page *page)
 {
 	if (!static_branch_unlikely(&xpfo_inited))
@@ -127,17 +137,12 @@ void xpfo_kmap(void *kaddr, struct page *page)
 	if (!PageXpfoUser(page))
 		return;
 
-	spin_lock(&page->xpfo_lock);
-
 	/*
 	 * The page was previously allocated to user space, so map it back
 	 * into the kernel. No TLB flush required.
 	 */
-	if ((atomic_inc_return(&page->xpfo_mapcount) == 1) &&
-	    TestClearPageXpfoUnmapped(page))
-		set_kpte(kaddr, page, PAGE_KERNEL);
-
-	spin_unlock(&page->xpfo_lock);
+	if (atomic_inc_return(&page->xpfo_mapcount) == 1)
+		xpfo_do_map(kaddr, page);
 }
 EXPORT_SYMBOL(xpfo_kmap);
 
@@ -204,3 +209,34 @@ void xpfo_temp_unmap(const void *addr, size_t size, void **mapping,
 			kunmap_atomic(mapping[i]);
 }
 EXPORT_SYMBOL(xpfo_temp_unmap);
+
+bool xpfo_spurious_fault(unsigned long addr)
+{
+	struct page *page;
+	bool spurious;
+	int mapcount;
+
+	if (!static_branch_unlikely(&xpfo_inited))
+		return false;
+
+	/* XXX Is this sufficient to guard against calling virt_to_page() on a
+	 * virtual address that has no corresponding struct page? */
+	if (!virt_addr_valid(addr))
+		return false;
+
+	page = virt_to_page(addr);
+	mapcount = atomic_read(&page->xpfo_mapcount);
+	spurious = PageXpfoUser(page) && mapcount;
+
+	/* Guarantee forward progress in case xpfo_kmap() raced. */
+	if (spurious && PageXpfoUnmapped(page)) {
+		xpfo_do_map((void *)(addr & PAGE_MASK), page);
+	}
+
+	if (unlikely(!spurious))
+		printk("XPFO non-spurious fault %lx user=%d unmapped=%d mapcount=%d\n",
+			addr, PageXpfoUser(page), PageXpfoUnmapped(page),
+			mapcount);
+
+	return spurious;
+}

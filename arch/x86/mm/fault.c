@@ -18,6 +18,7 @@
 #include <linux/uaccess.h>		/* faulthandler_disabled()	*/
 #include <linux/efi.h>			/* efi_recover_from_page_fault()*/
 #include <linux/mm_types.h>
+#include <linux/xpfo.h>
 
 #include <asm/cpufeature.h>		/* boot_cpu_has, ...		*/
 #include <asm/traps.h>			/* dotraplinkage, ...		*/
@@ -1216,6 +1217,9 @@ do_kern_addr_fault(struct pt_regs *regs, unsigned long hw_error_code,
 
 	/* kprobes don't want to hook the spurious faults: */
 	if (kprobes_fault(regs))
+		return;
+
+	if (xpfo_spurious_fault(address))
 		return;
 
 	/*
