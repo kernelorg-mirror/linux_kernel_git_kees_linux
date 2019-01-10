@@ -27,7 +27,7 @@ struct page;
 
 #include <linux/types.h>
 
-extern struct page_ext_operations page_xpfo_ops;
+void xpfo_init_single_page(struct page *page);
 
 void set_kpte(void *kaddr, struct page *page, pgprot_t prot);
 void xpfo_dma_map_unmap_area(bool map, const void *addr, size_t size,
@@ -56,6 +56,7 @@ phys_addr_t user_virt_to_phys(unsigned long addr);
 
 #else /* !CONFIG_XPFO */
 
+static inline void xpfo_init_single_page(struct page *page) { }
 static inline void xpfo_kmap(void *kaddr, struct page *page) { }
 static inline void xpfo_kunmap(void *kaddr, struct page *page) { }
 static inline void xpfo_alloc_pages(struct page *page, int order, gfp_t gfp) { }
