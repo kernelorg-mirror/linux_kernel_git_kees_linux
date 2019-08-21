@@ -33,13 +33,26 @@
  */
 #ifndef __has_attribute
 # define __has_attribute(x) __GCC4_has_attribute_##x
+# define __GCC4_has_attribute___address_space__       0
 # define __GCC4_has_attribute___assume_aligned__      (__GNUC_MINOR__ >= 9)
 # define __GCC4_has_attribute___copy__                0
 # define __GCC4_has_attribute___designated_init__     0
 # define __GCC4_has_attribute___externally_visible__  1
 # define __GCC4_has_attribute___noclone__             1
+# define __GCC4_has_attribute___noderef__             0
 # define __GCC4_has_attribute___nonstring__           0
 # define __GCC4_has_attribute___no_sanitize_address__ (__GNUC_MINOR__ >= 8)
+#endif
+
+/*
+ * clang: https://clang.llvm.org/docs/LanguageExtensions.html#memory-references-to-specified-segments
+ *
+ * Optional: only supported by sparse and Clang.
+ */
+#if defined(__CHECKER__) || __has_attribute(address_space)
+# define __address_space(x)		__attribute__((__address_space__(x)))
+#else
+# define __address_space(x)
 #endif
 
 /*
@@ -183,6 +196,17 @@
 # define __noclone                      __attribute__((__noclone__))
 #else
 # define __noclone
+#endif
+
+/*
+ * clang: https://clang.llvm.org/docs/AttributeReference.html#noderef
+ *
+ * Optional: only supported by sparse and Clang.
+ */
+#if defined(__CHECKER__) || __has_attribute(__noderef__)
+# define __private			__attribute__((__noderef__))
+#else
+# define __private
 #endif
 
 /*
