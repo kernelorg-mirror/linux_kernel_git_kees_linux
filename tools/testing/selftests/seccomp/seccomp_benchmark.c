@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include <errno.h>
 #include <linux/filter.h>
 #include <linux/seccomp.h>
 #include <sys/prctl.h>
@@ -57,6 +58,16 @@ unsigned long long calibrate(void)
 	}
 }
 
+#define SECCOMP_FILTER_FLAG_BENCHMARK	(1UL << 5)
+
+#ifndef seccomp
+int seccomp(unsigned int op, unsigned int flags, void *args)
+{
+	errno = 0;
+	return syscall(__NR_seccomp, op, flags, args);
+}
+#endif
+
 int main(int argc, char *argv[])
 {
 	struct sock_filter filter[] = {
@@ -68,7 +79,7 @@ int main(int argc, char *argv[])
 	};
 	long ret;
 	unsigned long long samples;
-	unsigned long long native, filtered;
+	unsigned long long native, filter1, filter2, no_bpf;
 
 	if (argc > 1)
 		samples = strtoull(argv[1], NULL, 0);
@@ -77,23 +88,49 @@ int main(int argc, char *argv[])
 
 	printf("Benchmarking %llu samples...\n", samples);
 
+	/* Native call */
 	native = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
 	printf("getpid native: %llu ns\n", native);
 
 	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
 	assert(ret == 0);
 
+	/* One filter */
 	ret = prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &prog);
 	assert(ret == 0);
 
-	filtered = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
-	printf("getpid RET_ALLOW: %llu ns\n", filtered);
+	filter1 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
+	printf("getpid RET_ALLOW 1 filter: %llu ns\n", filter1);
 
-	printf("Estimated seccomp overhead per syscall: %llu ns\n",
-		filtered - native);
+	/* Two filters */
+	ret = prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &prog);
+	assert(ret == 0);
 
-	if (filtered == native)
-		printf("Trying running again with more samples.\n");
+	filter2 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
+	printf("getpid RET_ALLOW 2 filters: %llu ns\n", filter2);
+
+	/* Benchmark bypass filter */
+	ret = seccomp(SECCOMP_SET_MODE_FILTER, SECCOMP_FILTER_FLAG_BENCHMARK, &prog);
+	assert(ret == 0);
+
+	no_bpf = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
+	printf("getpid BPF-less allow: %llu ns\n", no_bpf);
+
+	/* Calculations */
+	printf("Estimated total seccomp overhead for 1 filter: %llu ns\n",
+		filter1 - native);
+
+	printf("Estimated total seccomp overhead for 2 filters: %llu ns\n",
+		filter2 - native);
+
+	printf("Estimated seccomp per-filter overhead: %llu ns\n",
+		filter2 - filter1);
+
+	printf("Estimated seccomp entry overhead: %llu ns\n",
+		filter1 - native - (filter2 - filter1));
+
+	printf("Estimated BPF overhead per filter: %llu ns\n",
+		filter1 - no_bpf);
 
 	return 0;
 }

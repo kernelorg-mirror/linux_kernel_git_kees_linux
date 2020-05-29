@@ -111,6 +111,7 @@ struct notification {
  *         outside of a lifetime-guarded section.  In general, this
  *         is only needed for handling filters shared across tasks.
  * @log: true if all actions except for SECCOMP_RET_ALLOW should be logged
+ * @benchmark: true if filter should be skipped and return "allow"
  * @prev: points to a previously installed, or inherited, filter
  * @prog: the BPF program to evaluate
  * @notif: the struct that holds all notification related information
@@ -129,6 +130,7 @@ struct notification {
 struct seccomp_filter {
 	refcount_t usage;
 	bool log;
+	bool benchmark;
 	struct seccomp_filter *prev;
 	struct bpf_prog *prog;
 	struct notification *notif;
@@ -242,6 +244,12 @@ static int seccomp_check_filter(struct sock_filter *filter, unsigned int flen)
 	return 0;
 }
 
+static noinline u32 __seccomp_benchmark(struct bpf_prog *prog,
+					const struct seccomp_data *sd)
+{
+	return SECCOMP_RET_ALLOW;
+}
+
 /**
  * seccomp_run_filters - evaluates all seccomp filters against @sd
  * @sd: optional seccomp data to be passed to filters
@@ -263,6 +271,11 @@ static u32 seccomp_run_filters(const struct seccomp_data *sd,
 	/* Ensure unexpected behavior doesn't result in failing open. */
 	if (WARN_ON(f == NULL))
 		return SECCOMP_RET_KILL_PROCESS;
+
+	if (f->benchmark) {
+		*match = f;
+		return __seccomp_benchmark(f->prog, sd);
+	}
 
 	/*
 	 * All filters in the list are evaluated and the lowest BPF return
@@ -537,6 +550,9 @@ static long seccomp_attach_filter(unsigned int flags,
 	/* Set log flag, if present. */
 	if (flags & SECCOMP_FILTER_FLAG_LOG)
 		filter->log = true;
+
+	if (flags & SECCOMP_FILTER_FLAG_BENCHMARK)
+		filter->benchmark = true;
 
 	/*
 	 * If there is an existing filter, make it the prev and don't drop its
