@@ -467,6 +467,20 @@ static inline void memcg_link_cache(struct kmem_cache *s,
 
 #endif /* CONFIG_MEMCG_KMEM */
 
+#ifdef CONFIG_SLUB_DEBUG
+extern inline int kmem_cache_debug_flags(struct kmem_cache *s,
+					 slab_flags_t flags);
+extern inline void print_tracking(struct kmem_cache *s, void *object);
+#else
+static inline int kmem_cache_debug_flags(struct kmem_cache *s,
+					 slab_flags_t flags)
+{
+	return 0;
+}
+static inline void print_tracking(struct kmem_cache *s, void *object)
+{ }
+#endif
+
 static inline struct kmem_cache *virt_to_cache(const void *obj)
 {
 	struct page *page;
@@ -501,6 +515,23 @@ static __always_inline void uncharge_slab_page(struct page *page, int order,
 	}
 
 	memcg_uncharge_slab(page, order, s);
+}
+
+static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
+{
+	struct kmem_cache *cachep;
+
+	if (!IS_ENABLED(CONFIG_SLAB_FREELIST_HARDENED) &&
+	    !memcg_kmem_enabled() &&
+	    !kmem_cache_debug_flags(s, SLAB_CONSISTENCY_CHECKS))
+		return s;
+
+	cachep = virt_to_cache(x);
+	if (WARN(cachep && !slab_equal_or_root(cachep, s),
+		  "%s: Wrong slab cache. %s but object is from %s\n",
+		  __func__, s->name, cachep->name))
+		print_tracking(cachep, x);
+	return cachep;
 }
 
 static inline size_t slab_ksize(const struct kmem_cache *s)
