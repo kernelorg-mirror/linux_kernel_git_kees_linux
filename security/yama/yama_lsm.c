@@ -221,43 +221,44 @@ static void yama_task_free(struct task_struct *task)
 static int yama_task_prctl(int option, unsigned long arg2, unsigned long arg3,
 			   unsigned long arg4, unsigned long arg5)
 {
-	int rc = -ENOSYS;
 	struct task_struct *myself = current;
+	int rc;
 
-	switch (option) {
-	case PR_SET_PTRACER:
-		/* Since a thread can call prctl(), find the group leader
-		 * before calling _add() or _del() on it, since we want
-		 * process-level granularity of control. The tracer group
-		 * leader checking is handled later when walking the ancestry
-		 * at the time of PTRACE_ATTACH check.
-		 */
-		rcu_read_lock();
-		if (!thread_group_leader(myself))
-			myself = rcu_dereference(myself->group_leader);
-		get_task_struct(myself);
-		rcu_read_unlock();
+	if (option != PR_SET_PTRACER)
+		return -ENOSYS;
+	if (arg3 != 0 || arg4 != 0 || arg5 != 0)
+		return -EINVAL;
 
-		if (arg2 == 0) {
-			yama_ptracer_del(NULL, myself);
-			rc = 0;
-		} else if (arg2 == PR_SET_PTRACER_ANY || (int)arg2 == -1) {
-			rc = yama_ptracer_add(NULL, myself);
+	/* Since a thread can call prctl(), find the group leader
+	 * before calling _add() or _del() on it, since we want
+	 * process-level granularity of control. The tracer group
+	 * leader checking is handled later when walking the ancestry
+	 * at the time of PTRACE_ATTACH check.
+	 */
+	rcu_read_lock();
+	if (!thread_group_leader(myself))
+		myself = rcu_dereference(myself->group_leader);
+	get_task_struct(myself);
+	rcu_read_unlock();
+
+	if (arg2 == 0) {
+		yama_ptracer_del(NULL, myself);
+		rc = 0;
+	} else if (arg2 == PR_SET_PTRACER_ANY || (int)arg2 == -1) {
+		rc = yama_ptracer_add(NULL, myself);
+	} else {
+		struct task_struct *tracer;
+
+		tracer = find_get_task_by_vpid(arg2);
+		if (!tracer) {
+			rc = -EINVAL;
 		} else {
-			struct task_struct *tracer;
-
-			tracer = find_get_task_by_vpid(arg2);
-			if (!tracer) {
-				rc = -EINVAL;
-			} else {
-				rc = yama_ptracer_add(tracer, myself);
-				put_task_struct(tracer);
-			}
+			rc = yama_ptracer_add(tracer, myself);
+			put_task_struct(tracer);
 		}
-
-		put_task_struct(myself);
-		break;
 	}
+
+	put_task_struct(myself);
 
 	return rc;
 }
