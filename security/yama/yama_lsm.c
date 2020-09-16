@@ -222,11 +222,12 @@ static int yama_task_prctl(int option, unsigned long arg2, unsigned long arg3,
 			   unsigned long arg4, unsigned long arg5)
 {
 	struct task_struct *myself = current;
+	struct task_struct *tracer;
 	int rc;
 
 	if (option != PR_SET_PTRACER)
 		return -ENOSYS;
-	if (arg3 != 0 || arg4 != 0 || arg5 != 0)
+	if (arg4 != 0 || arg5 != 0)
 		return -EINVAL;
 
 	/* Since a thread can call prctl(), find the group leader
@@ -241,14 +242,25 @@ static int yama_task_prctl(int option, unsigned long arg2, unsigned long arg3,
 	get_task_struct(myself);
 	rcu_read_unlock();
 
-	if (arg2 == 0) {
+	rc = -EINVAL;
+	switch (arg2) {
+	case 0:
+		if (arg3 != 0)
+			break;
 		yama_ptracer_del(NULL, myself);
 		rc = 0;
-	} else if (arg2 == PR_SET_PTRACER_ANY || (int)arg2 == -1) {
+		break;
+	case PR_SET_PTRACER_ANY:
+#ifdef CONFIG_COMPAT
+	case 0xffffffffUL:
+#endif
+		if (arg3 != 0)
+			break;
 		rc = yama_ptracer_add(NULL, myself);
-	} else {
-		struct task_struct *tracer;
-
+		break;
+	default:
+		if (arg3 != 0)
+			break;
 		tracer = find_get_task_by_vpid(arg2);
 		if (!tracer) {
 			rc = -ESRCH;
@@ -256,6 +268,7 @@ static int yama_task_prctl(int option, unsigned long arg2, unsigned long arg3,
 			rc = yama_ptracer_add(tracer, myself);
 			put_task_struct(tracer);
 		}
+		break;
 	}
 
 	put_task_struct(myself);
