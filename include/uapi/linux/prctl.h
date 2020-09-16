@@ -150,10 +150,17 @@ struct prctl_mm_map {
 
 /*
  * Set specific pid that is allowed to ptrace the current task.
- * A value of 0 mean "no process".
+ * An arg2 value of 0 means "no declared tracer".
+ * An arg2 value above 0 means "allow pid matching arg2 to be tracer".
+ * An arg2 value of -1 means "special handling", depending on arg3:
+ *   0: "as a tracee, allow all tracers to ignore ancestry restrictions".
+ *   1: "as a tracer, bypass ancestry restrictions" (requires CAP_SYS_PTRACE).
  */
 #define PR_SET_PTRACER 0x59616d61
-# define PR_SET_PTRACER_ANY ((unsigned long)-1)
+# define PR_SET_PTRACER_DEFAULT	0
+# define PR_SET_PTRACER_ANY	((unsigned long)-1)
+#  define PR_SET_PTRACER_ANY_TRACER	0
+#  define PR_SET_PTRACER_ANY_TRACEE	1
 
 #define PR_SET_CHILD_SUBREAPER	36
 #define PR_GET_CHILD_SUBREAPER	37

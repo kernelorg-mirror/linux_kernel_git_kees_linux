@@ -244,7 +244,7 @@ static int yama_task_prctl(int option, unsigned long arg2, unsigned long arg3,
 
 	rc = -EINVAL;
 	switch (arg2) {
-	case 0:
+	case PR_SET_PTRACER_DEFAULT:
 		if (arg3 != 0)
 			break;
 		yama_ptracer_del(NULL, myself);
@@ -254,9 +254,20 @@ static int yama_task_prctl(int option, unsigned long arg2, unsigned long arg3,
 #ifdef CONFIG_COMPAT
 	case 0xffffffffUL:
 #endif
-		if (arg3 != 0)
+		switch (arg3) {
+		case PR_SET_PTRACER_ANY_TRACER:
+			rc = yama_ptracer_add(NULL, myself);
 			break;
-		rc = yama_ptracer_add(NULL, myself);
+		case PR_SET_PTRACER_ANY_TRACEE:
+			if (!ns_capable(current_user_ns(), CAP_SYS_PTRACE)) {
+				rc = -EPERM;
+				break;
+			}
+			rc = yama_ptracer_add(myself, NULL);
+			break;
+		default:
+			break;
+		}
 		break;
 	default:
 		if (arg3 != 0)
@@ -344,6 +355,11 @@ static int ptracer_exception_found(struct task_struct *tracer,
 			continue;
 		if (relation->tracee == tracee) {
 			parent = relation->tracer;
+			found = true;
+			break;
+		}
+		if (relation->tracer == tracer && relation->tracee == NULL) {
+			parent = NULL;
 			found = true;
 			break;
 		}
