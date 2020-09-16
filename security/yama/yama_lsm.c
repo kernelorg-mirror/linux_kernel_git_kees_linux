@@ -251,7 +251,7 @@ static int yama_task_prctl(int option, unsigned long arg2, unsigned long arg3,
 
 		tracer = find_get_task_by_vpid(arg2);
 		if (!tracer) {
-			rc = -EINVAL;
+			rc = -ESRCH;
 		} else {
 			rc = yama_ptracer_add(tracer, myself);
 			put_task_struct(tracer);
