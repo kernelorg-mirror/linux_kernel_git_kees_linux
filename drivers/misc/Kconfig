@@ -5,6 +5,14 @@
 
 menu "Misc devices"
 
+config WORKSHOP
+	tristate "Workshop device (contains security vulnerabilities!)"
+	depends on SYSFS
+	help
+	  Say yes to this if you want a vulnerable driver to play with.
+	  Exposes sysfs entries "size" and "data" for manipulation.
+
+
 config SENSORS_LIS3LV02D
 	tristate
 	depends on INPUT
