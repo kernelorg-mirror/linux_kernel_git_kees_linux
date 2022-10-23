@@ -468,6 +468,14 @@ int commit_creds(struct cred *new)
 		return 0;
 	}
 
+	if (task_no_new_privs(task) &&
+	    !cred_cap_issubset(old, new)) {
+		pr_warn_ratelimited("%s[%d] tried to escalate privileges with nnp\n",
+				    task->comm, task_pid_nr(task));
+		put_cred(new);
+		return 0;
+	}
+
 	get_cred(new); /* we will require a ref for the subj creds too */
 
 	/* dumpability changes */
