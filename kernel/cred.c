@@ -461,6 +461,13 @@ int commit_creds(struct cred *new)
 #endif
 	BUG_ON(atomic_read(&new->usage) < 1);
 
+	if (new->from_init) {
+		pr_warn_ratelimited("%s[%d] tried to escalate privileges from init_cred\n",
+				    task->comm, task_pid_nr(task));
+		put_cred(new);
+		return 0;
+	}
+
 	get_cred(new); /* we will require a ref for the subj creds too */
 
 	/* dumpability changes */
@@ -728,6 +735,8 @@ struct cred *prepare_kernel_cred(struct task_struct *daemon)
 	validate_creds(old);
 
 	*new = *old;
+	if (daemon == NULL)
+		new->from_init = true;
 	new->non_rcu = 0;
 	atomic_set(&new->usage, 1);
 	set_cred_subscribers(new, 0);
