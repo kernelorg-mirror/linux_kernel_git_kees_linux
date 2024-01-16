@@ -6877,15 +6877,16 @@ static int niu_get_eeprom(struct net_device *dev,
 {
 	struct niu *np = netdev_priv(dev);
 	u32 offset, len, val;
+	u32 sum;
 
 	offset = eeprom->offset;
 	len = eeprom->len;
 
-	if (offset + len < offset)
+	if (check_add_overflow(offset, len, &sum))
 		return -EINVAL;
 	if (offset >= np->eeprom_len)
 		return -EINVAL;
-	if (offset + len > np->eeprom_len)
+	if (sum > np->eeprom_len)
 		len = eeprom->len = np->eeprom_len - offset;
 
 	if (offset & 3) {
