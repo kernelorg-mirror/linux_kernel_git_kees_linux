@@ -1149,13 +1149,15 @@ nvkm_vmm_ctor(const struct nvkm_vmm_func *func, struct nvkm_mmu *mmu,
 	vmm->root = RB_ROOT;
 
 	if (managed) {
+		u64 sum;
+
 		/* Address-space will be managed by the client for the most
 		 * part, except for a specified area where NVKM allocations
 		 * are allowed to be placed.
 		 */
 		vmm->start = 0;
 		vmm->limit = 1ULL << bits;
-		if (addr + size < addr || addr + size > vmm->limit)
+		if (check_add_overflow(addr, size, &sum) || sum > vmm->limit)
 			return -EINVAL;
 
 		/* Client-managed area before the NVKM-managed area. */
@@ -1174,7 +1176,7 @@ nvkm_vmm_ctor(const struct nvkm_vmm_func *func, struct nvkm_mmu *mmu,
 		}
 
 		/* Client-managed area after the NVKM-managed area. */
-		addr = addr + size;
+		addr = sum;
 		size = vmm->limit - addr;
 		if (size && (ret = nvkm_vmm_ctor_managed(vmm, addr, size)))
 			return ret;
