@@ -467,12 +467,13 @@ static char *nxt_dir_entry(char *old_entry, char *end_of_smb, int level)
 				pfData->FileNameLength;
 	} else {
 		u32 next_offset = le32_to_cpu(pDirInfo->NextEntryOffset);
+		char *sum;
 
-		if (old_entry + next_offset < old_entry) {
+		if (check_add_overflow(old_entry, next_offset, &sum)) {
 			cifs_dbg(VFS, "Invalid offset %u\n", next_offset);
 			return NULL;
 		}
-		new_entry = old_entry + next_offset;
+		new_entry = sum;
 	}
 	cifs_dbg(FYI, "new entry %p old entry %p\n", new_entry, old_entry);
 	/* validate that new_entry is not past end of SMB */
