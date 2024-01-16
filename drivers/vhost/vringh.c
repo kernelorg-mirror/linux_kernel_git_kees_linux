@@ -145,6 +145,8 @@ static inline bool range_check(struct vringh *vrh, u64 addr, size_t *len,
 			       bool (*getrange)(struct vringh *,
 						u64, struct vringh_range *))
 {
+	u64 sum;
+
 	if (addr < range->start || addr > range->end_incl) {
 		if (!getrange(vrh, addr, range))
 			return false;
@@ -152,20 +154,20 @@ static inline bool range_check(struct vringh *vrh, u64 addr, size_t *len,
 	BUG_ON(addr < range->start || addr > range->end_incl);
 
 	/* To end of memory? */
-	if (unlikely(addr + *len == 0)) {
+	if (unlikely(U64_MAX - addr == *len)) {
 		if (range->end_incl == -1ULL)
 			return true;
 		goto truncate;
 	}
 
 	/* Otherwise, don't wrap. */
-	if (addr + *len < addr) {
+	if (check_add_overflow(addr, *len, &sum)) {
 		vringh_bad("Wrapping descriptor %zu@0x%llx",
 			   *len, (unsigned long long)addr);
 		return false;
 	}
 
-	if (unlikely(addr + *len - 1 > range->end_incl))
+	if (unlikely(sum - 1 > range->end_incl))
 		goto truncate;
 	return true;
 
