@@ -1458,6 +1458,8 @@ EXPORT_SYMBOL_NS_GPL(dma_buf_end_cpu_access, DMA_BUF);
 int dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma,
 		 unsigned long pgoff)
 {
+	unsigned long sum;
+
 	if (WARN_ON(!dmabuf || !vma))
 		return -EINVAL;
 
@@ -1466,12 +1468,11 @@ int dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma,
 		return -EINVAL;
 
 	/* check for offset overflow */
-	if (pgoff + vma_pages(vma) < pgoff)
+	if (check_add_overflow(pgoff, vma_pages(vma), &sum))
 		return -EOVERFLOW;
 
 	/* check for overflowing the buffer's size */
-	if (pgoff + vma_pages(vma) >
-	    dmabuf->size >> PAGE_SHIFT)
+	if (sum > dmabuf->size >> PAGE_SHIFT)
 		return -EINVAL;
 
 	/* readjust the vma */
