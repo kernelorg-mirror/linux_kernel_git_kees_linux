@@ -163,6 +163,7 @@ int rds_info_getsockopt(struct socket *sock, int optname, char __user *optval,
 	unsigned long nr_pages = 0;
 	unsigned long start;
 	rds_info_func func;
+	unsigned long sum;
 	struct page **pages = NULL;
 	int ret;
 	int len;
@@ -175,7 +176,8 @@ int rds_info_getsockopt(struct socket *sock, int optname, char __user *optval,
 
 	/* check for all kinds of wrapping and the like */
 	start = (unsigned long)optval;
-	if (len < 0 || len > INT_MAX - PAGE_SIZE + 1 || start + len < start) {
+	if (len < 0 || len > INT_MAX - PAGE_SIZE + 1 ||
+	    check_add_overflow(start, len, &sum)) {
 		ret = -EINVAL;
 		goto out;
 	}
@@ -184,7 +186,7 @@ int rds_info_getsockopt(struct socket *sock, int optname, char __user *optval,
 	if (len == 0)
 		goto call_func;
 
-	nr_pages = (PAGE_ALIGN(start + len) - (start & PAGE_MASK))
+	nr_pages = (PAGE_ALIGN(sum) - (start & PAGE_MASK))
 			>> PAGE_SHIFT;
 
 	pages = kmalloc_array(nr_pages, sizeof(struct page *), GFP_KERNEL);
