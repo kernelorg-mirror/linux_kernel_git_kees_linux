@@ -305,6 +305,7 @@ validate_gl_array_primitive(VALIDATE_ARGS)
 	uint32_t length = *(uint32_t *)(untrusted + 1);
 	uint32_t base_index = *(uint32_t *)(untrusted + 5);
 	uint32_t max_index;
+	uint32_t sum;
 	struct vc4_shader_state *shader_state;
 
 	/* Check overflow condition */
@@ -314,11 +315,11 @@ validate_gl_array_primitive(VALIDATE_ARGS)
 	}
 	shader_state = &exec->shader_state[exec->shader_state_count - 1];
 
-	if (length + base_index < length) {
+	if (check_add_overflow(length, base_index, &sum)) {
 		DRM_DEBUG("primitive vertex count overflow\n");
 		return -EINVAL;
 	}
-	max_index = length + base_index - 1;
+	max_index = sum - 1;
 
 	if (max_index > shader_state->max_index)
 		shader_state->max_index = max_index;
