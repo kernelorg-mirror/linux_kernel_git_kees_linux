@@ -34,11 +34,13 @@ int get_stack_info(unsigned long sp, struct task_struct *task,
 static inline bool on_stack(struct stack_info *info,
 			    unsigned long addr, size_t len)
 {
+	unsigned long sum;
+
 	if (info->type == STACK_TYPE_UNKNOWN)
 		return false;
-	if (addr + len < addr)
+	if (check_add_overflow(addr, len, &sum))
 		return false;
-	return addr >= info->begin && addr + len <= info->end;
+	return addr >= info->begin && sum <= info->end;
 }
 
 /*
