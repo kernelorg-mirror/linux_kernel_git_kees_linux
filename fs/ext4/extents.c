@@ -1920,6 +1920,7 @@ static unsigned int ext4_ext_check_overlap(struct ext4_sb_info *sbi,
 					   struct ext4_extent *newext,
 					   struct ext4_ext_path *path)
 {
+	ext4_lblk_t sum;
 	ext4_lblk_t b1, b2;
 	unsigned int depth, len1;
 	unsigned int ret = 0;
@@ -1943,14 +1944,14 @@ static unsigned int ext4_ext_check_overlap(struct ext4_sb_info *sbi,
 	}
 
 	/* check for wrap through zero on extent logical start block*/
-	if (b1 + len1 < b1) {
+	if (check_add_overflow(b1, len1, &sum)) {
 		len1 = EXT_MAX_BLOCKS - b1;
 		newext->ee_len = cpu_to_le16(len1);
 		ret = 1;
 	}
 
 	/* check for overlap */
-	if (b1 + len1 > b2) {
+	if (sum > b2) {
 		newext->ee_len = cpu_to_le16(b2 - b1);
 		ret = 1;
 	}
