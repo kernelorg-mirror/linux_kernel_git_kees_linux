@@ -400,16 +400,17 @@ static struct page **sev_pin_memory(struct kvm *kvm, unsigned long uaddr,
 	unsigned long locked, lock_limit;
 	struct page **pages;
 	unsigned long first, last;
+	unsigned long sum;
 	int ret;
 
 	lockdep_assert_held(&kvm->lock);
 
-	if (ulen == 0 || uaddr + ulen < uaddr)
+	if (ulen == 0 || check_add_overflow(uaddr, ulen, &sum))
 		return ERR_PTR(-EINVAL);
 
 	/* Calculate number of pages. */
 	first = (uaddr & PAGE_MASK) >> PAGE_SHIFT;
-	last = ((uaddr + ulen - 1) & PAGE_MASK) >> PAGE_SHIFT;
+	last = ((sum - 1) & PAGE_MASK) >> PAGE_SHIFT;
 	npages = (last - first + 1);
 
 	locked = sev->pages_locked + npages;
