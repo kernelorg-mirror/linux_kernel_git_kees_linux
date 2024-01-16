@@ -25,17 +25,19 @@ static inline struct kvm_coalesced_mmio_dev *to_mmio(struct kvm_io_device *dev)
 static int coalesced_mmio_in_range(struct kvm_coalesced_mmio_dev *dev,
 				   gpa_t addr, int len)
 {
+	gpa_t sum;
+
 	/* is it in a batchable area ?
 	 * (addr,len) is fully included in
 	 * (zone->addr, zone->size)
 	 */
 	if (len < 0)
 		return 0;
-	if (addr + len < addr)
+	if (check_add_overflow(addr, len, &sum))
 		return 0;
 	if (addr < dev->zone.addr)
 		return 0;
-	if (addr + len > dev->zone.addr + dev->zone.size)
+	if (sum > dev->zone.addr + dev->zone.size)
 		return 0;
 	return 1;
 }
