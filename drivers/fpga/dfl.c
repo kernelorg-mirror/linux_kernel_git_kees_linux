@@ -1939,15 +1939,16 @@ free_name:
 int dfl_fpga_set_irq_triggers(struct dfl_feature *feature, unsigned int start,
 			      unsigned int count, int32_t *fds)
 {
+	unsigned int sum;
 	unsigned int i;
 	int ret = 0;
 
 	/* overflow */
-	if (unlikely(start + count < start))
+	if (unlikely(check_add_overflow(start, count, &sum)))
 		return -EINVAL;
 
 	/* exceeds nr_irqs */
-	if (start + count > feature->nr_irqs)
+	if (sum > feature->nr_irqs)
 		return -EINVAL;
 
 	for (i = 0; i < count; i++) {
