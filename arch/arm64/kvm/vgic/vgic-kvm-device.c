@@ -18,17 +18,19 @@ int vgic_check_iorange(struct kvm *kvm, phys_addr_t ioaddr,
 		       phys_addr_t addr, phys_addr_t alignment,
 		       phys_addr_t size)
 {
+	phys_addr_t sum;
+
 	if (!IS_VGIC_ADDR_UNDEF(ioaddr))
 		return -EEXIST;
 
 	if (!IS_ALIGNED(addr, alignment) || !IS_ALIGNED(size, alignment))
 		return -EINVAL;
 
-	if (addr + size < addr)
+	if (check_add_overflow(addr, size, &sum))
 		return -EINVAL;
 
 	if (addr & ~kvm_phys_mask(&kvm->arch.mmu) ||
-	    (addr + size) > kvm_phys_size(&kvm->arch.mmu))
+	    sum > kvm_phys_size(&kvm->arch.mmu))
 		return -E2BIG;
 
 	return 0;
