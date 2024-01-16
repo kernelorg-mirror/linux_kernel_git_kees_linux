@@ -108,9 +108,11 @@ static inline int extent_map_in_tree(const struct extent_map *em)
 
 static inline u64 extent_map_end(const struct extent_map *em)
 {
-	if (em->start + em->len < em->start)
+	u64 sum;
+
+	if (check_add_overflow(em->start, em->len, &sum))
 		return (u64)-1;
-	return em->start + em->len;
+	return sum;
 }
 
 void extent_map_tree_init(struct extent_map_tree *tree);

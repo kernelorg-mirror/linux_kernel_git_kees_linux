@@ -73,9 +73,11 @@ void free_extent_map(struct extent_map *em)
 /* Do the math around the end of an extent, handling wrapping. */
 static u64 range_end(u64 start, u64 len)
 {
-	if (start + len < start)
+	u64 sum;
+
+	if (check_add_overflow(start, len, &sum))
 		return (u64)-1;
-	return start + len;
+	return sum;
 }
 
 static int tree_insert(struct rb_root_cached *root, struct extent_map *em)
