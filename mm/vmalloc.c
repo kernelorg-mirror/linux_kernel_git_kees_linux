@@ -1223,6 +1223,7 @@ is_within_this_va(struct vmap_area *va, unsigned long size,
 	unsigned long align, unsigned long vstart)
 {
 	unsigned long nva_start_addr;
+	unsigned long sum;
 
 	if (va->va_start > vstart)
 		nva_start_addr = ALIGN(va->va_start, align);
@@ -1230,11 +1231,11 @@ is_within_this_va(struct vmap_area *va, unsigned long size,
 		nva_start_addr = ALIGN(vstart, align);
 
 	/* Can be overflowed due to big size or alignment. */
-	if (nva_start_addr + size < nva_start_addr ||
+	if (check_add_overflow(nva_start_addr, size, &sum) ||
 			nva_start_addr < vstart)
 		return false;
 
-	return (nva_start_addr + size <= va->va_end);
+	return (sum <= va->va_end);
 }
 
 /*
