@@ -381,10 +381,12 @@ EXPORT_SYMBOL_GPL(fsi_slave_write);
 int fsi_slave_claim_range(struct fsi_slave *slave,
 			  uint32_t addr, uint32_t size)
 {
-	if (addr + size < addr)
+	uint32_t sum;
+
+	if (check_add_overflow(addr, size, &sum))
 		return -EINVAL;
 
-	if (addr + size > slave->size)
+	if (sum > slave->size)
 		return -EINVAL;
 
 	/* todo: check for overlapping claims */
