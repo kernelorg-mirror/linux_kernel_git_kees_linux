@@ -612,6 +612,7 @@ static signed fde_pointer_type(const u32 *cie)
 		const char *aug;
 		const u8 *end = (const u8 *)(cie + 1) + *cie;
 		uleb128_t len;
+		const u8 *sum;
 
 		/* check if augmentation size is first (and thus present) */
 		if (*ptr != 'z')
@@ -630,10 +631,10 @@ static signed fde_pointer_type(const u32 *cie)
 		version <= 1 ? (void) ++ptr : (void)get_uleb128(&ptr, end);
 		len = get_uleb128(&ptr, end);	/* augmentation length */
 
-		if (ptr + len < ptr || ptr + len > end)
+		if (check_add_overflow(ptr, len, &sum) || sum > end)
 			return -1;
 
-		end = ptr + len;
+		end = sum;
 		while (*++aug) {
 			if (ptr >= end)
 				return -1;
