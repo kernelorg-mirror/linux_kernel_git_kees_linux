@@ -54,12 +54,14 @@ static inline int parse_build_id(const void *page_addr,
 				 const void *note_start,
 				 Elf32_Word note_size)
 {
+	const void *sum;
+
 	/* check for overflow */
-	if (note_start < page_addr || note_start + note_size < note_start)
+	if (note_start < page_addr || check_add_overflow(note_start, note_size, &sum))
 		return -EINVAL;
 
 	/* only supports note that fits in the first page */
-	if (note_start + note_size > page_addr + PAGE_SIZE)
+	if (sum > page_addr + PAGE_SIZE)
 		return -EINVAL;
 
 	return parse_build_id_buf(build_id, size, note_start, note_size);
