@@ -350,16 +350,18 @@ static int sgx_validate_offset_length(struct sgx_encl *encl,
 				      unsigned long offset,
 				      unsigned long length)
 {
+	unsigned long sum;
+
 	if (!IS_ALIGNED(offset, PAGE_SIZE))
 		return -EINVAL;
 
 	if (!length || !IS_ALIGNED(length, PAGE_SIZE))
 		return -EINVAL;
 
-	if (offset + length < offset)
+	if (check_add_overflow(offset, length, &sum))
 		return -EINVAL;
 
-	if (offset + length - PAGE_SIZE >= encl->size)
+	if (sum - PAGE_SIZE >= encl->size)
 		return -EINVAL;
 
 	return 0;
