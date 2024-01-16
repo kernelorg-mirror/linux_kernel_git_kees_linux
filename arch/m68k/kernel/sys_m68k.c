@@ -391,10 +391,11 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
 
 		mmap_read_lock(current->mm);
 	} else {
+		unsigned long sum;
 		struct vm_area_struct *vma;
 
 		/* Check for overflow.  */
-		if (addr + len < addr)
+		if (check_add_overflow(addr, len, &sum))
 			goto out;
 
 		/*
@@ -403,7 +404,7 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
 		 */
 		mmap_read_lock(current->mm);
 		vma = vma_lookup(current->mm, addr);
-		if (!vma || addr + len > vma->vm_end)
+		if (!vma || sum > vma->vm_end)
 			goto out_unlock;
 	}
 
