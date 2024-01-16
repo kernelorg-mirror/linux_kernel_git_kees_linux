@@ -1650,11 +1650,13 @@ long do_shmat(int shmid, char __user *shmaddr, int shmflg,
 	}
 
 	if (addr && !(shmflg & SHM_REMAP)) {
+		unsigned long sum;
+
 		err = -EINVAL;
-		if (addr + size < addr)
+		if (check_add_overflow(addr, size, &sum))
 			goto invalid;
 
-		if (find_vma_intersection(current->mm, addr, addr + size))
+		if (find_vma_intersection(current->mm, addr, sum))
 			goto invalid;
 	}
 
