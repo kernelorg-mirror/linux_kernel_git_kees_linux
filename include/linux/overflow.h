@@ -109,6 +109,22 @@ static inline bool __must_check __must_check_overflow(bool overflow)
 				       __filter_ptrint(d))))
 
 /**
+ * add_would_overflow() - Check if an addition would overflow
+ * @a: first addend
+ * @b: second addend
+ *
+ * Returns true if the sum would overflow.
+ *
+ * To keep a copy of the sum when the addition doesn't overflow, use
+ * check_add_overflow() instead.
+ */
+#define add_would_overflow(a, b)			\
+	__must_check_overflow(({			\
+		size_t __result;			\
+		check_add_overflow(a, b, &__result);\
+	}))
+
+/**
  * check_sub_overflow() - Calculate subtraction with overflow checking
  * @a: minuend; value to subtract from
  * @b: subtrahend; value to subtract from @a
