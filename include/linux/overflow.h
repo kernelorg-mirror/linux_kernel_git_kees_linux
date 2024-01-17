@@ -51,6 +51,45 @@ static inline bool __must_check __must_check_overflow(bool overflow)
 	return unlikely(overflow);
 }
 
+/* Always produce an integral variable expression. */
+#define __filter_integral(x)		\
+	__builtin_choose_expr(!__is_ptr(x), (x), 0)
+
+/* Always produce a pointer value. */
+#define __filter_ptr(x)			\
+	__builtin_choose_expr(__is_ptr(x), (x), NULL)
+
+/* Always produce a pointer to an integral value. */
+#define __filter_ptrint(x)		\
+	__builtin_choose_expr(!__is_ptr(*(x)), x, &(int){ 0 })
+
+/**
+ * __check_ptr_add_overflow() - Calculate pointer addition with overflow checking
+ * @a: pointer addend
+ * @b: numeric addend
+ * @d: pointer to store sum
+ *
+ * Returns 0 on success.
+ *
+ * Do not use this function directly, use check_add_overflow() instead.
+ *
+ * *@d holds the results of the attempted addition, but is not considered
+ * "safe for use" on a non-zero return value, which indicates that the
+ * sum has overflowed or been truncated.
+ */
+#define __check_ptr_add_overflow(a, b, d)		\
+	({						\
+		typeof(a) __a = (a);			\
+		typeof(b) __b = (b);			\
+		size_t __bytes;				\
+		bool __overflow;			\
+							\
+		/* we want to perform the wrap-around, but retain the result */ \
+		__overflow = __builtin_mul_overflow(sizeof(*(__a)), __b, &__bytes); \
+		__builtin_add_overflow((unsigned long)(__a), __bytes, (unsigned long *)(d)) || \
+		__overflow;				\
+	})
+
 /**
  * check_add_overflow() - Calculate addition with overflow checking
  * @a: first addend
@@ -64,7 +103,10 @@ static inline bool __must_check __must_check_overflow(bool overflow)
  * sum has overflowed or been truncated.
  */
 #define check_add_overflow(a, b, d)	\
-	__must_check_overflow(__builtin_add_overflow(a, b, d))
+	__must_check_overflow(__builtin_choose_expr(__is_ptr(a),	\
+		__check_ptr_add_overflow(__filter_ptr(a), b, d),	\
+		__builtin_add_overflow(__filter_integral(a), b,		\
+				       __filter_ptrint(d))))
 
 /**
  * check_sub_overflow() - Calculate subtraction with overflow checking

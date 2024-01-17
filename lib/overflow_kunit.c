@@ -45,13 +45,18 @@
 # define SKIP_64_ON_32(t)	do { } while (0)
 #endif
 
-#define DEFINE_TEST_ARRAY_TYPED(t1, t2, t)			\
-	static const struct test_ ## t1 ## _ ## t2 ## __ ## t {	\
+#define DEFINE_TEST_ARRAY_NAMED_TYPED(n1, n2, n, t1, t2, t)	\
+	static const struct test_ ## n1 ## _ ## n2 ## __ ## n {	\
 		t1 a;						\
 		t2 b;						\
-		t sum, diff, prod;				\
+		t sum;						\
+		t diff;						\
+		t prod;						\
 		bool s_of, d_of, p_of;				\
-	} t1 ## _ ## t2 ## __ ## t ## _tests[]
+	} n1 ## _ ## n2 ## __ ## n ## _tests[]
+
+#define DEFINE_TEST_ARRAY_TYPED(t1, t2, t)			\
+	DEFINE_TEST_ARRAY_NAMED_TYPED(t1, t2, t, t1, t2, t)
 
 #define DEFINE_TEST_ARRAY(t)	DEFINE_TEST_ARRAY_TYPED(t, t, t)
 
@@ -251,8 +256,10 @@ DEFINE_TEST_ARRAY(s64) = {
 };
 
 #define check_one_op(t, fmt, op, sym, a, b, r, of) do {			\
-	int _a_orig = a, _a_bump = a + 1;				\
-	int _b_orig = b, _b_bump = b + 1;				\
+	typeof(a + 0) _a_orig = a;					\
+	typeof(a + 0) _a_bump = a + 1;					\
+	typeof(b + 0) _b_orig = b;					\
+	typeof(b + 0) _b_bump = b + 1;					\
 	bool _of;							\
 	t _r;								\
 									\
@@ -260,13 +267,13 @@ DEFINE_TEST_ARRAY(s64) = {
 	KUNIT_EXPECT_EQ_MSG(test, _of, of,				\
 		"expected "fmt" "sym" "fmt" to%s overflow (type %s)\n",	\
 		a, b, of ? "" : " not", #t);				\
-	KUNIT_EXPECT_EQ_MSG(test, _r, r,				\
+	KUNIT_EXPECT_TRUE_MSG(test, _r == r,				\
 		"expected "fmt" "sym" "fmt" == "fmt", got "fmt" (type %s)\n", \
 		a, b, r, _r, #t);					\
 	/* Check for internal macro side-effects. */			\
 	_of = check_ ## op ## _overflow(_a_orig++, _b_orig++, &_r);	\
-	KUNIT_EXPECT_EQ_MSG(test, _a_orig, _a_bump, "Unexpected " #op " macro side-effect!\n"); \
-	KUNIT_EXPECT_EQ_MSG(test, _b_orig, _b_bump, "Unexpected " #op " macro side-effect!\n"); \
+	KUNIT_EXPECT_TRUE_MSG(test, _a_orig == _a_bump, "Unexpected " #op " macro side-effect!\n"); \
+	KUNIT_EXPECT_TRUE_MSG(test, _b_orig == _b_bump, "Unexpected " #op " macro side-effect!\n"); \
 } while (0)
 
 #define DEFINE_TEST_FUNC_TYPED(n, t, fmt)				\
@@ -332,6 +339,55 @@ DEFINE_TEST_ARRAY_TYPED(int, int, u8) = {
 	{-1, 0, U8_MAX, U8_MAX, 0, true, true, false},
 };
 DEFINE_TEST_FUNC_TYPED(int_int__u8, u8, "%d");
+
+#define DEFINE_TEST_PTR_FUNC_TYPED(n, t, fmt)				\
+static void do_ptr_test_ ## n(struct kunit *test, const struct test_ ## n *p) \
+{									\
+	/* we're only doing single-direction sums, no product or division */ \
+	check_one_op(t, fmt, add, "+", p->a, p->b, p->sum, p->s_of);\
+}									\
+									\
+static void n ## _overflow_test(struct kunit *test) {			\
+	unsigned i;							\
+									\
+	for (i = 0; i < ARRAY_SIZE(n ## _tests); ++i)			\
+		do_ptr_test_ ## n(test, &n ## _tests[i]);		\
+	kunit_info(test, "%zu %s arithmetic tests finished\n",		\
+		ARRAY_SIZE(n ## _tests), #n);				\
+}
+
+DEFINE_TEST_ARRAY_NAMED_TYPED(void, int, void, void *, int, void *) = {
+	{NULL, 0, NULL, NULL, NULL, false, false, false},
+	{(void *)0x30, 0x10, (void *)0x40, NULL, NULL, false, false, false},
+	{(void *)ULONG_MAX, 0, (void *)ULONG_MAX, NULL, NULL, false, false, false},
+	{(void *)ULONG_MAX, 1, NULL, NULL, NULL, true, false, false},
+	{(void *)ULONG_MAX, INT_MAX, (void *)(INT_MAX - 1), NULL, NULL, true, false, false},
+};
+DEFINE_TEST_PTR_FUNC_TYPED(void_int__void, void *, "%lx");
+
+struct _sized {
+	int a;
+	char b;
+};
+
+DEFINE_TEST_ARRAY_NAMED_TYPED(sized, int, sized, struct _sized *, int, struct _sized *) = {
+	{NULL, 0, NULL, NULL, NULL, false, false, false},
+	{NULL, 1, (struct _sized *)(sizeof(struct _sized)), NULL, NULL, false, false, false},
+	{NULL, 0x10, (struct _sized *)(sizeof(struct _sized) * 0x10), NULL, NULL, false, false, false},
+	{(void *)(ULONG_MAX - sizeof(struct _sized)), 1, (struct _sized *)ULONG_MAX, NULL, NULL, false, false, false},
+	{(void *)(ULONG_MAX - sizeof(struct _sized) + 1), 1, NULL, NULL, NULL, true, false, false},
+	{(void *)(ULONG_MAX - sizeof(struct _sized) + 1), 2, (struct _sized *)(sizeof(struct _sized)), NULL, NULL, true, false, false},
+	{(void *)(ULONG_MAX - sizeof(struct _sized) + 1), 3, (struct _sized *)(sizeof(struct _sized) * 2), NULL, NULL, true, false, false},
+};
+DEFINE_TEST_PTR_FUNC_TYPED(sized_int__sized, struct _sized *, "%lx");
+
+DEFINE_TEST_ARRAY_NAMED_TYPED(sized, size_t, sized, struct _sized *, size_t, struct _sized *) = {
+	{NULL, 0, NULL, NULL, NULL, false, false, false},
+	{NULL, 1, (struct _sized *)(sizeof(struct _sized)), NULL, NULL, false, false, false},
+	{NULL, 0x10, (struct _sized *)(sizeof(struct _sized) * 0x10), NULL, NULL, false, false, false},
+	{NULL, SIZE_MAX - 10, (struct _sized *)18446744073709551528UL, NULL, NULL, true, false, false},
+};
+DEFINE_TEST_PTR_FUNC_TYPED(sized_size_t__sized, struct _sized *, "%zu");
 
 /* Args are: value, shift, type, expected result, overflow expected */
 #define TEST_ONE_SHIFT(a, s, t, expect, of)	do {			\
@@ -1122,6 +1178,9 @@ static struct kunit_case overflow_test_cases[] = {
 	KUNIT_CASE(s32_s32__s32_overflow_test),
 	KUNIT_CASE(u64_u64__u64_overflow_test),
 	KUNIT_CASE(s64_s64__s64_overflow_test),
+	KUNIT_CASE(void_int__void_overflow_test),
+	KUNIT_CASE(sized_int__sized_overflow_test),
+	KUNIT_CASE(sized_size_t__sized_overflow_test),
 	KUNIT_CASE(u32_u32__int_overflow_test),
 	KUNIT_CASE(u32_u32__u8_overflow_test),
 	KUNIT_CASE(u8_u8__int_overflow_test),
