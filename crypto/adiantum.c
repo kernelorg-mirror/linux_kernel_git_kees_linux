@@ -190,7 +190,7 @@ static inline void le128_add(le128 *r, const le128 *v1, const le128 *v2)
 
 	r->b = cpu_to_le64(x + y);
 	r->a = cpu_to_le64(le64_to_cpu(v1->a) + le64_to_cpu(v2->a) +
-			   (x + y < x));
+			   (add_would_overflow(x, y)));
 }
 
 /* Subtraction in Z/(2^{128}Z) */

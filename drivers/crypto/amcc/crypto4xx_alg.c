@@ -251,7 +251,7 @@ crypto4xx_ctr_crypt(struct skcipher_request *req, bool encrypt)
 	 * the whole IV is a counter.  So fallback if the counter is going to
 	 * overlow.
 	 */
-	if (counter + nblks < counter) {
+	if (add_would_overflow(counter, nblks)) {
 		SYNC_SKCIPHER_REQUEST_ON_STACK(subreq, ctx->sw_cipher.cipher);
 		int ret;
 
