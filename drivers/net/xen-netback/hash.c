@@ -345,7 +345,7 @@ u32 xenvif_set_hash_mapping(struct xenvif *vif, u32 gref, u32 len,
 		.flags = GNTCOPY_source_gref
 	}};
 
-	if ((off + len < off) || (off + len > vif->hash.size) ||
+	if ((add_would_overflow(off, len)) || (off + len > vif->hash.size) ||
 	    len > XEN_PAGE_SIZE / sizeof(*mapping))
 		return XEN_NETIF_CTRL_STATUS_INVALID_PARAMETER;
 
