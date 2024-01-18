@@ -139,7 +139,7 @@ static void udf_bitmap_free_blocks(struct super_block *sb,
 
 	mutex_lock(&sbi->s_alloc_mutex);
 	partmap = &sbi->s_partmaps[bloc->partitionReferenceNum];
-	if (bloc->logicalBlockNum + count < count ||
+	if (add_would_overflow(count, bloc->logicalBlockNum) ||
 	    (bloc->logicalBlockNum + count) > partmap->s_partition_len) {
 		udf_debug("%u < %d || %u + %u > %u\n",
 			  bloc->logicalBlockNum, 0,
@@ -390,7 +390,7 @@ static void udf_table_free_blocks(struct super_block *sb,
 
 	mutex_lock(&sbi->s_alloc_mutex);
 	partmap = &sbi->s_partmaps[bloc->partitionReferenceNum];
-	if (bloc->logicalBlockNum + count < count ||
+	if (add_would_overflow(count, bloc->logicalBlockNum) ||
 	    (bloc->logicalBlockNum + count) > partmap->s_partition_len) {
 		udf_debug("%u < %d || %u + %u > %u\n",
 			  bloc->logicalBlockNum, 0,
