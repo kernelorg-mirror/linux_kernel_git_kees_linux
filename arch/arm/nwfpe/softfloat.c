@@ -603,7 +603,7 @@ static floatx80
     roundBits = zSig0 & roundMask;
     if ( 0x7FFD <= (bits32) ( zExp - 1 ) ) {
         if (    ( 0x7FFE < zExp )
-             || ( ( zExp == 0x7FFE ) && ( zSig0 + roundIncrement < zSig0 ) )
+             || ( ( zExp == 0x7FFE ) && (add_would_overflow(zSig0, roundIncrement)) )
            ) {
             goto overflow;
         }
