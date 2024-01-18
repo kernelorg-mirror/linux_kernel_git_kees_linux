@@ -58,11 +58,11 @@ static bool u32_match_it(const struct xt_u32 *data,
 				val >>= number;
 				break;
 			case XT_U32_AT:
-				if (at + val < at)
+				if (add_would_overflow(at, val))
 					return false;
 				at += val;
 				pos = number;
-				if (at + 4 < at || skb->len < at + 4 ||
+				if (add_would_overflow(at, 4) || skb->len < at + 4 ||
 				    pos > skb->len - at - 4)
 					return false;
 
