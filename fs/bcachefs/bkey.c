@@ -448,7 +448,7 @@ static bool bkey_format_has_too_big_fields(const struct bkey_format *f)
 			: 0;
 		u64 field_offset = le64_to_cpu(f->field_offset[i]);
 
-		if (packed_max + field_offset < packed_max ||
+		if (add_would_overflow(packed_max, field_offset) ||
 		    packed_max + field_offset > unpacked_max)
 			return true;
 	}
@@ -664,7 +664,7 @@ int bch2_bkey_format_invalid(struct bch_fs *c,
 				: 0;
 			u64 field_offset = le64_to_cpu(f->field_offset[i]);
 
-			if (packed_max + field_offset < packed_max ||
+			if (add_would_overflow(packed_max, field_offset) ||
 			    packed_max + field_offset > unpacked_max) {
 				prt_printf(err, "field %u too large: %llu + %llu > %llu",
 					   i, packed_max, field_offset, unpacked_max);

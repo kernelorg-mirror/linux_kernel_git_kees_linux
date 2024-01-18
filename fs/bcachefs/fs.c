@@ -901,7 +901,7 @@ static int bch2_fiemap(struct inode *vinode, struct fiemap_extent_info *info,
 	if (ret)
 		return ret;
 
-	if (start + len < start)
+	if (add_would_overflow(start, len))
 		return -EINVAL;
 
 	start >>= 9;

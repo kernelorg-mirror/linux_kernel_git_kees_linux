@@ -392,7 +392,7 @@ static void __bch2_quota_transfer(struct bch_memquota *src_q,
 				  enum quota_counters counter, s64 v)
 {
 	BUG_ON(v > src_q->c[counter].v);
-	BUG_ON(v + dst_q->c[counter].v < v);
+	BUG_ON(add_would_overflow(v, dst_q->c[counter].v));
 
 	src_q->c[counter].v -= v;
 	dst_q->c[counter].v += v;

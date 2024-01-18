@@ -148,7 +148,7 @@ static int __bch2_strtou64_h(const char *cp, u64 *res)
 		return -ERANGE;
 
 	f_n = div_u64(f_n * b, f_d);
-	if (v + f_n < v)
+	if (add_would_overflow(v, f_n))
 		return -ERANGE;
 	v += f_n;
 
