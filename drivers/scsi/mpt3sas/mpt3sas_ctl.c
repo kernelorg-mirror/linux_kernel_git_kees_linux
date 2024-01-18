@@ -2382,7 +2382,7 @@ _ctl_diag_read_buffer(struct MPT3SAS_ADAPTER *ioc, void __user *arg)
 			    karg.bytes_to_read));
 
 	/* Truncate data on requests that are too large */
-	if ((diag_data + karg.bytes_to_read < diag_data) ||
+	if ((add_would_overflow(diag_data, karg.bytes_to_read)) ||
 	    (diag_data + karg.bytes_to_read > request_data + request_size))
 		copy_size = request_size - karg.starting_offset;
 	else
