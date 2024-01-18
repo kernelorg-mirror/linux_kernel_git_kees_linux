@@ -624,7 +624,7 @@ struct scatterlist *sgl_alloc_order(unsigned long long length,
 	nalloc = nent;
 	if (chainable) {
 		/* Check for integer overflow */
-		if (nalloc + 1 < nalloc)
+		if (add_would_overflow(nalloc, 1))
 			return NULL;
 		nalloc++;
 	}
