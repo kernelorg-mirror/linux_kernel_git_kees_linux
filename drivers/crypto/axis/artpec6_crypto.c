@@ -1190,7 +1190,7 @@ artpec6_crypto_ctr_crypt(struct skcipher_request *req, bool encrypt)
 	 * the whole IV is a counter.  So fallback if the counter is going to
 	 * overlow.
 	 */
-	if (counter + nblks < counter) {
+	if (add_would_overflow(counter, nblks)) {
 		int ret;
 
 		pr_debug("counter %x will overflow (nblks %u), falling back\n",
