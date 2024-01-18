@@ -813,7 +813,7 @@ int btrfs_wait_ordered_range(struct inode *inode, u64 start, u64 len)
 	u64 orig_end;
 	struct btrfs_ordered_extent *ordered;
 
-	if (start + len < start) {
+	if (add_would_overflow(start, len)) {
 		orig_end = OFFSET_MAX;
 	} else {
 		orig_end = start + len - 1;
