@@ -585,7 +585,7 @@ ZSTDLIB_API size_t ZSTD_readSkippableFrame(void* dst, size_t dstCapacity, unsign
  *  @return : decompressed size of the frames contained */
 unsigned long long ZSTD_findDecompressedSize(const void* src, size_t srcSize)
 {
-    unsigned long long totalDstSize = 0;
+    U64 totalDstSize = 0;
 
     while (srcSize >= ZSTD_startingInputLength(ZSTD_f_zstd1)) {
         U32 const magicNumber = MEM_readLE32(src);
@@ -606,7 +606,7 @@ unsigned long long ZSTD_findDecompressedSize(const void* src, size_t srcSize)
             if (ret >= ZSTD_CONTENTSIZE_ERROR) return ret;
 
             /* check for overflow */
-            if (totalDstSize + ret < totalDstSize) return ZSTD_CONTENTSIZE_ERROR;
+            if (U64_MAX - totalDstSize < ret) return ZSTD_CONTENTSIZE_ERROR;
             totalDstSize += ret;
         }
         {   size_t const frameSrcSize = ZSTD_findFrameCompressedSize(src, srcSize);
