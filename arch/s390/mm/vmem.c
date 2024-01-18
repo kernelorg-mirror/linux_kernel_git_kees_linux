@@ -538,7 +538,7 @@ int vmem_add_mapping(unsigned long start, unsigned long size)
 
 	if (start < range.start ||
 	    start + size > range.end + 1 ||
-	    start + size < start)
+	    add_would_overflow(start, size))
 		return -ERANGE;
 
 	mutex_lock(&vmem_mutex);
