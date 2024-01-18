@@ -2819,7 +2819,7 @@ static int f2fs_move_file_range(struct file *file_in, loff_t pos_in,
 	}
 
 	ret = -EINVAL;
-	if (pos_in + len > src->i_size || pos_in + len < pos_in)
+	if (pos_in + len > src->i_size || add_would_overflow(pos_in, len))
 		goto out_unlock;
 	if (len == 0)
 		olen = len = src->i_size - pos_in;
