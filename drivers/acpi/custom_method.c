@@ -54,7 +54,7 @@ static ssize_t cm_write(struct file *file, const char __user *user_buf,
 
 	if ((*ppos > max_size) ||
 	    (*ppos + count > max_size) ||
-	    (*ppos + count < count) ||
+	    (add_would_overflow(count, *ppos)) ||
 	    (count > uncopied_bytes)) {
 		kfree(buf);
 		buf = NULL;
