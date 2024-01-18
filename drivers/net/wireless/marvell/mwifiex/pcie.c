@@ -2086,7 +2086,7 @@ static int mwifiex_extract_wifi_fw(struct mwifiex_adapter *adapter,
 
 		switch (dnld_cmd) {
 		case MWIFIEX_FW_DNLD_CMD_1:
-			if (offset + data_len < data_len) {
+			if (add_would_overflow(data_len, offset)) {
 				mwifiex_dbg(adapter, ERROR, "bad FW parse\n");
 				ret = -1;
 				goto done;
@@ -2110,7 +2110,7 @@ static int mwifiex_extract_wifi_fw(struct mwifiex_adapter *adapter,
 		case MWIFIEX_FW_DNLD_CMD_5:
 			first_cmd = true;
 			/* Check for integer overflow */
-			if (offset + data_len < data_len) {
+			if (add_would_overflow(data_len, offset)) {
 				mwifiex_dbg(adapter, ERROR, "bad FW parse\n");
 				ret = -1;
 				goto done;
@@ -2120,7 +2120,7 @@ static int mwifiex_extract_wifi_fw(struct mwifiex_adapter *adapter,
 		case MWIFIEX_FW_DNLD_CMD_6:
 			first_cmd = true;
 			/* Check for integer overflow */
-			if (offset + data_len < data_len) {
+			if (add_would_overflow(data_len, offset)) {
 				mwifiex_dbg(adapter, ERROR, "bad FW parse\n");
 				ret = -1;
 				goto done;
