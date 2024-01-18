@@ -12901,8 +12901,8 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
 			dst_reg->smin_value = smin_ptr + smin_val;
 			dst_reg->smax_value = smax_ptr + smax_val;
 		}
-		if (umin_ptr + umin_val < umin_ptr ||
-		    umax_ptr + umax_val < umax_ptr) {
+		if (add_would_overflow(umin_ptr, umin_val) ||
+		    add_would_overflow(umax_ptr, umax_val)) {
 			dst_reg->umin_value = 0;
 			dst_reg->umax_value = U64_MAX;
 		} else {
@@ -13023,8 +13023,8 @@ static void scalar32_min_max_add(struct bpf_reg_state *dst_reg,
 		dst_reg->s32_min_value += smin_val;
 		dst_reg->s32_max_value += smax_val;
 	}
-	if (dst_reg->u32_min_value + umin_val < umin_val ||
-	    dst_reg->u32_max_value + umax_val < umax_val) {
+	if (add_would_overflow(umin_val, dst_reg->u32_min_value) ||
+	    add_would_overflow(umax_val, dst_reg->u32_max_value)) {
 		dst_reg->u32_min_value = 0;
 		dst_reg->u32_max_value = U32_MAX;
 	} else {
@@ -13049,8 +13049,8 @@ static void scalar_min_max_add(struct bpf_reg_state *dst_reg,
 		dst_reg->smin_value += smin_val;
 		dst_reg->smax_value += smax_val;
 	}
-	if (dst_reg->umin_value + umin_val < umin_val ||
-	    dst_reg->umax_value + umax_val < umax_val) {
+	if (add_would_overflow(umin_val, dst_reg->umin_value) ||
+	    add_would_overflow(umax_val, dst_reg->umax_value)) {
 		dst_reg->umin_value = 0;
 		dst_reg->umax_value = U64_MAX;
 	} else {
