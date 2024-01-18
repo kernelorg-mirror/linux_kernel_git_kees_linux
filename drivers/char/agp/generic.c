@@ -228,7 +228,7 @@ struct agp_memory *agp_allocate_memory(struct agp_bridge_data *bridge,
 
 	cur_memory = atomic_read(&bridge->current_memory_agp);
 	if ((cur_memory + page_count > bridge->max_memory_agp) ||
-	    (cur_memory + page_count < page_count))
+	    (add_would_overflow(page_count, cur_memory)))
 		return NULL;
 
 	if (type >= AGP_USER_TYPES) {
