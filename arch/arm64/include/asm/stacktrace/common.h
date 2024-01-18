@@ -49,7 +49,7 @@ static inline bool stackinfo_on_stack(const struct stack_info *info,
 	if (!info->low)
 		return false;
 
-	if (sp < info->low || sp + size < sp || sp + size > info->high)
+	if (sp < info->low || add_would_overflow(sp, size) || sp + size > info->high)
 		return false;
 
 	return true;
