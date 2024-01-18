@@ -66,7 +66,7 @@ asmlinkage int sys_cacheflush(unsigned long addr, unsigned long len, int op)
 	 * Verify that the specified address region actually belongs
 	 * to this process.
 	 */
-	if (addr + len < addr)
+	if (add_would_overflow(addr, len))
 		return -EFAULT;
 
 	mmap_read_lock(current->mm);
