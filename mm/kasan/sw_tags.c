@@ -80,7 +80,7 @@ bool kasan_check_range(const void *addr, size_t size, bool write,
 	if (unlikely(size == 0))
 		return true;
 
-	if (unlikely(addr + size < addr))
+	if (unlikely(add_would_overflow(addr, size)))
 		return !kasan_report(addr, size, write, ret_ip);
 
 	tag = get_tag((const void *)addr);

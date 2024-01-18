@@ -171,7 +171,7 @@ static __always_inline bool check_region_inline(const void *addr,
 	if (unlikely(size == 0))
 		return true;
 
-	if (unlikely(addr + size < addr))
+	if (unlikely(add_would_overflow(addr, size)))
 		return !kasan_report(addr, size, write, ret_ip);
 
 	if (unlikely(!addr_has_metadata(addr)))
