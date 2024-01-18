@@ -863,7 +863,7 @@ static int vgic_v3_alloc_redist_region(struct kvm *kvm, uint32_t index,
 	int ret;
 
 	/* cross the end of memory ? */
-	if (base + size < base)
+	if (add_would_overflow(base, size))
 		return -EINVAL;
 
 	if (list_empty(rd_regions)) {
