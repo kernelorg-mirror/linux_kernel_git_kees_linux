@@ -165,7 +165,7 @@ int vme_check_window(struct vme_bridge *bridge, u32 aspace,
 {
 	int retval = 0;
 
-	if (vme_base + size < size)
+	if (add_would_overflow(size, vme_base))
 		return -EINVAL;
 
 	switch (aspace) {
