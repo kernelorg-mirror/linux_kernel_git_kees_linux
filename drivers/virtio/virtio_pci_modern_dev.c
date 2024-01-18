@@ -59,7 +59,7 @@ vp_modern_map_capability(struct virtio_pci_modern_device *mdev, int off,
 
 	length -= start;
 
-	if (start + offset < offset) {
+	if (add_would_overflow(offset, start)) {
 		dev_err(&dev->dev,
 			"virtio_pci: map wrap-around %u+%u\n",
 			start, offset);
@@ -81,7 +81,7 @@ vp_modern_map_capability(struct virtio_pci_modern_device *mdev, int off,
 	if (len)
 		*len = length;
 
-	if (minlen + offset < minlen ||
+	if (add_would_overflow(minlen, offset) ||
 	    minlen + offset > pci_resource_len(dev, bar)) {
 		dev_err(&dev->dev,
 			"virtio_pci: map virtio %zu@%u "
