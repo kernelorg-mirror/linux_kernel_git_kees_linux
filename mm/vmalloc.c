@@ -3750,7 +3750,7 @@ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
 	addr = kasan_reset_tag(addr);
 
 	/* Don't allow overflow */
-	if ((unsigned long) addr + count < count)
+	if (add_would_overflow(count, (unsigned long)addr))
 		count = -(unsigned long) addr;
 
 	remains = count;
