@@ -198,7 +198,7 @@ static bool memory_read(Dwfl *dwfl __maybe_unused, Dwarf_Addr addr, Dwarf_Word *
 	end = start + stack->size;
 
 	/* Check overflow. */
-	if (addr + sizeof(Dwarf_Word) < addr)
+	if (add_would_overflow(addr, sizeof(Dwarf_Word)))
 		return false;
 
 	if (addr < start || addr + sizeof(Dwarf_Word) > end) {

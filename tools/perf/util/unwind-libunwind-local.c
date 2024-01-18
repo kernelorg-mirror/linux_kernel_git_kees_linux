@@ -587,7 +587,7 @@ static int access_mem(unw_addr_space_t __maybe_unused as,
 	end = start + stack->size;
 
 	/* Check overflow. */
-	if (addr + sizeof(unw_word_t) < addr)
+	if (add_would_overflow(addr, sizeof(unw_word_t)))
 		return -EINVAL;
 
 	if (addr < start || addr + sizeof(unw_word_t) >= end) {

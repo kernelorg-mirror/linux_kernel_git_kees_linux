@@ -1122,7 +1122,7 @@ static ssize_t data_read_write_offset(struct dso *dso, struct machine *machine,
 	if (offset > dso->data.file_size)
 		return -1;
 
-	if (offset + size < offset)
+	if (add_would_overflow(offset, size))
 		return -1;
 
 	return cached_io(dso, machine, offset, data, size, out);
