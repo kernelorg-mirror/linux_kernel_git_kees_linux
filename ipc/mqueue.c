@@ -366,7 +366,7 @@ static struct inode *mqueue_get_inode(struct super_block *sb,
 			min_t(unsigned int, info->attr.mq_maxmsg, MQ_PRIO_MAX) *
 			sizeof(struct posix_msg_tree_node);
 		mq_bytes = info->attr.mq_maxmsg * info->attr.mq_msgsize;
-		if (mq_bytes + mq_treesize < mq_bytes)
+		if (add_would_overflow(mq_bytes, mq_treesize))
 			goto out_inode;
 		mq_bytes += mq_treesize;
 		info->ucounts = get_ucounts(current_ucounts());
