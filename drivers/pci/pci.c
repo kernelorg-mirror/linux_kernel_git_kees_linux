@@ -4251,7 +4251,7 @@ int pci_register_io_range(struct fwnode_handle *fwnode, phys_addr_t addr,
 #ifdef PCI_IOBASE
 	struct logic_pio_hwaddr *range;
 
-	if (!size || addr + size < addr)
+	if (!size || add_would_overflow(addr, size))
 		return -EINVAL;
 
 	range = kzalloc(sizeof(*range), GFP_ATOMIC);
