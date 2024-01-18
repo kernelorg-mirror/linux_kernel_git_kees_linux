@@ -235,7 +235,7 @@ struct ATTRIB *mi_enum_attr(struct mft_inode *mi, struct ATTRIB *attr)
 		}
 
 		/* Overflow check. */
-		if (off + asize < off)
+		if (add_would_overflow(off, asize))
 			return NULL;
 
 		prev_type = le32_to_cpu(attr->type);
@@ -266,7 +266,7 @@ struct ATTRIB *mi_enum_attr(struct mft_inode *mi, struct ATTRIB *attr)
 		return NULL;
 
 	/* Check overflow and boundary. */
-	if (off + asize < off || off + asize > used)
+	if (add_would_overflow(off, asize) || off + asize > used)
 		return NULL;
 
 	/* Check size of attribute. */
