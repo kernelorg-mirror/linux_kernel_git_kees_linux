@@ -473,11 +473,11 @@ static u32 ip_idents_reserve(u32 hash, int segs)
 	if (old != now && cmpxchg(p_tstamp, old, now) == old)
 		delta = get_random_u32_below(now - old);
 
-	/* If UBSAN reports an error there, please make sure your compiler
-	 * supports -fno-strict-overflow before reporting it that was a bug
-	 * in UBSAN, and it has been fixed in GCC-8.
+	/* If UBSAN reports an error there, please make sure your arch's
+	 * atomic_add_return() implementation has been annotated with
+	 * __signed_wrap.
 	 */
-	return atomic_add_return(segs + delta, p_id) - segs;
+	return atomic_add_return(add_wrap(segs, delta), p_id) - segs;
 }
 
 void __ip_select_ident(struct net *net, struct iphdr *iph, int segs)
