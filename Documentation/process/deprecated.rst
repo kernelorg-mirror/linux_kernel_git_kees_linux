@@ -141,6 +141,10 @@ replaced with a type max subtraction test instead::
 	...
 	if (INT_MAX - var < offset) ...
 
+For inline helpers that are performing wrapping arithmetic, the entire
+function can be annotated as intentionally wrapping by adding the
+`__signed_wrap` or `__unsigned_wrap` function attribute.
+
 simple_strtol(), simple_strtoll(), simple_strtoul(), simple_strtoull()
 ----------------------------------------------------------------------
 The simple_strtol(), simple_strtoll(),
