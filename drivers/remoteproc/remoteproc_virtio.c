@@ -298,7 +298,7 @@ static void rproc_virtio_get(struct virtio_device *vdev, unsigned int offset,
 	rsc = (void *)rvdev->rproc->table_ptr + rvdev->rsc_offset;
 	cfg = &rsc->vring[rsc->num_of_vrings];
 
-	if (offset + len > rsc->config_len || offset + len < len) {
+	if (offset + len > rsc->config_len || add_would_overflow(len, offset)) {
 		dev_err(&vdev->dev, "rproc_virtio_get: access out of bounds\n");
 		return;
 	}
@@ -316,7 +316,7 @@ static void rproc_virtio_set(struct virtio_device *vdev, unsigned int offset,
 	rsc = (void *)rvdev->rproc->table_ptr + rvdev->rsc_offset;
 	cfg = &rsc->vring[rsc->num_of_vrings];
 
-	if (offset + len > rsc->config_len || offset + len < len) {
+	if (offset + len > rsc->config_len || add_would_overflow(len, offset)) {
 		dev_err(&vdev->dev, "rproc_virtio_set: access out of bounds\n");
 		return;
 	}

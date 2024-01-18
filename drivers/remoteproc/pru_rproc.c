@@ -893,7 +893,7 @@ pru_rproc_find_interrupt_map(struct device *dev, const struct firmware *fw)
 			continue;
 
 		/* make sure we have the entire irq map */
-		if (offset + size > fw->size || offset + size < size) {
+		if (offset + size > fw->size || add_would_overflow(size, offset)) {
 			dev_err(dev, ".pru_irq_map section truncated\n");
 			return ERR_PTR(-EINVAL);
 		}
