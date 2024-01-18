@@ -3252,7 +3252,7 @@ memzcan(void)
 		} else if (!ok && ook)
 			printf("%.8lx\n", a - mskip);
 		ook = ok;
-		if (a + mskip < a)
+		if (add_would_overflow(a, mskip))
 			break;
 	}
 	if (ook)

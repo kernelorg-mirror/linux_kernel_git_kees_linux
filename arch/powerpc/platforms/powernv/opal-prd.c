@@ -51,7 +51,7 @@ static bool opal_prd_range_is_valid(uint64_t addr, uint64_t size)
 	struct device_node *parent, *node;
 	bool found;
 
-	if (addr + size < addr)
+	if (add_would_overflow(addr, size))
 		return false;
 
 	parent = of_find_node_by_path("/reserved-memory");
