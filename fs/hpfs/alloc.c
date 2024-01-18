@@ -99,7 +99,7 @@ static int chk_if_allocated(struct super_block *s, secno sec, char *msg)
 	
 int hpfs_chk_sectors(struct super_block *s, secno start, int len, char *msg)
 {
-	if (start + len < start || start < 0x12 ||
+	if (add_would_overflow(start, len) || start < 0x12 ||
 	    start + len > hpfs_sb(s)->sb_fs_size) {
 	    	hpfs_error(s, "sector(s) '%s' badly placed at %08x", msg, start);
 		return 1;
