@@ -109,6 +109,38 @@ For more details, also see array3_size() and flex_array_size(),
 as well as the related check_mul_overflow(), check_add_overflow(),
 check_sub_overflow(), and check_shl_overflow() family of functions.
 
+open-coded intentional arithmetic wrap-around
+---------------------------------------------
+Depending on arithmetic wrap-around without annotations means the
+kernel cannot distinguish between intentional wrap-around and accidental
+wrap-around (when using things like the overflow sanitizers).
+
+For example, where an addition is intended to wrap around::
+
+	magic = counter + rotation;
+
+please use the add_wrap() helper::
+
+	magic = add_wrap(counter, rotation);
+
+Another common code pattern in the kernel open coded testing for overflow
+by performing an overflow and looking for wrap-around::
+
+	if (var + offset < var) ...
+
+Instead, use either check_add_overflow() (when you want to use the
+resulting sum when it doesn't overflow) or add_would_overflow()::
+
+	if (add_would_overflow(var, offset)) ...
+
+In rare cases where helpers aren't available (e.g. in early boot code,
+etc) but overflow instrumentation still needs to be avoided, it can be
+replaced with a type max subtraction test instead::
+
+	int var;
+	...
+	if (INT_MAX - var < offset) ...
+
 simple_strtol(), simple_strtoll(), simple_strtoul(), simple_strtoull()
 ----------------------------------------------------------------------
 The simple_strtol(), simple_strtoll(),
