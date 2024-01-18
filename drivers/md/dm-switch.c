@@ -410,7 +410,7 @@ static int process_set_region_mappings(struct switch_ctx *sctx,
 				       cycle_length - 1, region_index);
 				return -EINVAL;
 			}
-			if (unlikely(region_index + num_write < region_index) ||
+			if (unlikely(add_would_overflow(region_index, num_write)) ||
 			    unlikely(region_index + num_write >= sctx->nr_regions)) {
 				DMWARN("invalid set_region_mappings region number: %lu + %lu >= %lu",
 				       region_index, num_write, sctx->nr_regions);

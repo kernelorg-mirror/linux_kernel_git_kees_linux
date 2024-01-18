@@ -2631,7 +2631,7 @@ overflow:
 	offset = (offset + wc->block_size - 1) & ~(size_t)(wc->block_size - 1);
 	data_size = wc->n_blocks * (size_t)wc->block_size;
 	if (!offset || (data_size / wc->block_size != wc->n_blocks) ||
-	    (offset + data_size < offset))
+	    (add_would_overflow(offset, data_size)))
 		goto overflow;
 	if (offset + data_size > wc->memory_map_size) {
 		ti->error = "Memory area is too small";

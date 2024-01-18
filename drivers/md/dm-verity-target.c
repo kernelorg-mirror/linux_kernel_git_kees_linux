@@ -1392,7 +1392,7 @@ static int verity_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 		v->hash_level_block[i] = hash_position;
 		s = (v->data_blocks + ((sector_t)1 << ((i + 1) * v->hash_per_block_bits)) - 1)
 					>> ((i + 1) * v->hash_per_block_bits);
-		if (hash_position + s < hash_position) {
+		if (add_would_overflow(hash_position, s)) {
 			ti->error = "Hash device offset overflow";
 			r = -E2BIG;
 			goto bad;
