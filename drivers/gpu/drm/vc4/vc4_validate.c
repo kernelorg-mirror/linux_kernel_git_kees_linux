@@ -206,7 +206,7 @@ vc4_check_tex_size(struct vc4_exec_info *exec, struct drm_gem_dma_object *fbo,
 	stride = aligned_width * cpp;
 	size = stride * aligned_height;
 
-	if (size + offset < size ||
+	if (add_would_overflow(size, offset) ||
 	    size + offset > fbo->base.size) {
 		DRM_DEBUG("Overflow in %dx%d (%dx%d) fbo size (%d + %d > %zd)\n",
 			  width, height,
