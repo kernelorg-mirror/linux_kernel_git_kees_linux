@@ -295,7 +295,7 @@ int sd_zbc_report_zones(struct gendisk *disk, sector_t sector,
 			    (lba < start_lba ||
 			     lba >= start_lba + zone_length)) ||
 			    (zone_idx > 0 && start_lba != lba) ||
-			    start_lba + zone_length < start_lba) {
+			    add_would_overflow(start_lba, zone_length)) {
 				sd_printk(KERN_ERR, sdkp,
 					  "Zone %d at LBA %llu is invalid: %llu + %llu\n",
 					  zone_idx, lba, start_lba, zone_length);
