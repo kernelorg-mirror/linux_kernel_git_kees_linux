@@ -1984,7 +1984,7 @@ static __always_inline void timekeeping_apply_adjustment(struct timekeeper *tk,
 	 * Which simplifies to:
 	 *	xtime_nsec -= offset
 	 */
-	if ((mult_adj > 0) && (tk->tkr_mono.mult + mult_adj < mult_adj)) {
+	if ((mult_adj > 0) && (add_would_overflow(mult_adj, tk->tkr_mono.mult))) {
 		/* NTP adjustment caused clocksource mult overflow */
 		WARN_ON_ONCE(1);
 		return;
