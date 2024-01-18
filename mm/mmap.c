@@ -3023,7 +3023,7 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
 		return ret;
 
 	/* Does pgoff wrap? */
-	if (pgoff + (size >> PAGE_SHIFT) < pgoff)
+	if (add_would_overflow(pgoff, (size >> PAGE_SHIFT)))
 		return ret;
 
 	if (mmap_write_lock_killable(mm))

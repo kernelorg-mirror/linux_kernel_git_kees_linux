@@ -567,7 +567,7 @@ unsigned long vm_mmap(struct file *file, unsigned long addr,
 	unsigned long len, unsigned long prot,
 	unsigned long flag, unsigned long offset)
 {
-	if (unlikely(offset + PAGE_ALIGN(len) < offset))
+	if (unlikely(add_would_overflow(offset, PAGE_ALIGN(len))))
 		return -EINVAL;
 	if (unlikely(offset_in_page(offset)))
 		return -EINVAL;

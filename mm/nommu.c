@@ -202,7 +202,7 @@ EXPORT_SYMBOL(vmalloc_to_pfn);
 long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
 {
 	/* Don't allow overflow */
-	if ((unsigned long) addr + count < count)
+	if (add_would_overflow(count, (unsigned long)addr))
 		count = -(unsigned long) addr;
 
 	return copy_to_iter(addr, count, iter);
@@ -1705,7 +1705,7 @@ int access_process_vm(struct task_struct *tsk, unsigned long addr, void *buf, in
 {
 	struct mm_struct *mm;
 
-	if (addr + len < addr)
+	if (add_would_overflow(addr, len))
 		return 0;
 
 	mm = get_task_mm(tsk);

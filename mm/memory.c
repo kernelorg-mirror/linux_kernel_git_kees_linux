@@ -2559,7 +2559,7 @@ int vm_iomap_memory(struct vm_area_struct *vma, phys_addr_t start, unsigned long
 	unsigned long vm_len, pfn, pages;
 
 	/* Check that the physical memory area passed in looks valid */
-	if (start + len < start)
+	if (add_would_overflow(start, len))
 		return -EINVAL;
 	/*
 	 * You *really* shouldn't map things that aren't page-aligned,
@@ -2569,7 +2569,7 @@ int vm_iomap_memory(struct vm_area_struct *vma, phys_addr_t start, unsigned long
 	len += start & ~PAGE_MASK;
 	pfn = start >> PAGE_SHIFT;
 	pages = (len + ~PAGE_MASK) >> PAGE_SHIFT;
-	if (pfn + pages < pfn)
+	if (add_would_overflow(pfn, pages))
 		return -EINVAL;
 
 	/* We start the mapping 'vm_pgoff' pages into the area */

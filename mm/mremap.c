@@ -848,7 +848,7 @@ static struct vm_area_struct *vma_to_resize(unsigned long addr,
 	/* Need to be careful about a growing mapping */
 	pgoff = (addr - vma->vm_start) >> PAGE_SHIFT;
 	pgoff += vma->vm_pgoff;
-	if (pgoff + (new_len >> PAGE_SHIFT) < pgoff)
+	if (add_would_overflow(pgoff, (new_len >> PAGE_SHIFT)))
 		return ERR_PTR(-EINVAL);
 
 	if (vma->vm_flags & (VM_DONTEXPAND | VM_PFNMAP))
