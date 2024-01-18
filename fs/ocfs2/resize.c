@@ -423,7 +423,7 @@ static int ocfs2_verify_group_and_input(struct inode *inode,
 	else if (next_free != cl_count && next_free != input->chain)
 		mlog(ML_ERROR,
 		     "the add group should be in chain %u\n", next_free);
-	else if (total_clusters + input->clusters < total_clusters)
+	else if (add_would_overflow(total_clusters, input->clusters))
 		mlog(ML_ERROR, "add group's clusters overflow.\n");
 	else if (input->clusters > cl_cpg)
 		mlog(ML_ERROR, "the cluster exceeds the maximum of a group\n");
