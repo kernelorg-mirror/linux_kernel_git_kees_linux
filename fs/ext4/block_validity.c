@@ -302,7 +302,7 @@ int ext4_sb_block_valid(struct super_block *sb, struct inode *inode,
 	int ret = 1;
 
 	if ((start_blk <= le32_to_cpu(sbi->s_es->s_first_data_block)) ||
-	    (start_blk + count < start_blk) ||
+	    (add_would_overflow(start_blk, count)) ||
 	    (start_blk + count > ext4_blocks_count(sbi->s_es)))
 		return 0;
 

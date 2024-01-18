@@ -1871,7 +1871,7 @@ int ext4_group_extend(struct super_block *sb, struct ext4_super_block *es,
 
 	add = EXT4_BLOCKS_PER_GROUP(sb) - last;
 
-	if (o_blocks_count + add < o_blocks_count) {
+	if (add_would_overflow(o_blocks_count, add)) {
 		ext4_warning(sb, "blocks_count overflow");
 		return -EINVAL;
 	}
