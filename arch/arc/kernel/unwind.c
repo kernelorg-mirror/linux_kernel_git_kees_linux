@@ -1278,7 +1278,7 @@ int arc_unwind(struct unwind_frame_info *frame)
 			if ((state.regs[i].value * state.dataAlign)
 			    % sizeof(unsigned long)
 			    || addr < startLoc
-			    || addr + sizeof(unsigned long) < addr
+			    || add_would_overflow(addr, sizeof(unsigned long))
 			    || addr + sizeof(unsigned long) > endLoc)
 					return -EIO;
 
