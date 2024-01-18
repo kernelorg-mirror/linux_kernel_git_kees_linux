@@ -32,7 +32,7 @@ asmlinkage int sys_cacheflush(unsigned long addr, unsigned long len,
 		return -EINVAL;
 
 	/* Check for overflow */
-	if (addr + len < addr)
+	if (add_would_overflow(addr, len))
 		return -EFAULT;
 
 	if (mmap_read_lock_killable(mm))
