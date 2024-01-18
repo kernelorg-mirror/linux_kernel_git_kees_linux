@@ -796,7 +796,7 @@ static struct kioctx *ioctx_alloc(unsigned nr_events)
 	/* limit the number of system wide aios */
 	spin_lock(&aio_nr_lock);
 	if (aio_nr + ctx->max_reqs > aio_max_nr ||
-	    aio_nr + ctx->max_reqs < aio_nr) {
+	    add_would_overflow(aio_nr, ctx->max_reqs)) {
 		spin_unlock(&aio_nr_lock);
 		err = -EAGAIN;
 		goto err_ctx;
