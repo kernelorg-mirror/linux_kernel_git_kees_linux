@@ -125,6 +125,22 @@ static inline bool __must_check __must_check_overflow(bool overflow)
 	}))
 
 /**
+ * add_wrap() - Intentionally perform a wrapping addition
+ * @a: first addend
+ * @b: second addend
+ *
+ * Return the potentially wrapped-around addition without
+ * tripping any overflow sanitizers that may be enabled.
+ */
+#define add_wrap(a, b)					\
+	({						\
+		typeof(a) __sum;			\
+		if (check_add_overflow(a, b, &__sum))	\
+			/* do nothing */;		\
+		__sum;					\
+	})
+
+/**
  * check_sub_overflow() - Calculate subtraction with overflow checking
  * @a: minuend; value to subtract from
  * @b: subtrahend; value to subtract from @a
