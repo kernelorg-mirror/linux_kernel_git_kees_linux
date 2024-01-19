@@ -125,6 +125,24 @@ static inline bool __must_check __must_check_overflow(bool overflow)
 	}))
 
 /**
+ * add_wrap() - Intentionally perform a wrapping addition
+ * @type: type to check overflow against
+ * @a: first addend
+ * @b: second addend
+ *
+ * Return the potentially wrapped-around addition without
+ * tripping any overflow sanitizers that may be enabled.
+ */
+#define add_wrap(type, a, b)				\
+	({						\
+		type __sum;				\
+		if (check_add_overflow(a, b, &__sum)) {	\
+			/* do nothing */		\
+		}					\
+		__sum;					\
+	})
+
+/**
  * check_sub_overflow() - Calculate subtraction with overflow checking
  * @a: minuend; value to subtract from
  * @b: subtrahend; value to subtract from @a
@@ -138,6 +156,24 @@ static inline bool __must_check __must_check_overflow(bool overflow)
  */
 #define check_sub_overflow(a, b, d)	\
 	__must_check_overflow(__builtin_sub_overflow(a, b, d))
+
+/**
+ * sub_wrap() - Intentionally perform a wrapping subtraction
+ * @type: type to check underflow against
+ * @a: minuend; value to subtract from
+ * @b: subtrahend; value to subtract from @a
+ *
+ * Return the potentially wrapped-around subtraction without
+ * tripping any overflow sanitizers that may be enabled.
+ */
+#define sub_wrap(type, a, b)				\
+	({						\
+		type __val;				\
+		if (check_sub_overflow(a, b, &__val)) {	\
+			/* do nothing */		\
+		}					\
+		__val;					\
+	})
 
 /**
  * check_mul_overflow() - Calculate multiplication with overflow checking
