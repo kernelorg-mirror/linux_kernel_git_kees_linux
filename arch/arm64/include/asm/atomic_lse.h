@@ -79,13 +79,13 @@ ATOMIC_FETCH_OP_SUB(        )
 #undef ATOMIC_FETCH_OP_SUB
 
 #define ATOMIC_OP_ADD_SUB_RETURN(name)					\
-static __always_inline int						\
+static __always_inline __signed_wrap int				\
 __lse_atomic_add_return##name(int i, atomic_t *v)			\
 {									\
 	return __lse_atomic_fetch_add##name(i, v) + i;			\
 }									\
 									\
-static __always_inline int						\
+static __always_inline __signed_wrap int				\
 __lse_atomic_sub_return##name(int i, atomic_t *v)			\
 {									\
 	return __lse_atomic_fetch_sub(i, v) - i;			\
@@ -186,13 +186,13 @@ ATOMIC64_FETCH_OP_SUB(        )
 #undef ATOMIC64_FETCH_OP_SUB
 
 #define ATOMIC64_OP_ADD_SUB_RETURN(name)				\
-static __always_inline long						\
+static __always_inline __signed_wrap long				\
 __lse_atomic64_add_return##name(s64 i, atomic64_t *v)			\
 {									\
 	return __lse_atomic64_fetch_add##name(i, v) + i;		\
 }									\
 									\
-static __always_inline long						\
+static __always_inline __signed_wrap long				\
 __lse_atomic64_sub_return##name(s64 i, atomic64_t *v)			\
 {									\
 	return __lse_atomic64_fetch_sub##name(i, v) - i;		\
