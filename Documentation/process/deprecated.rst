@@ -143,7 +143,7 @@ replaced with a type max subtraction test instead::
 
 For inline helpers that are performing wrapping arithmetic, the entire
 function can be annotated as intentionally wrapping by adding the
-`__signed_wrap` or `__unsigned_wrap` function attribute.
+`__signed_wrap`, `__unsigned_wrap`, or `__pointer_wrap` function attribute.
 
 simple_strtol(), simple_strtoll(), simple_strtoul(), simple_strtoull()
 ----------------------------------------------------------------------
