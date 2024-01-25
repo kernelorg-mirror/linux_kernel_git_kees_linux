@@ -120,9 +120,9 @@ config UBSAN_SIGNED_WRAP
 	bool "Perform checking for signed arithmetic wrap-around"
 	default UBSAN
 	depends on !COMPILE_TEST
-	depends on $(cc-option,-fsanitize=signed-integer-overflow)
+	depends on $(cc-option,-fsanitize=signed-integer-wrap)
 	help
-	  This option enables -fsanitize=signed-integer-overflow which checks
+	  This option enables -fsanitize=signed-integer-wrap which checks
 	  for wrap-around of any arithmetic operations with signed integers.
 
 config UBSAN_UNSIGNED_WRAP

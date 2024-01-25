@@ -333,6 +333,12 @@ void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs)
 }
 EXPORT_SYMBOL(__ubsan_handle_divrem_overflow);
 
+void __ubsan_handle_divrem_overflow_abort(void *_data, void *lhs, void *rhs)
+{
+	__ubsan_handle_divrem_overflow(_data, lhs, rhs);
+}
+EXPORT_SYMBOL(__ubsan_handle_divrem_overflow_abort);
+
 static void handle_null_ptr_deref(struct type_mismatch_data_common *data)
 {
 	if (suppress_report(data->location))
