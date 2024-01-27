@@ -2066,14 +2066,14 @@ static const char *walk_component(struct nameidata *nd, int flags)
 	(	x ^= (a),	\
 	y ^= x,	x = rol64(x,12),\
 	x += y,	y = rol64(y,45),\
-	y *= 9			)
+	y *= 9 )
 
 /*
  * Fold two longs into one 32-bit hash value.  This must be fast, but
  * latency isn't quite as critical, as there is a fair bit of additional
  * work done before the hash value is used.
  */
-static inline unsigned int fold_hash(unsigned long x, unsigned long y)
+static inline __unsigned_wrap unsigned int fold_hash(unsigned long x, unsigned long y)
 {
 	y ^= x * GOLDEN_RATIO_64;
 	y *= GOLDEN_RATIO_64;
@@ -2096,7 +2096,7 @@ static inline unsigned int fold_hash(unsigned long x, unsigned long y)
 	(	x ^= (a),	\
 	y ^= x,	x = rol32(x, 7),\
 	x += y,	y = rol32(y,20),\
-	y *= 9			)
+	y *= 9 )
 
 static inline unsigned int fold_hash(unsigned long x, unsigned long y)
 {
@@ -2113,6 +2113,7 @@ static inline unsigned int fold_hash(unsigned long x, unsigned long y)
  * payload bytes, to match the way that hash_name() iterates until it
  * finds the delimiter after the name.
  */
+__unsigned_wrap
 unsigned int full_name_hash(const void *salt, const char *name, unsigned int len)
 {
 	unsigned long a, x = 0, y = (unsigned long)salt;
@@ -2134,6 +2135,7 @@ done:
 EXPORT_SYMBOL(full_name_hash);
 
 /* Return the "hash_len" (hash and length) of a null-terminated string */
+__unsigned_wrap
 u64 hashlen_string(const void *salt, const char *name)
 {
 	unsigned long a = 0, x = 0, y = (unsigned long)salt;
@@ -2162,7 +2164,7 @@ EXPORT_SYMBOL(hashlen_string);
  * Calculate the length and hash of the path component, and
  * return the "hash_len" as the result.
  */
-static inline u64 hash_name(const void *salt, const char *name)
+static inline __unsigned_wrap u64 hash_name(const void *salt, const char *name)
 {
 	unsigned long a = 0, b, x = 0, y = (unsigned long)salt;
 	unsigned long adata, bdata, mask, len;
