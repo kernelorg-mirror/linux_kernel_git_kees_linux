@@ -101,7 +101,7 @@ late_initcall(blk_timeout_init);
 /*
  * Just a rough estimate, we don't care about specific values for timeouts.
  */
-static inline unsigned long blk_round_jiffies(unsigned long j)
+static inline __unsigned_wrap unsigned long blk_round_jiffies(unsigned long j)
 {
 	return (j + blk_timeout_mask) + 1;
 }
@@ -125,7 +125,7 @@ unsigned long blk_rq_timeout(unsigned long timeout)
  *    Each request has its own timer, and as it is added to the queue, we
  *    set up the timer. When the request completes, we cancel the timer.
  */
-void blk_add_timer(struct request *req)
+__unsigned_wrap void blk_add_timer(struct request *req)
 {
 	struct request_queue *q = req->q;
 	unsigned long expiry;
