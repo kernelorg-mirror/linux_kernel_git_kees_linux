@@ -9,8 +9,8 @@
 #include <uapi/linux/vmcore.h>
 
 /* For IS_ENABLED(CONFIG_CRASH_DUMP) */
-#define ELFCORE_ADDR_MAX	(-1ULL)
-#define ELFCORE_ADDR_ERR	(-2ULL)
+#define ELFCORE_ADDR_MAX	(U64_MAX)
+#define ELFCORE_ADDR_ERR	(U64_MAX - 1)
 
 extern unsigned long long elfcorehdr_addr;
 extern unsigned long long elfcorehdr_size;

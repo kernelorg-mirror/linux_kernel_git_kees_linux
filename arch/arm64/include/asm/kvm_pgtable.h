@@ -57,7 +57,7 @@ typedef u64 kvm_pte_t;
 #define KVM_PTE_ADDR_MASK_LPA2		GENMASK(49, PAGE_SHIFT)
 #define KVM_PTE_ADDR_51_50_LPA2		GENMASK(9, 8)
 
-#define KVM_PHYS_INVALID		(-1ULL)
+#define KVM_PHYS_INVALID		(U64_MAX)
 
 static inline bool kvm_pte_valid(kvm_pte_t pte)
 {

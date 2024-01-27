@@ -900,7 +900,7 @@ static void hw_perf_event_update(struct perf_event *event)
 	} while (local64_cmpxchg(&event->hw.prev_count, prev, new) != prev);
 
 	delta = (prev <= new) ? new - prev
-			      : (-1ULL - prev) + new + 1;	 /* overflow */
+			      : (U64_MAX - prev) + new + 1;	 /* overflow */
 	local64_add(delta, &event->count);
 }
 

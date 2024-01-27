@@ -49,7 +49,7 @@ static inline RETTYPE zpci_read_##RETTYPE(const volatile void __iomem *addr)	\
 										\
 	rc = zpci_load(&data, addr, LENGTH);					\
 	if (rc)									\
-		data = -1ULL;							\
+		data = U64_MAX;							\
 	return (RETTYPE) data;							\
 }
 

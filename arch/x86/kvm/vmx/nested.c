@@ -1350,7 +1350,7 @@ static int vmx_restore_vmx_ept_vpid_cap(struct vcpu_vmx *vmx, u64 data)
 					       vmcs_config.nested.vpid_caps);
 
 	/* Every bit is either reserved or a feature bit. */
-	if (!is_bitwise_subset(vmx_ept_vpid_cap, data, -1ULL))
+	if (!is_bitwise_subset(vmx_ept_vpid_cap, data, U64_MAX))
 		return -EINVAL;
 
 	vmx->nested.msrs.ept_caps = data;
@@ -1378,7 +1378,7 @@ static int vmx_restore_fixed0_msr(struct vcpu_vmx *vmx, u32 msr_index, u64 data)
 	 * 1 bits (which indicates bits which "must-be-1" during VMX operation)
 	 * must be 1 in the restored value.
 	 */
-	if (!is_bitwise_subset(data, *msr, -1ULL))
+	if (!is_bitwise_subset(data, *msr, U64_MAX))
 		return -EINVAL;
 
 	*vmx_get_fixed0_msr(&vmx->nested.msrs, msr_index) = data;

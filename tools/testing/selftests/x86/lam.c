@@ -160,7 +160,7 @@ static int set_lam(unsigned long lam)
 	if (lam == LAM_U57_BITS)
 		ret = (ptr != ~(LAM_U57_MASK));
 	else if (lam == LAM_NONE)
-		ret = (ptr != -1ULL);
+		ret = (ptr != U64_MAX);
 
 	return ret;
 }
@@ -204,7 +204,7 @@ static int get_lam(void)
 	/* Check mask returned is expected */
 	if (ptr == ~(LAM_U57_MASK))
 		ret = LAM_U57_BITS;
-	else if (ptr == -1ULL)
+	else if (ptr == U64_MAX)
 		ret = LAM_NONE;
 
 

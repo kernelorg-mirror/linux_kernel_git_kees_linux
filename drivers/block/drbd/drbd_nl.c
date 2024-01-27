@@ -871,7 +871,7 @@ static void drbd_md_set_sector_offsets(struct drbd_device *device,
 char *ppsize(char *buf, unsigned long long size)
 {
 	/* Needs 9 bytes at max including trailing NUL:
-	 * -1ULL ==> "16384 EB" */
+	 * U64_MAX ==> "16384 EB" */
 	static char units[] = { 'K', 'M', 'G', 'T', 'P', 'E' };
 	int base = 0;
 	while (size >= 10000 && base < sizeof(units)-1) {

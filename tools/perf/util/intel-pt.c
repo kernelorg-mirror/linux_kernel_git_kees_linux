@@ -1787,7 +1787,7 @@ static int intel_pt_synth_branch_sample(struct intel_pt_queue *ptq)
 	if (pt->synth_opts.last_branch && sort__mode == SORT_MODE__BRANCH) {
 		dummy_bs = (struct dummy_branch_stack){
 			.nr = 1,
-			.hw_idx = -1ULL,
+			.hw_idx = U64_MAX,
 			.entries = {
 				.from = sample.ip,
 				.to = sample.addr,

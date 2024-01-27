@@ -181,7 +181,7 @@ xbitmap64_destroy(
 {
 	struct xbitmap64_node	*bn;
 
-	while ((bn = xbitmap64_tree_iter_first(&bitmap->xb_root, 0, -1ULL))) {
+	while ((bn = xbitmap64_tree_iter_first(&bitmap->xb_root, 0, U64_MAX))) {
 		xbitmap64_tree_remove(bn, &bitmap->xb_root);
 		kfree(bn);
 	}

@@ -87,7 +87,7 @@ struct vm_fault;
 /*
  * Magic value for addr:
  */
-#define IOMAP_NULL_ADDR -1ULL	/* addr is not valid */
+#define IOMAP_NULL_ADDR U64_MAX	/* addr is not valid */
 
 struct iomap_folio_ops;
 

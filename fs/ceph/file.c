@@ -667,7 +667,7 @@ static int ceph_finish_async_create(struct inode *dir, struct inode *inode,
 	in.cap.flags = CEPH_CAP_FLAG_AUTH;
 	in.ctime = in.mtime = in.atime = iinfo.btime;
 	in.truncate_seq = cpu_to_le32(1);
-	in.truncate_size = cpu_to_le64(-1ULL);
+	in.truncate_size = cpu_to_le64(U64_MAX);
 	in.xattr_version = cpu_to_le64(1);
 	in.uid = cpu_to_le32(from_kuid(&init_user_ns,
 				       mapped_fsuid(req->r_mnt_idmap,

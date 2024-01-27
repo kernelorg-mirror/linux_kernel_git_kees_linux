@@ -1039,7 +1039,7 @@ MR_BuildRaidContext(struct megasas_instance *instance,
 	if (io_info->IoforUnevenSpan) {
 		start_row = get_row_from_strip(instance, ld, start_strip, map);
 		endRow	  = get_row_from_strip(instance, ld, endStrip, map);
-		if (start_row == -1ULL || endRow == -1ULL) {
+		if (start_row == U64_MAX || endRow == U64_MAX) {
 			dev_info(&instance->pdev->dev, "return from %s %d."
 				"Send IO w/o region lock.\n",
 				__func__, __LINE__);

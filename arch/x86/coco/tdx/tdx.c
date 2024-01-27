@@ -826,7 +826,7 @@ void __init tdx_early_init(void)
 {
 	struct tdx_module_args args = {
 		.rdx = TDCS_NOTIFY_ENABLES,
-		.r9 = -1ULL,
+		.r9 = U64_MAX,
 	};
 	u64 cc_mask;
 	u32 eax, sig[3];

@@ -1185,7 +1185,7 @@ static int disk_ll_open(struct ll_disk *ll)
 
 static dm_block_t disk_ll_max_entries(struct ll_disk *ll)
 {
-	return -1ULL;
+	return U64_MAX;
 }
 
 static int disk_ll_commit(struct ll_disk *ll)

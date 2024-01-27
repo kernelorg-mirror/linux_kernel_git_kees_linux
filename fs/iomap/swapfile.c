@@ -152,7 +152,7 @@ int iomap_swapfile_activate(struct swap_info_struct *sis,
 	};
 	struct iomap_swapfile_info isi = {
 		.sis = sis,
-		.lowest_ppage = (sector_t)-1ULL,
+		.lowest_ppage = (sector_t)U64_MAX,
 		.file = swap_file,
 	};
 	int ret;

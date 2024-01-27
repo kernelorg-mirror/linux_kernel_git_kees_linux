@@ -124,7 +124,7 @@ static u32 kvm_pgd_pages(u32 ia_bits, s8 start_level)
 		.start_level	= start_level,
 	};
 
-	return kvm_pgd_page_idx(&pgt, -1ULL) + 1;
+	return kvm_pgd_page_idx(&pgt, U64_MAX) + 1;
 }
 
 static bool kvm_pte_table(kvm_pte_t pte, s8 level)

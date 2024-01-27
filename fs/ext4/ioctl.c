@@ -903,7 +903,7 @@ static int ext4_ioc_getfsmap(struct super_block *sb,
 	 */
 	if (head.fmh_keys[0].fmr_offset ||
 	    (head.fmh_keys[1].fmr_offset != 0 &&
-	     head.fmh_keys[1].fmr_offset != -1ULL))
+	     head.fmh_keys[1].fmr_offset != U64_MAX))
 		return -EINVAL;
 
 	xhead.fmh_iflags = head.fmh_iflags;

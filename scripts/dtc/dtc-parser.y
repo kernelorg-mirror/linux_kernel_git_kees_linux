@@ -404,7 +404,7 @@ arrayprefix:
 				 * within the mask to one (i.e. | in the
 				 * mask), all bits are one.
 				 */
-				if (($2 > mask) && (($2 | mask) != -1ULL)) {
+				if (($2 > mask) && (($2 | mask) != U64_MAX)) {
 					char *loc = srcpos_string(&@2);
 					fprintf(stderr,
 						"WARNING: %s: Value 0x%016" PRIx64

@@ -1269,7 +1269,7 @@ void intel_pmu_store_pebs_lbrs(struct lbr_entry *lbr)
 	/* Cannot get TOS for large PEBS and Arch LBR */
 	if (static_cpu_has(X86_FEATURE_ARCH_LBR) ||
 	    (cpuc->n_pebs == cpuc->n_large_pebs))
-		cpuc->lbr_stack.hw_idx = -1ULL;
+		cpuc->lbr_stack.hw_idx = U64_MAX;
 	else
 		cpuc->lbr_stack.hw_idx = intel_pmu_lbr_tos();
 

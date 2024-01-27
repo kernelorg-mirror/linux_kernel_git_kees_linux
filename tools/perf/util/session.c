@@ -1877,7 +1877,7 @@ static s64 perf_session__process_event(struct perf_session *session,
 		return perf_session__process_user_event(session, event, file_offset, file_path);
 
 	if (tool->ordered_events) {
-		u64 timestamp = -1ULL;
+		u64 timestamp = U64_MAX;
 
 		ret = evlist__parse_sample_timestamp(evlist, event, &timestamp);
 		if (ret && ret != -1)

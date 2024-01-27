@@ -196,7 +196,7 @@ static u64 ba_alloc(struct ba_lun *ba_lun)
 	if (bali->free_aun_cnt == 0) {
 		pr_debug("%s: No space left on LUN: lun_id=%016llx\n",
 			 __func__, ba_lun->lun_id);
-		return -1ULL;
+		return U64_MAX;
 	}
 
 	/* Search to find a free entry, curr->high then low->curr */
@@ -209,7 +209,7 @@ static u64 ba_alloc(struct ba_lun *ba_lun)
 		if (bit_pos == -1) {
 			pr_debug("%s: Could not find an allocation unit on LUN:"
 				 " lun_id=%016llx\n", __func__, ba_lun->lun_id);
-			return -1ULL;
+			return U64_MAX;
 		}
 	}
 
@@ -566,7 +566,7 @@ static int grow_lxt(struct afu *afu,
 		 * invalid LUN (too large).
 		 */
 		aun = ba_alloc(&blka->ba_lun);
-		if ((aun == -1ULL) || (aun >= blka->nchunk))
+		if ((aun == U64_MAX) || (aun >= blka->nchunk))
 			dev_dbg(dev, "%s: ba_alloc error allocated chunk=%llu "
 				"max=%llu\n", __func__, aun, blka->nchunk - 1);
 
@@ -1129,7 +1129,7 @@ static int clone_lxt(struct afu *afu,
 		locked = true;
 		for (i = 0; i < rhte_src->lxt_cnt; i++) {
 			aun = (lxt[i].rlba_base >> MC_CHUNK_SHIFT);
-			if (ba_clone(&blka->ba_lun, aun) == -1ULL) {
+			if (ba_clone(&blka->ba_lun, aun) == U64_MAX) {
 				rc = -EIO;
 				goto err;
 			}

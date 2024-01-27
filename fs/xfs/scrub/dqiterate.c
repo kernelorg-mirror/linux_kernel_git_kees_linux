@@ -100,7 +100,7 @@ xchk_dquot_iter_advance_bmap(
 		fileoff = cursor->bmap.br_startoff + cursor->bmap.br_blockcount;
 		if (fileoff > XFS_DQ_ID_MAX / qi->qi_dqperchunk) {
 			/* The hole goes beyond the max dquot id, we're done */
-			*next_ondisk_id = -1ULL;
+			*next_ondisk_id = U64_MAX;
 			return 0;
 		}
 
@@ -111,7 +111,7 @@ xchk_dquot_iter_advance_bmap(
 			return error;
 		if (!nmaps) {
 			/* Must have reached the end of the mappings. */
-			*next_ondisk_id = -1ULL;
+			*next_ondisk_id = U64_MAX;
 			return 0;
 		}
 		if (cursor->bmap.br_startoff > fileoff) {
@@ -123,7 +123,7 @@ xchk_dquot_iter_advance_bmap(
 	next_id = cursor->bmap.br_startoff * qi->qi_dqperchunk;
 	if (next_id > XFS_DQ_ID_MAX) {
 		/* The hole goes beyond the max dquot id, we're done */
-		*next_ondisk_id = -1ULL;
+		*next_ondisk_id = U64_MAX;
 		return 0;
 	}
 
@@ -150,7 +150,7 @@ xchk_dquot_iter_advance_incore(
 	struct xfs_dquot	*dq;
 	unsigned int		nr_found;
 
-	*next_incore_id = -1ULL;
+	*next_incore_id = U64_MAX;
 
 	mutex_lock(&qi->qi_tree_lock);
 	nr_found = radix_tree_gang_lookup(tree, (void **)&dq, cursor->id, 1);
@@ -174,7 +174,7 @@ xchk_dquot_iter(
 {
 	struct xfs_mount	*mp = cursor->sc->mp;
 	struct xfs_dquot	*dq = NULL;
-	uint64_t		next_ondisk, next_incore = -1ULL;
+	uint64_t		next_ondisk, next_incore = U64_MAX;
 	unsigned int		lock_mode;
 	int			error = 0;
 

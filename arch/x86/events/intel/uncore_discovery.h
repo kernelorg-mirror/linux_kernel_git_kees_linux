@@ -35,8 +35,8 @@
 
 #define uncore_discovery_invalid_unit(unit)			\
 	(!unit.table1 || !unit.ctl || \
-	 unit.table1 == -1ULL || unit.ctl == -1ULL ||	\
-	 unit.table3 == -1ULL)
+	 unit.table1 == U64_MAX || unit.ctl == U64_MAX ||	\
+	 unit.table3 == U64_MAX)
 
 #define GENERIC_PMON_CTL_EV_SEL_MASK	0x000000ff
 #define GENERIC_PMON_CTL_UMASK_MASK	0x0000ff00

@@ -58,7 +58,7 @@
 union tod_clock tod_clock_base __section(".data");
 EXPORT_SYMBOL_GPL(tod_clock_base);
 
-u64 clock_comparator_max = -1ULL;
+u64 clock_comparator_max = U64_MAX;
 EXPORT_SYMBOL_GPL(clock_comparator_max);
 
 static DEFINE_PER_CPU(struct clock_event_device, comparators);
