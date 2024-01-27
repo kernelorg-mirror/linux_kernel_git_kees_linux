@@ -15,7 +15,7 @@
 
 static void wss_insert(u8 *wss, u32 val, unsigned size)
 {
-	while (size--)
+	for (;size;size--)
 		*wss++ = (val & (1 << size)) ? 0xc0 : 0x10;
 }
 

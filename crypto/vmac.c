@@ -416,7 +416,7 @@ static void vhash_blocks(const struct vmac_tfm_ctx *tctx,
 		blocks--;
 	}
 
-	while (blocks--) {
+	for (;blocks;blocks--) {
 		nh_vmac_nhbytes(mptr, kptr, VMAC_NHBYTES/8, rh, rl);
 		rh &= m62;
 		poly_step(ch, cl, pkh, pkl, rh, rl);

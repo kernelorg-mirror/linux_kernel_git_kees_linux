@@ -173,7 +173,7 @@ static int stripe_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 		r = get_stripe(ti, sc, i, argv);
 		if (r < 0) {
 			ti->error = "Couldn't parse stripe destination";
-			while (i--)
+			for (;i;i--)
 				dm_put_device(ti, sc->stripe[i].dev);
 			kfree(sc);
 			return r;

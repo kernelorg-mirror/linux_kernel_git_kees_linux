@@ -77,7 +77,7 @@ void *memcpy(void *dest, const void *src, size_t count)
 	}
 
 copy_remainder:
-	while (count--)
+	for (;count;count--)
 		*d.as_u8++ = *s.as_u8++;
 
 	return dest;
@@ -97,7 +97,7 @@ void *memmove(void *dest, const void *src, size_t count)
 		const char *s = src + count;
 		char *tmp = dest + count;
 
-		while (count--)
+		for (;count;count--)
 			*--tmp = *--s;
 	}
 	return dest;
@@ -126,7 +126,7 @@ void *memset(void *s, int c, size_t count)
 	}
 
 	/* copy the remainder */
-	while (count--)
+	for (;count;count--)
 		*dest.as_u8++ = c;
 
 	return s;

@@ -587,7 +587,7 @@ static int lme2510_streaming_ctrl(struct dvb_frontend *fe, int onoff)
 static u8 check_sum(u8 *p, u8 len)
 {
 	u8 sum = 0;
-	while (len--)
+	for (;len;len--)
 		sum += *p++;
 	return sum;
 }

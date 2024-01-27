@@ -580,7 +580,7 @@ mv_xor_prep_dma_xor(struct dma_chan *chan, dma_addr_t dest, dma_addr_t *src,
 		mv_desc_init(sw_desc, dest, len, flags);
 		if (mv_chan->op_in_desc == XOR_MODE_IN_DESC)
 			mv_desc_set_mode(sw_desc);
-		while (src_cnt--) {
+		for (;src_cnt;src_cnt--) {
 			/* Check if a new window needs to get added for 'src' */
 			ret = mv_xor_add_io_win(mv_chan, src[src_cnt]);
 			if (ret)

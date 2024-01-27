@@ -489,7 +489,7 @@ static int atmel_pwm_enable_clk_if_on(struct pwm_chip *chip, bool on)
 	return 0;
 
 disable_clk:
-	while (cnt--)
+	for (;cnt;cnt--)
 		clk_disable(atmel_pwm->clk);
 
 	return ret;

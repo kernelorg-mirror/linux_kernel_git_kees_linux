@@ -282,7 +282,7 @@ static int ceph_x_proc_ticket_reply(struct ceph_auth_client *ac,
 	ceph_decode_32_safe(p, end, num, bad);
 	dout("%d tickets\n", num);
 
-	while (num--) {
+	for (;num;num--) {
 		ret = process_one_ticket(ac, secret, p, end);
 		if (ret)
 			return ret;

@@ -138,7 +138,7 @@ static int mpf_ops_parse_header(struct fpga_manager *mgr,
 	components_size_start = 0;
 	bitstream_start = 0;
 
-	while (blocks_num--) {
+	for (;blocks_num;blocks_num--) {
 		block_id = *(buf + block_id_offset);
 		block_start = get_unaligned_le32(buf + block_start_offset);
 

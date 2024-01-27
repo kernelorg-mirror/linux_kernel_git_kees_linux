@@ -307,7 +307,7 @@ int rcar_du_vsp_map_fb(struct rcar_du_vsp *vsp, struct drm_framebuffer *fb,
 	return 0;
 
 fail:
-	while (i--) {
+	for (;i;i--) {
 		struct sg_table *sgt = &sg_tables[i];
 
 		vsp1_du_unmap_sg(vsp->vsp, sgt);

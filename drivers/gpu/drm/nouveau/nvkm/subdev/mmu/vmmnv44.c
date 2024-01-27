@@ -35,7 +35,7 @@ nv44_vmm_pgt_fill(struct nvkm_vmm *vmm, struct nvkm_mmu_pt *pt,
 	tmp[2] = nvkm_ro32(pt->memory, pteo + 0x8);
 	tmp[3] = nvkm_ro32(pt->memory, pteo + 0xc);
 
-	while (ptes--) {
+	for (;ptes;ptes--) {
 		u32 addr = (list ? *list++ : vmm->null) >> 12;
 		switch (ptei++ & 0x3) {
 		case 0:

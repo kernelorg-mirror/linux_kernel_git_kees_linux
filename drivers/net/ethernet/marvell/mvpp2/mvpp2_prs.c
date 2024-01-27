@@ -417,7 +417,7 @@ static void mvpp2_prs_drop_fc(struct mvpp2 *priv)
 
 	/* Set match on DA */
 	len = ETH_ALEN;
-	while (len--)
+	for (;len;len--)
 		mvpp2_prs_tcam_data_byte_set(&pe, len, da[len], 0xff);
 
 	mvpp2_prs_sram_ri_update(&pe, MVPP2_PRS_RI_DROP_MASK,
@@ -2285,7 +2285,7 @@ int mvpp2_prs_mac_da_accept(struct mvpp2_port *port, const u8 *da, bool add)
 
 	/* Set match on DA */
 	len = ETH_ALEN;
-	while (len--)
+	for (;len;len--)
 		mvpp2_prs_tcam_data_byte_set(&pe, len, da[len], 0xff);
 
 	/* Set result info bits */

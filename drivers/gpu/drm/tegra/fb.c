@@ -175,7 +175,7 @@ struct drm_framebuffer *tegra_fb_create(struct drm_device *drm,
 	return fb;
 
 unreference:
-	while (i--)
+	for (;i;i--)
 		drm_gem_object_put(&planes[i]->gem);
 
 	return ERR_PTR(err);

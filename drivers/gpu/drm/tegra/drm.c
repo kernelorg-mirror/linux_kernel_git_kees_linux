@@ -266,7 +266,7 @@ int tegra_drm_submit(struct tegra_drm_context *context,
 	}
 
 	/* copy and resolve relocations from submit */
-	while (num_relocs--) {
+	for (;num_relocs;num_relocs--) {
 		struct host1x_reloc *reloc;
 		struct tegra_bo *obj;
 
@@ -334,7 +334,7 @@ int tegra_drm_submit(struct tegra_drm_context *context,
 	args->fence = job->syncpt_end;
 
 fail:
-	while (num_refs--)
+	for (;num_refs;num_refs--)
 		drm_gem_object_put(refs[num_refs]);
 
 	kfree(refs);

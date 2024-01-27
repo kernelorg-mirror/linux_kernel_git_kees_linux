@@ -168,7 +168,7 @@ int drm_buddy_init(struct drm_buddy *mm, u64 size, u64 chunk_size)
 	return 0;
 
 out_free_roots:
-	while (i--)
+	for (;i;i--)
 		drm_block_free(mm, mm->roots[i]);
 	kfree(mm->roots);
 out_free_list:

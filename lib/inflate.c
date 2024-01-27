@@ -455,7 +455,7 @@ DEBG("h6a ");
   {
 DEBG("h6b ");
     a = c[k];
-    while (a--)
+    for (;a;a--)
     {
 DEBG("h6b1 ");
       /* here i is the Huffman code of length k bits for value *p */
@@ -733,7 +733,7 @@ DEBG("<stor");
 
 
   /* read and output the compressed data */
-  while (n--)
+  for (;n;n--)
   {
     NEEDBITS(8)
     slide[w++] = (uch)b;
@@ -929,7 +929,7 @@ DEBG("dyn3 ");
         ret = 1;
 	goto out;
       }
-      while (j--)
+      for (;j;j--)
         ll[i++] = l;
     }
     else if (j == 17)           /* 3 to 10 zero length codes */
@@ -941,7 +941,7 @@ DEBG("dyn3 ");
         ret = 1;
 	goto out;
       }
-      while (j--)
+      for (;j;j--)
         ll[i++] = 0;
       l = 0;
     }
@@ -954,7 +954,7 @@ DEBG("dyn3 ");
         ret = 1;
 	goto out;
       }
-      while (j--)
+      for (;j;j--)
         ll[i++] = 0;
       l = 0;
     }
@@ -1240,7 +1240,7 @@ static int INIT gunzip(void)
     if ((flags & EXTRA_FIELD) != 0) {
 	    unsigned len = (unsigned)NEXTBYTE();
 	    len |= ((unsigned)NEXTBYTE())<<8;
-	    while (len--) (void)NEXTBYTE();
+	    for (;len;len--) (void)NEXTBYTE();
     }
 
     /* Get original file name if it was truncated */

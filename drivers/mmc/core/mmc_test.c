@@ -318,7 +318,7 @@ static void mmc_test_free_mem(struct mmc_test_mem *mem)
 {
 	if (!mem)
 		return;
-	while (mem->cnt--)
+	for (;mem->cnt;mem->cnt--)
 		__free_pages(mem->arr[mem->cnt].page,
 			     mem->arr[mem->cnt].order);
 	kfree(mem->arr);

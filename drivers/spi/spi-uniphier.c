@@ -327,7 +327,7 @@ static void uniphier_spi_fill_tx_fifo(struct uniphier_spi_priv *priv)
 	fill_words = fifo_threshold -
 		DIV_ROUND_UP(priv->rx_bytes - priv->tx_bytes, bpw);
 
-	while (fill_words--)
+	for (;fill_words;fill_words--)
 		uniphier_spi_send(priv);
 }
 

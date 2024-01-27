@@ -3878,7 +3878,7 @@ static void ixgbe_store_vfreta(struct ixgbe_adapter *adapter)
 		if ((i & 3) != 3)
 			continue;
 
-		while (pool--)
+		for (;pool;pool--)
 			IXGBE_WRITE_REG(hw,
 					IXGBE_PFVFRETA(i >> 2, VMDQ_P(pool)),
 					vfreta);
@@ -3925,7 +3925,7 @@ static void ixgbe_setup_vfreta(struct ixgbe_adapter *adapter)
 	for (i = 0; i < 10; i++) {
 		u16 pool = adapter->num_rx_pools;
 
-		while (pool--)
+		for (;pool;pool--)
 			IXGBE_WRITE_REG(hw,
 					IXGBE_PFVFRSSRK(i, VMDQ_P(pool)),
 					*(adapter->rss_key + i));
@@ -4009,7 +4009,7 @@ static void ixgbe_setup_mrqc(struct ixgbe_adapter *adapter)
 		vfmrqc = IXGBE_MRQC_RSSEN;
 		vfmrqc |= rss_field;
 
-		while (pool--)
+		for (;pool;pool--)
 			IXGBE_WRITE_REG(hw,
 					IXGBE_PFVFMRQC(VMDQ_P(pool)),
 					vfmrqc);
@@ -4195,7 +4195,7 @@ static void ixgbe_setup_psrtype(struct ixgbe_adapter *adapter)
 	else if (rss_i > 1)
 		psrtype |= 1u << 29;
 
-	while (pool--)
+	for (;pool;pool--)
 		IXGBE_WRITE_REG(hw, IXGBE_PSRTYPE(VMDQ_P(pool)), psrtype);
 }
 
@@ -4221,7 +4221,7 @@ static void ixgbe_configure_virtualization(struct ixgbe_adapter *adapter)
 	 * specifically set for the VMDQ queue/pool
 	 */
 	vmolr = IXGBE_VMOLR_AUPE;
-	while (pool--)
+	for (;pool;pool--)
 		IXGBE_WRITE_REG(hw, IXGBE_VMOLR(VMDQ_P(pool)), vmolr);
 
 	vf_shift = VMDQ_P(0) % 32;

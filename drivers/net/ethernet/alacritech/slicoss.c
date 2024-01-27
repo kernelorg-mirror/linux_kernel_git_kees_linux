@@ -879,7 +879,7 @@ static int slic_init_tx_queue(struct slic_device *sdev)
 	return 0;
 
 free_descs:
-	while (i--) {
+	for (;i;i--) {
 		buff = &txq->txbuffs[i];
 		dma_pool_free(txq->dma_pool, buff->desc, buff->desc_paddr);
 	}

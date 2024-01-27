@@ -35,7 +35,7 @@ gm200_ram_probe_fbp_amount(const struct nvkm_ram_func *func, u32 fbpao,
 		u32 ltco = nvkm_rd32(device, 0x021d70 + (fbp * 4));
 		u32 ltcm = ~ltco & ((1 << ltcs) - 1);
 
-		while (fbpas--) {
+		for (;fbpas;fbpas--) {
 			if (!(fbpao & (1 << fbpa)))
 				size += func->probe_fbpa_amount(device, fbpa);
 			fbpa++;

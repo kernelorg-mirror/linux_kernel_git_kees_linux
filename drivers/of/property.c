@@ -234,7 +234,7 @@ int of_property_read_variable_u8_array(const struct device_node *np,
 		sz /= sizeof(*out_values);
 
 	count = sz;
-	while (count--)
+	for (;count;count--)
 		*out_values++ = *val++;
 
 	return sz;
@@ -284,7 +284,7 @@ int of_property_read_variable_u16_array(const struct device_node *np,
 		sz /= sizeof(*out_values);
 
 	count = sz;
-	while (count--)
+	for (;count;count--)
 		*out_values++ = be16_to_cpup(val++);
 
 	return sz;
@@ -331,7 +331,7 @@ int of_property_read_variable_u32_array(const struct device_node *np,
 		sz /= sizeof(*out_values);
 
 	count = sz;
-	while (count--)
+	for (;count;count--)
 		*out_values++ = be32_to_cpup(val++);
 
 	return sz;
@@ -409,7 +409,7 @@ int of_property_read_variable_u64_array(const struct device_node *np,
 		sz /= sizeof(*out_values);
 
 	count = sz;
-	while (count--) {
+	for (;count;count--) {
 		*out_values++ = of_read_number(val, 2);
 		val += 2;
 	}

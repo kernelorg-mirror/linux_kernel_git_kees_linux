@@ -290,21 +290,21 @@ static void test_mb_aead_speed(const char *algo, int enc, int secs,
 
 	for (i = 0; i < num_mb; ++i)
 		if (testmgr_alloc_buf(data[i].xbuf)) {
-			while (i--)
+			for (;i;i--)
 				testmgr_free_buf(data[i].xbuf);
 			goto out_free_tfm;
 		}
 
 	for (i = 0; i < num_mb; ++i)
 		if (testmgr_alloc_buf(data[i].axbuf)) {
-			while (i--)
+			for (;i;i--)
 				testmgr_free_buf(data[i].axbuf);
 			goto out_free_xbuf;
 		}
 
 	for (i = 0; i < num_mb; ++i)
 		if (testmgr_alloc_buf(data[i].xoutbuf)) {
-			while (i--)
+			for (;i;i--)
 				testmgr_free_buf(data[i].xoutbuf);
 			goto out_free_axbuf;
 		}
@@ -314,7 +314,7 @@ static void test_mb_aead_speed(const char *algo, int enc, int secs,
 		if (!data[i].req) {
 			pr_err("alg: aead: Failed to allocate request for %s\n",
 			       algo);
-			while (i--)
+			for (;i;i--)
 				aead_request_free(data[i].req);
 			goto out_free_xoutbuf;
 		}
@@ -1088,7 +1088,7 @@ static void test_mb_skcipher_speed(const char *algo, int enc, int secs,
 
 	for (i = 0; i < num_mb; ++i)
 		if (testmgr_alloc_buf(data[i].xbuf)) {
-			while (i--)
+			for (;i;i--)
 				testmgr_free_buf(data[i].xbuf);
 			goto out_free_tfm;
 		}
@@ -1098,7 +1098,7 @@ static void test_mb_skcipher_speed(const char *algo, int enc, int secs,
 		if (!data[i].req) {
 			pr_err("alg: skcipher: Failed to allocate request for %s\n",
 			       algo);
-			while (i--)
+			for (;i;i--)
 				skcipher_request_free(data[i].req);
 			goto out_free_xbuf;
 		}

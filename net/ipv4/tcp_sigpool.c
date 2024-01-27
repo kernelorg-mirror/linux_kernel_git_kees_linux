@@ -37,7 +37,7 @@ static void free_old_scratches(struct rcu_head *head)
 	struct scratches_to_free *stf;
 
 	stf = container_of(head, struct scratches_to_free, rcu);
-	while (stf->cnt--)
+	for (;stf->cnt;stf->cnt--)
 		kfree(stf->scratches[stf->cnt]);
 	kfree(stf);
 }

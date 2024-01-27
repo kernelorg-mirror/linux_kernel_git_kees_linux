@@ -130,7 +130,7 @@ static int qt2160_read_block(struct i2c_client *client,
 		}
 	} else {
 
-		while (count--) {
+		for (;count;count--) {
 			int data;
 
 			error = i2c_smbus_write_byte(client, inireg + idx);

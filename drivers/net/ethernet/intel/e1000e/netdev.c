@@ -5628,7 +5628,7 @@ dma_error:
 	if (count)
 		count--;
 
-	while (count--) {
+	for (;count;count--) {
 		if (i == 0)
 			i += tx_ring->count;
 		i--;

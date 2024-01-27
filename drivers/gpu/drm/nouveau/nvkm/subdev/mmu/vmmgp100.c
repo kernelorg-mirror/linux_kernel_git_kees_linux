@@ -38,7 +38,7 @@ gp100_vmm_pfn_unmap(struct nvkm_vmm *vmm,
 	dma_addr_t addr;
 
 	nvkm_kmap(pt->memory);
-	while (ptes--) {
+	for (;ptes;ptes--) {
 		u32 datalo = nvkm_ro32(pt->memory, pt->base + ptei * 8 + 0);
 		u32 datahi = nvkm_ro32(pt->memory, pt->base + ptei * 8 + 4);
 		u64 data   = (u64)datahi << 32 | datalo;
@@ -57,7 +57,7 @@ gp100_vmm_pfn_clear(struct nvkm_vmm *vmm,
 {
 	bool dma = false;
 	nvkm_kmap(pt->memory);
-	while (ptes--) {
+	for (;ptes;ptes--) {
 		u32 datalo = nvkm_ro32(pt->memory, pt->base + ptei * 8 + 0);
 		u32 datahi = nvkm_ro32(pt->memory, pt->base + ptei * 8 + 4);
 		u64 data   = (u64)datahi << 32 | datalo;
@@ -119,7 +119,7 @@ gp100_vmm_pgt_pte(struct nvkm_vmm *vmm, struct nvkm_mmu_pt *pt,
 
 	map->type += ptes * map->ctag;
 
-	while (ptes--) {
+	for (;ptes;ptes--) {
 		VMM_WO064(pt, vmm, ptei++ * 8, data);
 		data += map->next;
 	}
@@ -139,7 +139,7 @@ gp100_vmm_pgt_dma(struct nvkm_vmm *vmm, struct nvkm_mmu_pt *pt,
 	if (map->page->shift == PAGE_SHIFT) {
 		VMM_SPAM(vmm, "DMAA %08x %08x PTE(s)", ptei, ptes);
 		nvkm_kmap(pt->memory);
-		while (ptes--) {
+		for (;ptes;ptes--) {
 			const u64 data = (*map->dma++ >> 4) | map->type;
 			VMM_WO064(pt, vmm, ptei++ * 8, data);
 			map->type += map->ctag;
@@ -202,7 +202,7 @@ gp100_vmm_pd0_pte(struct nvkm_vmm *vmm, struct nvkm_mmu_pt *pt,
 
 	map->type += ptes * map->ctag;
 
-	while (ptes--) {
+	for (;ptes;ptes--) {
 		VMM_WO128(pt, vmm, ptei++ * 0x10, data, 0ULL);
 		data += map->next;
 	}
@@ -272,7 +272,7 @@ gp100_vmm_pd0_pfn_unmap(struct nvkm_vmm *vmm,
 	dma_addr_t addr;
 
 	nvkm_kmap(pt->memory);
-	while (ptes--) {
+	for (;ptes;ptes--) {
 		u32 datalo = nvkm_ro32(pt->memory, pt->base + ptei * 16 + 0);
 		u32 datahi = nvkm_ro32(pt->memory, pt->base + ptei * 16 + 4);
 		u64 data   = (u64)datahi << 32 | datalo;
@@ -293,7 +293,7 @@ gp100_vmm_pd0_pfn_clear(struct nvkm_vmm *vmm,
 	bool dma = false;
 
 	nvkm_kmap(pt->memory);
-	while (ptes--) {
+	for (;ptes;ptes--) {
 		u32 datalo = nvkm_ro32(pt->memory, pt->base + ptei * 16 + 0);
 		u32 datahi = nvkm_ro32(pt->memory, pt->base + ptei * 16 + 4);
 		u64 data   = (u64)datahi << 32 | datalo;

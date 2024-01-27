@@ -37,7 +37,7 @@ static int dwc3_ulpi_busyloop(struct dwc3 *dwc, u8 addr, bool read)
 	if (reg & DWC3_GUSB2PHYCFG_SUSPHY)
 		usleep_range(1000, 1200);
 
-	while (count--) {
+	for (;count;count--) {
 		ndelay(ns);
 		reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYACC(0));
 		if (reg & DWC3_GUSB2PHYACC_DONE)

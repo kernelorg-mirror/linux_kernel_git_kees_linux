@@ -29,7 +29,7 @@ nv04_vmm_pgt_pte(struct nvkm_vmm *vmm, struct nvkm_mmu_pt *pt,
 		 u32 ptei, u32 ptes, struct nvkm_vmm_map *map, u64 addr)
 {
 	u32 data = addr | 0x00000003; /* PRESENT, RW. */
-	while (ptes--) {
+	for (;ptes;ptes--) {
 		VMM_WO032(pt, vmm, 8 + ptei++ * 4, data);
 		data += 0x00001000;
 	}
@@ -48,7 +48,7 @@ nv04_vmm_pgt_dma(struct nvkm_vmm *vmm, struct nvkm_mmu_pt *pt,
 {
 #if PAGE_SHIFT == 12
 	nvkm_kmap(pt->memory);
-	while (ptes--)
+	for (;ptes;ptes--)
 		VMM_WO032(pt, vmm, 8 + (ptei++ * 4), *map->dma++ | 0x00000003);
 	nvkm_done(pt->memory);
 #else

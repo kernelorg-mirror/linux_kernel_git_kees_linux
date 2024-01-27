@@ -763,7 +763,7 @@ static void add_token_u64(int *err, struct opal_dev *cmd, u64 number)
 		return;
 	}
 	add_short_atom_header(cmd, false, false, len);
-	while (len--)
+	for (;len;len--)
 		add_token_u8(err, cmd, number >> (len * 8));
 }
 

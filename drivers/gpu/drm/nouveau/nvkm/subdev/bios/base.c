@@ -108,7 +108,7 @@ nvbios_memcmp(struct nvkm_bios *bios, u32 addr, const char *str, u32 len)
 {
 	unsigned char c1, c2;
 
-	while (len--) {
+	for (;len;len--) {
 		c1 = nvbios_rd08(bios, addr++);
 		c2 = *(str++);
 		if (c1 != c2)

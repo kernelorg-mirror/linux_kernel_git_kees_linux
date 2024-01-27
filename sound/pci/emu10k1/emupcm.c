@@ -1610,12 +1610,12 @@ static void snd_emu10k1_fx8010_playback_tram_poke1(unsigned short *dst_left,
 	       dst_left, dst_right, src, count);
 	*/
 	if ((tram_shift & 1) == 0) {
-		while (count--) {
+		for (;count;count--) {
 			*dst_left-- = *src++;
 			*dst_right-- = *src++;
 		}
 	} else {
-		while (count--) {
+		for (;count;count--) {
 			*dst_right-- = *src++;
 			*dst_left-- = *src++;
 		}

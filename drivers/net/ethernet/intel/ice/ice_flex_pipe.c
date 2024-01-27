@@ -861,7 +861,7 @@ ice_match_prop_lst(struct list_head *list1, struct list_head *list2)
 	/* profile cookies must compare, and in the exact same order to take
 	 * into account priority
 	 */
-	while (count--) {
+	for (;count;count--) {
 		if (tmp2->profile_cookie != tmp1->profile_cookie)
 			return false;
 

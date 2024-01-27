@@ -106,7 +106,7 @@ int hfs_compare_dentry(const struct dentry *dentry,
 
 	n1 = str;
 	n2 = name->name;
-	while (len--) {
+	for (;len;len--) {
 		if (caseorder[*n1++] != caseorder[*n2++])
 			return 1;
 	}

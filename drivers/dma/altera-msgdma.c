@@ -698,7 +698,7 @@ static void msgdma_tasklet(struct tasklet_struct *t)
 		count = 1;
 	}
 
-	while (count--) {
+	for (;count;count--) {
 		/*
 		 * Read both longwords to purge this response from the FIFO
 		 * On Avalon-MM implementations, size and status do not

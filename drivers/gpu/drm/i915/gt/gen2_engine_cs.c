@@ -27,7 +27,7 @@ int gen2_emit_flush(struct i915_request *rq, u32 mode)
 		return PTR_ERR(cs);
 
 	*cs++ = cmd;
-	while (num_store_dw--) {
+	for (;num_store_dw;num_store_dw--) {
 		*cs++ = MI_STORE_DWORD_INDEX;
 		*cs++ = I915_GEM_HWS_SCRATCH * sizeof(u32);
 		*cs++ = 0;

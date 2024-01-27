@@ -82,7 +82,7 @@ void octeon_init_cvmcount(void)
 	 * Loop several times so we are executing from the cache,
 	 * which should give more deterministic timing.
 	 */
-	while (loops--) {
+	for (;loops;loops--) {
 		u64 clk_count = cvmx_read_csr(clk_reg);
 		if (rdiv != 0) {
 			clk_count *= rdiv;

@@ -224,7 +224,7 @@ static ssize_t activity_write(struct file *filp, struct kobject *kobj,
 	if (w1_reset_select_slave(sl))
 		goto error;
 
-	while (retries--) {
+	for (;retries;retries--) {
 		w1_write_8(sl->master, W1_F29_FUNC_RESET_ACTIVITY_LATCHES);
 		if (w1_read_8(sl->master) == W1_F29_SUCCESS_CONFIRM_BYTE) {
 			mutex_unlock(&sl->master->bus_mutex);
@@ -255,7 +255,7 @@ static ssize_t status_control_write(struct file *filp, struct kobject *kobj,
 	if (w1_reset_select_slave(sl))
 		goto error;
 
-	while (retries--) {
+	for (;retries;retries--) {
 		w1_buf[0] = W1_F29_FUNC_WRITE_COND_SEARCH_REG;
 		w1_buf[1] = W1_F29_REG_CONTROL_AND_STATUS;
 		w1_buf[2] = 0;

@@ -974,7 +974,7 @@ static void cp_reset_hw (struct cp_private *cp)
 
 	cpw8(Cmd, CmdReset);
 
-	while (work--) {
+	for (;work;work--) {
 		if (!(cpr8(Cmd) & CmdReset))
 			return;
 

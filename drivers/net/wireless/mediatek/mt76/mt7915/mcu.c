@@ -3001,7 +3001,7 @@ int mt7915_mcu_apply_tx_dpd(struct mt7915_phy *phy)
 	idx = idx * 2;
 	cal += MT_EE_CAL_GROUP_SIZE;
 
-	while (total--) {
+	for (;total;total--) {
 		int ret;
 
 		cal += (idx * MT_EE_CAL_UNIT);

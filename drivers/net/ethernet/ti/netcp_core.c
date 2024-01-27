@@ -1009,7 +1009,7 @@ static int netcp_process_tx_compl_packets(struct netcp_intf *netcp,
 	dma_addr_t dma;
 	int pkts = 0;
 
-	while (budget--) {
+	for (;budget;budget--) {
 		dma = knav_queue_pop(netcp->tx_compl_q, &dma_sz);
 		if (!dma)
 			break;

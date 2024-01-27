@@ -42,7 +42,7 @@ int saa7164_api_collect_debug(struct saa7164_dev *dev)
 
 	dprintk(DBGLVL_API, "%s()\n", __func__);
 
-	while (more--) {
+	for (;more;more--) {
 
 		memset(&d, 0, sizeof(d));
 

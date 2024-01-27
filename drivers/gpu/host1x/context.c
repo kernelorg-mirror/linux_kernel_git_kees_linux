@@ -94,7 +94,7 @@ int host1x_memory_context_list_init(struct host1x *host1x)
 	return 0;
 
 unreg_devices:
-	while (i--)
+	for (;i;i--)
 		device_unregister(&cdl->devs[i].dev);
 
 	kfree(cdl->devs);

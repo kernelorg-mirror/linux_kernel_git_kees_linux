@@ -1374,7 +1374,7 @@ static inline void fill_playback_urb_dsd_dop(struct snd_usb_substream *subs,
 	 *
 	 */
 
-	while (bytes--) {
+	for (;bytes;bytes--) {
 		if (++subs->dsd_dop.byte_idx == 3) {
 			/* frame boundary? */
 			dst[dst_idx++] = marker[subs->dsd_dop.marker];

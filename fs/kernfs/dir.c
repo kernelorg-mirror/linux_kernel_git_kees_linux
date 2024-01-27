@@ -313,7 +313,7 @@ static unsigned int kernfs_name_hash(const char *name, const void *ns)
 {
 	unsigned long hash = init_name_hash(ns);
 	unsigned int len = strlen(name);
-	while (len--)
+	for (; len; len--)
 		hash = partial_name_hash(*name++, hash);
 	hash = end_name_hash(hash);
 	hash &= 0x7fffffffU;

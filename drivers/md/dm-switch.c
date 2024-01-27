@@ -235,7 +235,7 @@ static void switch_dtr(struct dm_target *ti)
 {
 	struct switch_ctx *sctx = ti->private;
 
-	while (sctx->nr_paths--)
+	for (;sctx->nr_paths;sctx->nr_paths--)
 		dm_put_device(ti, sctx->path_list[sctx->nr_paths].dmdev);
 
 	vfree(sctx->region_table);
@@ -417,7 +417,7 @@ static int process_set_region_mappings(struct switch_ctx *sctx,
 				return -EINVAL;
 			}
 
-			while (num_write--) {
+			for (;num_write;num_write--) {
 				region_index++;
 				path_nr = switch_region_table_read(sctx, region_index - cycle_length);
 				switch_region_table_write(sctx, region_index, path_nr);

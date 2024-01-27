@@ -243,7 +243,7 @@ static void csum_8b2c(const u8 *buf, size_t size, u8 *crc)
 	*crc = *buf++;
 	size--;
 
-	while (size--)
+	for (;size;size--)
 		*crc += *buf++;
 
 	*crc = 1 + ~(*crc);
@@ -262,7 +262,7 @@ static void csum_ccitt(const u8 *buf, size_t size, u8 *crc)
 
 static void *stuff(unsigned char *dest, const unsigned char *src, size_t n)
 {
-	while (n--) {
+	for (;n;n--) {
 		const unsigned char byte = *src++;
 
 		switch (byte) {

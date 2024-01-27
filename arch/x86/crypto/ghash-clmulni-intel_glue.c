@@ -121,7 +121,7 @@ static int ghash_update(struct shash_desc *desc,
 		src += srclen - (srclen & 0xf);
 		srclen &= 0xf;
 		dctx->bytes = GHASH_BLOCK_SIZE - srclen;
-		while (srclen--)
+		for (;srclen;srclen--)
 			*dst++ ^= *src++;
 	}
 
@@ -135,7 +135,7 @@ static void ghash_flush(struct ghash_ctx *ctx, struct ghash_desc_ctx *dctx)
 	if (dctx->bytes) {
 		u8 *tmp = dst + (GHASH_BLOCK_SIZE - dctx->bytes);
 
-		while (dctx->bytes--)
+		for (;dctx->bytes;dctx->bytes--)
 			*tmp++ ^= 0;
 
 		kernel_fpu_begin();

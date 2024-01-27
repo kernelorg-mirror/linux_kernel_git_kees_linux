@@ -608,7 +608,7 @@ int ethtool_get_max_rxfh_channel(struct net_device *dev, u32 *max)
 	if (ret)
 		goto out;
 
-	while (dev_size--)
+	for (;dev_size;dev_size--)
 		current_max = max(current_max, rxfh.indir[dev_size]);
 
 	*max = current_max;

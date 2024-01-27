@@ -78,7 +78,7 @@ static u16 am2315_crc(u8 *data, u8 nr_bytes)
 	int i;
 	u16 crc = 0xffff;
 
-	while (nr_bytes--) {
+	for (;nr_bytes;nr_bytes--) {
 		crc ^= *data++;
 		for (i = 0; i < 8; i++) {
 			if (crc & 0x01) {

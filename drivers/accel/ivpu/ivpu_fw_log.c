@@ -67,7 +67,7 @@ static void buffer_print(char *buffer, u32 size, struct drm_printer *p)
 	if (!size || !buffer)
 		return;
 
-	while (size--) {
+	for (;size;size--) {
 		if (*buffer == '\n' || *buffer == 0) {
 			line[index] = 0;
 			if (index != 0)

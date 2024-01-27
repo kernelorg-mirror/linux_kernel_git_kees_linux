@@ -549,7 +549,7 @@ static int hdmi_8996_phy_ready_status(struct hdmi_phy *phy)
 
 	DBG("Waiting for PHY ready");
 
-	while (nb_tries--) {
+	for (;nb_tries;nb_tries--) {
 		status = hdmi_phy_read(phy, REG_HDMI_8996_PHY_STATUS);
 		phy_ready = status & BIT(0);
 

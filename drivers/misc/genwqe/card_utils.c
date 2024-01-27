@@ -200,7 +200,7 @@ u32 genwqe_crc32(u8 *buff, size_t len, u32 init)
 	u32 crc;
 
 	crc = init;
-	while (len--) {
+	for (;len;len--) {
 		i = ((crc >> 24) ^ *buff++) & 0xFF;
 		crc = (crc << 8) ^ crc32_tab[i];
 	}

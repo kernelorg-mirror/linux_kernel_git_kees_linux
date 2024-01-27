@@ -273,7 +273,7 @@ static inline loff_t fat_i_pos_read(struct msdos_sb_info *sbi,
 static inline void fat16_towchar(wchar_t *dst, const __u8 *src, size_t len)
 {
 #ifdef __BIG_ENDIAN
-	while (len--) {
+	for (;len;len--) {
 		*dst++ = src[0] | (src[1] << 8);
 		src += 2;
 	}
@@ -300,7 +300,7 @@ static inline void fat_set_start(struct msdos_dir_entry *de, int cluster)
 static inline void fatwchar_to16(__u8 *dst, const wchar_t *src, size_t len)
 {
 #ifdef __BIG_ENDIAN
-	while (len--) {
+	for (;len;len--) {
 		dst[0] = *src & 0x00FF;
 		dst[1] = (*src & 0xFF00) >> 8;
 		dst += 2;

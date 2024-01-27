@@ -322,7 +322,7 @@ static u8 bcma_find_pci_capability(struct bcma_drv_pci *pc, unsigned int dev,
 		if ((bufsize + cap_data)  > PCI_CONFIG_SPACE_SIZE)
 			bufsize = PCI_CONFIG_SPACE_SIZE - cap_data;
 		*buflen = bufsize;
-		while (bufsize--) {
+		for (;bufsize;bufsize--) {
 			bcma_extpci_read_config(pc, dev, func, cap_data, buf,
 						sizeof(u8));
 			cap_data++;

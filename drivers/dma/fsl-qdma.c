@@ -639,7 +639,7 @@ fsl_qdma_queue_transfer_complete(struct fsl_qdma_engine *fsl_qdma,
 
 	count = FSL_QDMA_MAX_SIZE;
 
-	while (count--) {
+	for (;count;count--) {
 		duplicate = 0;
 		reg = qdma_readl(fsl_qdma, block + FSL_QDMA_BSQSR);
 		if (reg & FSL_QDMA_BSQSR_QE)

@@ -70,7 +70,7 @@ static int __qed_spq_block(struct qed_hwfn *p_hwfn,
 	iter_cnt = sleep_between_iter ? SPQ_BLOCK_SLEEP_MAX_ITER
 				      : SPQ_BLOCK_DELAY_MAX_ITER;
 
-	while (iter_cnt--) {
+	for (;iter_cnt;iter_cnt--) {
 		/* Validate we receive completion update */
 		if (smp_load_acquire(&comp_done->done) == 1) { /* ^^^ */
 			if (p_fw_ret)

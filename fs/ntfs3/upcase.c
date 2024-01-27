@@ -107,7 +107,7 @@ case_insentive:
 unsigned long ntfs_names_hash(const u16 *name, size_t len, const u16 *upcase,
 			      unsigned long hash)
 {
-	while (len--) {
+	for (;len;len--) {
 		unsigned int c = upcase_unicode_char(upcase, *name++);
 		hash = partial_name_hash(c, hash);
 	}

@@ -209,7 +209,7 @@ static inline bool dccp_list_has_service(const struct dccp_service_list *sl,
 {
 	if (likely(sl != NULL)) {
 		u32 i = sl->dccpsl_nr;
-		while (i--)
+		for (;i;i--)
 			if (sl->dccpsl_list[i] == service)
 				return true;
 	}

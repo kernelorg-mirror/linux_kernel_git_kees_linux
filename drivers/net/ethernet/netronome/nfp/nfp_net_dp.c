@@ -216,7 +216,7 @@ int nfp_net_tx_rings_prepare(struct nfp_net *nn, struct nfp_net_dp *dp)
 	return 0;
 
 err_free_prev:
-	while (r--) {
+	for (;r;r--) {
 		nfp_net_tx_ring_bufs_free(dp, &dp->tx_rings[r]);
 err_free_ring:
 		nfp_net_tx_ring_free(dp, &dp->tx_rings[r]);
@@ -358,7 +358,7 @@ int nfp_net_rx_rings_prepare(struct nfp_net *nn, struct nfp_net_dp *dp)
 	return 0;
 
 err_free_prev:
-	while (r--) {
+	for (;r;r--) {
 		nfp_net_rx_ring_bufs_free(dp, &dp->rx_rings[r]);
 err_free_ring:
 		nfp_net_rx_ring_free(&dp->rx_rings[r]);

@@ -123,7 +123,7 @@ static u16 udl_lfsr16(u16 actual_count)
 {
 	u32 lv = 0xFFFF; /* This is the lfsr value that the hw starts with */
 
-	while (actual_count--) {
+	for (;actual_count;actual_count--) {
 		lv =	 ((lv << 1) |
 			(((lv >> 15) ^ (lv >> 4) ^ (lv >> 2) ^ (lv >> 1)) & 1))
 			& 0xFFFF;

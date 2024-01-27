@@ -32,7 +32,7 @@ gf108_ram_probe_fbp_amount(const struct nvkm_ram_func *func, u32 fbpao,
 	u32 fbpas = fbpat / fbpt;
 	u32 fbpa  = fbp * fbpas;
 	u32 size  = 0;
-	while (fbpas--) {
+	for (;fbpas;fbpas--) {
 		if (!(fbpao & BIT(fbpa)))
 			size += func->probe_fbpa_amount(device, fbpa);
 		fbpa++;

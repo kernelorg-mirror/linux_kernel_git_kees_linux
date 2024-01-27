@@ -41,7 +41,7 @@ void *memmove(void *d, const void *s, size_t count)
 			count -= 4;
 		}
 restup:
-		while (count--)
+		for (;count;count--)
 			*(char *)dst++ = *(char *)src++;
 	} else {
 		dst = (unsigned long) d + count;
@@ -69,7 +69,7 @@ restup:
 			*(long *)dst = *(long *)src;
 		}
 restdown:
-		while (count--) {
+		for (;count;count--) {
 			src--;
 			dst--;
 			*(char *)dst = *(char *)src;

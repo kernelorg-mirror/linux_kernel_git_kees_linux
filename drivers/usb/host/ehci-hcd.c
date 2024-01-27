@@ -806,7 +806,7 @@ restart:
 		if (ehci->has_ppcd)
 			ppcd = status >> 16;
 
-		while (i--) {
+		for (;i;i--) {
 			int pstatus;
 
 			/* leverage per-port change bits feature */

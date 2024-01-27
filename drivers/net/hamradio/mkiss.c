@@ -890,7 +890,7 @@ static void mkiss_receive_buf(struct tty_struct *tty, const u8 *cp,
 		ax_changedmtu(ax);
 
 	/* Read the characters out of the buffer */
-	while (count--) {
+	for (;count;count--) {
 		if (fp != NULL && *fp++) {
 			if (!test_and_set_bit(AXF_ERROR, &ax->flags))
 				ax->dev->stats.rx_errors++;

@@ -252,7 +252,7 @@ static int mtdpstore_security(struct mtdpstore_context *cxt, loff_t off)
 	}
 
 	/* If there is no any empty zone, we have no way but to do erase */
-	while (blkcnt--) {
+	for (;blkcnt;blkcnt--) {
 		div64_u64_rem(off + erasesize, cxt->mtd->size, (u64 *)&off);
 
 		if (mtdpstore_block_isbad(cxt, off))

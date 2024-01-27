@@ -1001,7 +1001,7 @@ static void omap_i2c_receive_data(struct omap_i2c_dev *omap, u8 num_bytes,
 {
 	u16		w;
 
-	while (num_bytes--) {
+	for (;num_bytes;num_bytes--) {
 		w = omap_i2c_read_reg(omap, OMAP_I2C_DATA_REG);
 		*omap->buf++ = w;
 		omap->buf_len--;
@@ -1022,7 +1022,7 @@ static int omap_i2c_transmit_data(struct omap_i2c_dev *omap, u8 num_bytes,
 {
 	u16		w;
 
-	while (num_bytes--) {
+	for (;num_bytes;num_bytes--) {
 		w = *omap->buf++;
 		omap->buf_len--;
 

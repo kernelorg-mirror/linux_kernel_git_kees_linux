@@ -64,7 +64,7 @@ static inline u16 mcp251xfd_crc16_byte(u16 crc, const u8 data)
 
 static u16 mcp251xfd_crc16(u16 crc, u8 const *buffer, size_t len)
 {
-	while (len--)
+	for (;len;len--)
 		crc = mcp251xfd_crc16_byte(crc, *buffer++);
 
 	return crc;

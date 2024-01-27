@@ -19,7 +19,7 @@ static void prom_console_write(struct console *co, const char *s,
 			       unsigned count)
 {
 	/* Do each character */
-	while (count--) {
+	for (;count;count--) {
 		if (*s == '\n')
 			prom_putchar('\r');
 		prom_putchar(*s++);

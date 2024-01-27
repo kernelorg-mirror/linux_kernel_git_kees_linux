@@ -832,7 +832,7 @@ void drbd_bm_merge_lel(struct drbd_device *device, size_t offset, size_t number,
 		p_addr = bm_map_pidx(b, idx);
 		bm = p_addr + MLPP(offset);
 		offset += do_now;
-		while (do_now--) {
+		for (;do_now;do_now--) {
 			bits = hweight_long(*bm);
 			word = *bm | *buffer++;
 			*bm++ = word;
@@ -882,7 +882,7 @@ void drbd_bm_get_lel(struct drbd_device *device, size_t offset, size_t number,
 			p_addr = bm_map_pidx(b, bm_word_to_page_idx(b, offset));
 			bm = p_addr + MLPP(offset);
 			offset += do_now;
-			while (do_now--)
+			for (;do_now;do_now--)
 				*buffer++ = *bm++;
 			bm_unmap(p_addr);
 		}

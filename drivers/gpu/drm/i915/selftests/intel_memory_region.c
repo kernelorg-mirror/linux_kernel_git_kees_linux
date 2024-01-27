@@ -309,7 +309,7 @@ static int igt_mock_contiguous(void *arg)
 	target = SZ_64K;
 	n_objects = div64_u64(total, target);
 
-	while (n_objects--) {
+	for (;n_objects;n_objects--) {
 		struct list_head *list;
 
 		if (n_objects % 2)
@@ -695,7 +695,7 @@ static int igt_cpu_check(struct drm_i915_gem_object *obj, u32 dword, u32 val)
 		return PTR_ERR(ptr);
 
 	ptr += dword;
-	while (n--) {
+	for (;n;n--) {
 		if (*ptr != val) {
 			pr_err("base[%u]=%08x, val=%08x\n",
 			       dword, *ptr, val);
@@ -1197,7 +1197,7 @@ static void igt_memcpy_long(void *dst, const void *src, size_t size)
 	const unsigned long *s = src;
 
 	size = size / sizeof(unsigned long);
-	while (size--)
+	for (;size;size--)
 		*tmp++ = *s++;
 }
 

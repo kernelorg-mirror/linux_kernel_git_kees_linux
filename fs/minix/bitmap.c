@@ -29,10 +29,10 @@ static __u32 count_free(struct buffer_head *map[], unsigned blocksize, __u32 num
 	__u32 sum = 0;
 	unsigned blocks = DIV_ROUND_UP(numbits, blocksize * 8);
 
-	while (blocks--) {
+	for (;blocks;blocks--) {
 		unsigned words = blocksize / 2;
 		__u16 *p = (__u16 *)(*map++)->b_data;
-		while (words--)
+		for (;words;words--)
 			sum += 16 - hweight16(*p++);
 	}
 

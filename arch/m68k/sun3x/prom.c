@@ -74,7 +74,7 @@ void sun3x_reboot(void)
 static void sun3x_prom_write(struct console *co, const char *s,
                              unsigned int count)
 {
-	while (count--) {
+	for (;count;count--) {
 		if (*s == '\n')
 			sun3x_putchar('\r');
 		sun3x_putchar(*s++);

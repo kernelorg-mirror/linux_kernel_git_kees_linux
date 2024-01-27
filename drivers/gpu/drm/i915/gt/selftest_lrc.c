@@ -1025,7 +1025,7 @@ store_context(struct intel_context *ce, struct i915_vma *scratch)
 
 		dw++;
 		len = (len + 1) / 2;
-		while (len--) {
+		for (;len;len--) {
 			*cs++ = MI_STORE_REGISTER_MEM_GEN8;
 			*cs++ = hw[dw];
 			*cs++ = lower_32_bits(i915_vma_offset(scratch) + x);
@@ -1185,7 +1185,7 @@ static struct i915_vma *load_context(struct intel_context *ce, u32 poison)
 		dw++;
 		len = (len + 1) / 2;
 		*cs++ = MI_LOAD_REGISTER_IMM(len);
-		while (len--) {
+		for (;len;len--) {
 			*cs++ = hw[dw];
 			*cs++ = safe_poison(hw[dw] & get_lri_mask(ce->engine,
 								  MI_LRI_LRM_CS_MMIO),
@@ -1337,7 +1337,7 @@ static int compare_isolation(struct intel_engine_cs *engine,
 
 		dw++;
 		len = (len + 1) / 2;
-		while (len--) {
+		for (;len;len--) {
 			if (!is_moving(A[0][x], A[1][x]) &&
 			    (A[0][x] != B[0][x] || A[1][x] != B[1][x])) {
 				switch (hw[dw] & 4095) {

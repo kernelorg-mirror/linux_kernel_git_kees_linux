@@ -347,7 +347,7 @@ void qmgr_release_queue(unsigned int queue)
 
 	mask[1] = mask[2] = mask[3] = 0;
 
-	while (addr--)
+	for (;addr;addr--)
 		shift_mask(mask);
 
 #if DEBUG_QMGR

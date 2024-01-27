@@ -2122,7 +2122,7 @@ check_valid:
 	remain_pages = page_cnt - page_pos - 1;
 	part_io_count += remain_pages;
 
-	while (remain_pages--) {
+	for (;remain_pages;remain_pages--) {
 		nextpage_off = next_page_off(log, curpage_off);
 		wrapped = nextpage_off == log->first_page;
 
@@ -2162,7 +2162,7 @@ file_is_valid:
 			tails = 1;
 		}
 
-		while (tails--) {
+		for (;tails;tails--) {
 			u64 off = hdr_file_off(log, tmp_page);
 
 			if (!page) {

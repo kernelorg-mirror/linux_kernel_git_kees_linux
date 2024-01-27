@@ -62,7 +62,7 @@ EXPORT_SYMBOL(hex_to_bin);
  */
 int hex2bin(u8 *dst, const char *src, size_t count)
 {
-	while (count--) {
+	for (;count;count--) {
 		int hi, lo;
 
 		hi = hex_to_bin(*src++);
@@ -88,7 +88,7 @@ char *bin2hex(char *dst, const void *src, size_t count)
 {
 	const unsigned char *_src = src;
 
-	while (count--)
+	for (;count;count--)
 		dst = hex_byte_pack(dst, *_src++);
 	return dst;
 }

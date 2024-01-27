@@ -404,7 +404,7 @@ adfs_hash(const struct dentry *parent, struct qstr *qstr)
 	len = qstr->len;
 	name = qstr->name;
 	hash = init_name_hash(parent);
-	while (len--)
+	for (;len;len--)
 		hash = partial_name_hash(adfs_tolower(*name++), hash);
 	qstr->hash = end_name_hash(hash);
 

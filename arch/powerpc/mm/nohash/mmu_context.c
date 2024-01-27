@@ -102,7 +102,7 @@ static unsigned int steal_context_smp(unsigned int id)
 	max = LAST_CONTEXT - FIRST_CONTEXT;
 
 	/* Attempt to free next_context first and then loop until we manage */
-	while (max--) {
+	for (;max;max--) {
 		/* Pick up the victim mm */
 		mm = context_mm[id];
 

@@ -977,7 +977,7 @@ static int tegra_display_hub_runtime_suspend(struct host1x_client *client)
 	if (err < 0)
 		return err;
 
-	while (i--)
+	for (;i;i--)
 		clk_disable_unprepare(hub->clk_heads[i]);
 
 	clk_disable_unprepare(hub->clk_hub);
@@ -1027,7 +1027,7 @@ static int tegra_display_hub_runtime_resume(struct host1x_client *client)
 	return 0;
 
 disable_heads:
-	while (i--)
+	for (;i;i--)
 		clk_disable_unprepare(hub->clk_heads[i]);
 
 	clk_disable_unprepare(hub->clk_hub);

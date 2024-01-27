@@ -151,7 +151,7 @@ static int xgbe_i2c_abort(struct xgbe_prv_data *pdata)
 	/* Issue the abort */
 	XI2C_IOWRITE_BITS(pdata, IC_ENABLE, ABORT, 1);
 
-	while (wait--) {
+	for (;wait;wait--) {
 		if (!XI2C_IOREAD_BITS(pdata, IC_ENABLE, ABORT))
 			return 0;
 
@@ -166,7 +166,7 @@ static int xgbe_i2c_set_enable(struct xgbe_prv_data *pdata, bool enable)
 	unsigned int wait = XGBE_DISABLE_COUNT;
 	unsigned int mode = enable ? 1 : 0;
 
-	while (wait--) {
+	for (;wait;wait--) {
 		XI2C_IOWRITE_BITS(pdata, IC_ENABLE, EN, mode);
 		if (XI2C_IOREAD_BITS(pdata, IC_ENABLE_STATUS, EN) == mode)
 			return 0;

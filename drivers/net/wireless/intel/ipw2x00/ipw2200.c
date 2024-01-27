@@ -2704,7 +2704,7 @@ static void ipw_zero_memory(struct ipw_priv *priv, u32 start, u32 count)
 	if (!count)
 		return;
 	_ipw_write32(priv, IPW_AUTOINC_ADDR, start);
-	while (count--)
+	for (;count;count--)
 		_ipw_write32(priv, IPW_AUTOINC_DATA, 0);
 }
 

@@ -389,7 +389,7 @@ static int qed_ll2_txq_completion(struct qed_hwfn *p_hwfn, void *p_cookie)
 
 		num_bds -= num_bds_in_packet;
 		p_tx->bds_idx += num_bds_in_packet;
-		while (num_bds_in_packet--)
+		for (;num_bds_in_packet;num_bds_in_packet--)
 			qed_chain_consume(&p_tx->txq_chain);
 
 		p_tx->cur_completing_bd_idx = 1;

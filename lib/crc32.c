@@ -149,13 +149,13 @@ static inline u32 __pure crc32_le_generic(u32 crc, unsigned char const *p,
 {
 #if CRC_LE_BITS == 1
 	int i;
-	while (len--) {
+	for (;len;len--) {
 		crc ^= *p++;
 		for (i = 0; i < 8; i++)
 			crc = (crc >> 1) ^ ((crc & 1) ? polynomial : 0);
 	}
 # elif CRC_LE_BITS == 2
-	while (len--) {
+	for (;len;len--) {
 		crc ^= *p++;
 		crc = (crc >> 2) ^ tab[0][crc & 3];
 		crc = (crc >> 2) ^ tab[0][crc & 3];
@@ -163,14 +163,14 @@ static inline u32 __pure crc32_le_generic(u32 crc, unsigned char const *p,
 		crc = (crc >> 2) ^ tab[0][crc & 3];
 	}
 # elif CRC_LE_BITS == 4
-	while (len--) {
+	for (;len;len--) {
 		crc ^= *p++;
 		crc = (crc >> 4) ^ tab[0][crc & 15];
 		crc = (crc >> 4) ^ tab[0][crc & 15];
 	}
 # elif CRC_LE_BITS == 8
 	/* aka Sarwate algorithm */
-	while (len--) {
+	for (;len;len--) {
 		crc ^= *p++;
 		crc = (crc >> 8) ^ tab[0][crc & 255];
 	}
@@ -296,7 +296,7 @@ static inline u32 __pure crc32_be_generic(u32 crc, unsigned char const *p,
 {
 #if CRC_BE_BITS == 1
 	int i;
-	while (len--) {
+	for (;len;len--) {
 		crc ^= *p++ << 24;
 		for (i = 0; i < 8; i++)
 			crc =
@@ -304,7 +304,7 @@ static inline u32 __pure crc32_be_generic(u32 crc, unsigned char const *p,
 					  0);
 	}
 # elif CRC_BE_BITS == 2
-	while (len--) {
+	for (;len;len--) {
 		crc ^= *p++ << 24;
 		crc = (crc << 2) ^ tab[0][crc >> 30];
 		crc = (crc << 2) ^ tab[0][crc >> 30];
@@ -312,13 +312,13 @@ static inline u32 __pure crc32_be_generic(u32 crc, unsigned char const *p,
 		crc = (crc << 2) ^ tab[0][crc >> 30];
 	}
 # elif CRC_BE_BITS == 4
-	while (len--) {
+	for (;len;len--) {
 		crc ^= *p++ << 24;
 		crc = (crc << 4) ^ tab[0][crc >> 28];
 		crc = (crc << 4) ^ tab[0][crc >> 28];
 	}
 # elif CRC_BE_BITS == 8
-	while (len--) {
+	for (;len;len--) {
 		crc ^= *p++ << 24;
 		crc = (crc << 8) ^ tab[0][crc >> 24];
 	}

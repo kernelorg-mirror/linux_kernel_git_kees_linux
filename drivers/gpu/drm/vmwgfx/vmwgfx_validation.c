@@ -855,7 +855,7 @@ void vmw_validation_bo_backoff(struct vmw_validation_context *ctx)
 			unsigned int coherent_count = entry->coherent_count;
 			struct vmw_bo *vbo = to_vmw_bo(&entry->base.bo->base);
 
-			while (coherent_count--)
+			for (;coherent_count;coherent_count--)
 				vmw_bo_dirty_release(vbo);
 		}
 	}

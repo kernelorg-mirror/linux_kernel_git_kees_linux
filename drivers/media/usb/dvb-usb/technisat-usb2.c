@@ -430,7 +430,7 @@ static int technisat_usb2_eeprom_lrc_read(struct dvb_usb_device *d,
 		}
 	};
 
-	while (tries--) {
+	for (;tries;tries--) {
 		int status;
 
 		if (i2c_transfer(&d->i2c_adap, msg, 2) != 2)

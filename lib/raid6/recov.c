@@ -50,7 +50,7 @@ static void raid6_2data_recov_intx1(int disks, size_t bytes, int faila,
 	qmul  = raid6_gfmul[raid6_gfinv[raid6_gfexp[faila]^raid6_gfexp[failb]]];
 
 	/* Now do it... */
-	while ( bytes-- ) {
+	for (;bytes;bytes--) {
 		px    = *p ^ *dp;
 		qx    = qmul[*q ^ *dq];
 		*dq++ = db = pbmul[px] ^ qx; /* Reconstructed B */
@@ -85,7 +85,7 @@ static void raid6_datap_recov_intx1(int disks, size_t bytes, int faila,
 	qmul  = raid6_gfmul[raid6_gfinv[raid6_gfexp[faila]]];
 
 	/* Now do it... */
-	while ( bytes-- ) {
+	for (;bytes;bytes--) {
 		*p++ ^= *dq = qmul[*q ^ *dq];
 		q++; dq++;
 	}

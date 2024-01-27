@@ -290,7 +290,7 @@ void xlgmac_dump_tx_desc(struct xlgmac_pdata *pdata,
 	struct xlgmac_desc_data *desc_data;
 	struct xlgmac_dma_desc *dma_desc;
 
-	while (count--) {
+	for (;count;count--) {
 		desc_data = XLGMAC_GET_DESC_DATA(ring, idx);
 		dma_desc = desc_data->dma_desc;
 

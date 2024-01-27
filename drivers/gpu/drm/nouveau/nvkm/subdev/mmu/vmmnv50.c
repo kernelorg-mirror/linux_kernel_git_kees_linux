@@ -68,7 +68,7 @@ nv50_vmm_pgt_dma(struct nvkm_vmm *vmm, struct nvkm_mmu_pt *pt,
 	if (map->page->shift == PAGE_SHIFT) {
 		VMM_SPAM(vmm, "DMAA %08x %08x PTE(s)", ptei, ptes);
 		nvkm_kmap(pt->memory);
-		while (ptes--) {
+		for (;ptes;ptes--) {
 			const u64 data = *map->dma++ + map->type;
 			VMM_WO064(pt, vmm, ptei++ * 8, data);
 			map->type += map->ctag;

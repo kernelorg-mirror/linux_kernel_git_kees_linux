@@ -219,7 +219,7 @@ void nubus_seq_write_rsrc_mem(struct seq_file *m,
 		len -= buf_size;
 	}
 	/* If not, write out individual bytes */
-	while (len--)
+	for (;len;len--)
 		seq_putc(m, nubus_get_rom(&p, 1, dirent->mask));
 }
 

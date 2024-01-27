@@ -519,7 +519,7 @@ static int sbefifo_send_command(struct sbefifo *sbefifo,
 			 status, vacant, chunk);
 
 		/* Write as much as we can */
-		while (len--) {
+		for (;len;len--) {
 			rc = sbefifo_up_write(sbefifo, *(command++));
 			if (rc) {
 				dev_err(dev, "FSI error %d writing UP FIFO\n", rc);
@@ -573,7 +573,7 @@ static int sbefifo_read_response(struct sbefifo *sbefifo, struct iov_iter *respo
 		dev_dbg(dev, "  chunk size %zd eot_set=0x%x\n", len, eot_set);
 
 		/* Go through the chunk */
-		while(len--) {
+		for (;len;len--) {
 			/* Read the data */
 			rc = sbefifo_down_read(sbefifo, &data);
 			if (rc < 0)

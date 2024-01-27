@@ -904,7 +904,7 @@ static int tegra_xusb_phy_enable(struct tegra_xusb *tegra)
 	return 0;
 
 disable_phy:
-	while (i--) {
+	for (;i;i--) {
 		phy_power_off(tegra->phys[i]);
 		phy_exit(tegra->phys[i]);
 	}
@@ -2705,7 +2705,7 @@ static int tegra_xhci_hub_control(struct usb_hcd *hcd, u16 type_req, u16 value, 
 	if (bus_state->resuming_ports && hcd->speed == HCD_USB2) {
 		ports = rhub->ports;
 		i = rhub->num_ports;
-		while (i--) {
+		for (;i;i--) {
 			if (!test_bit(i, &bus_state->resuming_ports))
 				continue;
 			portsc = readl(ports[i]->addr);

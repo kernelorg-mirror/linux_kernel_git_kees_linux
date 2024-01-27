@@ -3625,7 +3625,7 @@ static void niu_tx_work(struct niu *np, struct tx_ring_info *rp)
 	netif_printk(np, tx_done, KERN_DEBUG, np->dev,
 		     "%s() pkt_cnt[%u] cons[%d]\n", __func__, pkt_cnt, cons);
 
-	while (pkt_cnt--)
+	for (;pkt_cnt;pkt_cnt--)
 		cons = release_tx_packet(np, rp, cons);
 
 	rp->cons = cons;

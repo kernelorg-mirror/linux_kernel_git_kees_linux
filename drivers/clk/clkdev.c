@@ -136,7 +136,7 @@ EXPORT_SYMBOL(clkdev_add);
 void clkdev_add_table(struct clk_lookup *cl, size_t num)
 {
 	mutex_lock(&clocks_mutex);
-	while (num--) {
+	for (;num;num--) {
 		cl->clk_hw = __clk_get_hw(cl->clk);
 		list_add_tail(&cl->node, &clocks);
 		cl++;

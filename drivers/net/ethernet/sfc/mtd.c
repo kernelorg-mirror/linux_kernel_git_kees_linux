@@ -86,7 +86,7 @@ int efx_mtd_add(struct efx_nic *efx, struct efx_mtd_partition *parts,
 	return 0;
 
 fail:
-	while (i--) {
+	for (;i;i--) {
 		part = (struct efx_mtd_partition *)((char *)parts +
 						    i * sizeof_part);
 		efx_mtd_remove_partition(part);

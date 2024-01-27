@@ -139,7 +139,7 @@ static int nxp_spifi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
 	      SPIFI_CMD_FRAMEFORM_OPCODE_ONLY;
 	writel(cmd, spifi->io_base + SPIFI_CMD);
 
-	while (len--)
+	for (;len;len--)
 		*buf++ = readb(spifi->io_base + SPIFI_DATA);
 
 	return nxp_spifi_wait_for_cmd(spifi);
@@ -163,7 +163,7 @@ static int nxp_spifi_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
 	      SPIFI_CMD_FRAMEFORM_OPCODE_ONLY;
 	writel(cmd, spifi->io_base + SPIFI_CMD);
 
-	while (len--)
+	for (;len;len--)
 		writeb(*buf++, spifi->io_base + SPIFI_DATA);
 
 	return nxp_spifi_wait_for_cmd(spifi);

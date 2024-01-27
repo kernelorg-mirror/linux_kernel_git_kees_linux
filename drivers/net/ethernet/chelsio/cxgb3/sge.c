@@ -290,7 +290,7 @@ static void free_tx_desc(struct adapter *adapter, struct sge_txq *q,
 			       q->cntxt_id >= FW_TUNNEL_SGEEC_START;
 
 	d = &q->sdesc[cidx];
-	while (n--) {
+	for (;n;n--) {
 		if (d->skb) {	/* an SGL is present */
 			if (need_unmap)
 				unmap_skb(d->skb, q, cidx, pdev);

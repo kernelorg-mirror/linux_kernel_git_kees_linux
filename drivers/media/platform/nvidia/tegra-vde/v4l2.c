@@ -127,7 +127,7 @@ static void __tegra_buf_cleanup(struct vb2_buffer *vb, unsigned int i)
 	struct tegra_ctx *ctx = vb2_get_drv_priv(vq);
 	struct tegra_m2m_buffer *tb = vb_to_tegra_buf(vb);
 
-	while (i--) {
+	for (;i;i--) {
 		if (tb->a[i]) {
 			tegra_vde_dmabuf_cache_unmap(ctx->vde, tb->a[i], true);
 			tb->a[i] = NULL;

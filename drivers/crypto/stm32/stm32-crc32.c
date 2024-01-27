@@ -198,7 +198,7 @@ static int burst_update(struct shash_desc *desc, const u8 *d8,
 		/* Configure for byte data */
 		writel_relaxed(CRC_CR_REV_IN_BYTE | CRC_CR_REV_OUT,
 			       crc->regs + CRC_CR);
-		while (length--)
+		for (;length;length--)
 			writeb_relaxed(*d8++, crc->regs + CRC_DR);
 	}
 

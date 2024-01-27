@@ -269,7 +269,7 @@ static const struct clk_ops skl_clk_ops = {
 static void unregister_parent_src_clk(struct skl_clk_parent *pclk,
 					unsigned int id)
 {
-	while (id--) {
+	for (;id;id--) {
 		clkdev_drop(pclk[id].lookup);
 		clk_hw_unregister_fixed_rate(pclk[id].hw);
 	}
@@ -277,7 +277,7 @@ static void unregister_parent_src_clk(struct skl_clk_parent *pclk,
 
 static void unregister_src_clk(struct skl_clk_data *dclk)
 {
-	while (dclk->avail_clk_cnt--)
+	for (;dclk->avail_clk_cnt;dclk->avail_clk_cnt--)
 		clkdev_drop(dclk->clk[dclk->avail_clk_cnt]->lookup);
 }
 

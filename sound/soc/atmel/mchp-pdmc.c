@@ -639,7 +639,7 @@ static void mchp_pdmc_noise_filter_workaround(struct mchp_pdmc *dd)
 	 */
 	usleep_range(dd->startup_delay_us, dd->startup_delay_us + 5);
 
-	while (steps--)
+	for (;steps;steps--)
 		regmap_read(dd->regmap, MCHP_PDMC_RHR, &tmp);
 
 	/* Clear interrupts. */

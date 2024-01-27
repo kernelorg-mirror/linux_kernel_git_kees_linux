@@ -664,10 +664,11 @@ static u64 ldm_get_vnum (const u8 *block)
 	length = *block++;
 
 	if (length && length <= 8)
-		while (length--)
+	{for (;length;length--)
 			tmp = (tmp << 8) | *block++;
+	}
 	else
-		ldm_error ("Illegal length %d.", length);
+	ldm_error ("Illegal length %d.", length);
 
 	return tmp;
 }

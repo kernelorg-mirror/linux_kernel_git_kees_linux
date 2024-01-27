@@ -629,7 +629,7 @@ int radeon_acpi_pcie_performance_request(struct radeon_device *rdev,
 	params.length = sizeof(struct atcs_pref_req_input);
 	params.pointer = &atcs_input;
 
-	while (retry--) {
+	for (;retry;retry--) {
 		info = radeon_atcs_call(handle, ATCS_FUNCTION_PCIE_PERFORMANCE_REQUEST, &params);
 		if (!info)
 			return -EIO;

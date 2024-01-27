@@ -159,7 +159,7 @@ static inline void le64_add_cpu(__le64 *var, u64 val)
 /* XXX: this stuff can be optimized */
 static inline void le32_to_cpu_array(u32 *buf, unsigned int words)
 {
-	while (words--) {
+	for (;words;words--) {
 		__le32_to_cpus(buf);
 		buf++;
 	}
@@ -167,7 +167,7 @@ static inline void le32_to_cpu_array(u32 *buf, unsigned int words)
 
 static inline void cpu_to_le32_array(u32 *buf, unsigned int words)
 {
-	while (words--) {
+	for (;words;words--) {
 		__cpu_to_le32s(buf);
 		buf++;
 	}

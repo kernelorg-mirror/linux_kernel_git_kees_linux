@@ -321,7 +321,7 @@ static void xlgmac_set_mac_addn_addrs(struct xlgmac_pdata *pdata)
 	}
 
 	/* Clear remaining additional MAC address entries */
-	while (addn_macs--)
+	for (;addn_macs;addn_macs--)
 		xlgmac_set_mac_reg(pdata, NULL, &mac_reg);
 }
 
@@ -2306,7 +2306,7 @@ static int xlgmac_write_rss_reg(struct xlgmac_pdata *pdata, unsigned int type,
 	writel(regval, pdata->mac_regs + MAC_RSSAR);
 
 	wait = 1000;
-	while (wait--) {
+	for (;wait;wait--) {
 		regval = XLGMAC_GET_REG_BITS(readl(pdata->mac_regs + MAC_RSSAR),
 					     MAC_RSSAR_OB_POS,
 					     MAC_RSSAR_OB_LEN);
@@ -2330,7 +2330,7 @@ static int xlgmac_write_rss_hash_key(struct xlgmac_pdata *pdata)
 	unsigned int *key = (unsigned int *)&pdata->rss_key;
 	int ret;
 
-	while (key_regs--) {
+	for (;key_regs;key_regs--) {
 		ret = xlgmac_write_rss_reg(pdata, XLGMAC_RSS_HASH_KEY_TYPE,
 					   key_regs, *key++);
 		if (ret)

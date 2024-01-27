@@ -31,7 +31,7 @@ static int snd_gus_dram_poke(struct snd_gus_card *gus, char __user *_buffer,
 		} else {
 			pbuffer = buffer;
 			size2 = size1;
-			while (size2--)
+			for (;size2;size2--)
 				snd_gf1_poke(gus, address++, *pbuffer++);
 		}
 		size -= size1;
@@ -68,7 +68,7 @@ static int snd_gus_dram_peek(struct snd_gus_card *gus, char __user *_buffer,
 		} else {
 			pbuffer = buffer;
 			size2 = size1;
-			while (size2--)
+			for (;size2;size2--)
 				*pbuffer++ = snd_gf1_peek(gus, address++);
 		}
 		if (copy_to_user(_buffer, buffer, size1))

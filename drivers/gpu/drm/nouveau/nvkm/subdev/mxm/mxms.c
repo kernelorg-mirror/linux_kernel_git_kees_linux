@@ -68,7 +68,7 @@ mxms_checksum(struct nvkm_mxm *mxm)
 {
 	u16 size = mxms_headerlen(mxm) + mxms_structlen(mxm);
 	u8 *mxms = mxms_data(mxm), sum = 0;
-	while (size--)
+	for (;size;size--)
 		sum += *mxms++;
 	if (sum) {
 		nvkm_debug(&mxm->subdev, "checksum invalid\n");

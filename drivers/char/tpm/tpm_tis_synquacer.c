@@ -40,7 +40,7 @@ static int tpm_tis_synquacer_read_bytes(struct tpm_tis_data *data, u32 addr,
 	struct tpm_tis_synquacer_phy *phy = to_tpm_tis_tcg_phy(data);
 	switch (io_mode) {
 	case TPM_TIS_PHYS_8:
-		while (len--)
+		for (;len;len--)
 			*result++ = ioread8(phy->iobase + addr);
 		break;
 	case TPM_TIS_PHYS_16:
@@ -65,7 +65,7 @@ static int tpm_tis_synquacer_write_bytes(struct tpm_tis_data *data, u32 addr,
 	struct tpm_tis_synquacer_phy *phy = to_tpm_tis_tcg_phy(data);
 	switch (io_mode) {
 	case TPM_TIS_PHYS_8:
-		while (len--)
+		for (;len;len--)
 			iowrite8(*value++, phy->iobase + addr);
 		break;
 	case TPM_TIS_PHYS_16:

@@ -65,7 +65,7 @@ static inline void syscall_get_arguments(struct task_struct *task,
 	unsigned int i = 0;
 	unsigned int n = 6;
 
-	while (n--)
+	for (;n;n--)
 		*args++ = microblaze_get_syscall_arg(regs, i++);
 }
 

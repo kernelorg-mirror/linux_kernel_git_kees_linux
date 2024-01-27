@@ -909,7 +909,7 @@ static netdev_tx_t octep_start_xmit(struct sk_buff *skb,
 
 		si = 1; /* entry 0 is main skb, mapped above */
 		frag = &shinfo->frags[0];
-		while (nr_frags--) {
+		for (;nr_frags;nr_frags--) {
 			len = skb_frag_size(frag);
 			dma = skb_frag_dma_map(iq->dev, frag, 0,
 					       len, DMA_TO_DEVICE);

@@ -471,7 +471,7 @@ static int gfs2_iter_unstuffed(struct gfs2_inode *ip, struct gfs2_ea_header *ea,
 		error = gfs2_meta_read(ip->i_gl, be64_to_cpu(*dataptrs), 0, 0,
 				       bh + x);
 		if (error) {
-			while (x--)
+			for (;x;x--)
 				brelse(bh[x]);
 			goto out;
 		}

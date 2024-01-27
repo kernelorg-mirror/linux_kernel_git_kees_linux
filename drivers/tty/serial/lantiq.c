@@ -175,7 +175,7 @@ lqasc_rx_chars(struct uart_port *port)
 
 	fifocnt = __raw_readl(port->membase + LTQ_ASC_FSTAT) &
 		  ASCFSTAT_RXFFLMASK;
-	while (fifocnt--) {
+	for (;fifocnt;fifocnt--) {
 		u8 flag = TTY_NORMAL;
 		ch = readb(port->membase + LTQ_ASC_RBUF);
 		rsr = (__raw_readl(port->membase + LTQ_ASC_STATE)

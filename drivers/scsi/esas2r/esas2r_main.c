@@ -1302,7 +1302,7 @@ bool esas2r_read_mem_block(struct esas2r_adapter *a,
 		from += len;
 		size -= len;
 
-		while (len--) {
+		for (;len;len--) {
 			*end++ = esas2r_read_data_byte(a, offset);
 			offset++;
 		}

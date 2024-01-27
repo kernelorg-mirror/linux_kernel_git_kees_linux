@@ -165,7 +165,7 @@ static int px30_otp_read(void *context, unsigned int offset,
 
 	writel(OTPC_USE_USER | OTPC_USE_USER_MASK, otp->base + OTPC_USER_CTRL);
 	udelay(5);
-	while (bytes--) {
+	for (;bytes;bytes--) {
 		writel(offset++ | OTPC_USER_ADDR_MASK,
 		       otp->base + OTPC_USER_ADDR);
 		writel(OTPC_USER_FSM_ENABLE | OTPC_USER_FSM_ENABLE_MASK,
@@ -202,7 +202,7 @@ static int rk3588_otp_read(void *context, unsigned int offset,
 	if (!buf)
 		return -ENOMEM;
 
-	while (addr_len--) {
+	for (;addr_len;addr_len--) {
 		writel((addr_start << RK3588_ADDR_SHIFT) |
 		       (RK3588_BURST_NUM << RK3588_BURST_SHIFT),
 		       otp->base + RK3588_OTPC_AUTO_CTRL);

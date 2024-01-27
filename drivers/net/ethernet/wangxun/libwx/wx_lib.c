@@ -1893,7 +1893,7 @@ err_out:
 	wx->num_rx_queues = 0;
 	wx->num_q_vectors = 0;
 
-	while (v_idx--)
+	for (;v_idx;v_idx--)
 		wx_free_q_vector(wx, v_idx);
 
 	return -ENOMEM;

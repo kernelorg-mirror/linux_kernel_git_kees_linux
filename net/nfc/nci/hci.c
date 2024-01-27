@@ -697,7 +697,7 @@ static int nci_hci_dev_connect_gates(struct nci_dev *ndev,
 {
 	int r;
 
-	while (gate_count--) {
+	for (;gate_count;gate_count--) {
 		r = nci_hci_connect_gate(ndev, gates->dest_host,
 					 gates->gate, gates->pipe);
 		if (r < 0)

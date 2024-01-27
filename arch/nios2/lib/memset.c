@@ -22,7 +22,7 @@ void *memset(void *s, int c, size_t count)
 	if (count <= 8) {
 		char *xs = (char *) s;
 
-		while (count--)
+		for (;count;count--)
 			*xs++ = c;
 		return s;
 	}

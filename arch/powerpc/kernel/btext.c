@@ -545,7 +545,7 @@ void __init btext_drawtext(const char *c, unsigned int len)
 {
 	if (!boot_text_mapped)
 		return;
-	while (len--)
+	for (;len;len--)
 		btext_drawchar(*c++);
 }
 

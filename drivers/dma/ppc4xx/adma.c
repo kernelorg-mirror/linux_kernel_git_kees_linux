@@ -2043,7 +2043,7 @@ static struct dma_async_tx_descriptor *ppc440spe_adma_prep_dma_xor(
 		group_start = sw_desc->group_head;
 		ppc440spe_desc_init_xor(group_start, src_cnt, flags);
 		ppc440spe_adma_set_dest(group_start, dma_dest, 0);
-		while (src_cnt--)
+		for (;src_cnt;src_cnt--)
 			ppc440spe_adma_memcpy_xor_set_src(group_start,
 				dma_src[src_cnt], src_cnt);
 		ppc440spe_desc_set_byte_count(group_start, ppc440spe_chan, len);

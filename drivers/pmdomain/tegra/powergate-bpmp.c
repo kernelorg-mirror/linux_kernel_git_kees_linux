@@ -281,7 +281,7 @@ static int tegra_bpmp_add_powergates(struct tegra_bpmp *bpmp,
 	return 0;
 
 remove:
-	while (i--) {
+	for (;i;i--) {
 		powergate = to_tegra_powergate(domains[i]);
 		tegra_powergate_remove(powergate);
 	}
@@ -296,7 +296,7 @@ static void tegra_bpmp_remove_powergates(struct tegra_bpmp *bpmp)
 	unsigned int i = genpd->num_domains;
 	struct tegra_powergate *powergate;
 
-	while (i--) {
+	for (;i;i--) {
 		dev_dbg(bpmp->dev, "removing power domain %s\n",
 			genpd->domains[i]->name);
 		powergate = to_tegra_powergate(genpd->domains[i]);

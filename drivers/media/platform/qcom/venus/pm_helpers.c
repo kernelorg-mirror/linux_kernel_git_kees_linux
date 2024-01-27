@@ -66,7 +66,7 @@ static int core_clks_enable(struct venus_core *core)
 
 	return 0;
 err:
-	while (i--)
+	for (;i;i--)
 		clk_disable_unprepare(core->clks[i]);
 
 	return ret;
@@ -77,7 +77,7 @@ static void core_clks_disable(struct venus_core *core)
 	const struct venus_resources *res = core->res;
 	unsigned int i = res->clks_num;
 
-	while (i--)
+	for (;i;i--)
 		clk_disable_unprepare(core->clks[i]);
 }
 
@@ -131,7 +131,7 @@ static int vcodec_clks_enable(struct venus_core *core, struct clk **clks)
 
 	return 0;
 err:
-	while (i--)
+	for (;i;i--)
 		clk_disable_unprepare(clks[i]);
 
 	return ret;
@@ -142,7 +142,7 @@ static void vcodec_clks_disable(struct venus_core *core, struct clk **clks)
 	const struct venus_resources *res = core->res;
 	unsigned int i = res->vcodec_clks_num;
 
-	while (i--)
+	for (;i;i--)
 		clk_disable_unprepare(clks[i]);
 }
 

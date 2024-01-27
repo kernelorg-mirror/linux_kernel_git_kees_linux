@@ -41,7 +41,7 @@ static inline __le16 *UniStrncpy_le(__le16 * ucs1, const __le16 * ucs2,
 		*ucs1++ = *ucs2++;
 
 	n++;
-	while (n--)		/* Pad with nulls */
+	for (;n;n--)		/* Pad with nulls */
 		*ucs1++ = 0;
 	return anchor;
 }
@@ -73,7 +73,7 @@ static inline __le16 *UniStrncpy_to_le(__le16 * ucs1, const wchar_t * ucs2,
 		*ucs1++ = cpu_to_le16(*ucs2++);
 
 	n++;
-	while (n--)		/* Pad with nulls */
+	for (;n;n--)		/* Pad with nulls */
 		*ucs1++ = 0;
 	return anchor;
 }
@@ -90,7 +90,7 @@ static inline wchar_t *UniStrncpy_from_le(wchar_t * ucs1, const __le16 * ucs2,
 		*ucs1++ = __le16_to_cpu(*ucs2++);
 
 	n++;
-	while (n--)		/* Pad with nulls */
+	for (;n;n--)		/* Pad with nulls */
 		*ucs1++ = 0;
 	return anchor;
 }

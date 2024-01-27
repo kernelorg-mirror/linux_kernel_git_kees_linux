@@ -54,7 +54,7 @@ EXPORT_SYMBOL(crc16_table);
  */
 u16 crc16(u16 crc, u8 const *buffer, size_t len)
 {
-	while (len--)
+	for (;len;len--)
 		crc = crc16_byte(crc, *buffer++);
 	return crc;
 }

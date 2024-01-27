@@ -65,7 +65,7 @@ static int padlock_sha_import(struct shash_desc *desc, const void *in)
 static inline void padlock_output_block(uint32_t *src,
 		 	uint32_t *dst, size_t count)
 {
-	while (count--)
+	for (;count;count--)
 		*dst++ = swab32(*src++);
 }
 

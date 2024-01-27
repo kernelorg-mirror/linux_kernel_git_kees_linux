@@ -149,7 +149,7 @@ pll_map_reg(struct nvkm_bios *bios, u32 reg, u32 *type, u8 *ver, u8 *len)
 	data = pll_limits_table(bios, ver, &hdr, &cnt, len);
 	if (data && *ver >= 0x30) {
 		data += hdr;
-		while (cnt--) {
+		for (;cnt;cnt--) {
 			if (nvbios_rd32(bios, data + 3) == reg) {
 				*type = nvbios_rd08(bios, data + 0);
 				return data;
@@ -164,7 +164,7 @@ pll_map_reg(struct nvkm_bios *bios, u32 reg, u32 *type, u8 *ver, u8 *len)
 		if (map->reg == reg && *ver >= 0x20) {
 			u32 addr = (data += hdr);
 			*type = map->type;
-			while (cnt--) {
+			for (;cnt;cnt--) {
 				if (nvbios_rd32(bios, data) == map->reg)
 					return data;
 				data += *len;
@@ -191,7 +191,7 @@ pll_map_type(struct nvkm_bios *bios, u8 type, u32 *reg, u8 *ver, u8 *len)
 	data = pll_limits_table(bios, ver, &hdr, &cnt, len);
 	if (data && *ver >= 0x30) {
 		data += hdr;
-		while (cnt--) {
+		for (;cnt;cnt--) {
 			if (nvbios_rd08(bios, data + 0) == type) {
 				if (*ver < 0x50)
 					*reg = nvbios_rd32(bios, data + 3);
@@ -209,7 +209,7 @@ pll_map_type(struct nvkm_bios *bios, u8 type, u32 *reg, u8 *ver, u8 *len)
 		if (map->type == type && *ver >= 0x20) {
 			u32 addr = (data += hdr);
 			*reg = map->reg;
-			while (cnt--) {
+			for (;cnt;cnt--) {
 				if (nvbios_rd32(bios, data) == map->reg)
 					return data;
 				data += *len;

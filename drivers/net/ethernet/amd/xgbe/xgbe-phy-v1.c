@@ -346,7 +346,7 @@ static void xgbe_phy_complete_ratechange(struct xgbe_prv_data *pdata)
 
 	/* Wait for Rx and Tx ready */
 	wait = XGBE_RATECHANGE_COUNT;
-	while (wait--) {
+	for (;wait;wait--) {
 		usleep_range(50, 75);
 
 		status = XSIR0_IOREAD(pdata, SIR0_STATUS);

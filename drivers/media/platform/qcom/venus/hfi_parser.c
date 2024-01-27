@@ -74,7 +74,7 @@ parse_alloc_mode(struct venus_core *core, u32 codecs, u32 domain, void *data)
 
 	type = mode->data;
 
-	while (num_entries--) {
+	for (;num_entries;num_entries--) {
 		if (mode->buffer_type == HFI_BUFFER_OUTPUT ||
 		    mode->buffer_type == HFI_BUFFER_OUTPUT2)
 			for_each_codec(core->caps, ARRAY_SIZE(core->caps),

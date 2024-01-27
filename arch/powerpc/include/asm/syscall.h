@@ -100,7 +100,7 @@ static inline void syscall_get_arguments(struct task_struct *task,
 	if (is_tsk_32bit_task(task))
 		mask = 0xffffffff;
 
-	while (n--) {
+	for (;n;n--) {
 		if (n == 0)
 			val = regs->orig_gpr3;
 		else

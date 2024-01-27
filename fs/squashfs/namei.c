@@ -171,7 +171,7 @@ static struct dentry *squashfs_lookup(struct inode *dir, struct dentry *dentry,
 		if (dir_count > SQUASHFS_DIR_COUNT)
 			goto data_error;
 
-		while (dir_count--) {
+		for (;dir_count;dir_count--) {
 			/*
 			 * Read directory entry.
 			 */

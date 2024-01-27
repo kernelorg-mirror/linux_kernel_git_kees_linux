@@ -1120,7 +1120,7 @@ static int __cpu_check_vmap(struct drm_i915_gem_object *obj, u32 dword, u32 val)
 		return PTR_ERR(ptr);
 
 	ptr += dword;
-	while (n--) {
+	for (;n;n--) {
 		if (*ptr != val) {
 			pr_err("base[%u]=%08x, val=%08x\n",
 			       dword, *ptr, val);
@@ -1943,7 +1943,7 @@ static int igt_shrink_thp(void *arg)
 	if (err)
 		goto out_wf;
 
-	while (n--) {
+	for (;n;n--) {
 		err = cpu_check(obj, n, 0xdeadbeaf);
 		if (err)
 			break;

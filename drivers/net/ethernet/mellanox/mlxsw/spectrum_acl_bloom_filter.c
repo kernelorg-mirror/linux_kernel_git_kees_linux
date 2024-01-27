@@ -223,7 +223,7 @@ static u16 mlxsw_sp2_acl_bf_crc(const u8 *buffer, size_t len)
 {
 	u16 crc = 0;
 
-	while (len--)
+	for (;len;len--)
 		crc = mlxsw_sp2_acl_bf_crc16_byte(crc, *buffer++);
 	return crc;
 }
@@ -299,7 +299,7 @@ static u16 mlxsw_sp4_acl_bf_crc(const u8 *buffer, size_t len)
 {
 	u16 crc_row = 0, crc_col = 0;
 
-	while (len--) {
+	for (;len;len--) {
 		crc_row = mlxsw_sp4_acl_bf_crc10_byte(crc_row, *buffer);
 		crc_col = mlxsw_sp4_acl_bf_crc6_byte(crc_col, *buffer);
 		buffer++;

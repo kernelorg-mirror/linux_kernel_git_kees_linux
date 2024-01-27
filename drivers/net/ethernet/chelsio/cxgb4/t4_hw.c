@@ -114,7 +114,7 @@ void t4_read_indirect(struct adapter *adap, unsigned int addr_reg,
 			     unsigned int data_reg, u32 *vals,
 			     unsigned int nregs, unsigned int start_idx)
 {
-	while (nregs--) {
+	for (;nregs;nregs--) {
 		t4_write_reg(adap, addr_reg, start_idx);
 		*vals++ = t4_read_reg(adap, data_reg);
 		start_idx++;
@@ -137,7 +137,7 @@ void t4_write_indirect(struct adapter *adap, unsigned int addr_reg,
 		       unsigned int data_reg, const u32 *vals,
 		       unsigned int nregs, unsigned int start_idx)
 {
-	while (nregs--) {
+	for (;nregs;nregs--) {
 		t4_write_reg(adap, addr_reg, start_idx++);
 		t4_write_reg(adap, data_reg, *vals++);
 	}
@@ -7521,7 +7521,7 @@ int t4_set_params_timeout(struct adapter *adap, unsigned int mbox,
 				  FW_PARAMS_CMD_VFN_V(vf));
 	c.retval_len16 = cpu_to_be32(FW_LEN16(c));
 
-	while (nparams--) {
+	for (;nparams;nparams--) {
 		*p++ = cpu_to_be32(*params++);
 		*p++ = cpu_to_be32(*val++);
 	}

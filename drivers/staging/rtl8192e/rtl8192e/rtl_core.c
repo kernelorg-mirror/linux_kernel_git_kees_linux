@@ -1500,7 +1500,7 @@ static void _rtl92e_rx_normal(struct net_device *dev)
 	};
 	unsigned int count = priv->rxringcount;
 
-	while (count--) {
+	for (;count;count--) {
 		struct rx_desc *pdesc = &priv->rx_ring
 					[priv->rx_idx];
 		struct sk_buff *skb = priv->rx_buf

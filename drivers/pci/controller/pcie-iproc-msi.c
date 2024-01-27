@@ -359,7 +359,7 @@ static void iproc_msi_handler(struct irq_desc *desc)
 			break;
 
 		/* process all outstanding events */
-		while (nr_events--) {
+		for (;nr_events;nr_events--) {
 			hwirq = decode_msi_hwirq(msi, eq, head);
 			generic_handle_domain_irq(msi->inner_domain, hwirq);
 

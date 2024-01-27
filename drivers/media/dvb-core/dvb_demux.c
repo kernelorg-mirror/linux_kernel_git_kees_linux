@@ -498,7 +498,7 @@ void dvb_dmx_swfilter_packets(struct dvb_demux *demux, const u8 *buf,
 
 	spin_lock_irqsave(&demux->lock, flags);
 
-	while (count--) {
+	for (;count;count--) {
 		if (buf[0] == 0x47)
 			dvb_dmx_swfilter_packet(demux, buf);
 		buf += 188;

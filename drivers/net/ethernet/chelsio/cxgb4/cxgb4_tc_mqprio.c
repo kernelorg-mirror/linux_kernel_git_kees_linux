@@ -360,7 +360,7 @@ static int cxgb4_mqprio_alloc_tc(struct net_device *dev,
 	return 0;
 
 out_err:
-	while (i--)
+	for (;i;i--)
 		cxgb4_sched_class_free(dev, tc_port_mqprio->tc_hwtc_map[i]);
 
 	return ret;

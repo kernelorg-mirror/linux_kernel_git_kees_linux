@@ -672,7 +672,7 @@ static swreg re_load_imm_any(struct nfp_prog *nfp_prog, u32 imm, swreg tmp_reg)
 
 static void wrp_nops(struct nfp_prog *nfp_prog, unsigned int count)
 {
-	while (count--)
+	for (;count;count--)
 		emit_nop(nfp_prog);
 }
 

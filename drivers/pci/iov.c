@@ -588,7 +588,7 @@ static int sriov_add_vfs(struct pci_dev *dev, u16 num_vfs)
 	}
 	return 0;
 failed:
-	while (i--)
+	for (;i;i--)
 		pci_iov_remove_virtfn(dev, i);
 
 	return rc;

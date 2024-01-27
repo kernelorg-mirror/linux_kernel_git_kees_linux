@@ -1491,7 +1491,7 @@ static bool mxser_receive_chars_new(struct mxser_port *port, u8 status)
 	if (hwid == MOXA_MUST_MU150_HWID)
 		gdl &= MOXA_MUST_GDL_MASK;
 
-	while (gdl--) {
+	for (;gdl;gdl--) {
 		u8 ch = inb(port->ioaddr + UART_RX);
 		if (!tty_insert_flip_char(&port->port, ch, 0))
 			port->icount.buf_overrun++;

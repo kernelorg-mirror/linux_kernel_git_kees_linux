@@ -192,7 +192,7 @@ static int get_free_entries(unsigned count)
 
 	ref = head = gnttab_free_head;
 	gnttab_free_count -= count;
-	while (count--) {
+	for (;count;count--) {
 		bitmap_clear(gnttab_free_bitmap, head, 1);
 		if (gnttab_free_tail_ptr == __gnttab_entry(head))
 			gnttab_free_tail_ptr = &gnttab_free_head;

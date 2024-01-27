@@ -345,7 +345,7 @@ write_packet(u8 *buf, struct omap_req *req, unsigned max)
 		}
 		buf = (u8 *)wp;
 	}
-	while (max--)
+	for (;max;max--)
 		omap_writeb(*buf++, UDC_DATA);
 	return len;
 }
@@ -410,7 +410,7 @@ read_packet(u8 *buf, struct omap_req *req, unsigned avail)
 		}
 		buf = (u8 *)wp;
 	}
-	while (avail--)
+	for (;avail;avail--)
 		*buf++ = omap_readb(UDC_DATA);
 	return len;
 }
@@ -452,7 +452,7 @@ static int read_fifo(struct omap_ep *ep, struct omap_req *req)
 			if (count != avail) {
 				req->req.status = -EOVERFLOW;
 				avail -= count;
-				while (avail--)
+				for (;avail;avail--)
 					omap_readw(UDC_DATA);
 			}
 		} else if (req->req.length == req->req.actual)

@@ -1181,7 +1181,7 @@ static int emc_setup_hw(struct tegra_emc *emc)
 		      dram_type_str, emem_numdev == 2 ? "devices" : "device");
 
 	if (dram_type == DRAM_TYPE_LPDDR2 && !print_sdram_info_once) {
-		while (emem_numdev--)
+		for (;emem_numdev;emem_numdev--)
 			emc_read_lpddr_sdram_info(emc, emem_numdev);
 
 		print_sdram_info_once = true;

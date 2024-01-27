@@ -779,7 +779,7 @@ static inline void htree_rep_invariant_check(struct dx_entry *at,
 					     struct dx_entry *target,
 					     u32 hash, unsigned int n)
 {
-	while (n--) {
+	for (;n;n--) {
 		dxtrace(printk(KERN_CONT ","));
 		if (dx_get_hash(++at) > hash) {
 			at--;

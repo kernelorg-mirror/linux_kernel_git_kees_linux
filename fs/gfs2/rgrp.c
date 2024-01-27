@@ -1250,7 +1250,7 @@ int gfs2_rgrp_go_instantiate(struct gfs2_glock *gl)
 	return 0;
 
 fail:
-	while (x--) {
+	for (;x;x--) {
 		bi = rgd->rd_bits + x;
 		brelse(bi->bi_bh);
 		bi->bi_bh = NULL;
@@ -2268,7 +2268,7 @@ static void rgblk_free(struct gfs2_sbd *sdp, struct gfs2_rgrpd *rgd,
 	rbm.rgd = rgd;
 	if (WARN_ON_ONCE(gfs2_rbm_from_block(&rbm, bstart)))
 		return;
-	while (blen--) {
+	for (;blen;blen--) {
 		bi = rbm_bi(&rbm);
 		if (bi != bi_prev) {
 			if (!bi->bi_clone) {

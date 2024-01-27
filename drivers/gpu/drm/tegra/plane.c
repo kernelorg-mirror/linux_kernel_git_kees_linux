@@ -177,7 +177,7 @@ static int tegra_dc_pin(struct tegra_dc *dc, struct tegra_plane_state *state)
 unpin:
 	dev_err(dc->dev, "failed to map plane %u: %d\n", i, err);
 
-	while (i--) {
+	for (;i;i--) {
 		host1x_bo_unpin(state->map[i]);
 		state->iova[i] = DMA_MAPPING_ERROR;
 		state->map[i] = NULL;

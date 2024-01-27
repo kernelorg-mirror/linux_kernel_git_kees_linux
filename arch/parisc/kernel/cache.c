@@ -111,12 +111,13 @@ void __update_cache(pte_t pte)
 	nr = folio_nr_pages(folio);
 	if (folio_flush_mapping(folio) &&
 	    test_bit(PG_dcache_dirty, &folio->flags)) {
-		while (nr--)
+		for (;nr;nr--)
 			flush_kernel_dcache_page_addr(pfn_va(pfn + nr));
 		clear_bit(PG_dcache_dirty, &folio->flags);
 	} else if (parisc_requires_coherency())
-		while (nr--)
+	{for (;nr;nr--)
 			flush_kernel_dcache_page_addr(pfn_va(pfn + nr));
+	}
 }
 
 void

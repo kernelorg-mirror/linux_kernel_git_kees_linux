@@ -300,7 +300,7 @@ static unsigned int octeon_cf_data_xfer8(struct ata_queued_cmd *qc,
 	words = buflen;
 	if (rw) {
 		count = 16;
-		while (words--) {
+		for (;words;words--) {
 			iowrite8(*buffer, data_addr);
 			buffer++;
 			/*

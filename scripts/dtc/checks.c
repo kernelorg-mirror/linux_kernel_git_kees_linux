@@ -1001,7 +1001,7 @@ static void check_simple_bus_reg(struct check *c, struct dt_info *dti, struct no
 	}
 
 	size = node_addr_cells(node->parent);
-	while (size--)
+	for (;size;size--)
 		reg = (reg << 32) | fdt32_to_cpu(*(cells++));
 
 	snprintf(unit_addr, sizeof(unit_addr), "%"PRIx64, reg);

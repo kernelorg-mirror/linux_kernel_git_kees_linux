@@ -186,7 +186,7 @@ static int decode_crush_names(void **p, void *end, struct rb_root *root)
 	u32 n;
 
 	ceph_decode_32_safe(p, end, n, e_inval);
-	while (n--) {
+	for (;n;n--) {
 		struct crush_name_node *cn;
 		int id;
 		u32 name_len;
@@ -354,7 +354,7 @@ static int decode_choose_args(void **p, void *end, struct crush_map *c)
 	int ret;
 
 	ceph_decode_32_safe(p, end, num_choose_arg_maps, e_inval);
-	while (num_choose_arg_maps--) {
+	for (;num_choose_arg_maps;num_choose_arg_maps--) {
 		arg_map = alloc_choose_arg_map();
 		if (!arg_map) {
 			ret = -ENOMEM;
@@ -820,7 +820,7 @@ static int decode_pool(void **p, void *end, struct ceph_pg_pool_info *pi)
 
 	/* skip snaps */
 	num = ceph_decode_32(p);
-	while (num--) {
+	for (;num;num--) {
 		*p += 8;  /* snapid key */
 		*p += 1 + 1; /* versions */
 		len = ceph_decode_32(p);
@@ -861,7 +861,7 @@ static int decode_pool(void **p, void *end, struct ceph_pg_pool_info *pi)
 	if (ev >= 10) {
 		/* skip properties */
 		num = ceph_decode_32(p);
-		while (num--) {
+		for (;num;num--) {
 			len = ceph_decode_32(p);
 			*p += len; /* key */
 			len = ceph_decode_32(p);
@@ -957,7 +957,7 @@ static int decode_pool_names(void **p, void *end, struct ceph_osdmap *map)
 
 	ceph_decode_32_safe(p, end, num, bad);
 	dout(" %d pool names\n", num);
-	while (num--) {
+	for (;num;num--) {
 		ceph_decode_64_safe(p, end, pool, bad);
 		ceph_decode_32_safe(p, end, len, bad);
 		dout("  pool %llu len %d\n", pool, len);
@@ -1342,7 +1342,7 @@ static int __decode_pools(void **p, void *end, struct ceph_osdmap *map,
 	u32 n;
 
 	ceph_decode_32_safe(p, end, n, e_inval);
-	while (n--) {
+	for (;n;n--) {
 		struct ceph_pg_pool_info *pi;
 		u64 pool;
 		int ret;
@@ -1395,7 +1395,7 @@ static int decode_pg_mapping(void **p, void *end, struct rb_root *mapping_root,
 	WARN_ON(!incremental && !fn);
 
 	ceph_decode_32_safe(p, end, n, e_inval);
-	while (n--) {
+	for (;n;n--) {
 		struct ceph_pg_mapping *pg;
 		struct ceph_pg pgid;
 		int ret;
@@ -1571,7 +1571,7 @@ static int decode_new_primary_affinity(void **p, void *end,
 	u32 n;
 
 	ceph_decode_32_safe(p, end, n, e_inval);
-	while (n--) {
+	for (;n;n--) {
 		u32 osd, aff;
 		int ret;
 
@@ -1872,7 +1872,7 @@ static int decode_new_up_state_weight(void **p, void *end, u8 struct_v,
 
 	/* new_weight */
 	ceph_decode_32_safe(p, end, len, e_inval);
-	while (len--) {
+	for (;len;len--) {
 		s32 osd;
 		u32 w;
 
@@ -1900,7 +1900,7 @@ static int decode_new_up_state_weight(void **p, void *end, u8 struct_v,
 	/* new_state (up/down) */
 	*p = new_state;
 	len = ceph_decode_32(p);
-	while (len--) {
+	for (;len;len--) {
 		s32 osd;
 		u32 xorstate;
 
@@ -1932,7 +1932,7 @@ static int decode_new_up_state_weight(void **p, void *end, u8 struct_v,
 	/* new_up_client */
 	*p = new_up_client;
 	len = ceph_decode_32(p);
-	while (len--) {
+	for (;len;len--) {
 		s32 osd;
 		struct ceph_entity_addr addr;
 

@@ -566,7 +566,7 @@ static __always_inline void
 ladder_smallloop_cmult_small_loop(u64 *nq, u64 *nqpq, u64 *nq2, u64 *nqpq2,
 				  u64 *q, u8 byt, u32 i)
 {
-	while (i--) {
+	for (;i;i--) {
 		ladder_smallloop_cmult_small_loop_double_step(nq, nqpq, nq2,
 							      nqpq2, q, byt);
 		byt <<= 2;
@@ -578,7 +578,7 @@ static __always_inline void ladder_bigloop_cmult_big_loop(u8 *n1, u64 *nq,
 							  u64 *nqpq2, u64 *q,
 							  u32 i)
 {
-	while (i--) {
+	for (;i;i--) {
 		u8 byte = n1[i];
 		ladder_smallloop_cmult_small_loop(nq, nqpq, nq2, nqpq2, q,
 						  byte, 4);

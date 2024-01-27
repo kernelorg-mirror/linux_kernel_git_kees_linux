@@ -1172,7 +1172,7 @@ static void ufs_truncate_blocks(struct inode *inode)
 			}
 			p = ubh_get_data_ptr(uspi, ubh[i], offsets[i + 1]++);
 		}
-		while (i--)
+		for (;i;i--)
 			free_branch_tail(inode, offsets[i + 1], ubh[i], depth - i - 1);
 	}
 	for (i = offsets[0]; i <= UFS_TIND_BLOCK; i++) {

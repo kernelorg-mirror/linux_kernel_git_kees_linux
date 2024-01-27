@@ -1067,7 +1067,7 @@ static void tegra_pcie_disable_phy(struct tegra_pcie_dw *pcie)
 {
 	unsigned int phy_count = pcie->phy_count;
 
-	while (phy_count--) {
+	for (;phy_count;phy_count--) {
 		phy_power_off(pcie->phys[phy_count]);
 		phy_exit(pcie->phys[phy_count]);
 	}
@@ -1091,7 +1091,7 @@ static int tegra_pcie_enable_phy(struct tegra_pcie_dw *pcie)
 	return 0;
 
 phy_power_off:
-	while (i--) {
+	for (;i;i--) {
 		phy_power_off(pcie->phys[i]);
 phy_exit:
 		phy_exit(pcie->phys[i]);

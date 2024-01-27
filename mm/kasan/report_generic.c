@@ -261,7 +261,7 @@ static void print_decoded_frame_descr(const char *frame_descr)
 	pr_err("This frame has %lu %s:\n", num_objects,
 	       num_objects == 1 ? "object" : "objects");
 
-	while (num_objects--) {
+	for (;num_objects;num_objects--) {
 		unsigned long offset;
 		unsigned long size;
 

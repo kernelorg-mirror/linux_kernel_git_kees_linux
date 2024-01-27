@@ -90,7 +90,7 @@ static int debugifc_parse_unsigned_number(const char *buf,unsigned int count,
 		radix = 8;
 	}
 
-	while (count--) {
+	for (;count;count--) {
 		int val = hex_to_bin(*buf++);
 		if (val < 0 || val >= radix)
 			return -EINVAL;

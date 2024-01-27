@@ -67,7 +67,7 @@ static irqreturn_t jornada720_kbd_interrupt(int irq, void *dev_id)
 		count = jornada_ssp_byte(TXDUMMY);
 
 		/* Lets drag them out one at a time */
-		while (count--) {
+		for (;count;count--) {
 			/* Exchange TxDummy for location (keymap[kbddata]) */
 			kbd_data = jornada_ssp_byte(TXDUMMY);
 			scan_code = kbd_data & 0x7f;

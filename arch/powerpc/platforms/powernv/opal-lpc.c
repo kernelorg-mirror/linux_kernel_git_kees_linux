@@ -117,7 +117,7 @@ static void opal_lpc_insb(unsigned long p, void *b, unsigned long c)
 {
 	u8 *ptr = b;
 
-	while(c--)
+	for (;c;c--)
 		*(ptr++) = opal_lpc_inb(p);
 }
 
@@ -125,7 +125,7 @@ static void opal_lpc_insw(unsigned long p, void *b, unsigned long c)
 {
 	__le16 *ptr = b;
 
-	while(c--)
+	for (;c;c--)
 		*(ptr++) = __opal_lpc_inw(p);
 }
 
@@ -133,7 +133,7 @@ static void opal_lpc_insl(unsigned long p, void *b, unsigned long c)
 {
 	__le32 *ptr = b;
 
-	while(c--)
+	for (;c;c--)
 		*(ptr++) = __opal_lpc_inl(p);
 }
 
@@ -141,7 +141,7 @@ static void opal_lpc_outsb(unsigned long p, const void *b, unsigned long c)
 {
 	const u8 *ptr = b;
 
-	while(c--)
+	for (;c;c--)
 		opal_lpc_outb(*(ptr++), p);
 }
 
@@ -149,7 +149,7 @@ static void opal_lpc_outsw(unsigned long p, const void *b, unsigned long c)
 {
 	const __le16 *ptr = b;
 
-	while(c--)
+	for (;c;c--)
 		__opal_lpc_outw(*(ptr++), p);
 }
 
@@ -157,7 +157,7 @@ static void opal_lpc_outsl(unsigned long p, const void *b, unsigned long c)
 {
 	const __le32 *ptr = b;
 
-	while(c--)
+	for (;c;c--)
 		__opal_lpc_outl(*(ptr++), p);
 }
 

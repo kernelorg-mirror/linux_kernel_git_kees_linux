@@ -360,7 +360,7 @@ static void encx24j600_rx_packets(struct encx24j600_priv *priv, u8 packet_count)
 {
 	struct net_device *dev = priv->ndev;
 
-	while (packet_count--) {
+	for (;packet_count;packet_count--) {
 		struct rsv rsv;
 		u16 newrxtail;
 

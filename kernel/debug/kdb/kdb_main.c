@@ -1505,7 +1505,7 @@ int kdb_main_loop(kdb_reason_t reason, kdb_reason_t reason2, int error,
 static int kdb_mdr(unsigned long addr, unsigned int count)
 {
 	unsigned char c;
-	while (count--) {
+	for (;count;count--) {
 		if (kdb_getarea(c, addr))
 			return 0;
 		kdb_printf("%02x", c);
@@ -2656,7 +2656,7 @@ EXPORT_SYMBOL_GPL(kdb_register);
  */
 void kdb_register_table(kdbtab_t *kp, size_t len)
 {
-	while (len--) {
+	for (;len;len--) {
 		list_add_tail(&kp->list_node, &kdb_cmds_head);
 		kp++;
 	}

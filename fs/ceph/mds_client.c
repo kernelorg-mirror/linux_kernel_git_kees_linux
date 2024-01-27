@@ -191,7 +191,7 @@ static int parse_reply_info_in(void **p, void *end,
 
 			ceph_decode_32_safe(p, end, alen, bad);
 
-			while (alen--) {
+			for (;alen;alen--) {
 				u32 len;
 
 				/* key */
@@ -577,7 +577,7 @@ static int ceph_parse_deleg_inos(void **p, void *end,
 
 	ceph_decode_32_safe(p, end, sets, bad);
 	doutc(cl, "got %u sets of delegated inodes\n", sets);
-	while (sets--) {
+	for (;sets;sets--) {
 		u64 start, len;
 
 		ceph_decode_64_safe(p, end, start, bad);

@@ -2907,7 +2907,7 @@ static irqreturn_t oxu210_hcd_irq(struct usb_hcd *hcd)
 		if (!(readl(&oxu->regs->command) & CMD_RUN))
 			usb_hcd_resume_root_hub(hcd);
 
-		while (i--) {
+		for (;i;i--) {
 			int pstatus = readl(&oxu->regs->port_status[i]);
 
 			if (pstatus & PORT_OWNER)

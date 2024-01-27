@@ -191,7 +191,7 @@ static int create_packet(void *data, size_t length)
 
 out_alloc_packet_array:
 	/* always free packet array */
-	while (idx--) {
+	for (;idx;idx--) {
 		pr_debug("freeing unused packet below floor 0x%lx\n",
 			(unsigned long)virt_to_phys(invalid_addr_packet_array[idx]));
 		free_pages((unsigned long)invalid_addr_packet_array[idx], ordernum);

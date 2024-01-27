@@ -434,7 +434,7 @@ static int mtk_hsdma_issue_pending_vdesc(struct mtk_hsdma_device *hsdma,
 
 	atomic_sub(reserved, &pc->nr_free);
 
-	while (reserved--) {
+	for (;reserved;reserved--) {
 		/* Limit size by PD capability for valid data moving */
 		tlen = (hvd->len > MTK_HSDMA_MAX_LEN) ?
 		       MTK_HSDMA_MAX_LEN : hvd->len;

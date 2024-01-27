@@ -504,7 +504,7 @@ static int init_default_key_collection(unsigned int nr_keys, bool randomized)
 
 	memset(collection.keys, 0, nr_keys * key_sz);
 	collection.nr_keys = nr_keys;
-	while (nr_keys--)
+	for (;nr_keys;nr_keys--)
 		init_key_in_collection(nr_keys, randomized);
 
 	return 0;

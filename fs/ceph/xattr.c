@@ -844,7 +844,7 @@ start:
 			goto start;
 		}
 		err = -EIO;
-		while (numattr--) {
+		for (;numattr;numattr--) {
 			ceph_decode_32_safe(&p, end, len, bad);
 			namelen = len;
 			name = p;

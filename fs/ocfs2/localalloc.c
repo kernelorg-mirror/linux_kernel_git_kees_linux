@@ -754,7 +754,7 @@ int ocfs2_claim_local_alloc_bits(struct ocfs2_super *osb,
 	ocfs2_resmap_claimed_bits(&osb->osb_la_resmap, ac->ac_resv, start,
 				  bits_wanted);
 
-	while(bits_wanted--)
+	for (;bits_wanted;bits_wanted--)
 		ocfs2_set_bit(start++, bitmap);
 
 	le32_add_cpu(&alloc->id1.bitmap1.i_used, *num_bits);
@@ -798,7 +798,7 @@ int ocfs2_free_local_alloc_bits(struct ocfs2_super *osb,
 		goto bail;
 	}
 
-	while (clear_bits--)
+	for (;clear_bits;clear_bits--)
 		ocfs2_clear_bit(start++, bitmap);
 
 	le32_add_cpu(&alloc->id1.bitmap1.i_used, -num_bits);

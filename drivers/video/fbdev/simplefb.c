@@ -447,7 +447,7 @@ static void simplefb_detach_genpds(void *res)
 	if (par->num_genpds <= 1)
 		return;
 
-	while (i--) {
+	for (;i;i--) {
 		if (par->genpd_links[i])
 			device_link_del(par->genpd_links[i]);
 

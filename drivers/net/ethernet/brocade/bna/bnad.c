@@ -352,7 +352,7 @@ bnad_rxq_refill_page(struct bnad *bnad, struct bna_rcb *rcb, u32 nalloc)
 	alloc_size = PAGE_SIZE << unmap_q->alloc_order;
 	alloced = 0;
 
-	while (nalloc--) {
+	for (;nalloc;nalloc--) {
 		unmap = &unmap_q->unmap[prod];
 
 		if (unmap_q->reuse_pi < 0) {
@@ -424,7 +424,7 @@ bnad_rxq_refill_skb(struct bnad *bnad, struct bna_rcb *rcb, u32 nalloc)
 	q_depth = rcb->q_depth;
 
 	alloced = 0;
-	while (nalloc--) {
+	for (;nalloc;nalloc--) {
 		unmap = &unmap_q->unmap[prod];
 
 		skb = netdev_alloc_skb_ip_align(bnad->netdev, buff_sz);
@@ -537,7 +537,7 @@ bnad_cq_setup_skb_frags(struct bna_ccb *ccb, struct sk_buff *skb, u32 nvecs)
 	prefetch(page_address(unmap_q->unmap[ci].page) +
 		 unmap_q->unmap[ci].page_offset);
 
-	while (nvecs--) {
+	for (;nvecs;nvecs--) {
 		struct bnad_rx_unmap *unmap;
 		u32 len;
 

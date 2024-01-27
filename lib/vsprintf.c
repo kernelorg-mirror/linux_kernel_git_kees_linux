@@ -627,7 +627,7 @@ char *widen_string(char *buf, int n, char *end, struct printf_spec spec)
 		move_right(buf - n, end, n, spaces);
 		return buf + spaces;
 	}
-	while (spaces--) {
+	for (;spaces;spaces--) {
 		if (buf < end)
 			*buf = ' ';
 		++buf;

@@ -937,7 +937,7 @@ static struct mirror_set *alloc_context(unsigned int nr_mirrors,
 static void free_context(struct mirror_set *ms, struct dm_target *ti,
 			 unsigned int m)
 {
-	while (m--)
+	for (;m;m--)
 		dm_put_device(ti, ms->mirror[m].dev);
 
 	dm_io_client_destroy(ms->io_client);

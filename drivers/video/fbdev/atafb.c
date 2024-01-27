@@ -2541,7 +2541,7 @@ static void atafb_imageblit(struct fb_info *info, const struct fb_image *image)
 		// used for font data
 		src = image->data;
 		pitch = (image->width + 7) / 8;
-		while (height--) {
+		for (;height;height--) {
 
 			if (info->var.bits_per_pixel == 1)
 				atafb_mfb_linefill(info, par->next_line,

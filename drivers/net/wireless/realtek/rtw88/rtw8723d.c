@@ -1974,7 +1974,7 @@ static void rtw8723d_fill_txdesc_checksum(struct rtw_dev *rtwdev,
 
 	le32p_replace_bits(&tx_desc->w7, 0, RTW_TX_DESC_W7_TXDESC_CHECKSUM);
 
-	while (words--)
+	for (;words;words--)
 		chksum ^= *data++;
 
 	chksum = ~chksum;

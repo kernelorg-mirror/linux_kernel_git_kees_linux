@@ -216,7 +216,7 @@ void insw (unsigned long port, void *dst, unsigned long count)
 		l = cpu_to_le16(inw(port));
 		*p = l >> 8;
 		p++;
-		while (count--)
+		for (;count;count--)
 		{
 			l2 = cpu_to_le16(inw(port));
 			*(unsigned short *)p = (l & 0xff) << 8 | (l2 >> 8);
@@ -249,7 +249,7 @@ void insl (unsigned long port, void *dst, unsigned long count)
 	switch (((unsigned long) dst) & 0x3)
 	{
 	 case 0x00:			/* Buffer 32-bit aligned */
-		while (count--)
+		for (;count;count--)
 		{
 			*(unsigned int *)p = cpu_to_le32(inl(port));
 			p += 4;
@@ -263,7 +263,7 @@ void insl (unsigned long port, void *dst, unsigned long count)
 		*(unsigned short *)p = l >> 16;
 		p += 2;
 		
-		while (count--)
+		for (;count;count--)
 		{
 			l2 = cpu_to_le32(inl(port));
 			*(unsigned int *)p = (l & 0xffff) << 16 | (l2 >> 16);
@@ -280,7 +280,7 @@ void insl (unsigned long port, void *dst, unsigned long count)
 		p++;
 		*(unsigned short *)p = (l >> 8) & 0xffff;
 		p += 2;
-		while (count--)
+		for (;count;count--)
 		{
 			l2 = cpu_to_le32(inl(port));
 			*(unsigned int *)p = (l & 0xff) << 24 | (l2 >> 8);
@@ -295,7 +295,7 @@ void insl (unsigned long port, void *dst, unsigned long count)
 		l = cpu_to_le32(inl(port));
 		*p = l >> 24;
 		p++;
-		while (count--)
+		for (;count;count--)
 		{
 			l2 = cpu_to_le32(inl(port));
 			*(unsigned int *)p = (l & 0xffffff) << 8 | l2 >> 24;
@@ -419,7 +419,7 @@ void outsl (unsigned long port, const void *src, unsigned long count)
 	switch (((unsigned long)p) & 0x3)
 	{
 	 case 0x00:			/* Buffer 32-bit aligned */
-		while (count--)
+		for (;count;count--)
 		{
 			outl(le32_to_cpu(*(unsigned int *)p), port);
 			p += 4;
@@ -432,7 +432,7 @@ void outsl (unsigned long port, const void *src, unsigned long count)
 		l = *(unsigned short *)p;
 		p += 2;
 		
-		while (count--)
+		for (;count;count--)
 		{
 			l2 = *(unsigned int *)p;
 			p += 4;
@@ -450,7 +450,7 @@ void outsl (unsigned long port, const void *src, unsigned long count)
 		l |= *(unsigned short *)p << 8;
 		p += 2;
 
-		while (count--)
+		for (;count;count--)
 		{
 			l2 = *(unsigned int *)p;
 			p += 4;
@@ -466,7 +466,7 @@ void outsl (unsigned long port, const void *src, unsigned long count)
 		l = *p << 24;
 		p++;
 
-		while (count--)
+		for (;count;count--)
 		{
 			l2 = *(unsigned int *)p;
 			p += 4;

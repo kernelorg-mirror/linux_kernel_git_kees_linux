@@ -184,7 +184,7 @@ static void btext_drawchar(char c)
 
 static void btext_drawtext(const char *c, unsigned int len)
 {
-	while (len--)
+	for (;len;len--)
 		btext_drawchar(*c++);
 }
 

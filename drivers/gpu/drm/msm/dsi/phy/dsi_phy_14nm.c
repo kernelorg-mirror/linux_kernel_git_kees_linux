@@ -115,7 +115,7 @@ static bool pll_14nm_poll_for_ready(struct dsi_pll_14nm *pll_14nm,
 	u32 tries, val;
 
 	tries = nb_tries;
-	while (tries--) {
+	for (;tries;tries--) {
 		val = dsi_phy_read(base + REG_DSI_14nm_PHY_PLL_RESET_SM_READY_STATUS);
 		pll_locked = !!(val & BIT(5));
 
@@ -129,7 +129,7 @@ static bool pll_14nm_poll_for_ready(struct dsi_pll_14nm *pll_14nm,
 		goto out;
 
 	tries = nb_tries;
-	while (tries--) {
+	for (;tries;tries--) {
 		val = dsi_phy_read(base + REG_DSI_14nm_PHY_PLL_RESET_SM_READY_STATUS);
 		pll_ready = !!(val & BIT(0));
 

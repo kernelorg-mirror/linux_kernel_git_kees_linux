@@ -359,7 +359,7 @@ static void *slow_memcpy( void *dst, const void *src, size_t len )
 {	char *cto = dst;
 	const char *cfrom = src;
 
-	while( len-- ) {
+	for (;len;len--) {
 		*cto++ = *cfrom++;
 		MFPDELAY();
 	}

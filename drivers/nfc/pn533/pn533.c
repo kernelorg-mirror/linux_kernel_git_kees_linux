@@ -1424,7 +1424,7 @@ static int pn533_autopoll_complete(struct pn533 *dev, void *arg,
 		return -EAGAIN;
 
 	apr = (struct pn532_autopoll_resp *)&resp->data[1];
-	while (nbtg--) {
+	for (;nbtg;nbtg--) {
 		memset(&nfc_tgt, 0, sizeof(struct nfc_target));
 		switch (apr->type) {
 		case PN532_AUTOPOLL_TYPE_ISOA:

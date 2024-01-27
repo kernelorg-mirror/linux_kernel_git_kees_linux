@@ -983,7 +983,7 @@ bit_table(struct drm_device *dev, u8 id, struct bit_entry *bit)
 
 	entries = bios->data[bios->offset + 10];
 	entry   = &bios->data[bios->offset + 12];
-	while (entries--) {
+	for (;entries;entries--) {
 		if (entry[0] == id) {
 			bit->id = entry[0];
 			bit->version = entry[1];

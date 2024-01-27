@@ -29,7 +29,7 @@ static inline u64 __pow10(u8 x)
 {
 	u64 r = 1;
 
-	while (x--)
+	for (;x;x--)
 		r *= 10;
 
 	return r;

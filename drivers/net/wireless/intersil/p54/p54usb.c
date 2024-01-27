@@ -283,7 +283,7 @@ static __le32 p54u_lm87_chksum(const __le32 *data, size_t length)
 	u32 chk = 0;
 
 	length >>= 2;
-	while (length--) {
+	for (;length;length--) {
 		chk ^= le32_to_cpu(*data++);
 		chk = (chk >> 5) ^ (chk << 3);
 	}
@@ -531,7 +531,7 @@ static int p54u_upload_firmware_3887(struct ieee80211_hw *dev)
 	tmp += sizeof(*hdr);
 
 	while (remains) {
-		while (left--) {
+		for (;left;left--) {
 			if (carry) {
 				*tmp++ = carry;
 				carry = 0;
@@ -1011,7 +1011,7 @@ static int p54u_probe(struct usb_interface *intf,
 	/* TODO: should just stick the identification in the device table */
 	i = intf->altsetting->desc.bNumEndpoints;
 	recognized_pipes = 0;
-	while (i--) {
+	for (;i;i--) {
 		switch (intf->altsetting->endpoint[i].desc.bEndpointAddress) {
 		case P54U_PIPE_DATA:
 		case P54U_PIPE_MGMT:

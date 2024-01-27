@@ -99,7 +99,7 @@ void c2p_planar(void *dst, const void *src, u32 dx, u32 dy, u32 width,
 	dst_idx = dx % 32;
 	first = 0xffffffffU >> dst_idx;
 	last = ~(0xffffffffU >> ((dst_idx+width) % 32));
-	while (height--) {
+	for (;height;height--) {
 		c = src;
 		p = dst;
 		w = width;

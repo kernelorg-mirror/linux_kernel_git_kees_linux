@@ -184,7 +184,7 @@ fill_mem(struct tiger_ch *bc, u32 idx, u32 cnt, u32 fill)
 		mask <<= 8;
 	}
 	mask ^= 0xffffffff;
-	while (cnt--) {
+	for (;cnt;cnt--) {
 		val = card->send.start[idx];
 		val &= mask;
 		val |= fill;

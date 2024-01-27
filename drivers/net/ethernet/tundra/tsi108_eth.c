@@ -207,7 +207,7 @@ static void tsi108_write_mii(struct tsi108_prv_data *data,
 				(data->phy << TSI108_MAC_MII_ADDR_PHY) |
 				(reg << TSI108_MAC_MII_ADDR_REG));
 	TSI_WRITE_PHY(TSI108_MAC_MII_DATAOUT, val);
-	while (i--) {
+	for (;i;i--) {
 		if(!(TSI_READ_PHY(TSI108_MAC_MII_IND) &
 			TSI108_MAC_MII_IND_BUSY))
 			break;
@@ -235,7 +235,7 @@ static inline void tsi108_write_tbi(struct tsi108_prv_data *data,
 			     (0x1e << TSI108_MAC_MII_ADDR_PHY)
 			     | (reg << TSI108_MAC_MII_ADDR_REG));
 	TSI_WRITE(TSI108_MAC_MII_DATAOUT, val);
-	while(i--) {
+	for (;i;i--) {
 		if(!(TSI_READ(TSI108_MAC_MII_IND) & TSI108_MAC_MII_IND_BUSY))
 			return;
 		udelay(10);

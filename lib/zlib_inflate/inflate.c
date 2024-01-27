@@ -546,7 +546,7 @@ int zlib_inflate(z_streamp strm, int flush)
                         state->mode = BAD;
                         break;
                     }
-                    while (copy--)
+                    for (;copy;copy--)
                         state->lens[state->have++] = (unsigned short)len;
                 }
             }

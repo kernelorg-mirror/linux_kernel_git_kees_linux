@@ -35,7 +35,7 @@ int ntfs_utf16_to_nls(struct ntfs_sb_info *sbi, const __le16 *name, u32 len,
 	op = buf;
 	warn = 0;
 
-	while (len--) {
+	for (;len;len--) {
 		u16 ec;
 		int charlen;
 		char dump[5];

@@ -28,7 +28,7 @@ nv41_vmm_pgt_pte(struct nvkm_vmm *vmm, struct nvkm_mmu_pt *pt,
 		 u32 ptei, u32 ptes, struct nvkm_vmm_map *map, u64 addr)
 {
 	u32 data = (addr >> 7) | 0x00000001; /* VALID. */
-	while (ptes--) {
+	for (;ptes;ptes--) {
 		VMM_WO032(pt, vmm, ptei++ * 4, data);
 		data += 0x00000020;
 	}
@@ -47,7 +47,7 @@ nv41_vmm_pgt_dma(struct nvkm_vmm *vmm, struct nvkm_mmu_pt *pt,
 {
 #if PAGE_SHIFT == 12
 	nvkm_kmap(pt->memory);
-	while (ptes--) {
+	for (;ptes;ptes--) {
 		const u32 data = (*map->dma++ >> 7) | 0x00000001;
 		VMM_WO032(pt, vmm, ptei++ * 4, data);
 	}

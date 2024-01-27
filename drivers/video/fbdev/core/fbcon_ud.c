@@ -92,7 +92,7 @@ static inline void ud_putcs_aligned(struct vc_data *vc, struct fb_info *info,
 	u32 idx = vc->vc_font.width >> 3;
 	u8 *src;
 
-	while (cnt--) {
+	for (;cnt;cnt--) {
 		src = ops->fontbuffer + (scr_readw(s--) & charmask)*cellsize;
 
 		if (attr) {
@@ -127,7 +127,7 @@ static inline void ud_putcs_unaligned(struct vc_data *vc,
 	u32 idx = vc->vc_font.width >> 3;
 	u8 *src;
 
-	while (cnt--) {
+	for (;cnt;cnt--) {
 		src = ops->fontbuffer + (scr_readw(s--) & charmask)*cellsize;
 
 		if (attr) {

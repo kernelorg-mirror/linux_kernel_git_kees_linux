@@ -241,7 +241,7 @@ int tegra_xusb_pad_register(struct tegra_xusb_pad *pad,
 	return 0;
 
 remove:
-	while (i--)
+	for (;i;i--)
 		tegra_xusb_lane_destroy(pad->lanes[i]);
 
 	of_node_put(children);
@@ -255,7 +255,7 @@ void tegra_xusb_pad_unregister(struct tegra_xusb_pad *pad)
 
 	of_phy_provider_unregister(pad->provider);
 
-	while (i--)
+	for (;i;i--)
 		tegra_xusb_lane_destroy(pad->lanes[i]);
 
 	device_unregister(&pad->dev);

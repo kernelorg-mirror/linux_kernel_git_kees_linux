@@ -1117,7 +1117,7 @@ static int it661221_set_ncts(struct it66121_ctx *ctx, u8 fs)
 		unsigned int diff;
 		unsigned int val;
 
-		while (loop_cnt--) {
+		for (;loop_cnt;loop_cnt--) {
 			msleep(30);
 			regmap_read(ctx->regmap, IT66121_AUD_PKT_CTS_CNT2_REG, &val);
 			cts = val << 12;

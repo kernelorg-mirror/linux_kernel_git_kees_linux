@@ -2634,7 +2634,7 @@ static void bitcpy(unsigned long *dst, int dst_idx, const unsigned long *src,
 				*dst++ = *src++;
 				n -= 8;
 			}
-			while (n--)
+			for (;n;n--)
 				*dst++ = *src++;
 
 			// Trailing bits
@@ -2701,7 +2701,7 @@ static void bitcpy(unsigned long *dst, int dst_idx, const unsigned long *src,
 				d0 = d1;
 				n -= 4;
 			}
-			while (n--) {
+			for (;n;n--) {
 				d1 = *src++;
 				*dst++ = d0 << left | d1 >> right;
 				d0 = d1;
@@ -2785,7 +2785,7 @@ static void bitcpy_rev(unsigned long *dst, int dst_idx,
 				*dst-- = *src--;
 				n -= 8;
 			}
-			while (n--)
+			for (;n;n--)
 				*dst-- = *src--;
 
 			// Trailing bits
@@ -2852,7 +2852,7 @@ static void bitcpy_rev(unsigned long *dst, int dst_idx,
 				d0 = d1;
 				n -= 4;
 			}
-			while (n--) {
+			for (;n;n--) {
 				d1 = *src--;
 				*dst-- = d0 >> right | d1 << left;
 				d0 = d1;
@@ -2926,7 +2926,7 @@ static void bitcpy_not(unsigned long *dst, int dst_idx,
 				*dst++ = ~*src++;
 				n -= 8;
 			}
-			while (n--)
+			for (;n;n--)
 				*dst++ = ~*src++;
 
 			// Trailing bits
@@ -2993,7 +2993,7 @@ static void bitcpy_not(unsigned long *dst, int dst_idx,
 				d0 = d1;
 				n -= 4;
 			}
-			while (n--) {
+			for (;n;n--) {
 				d1 = ~*src++;
 				*dst++ = d0 << left | d1 >> right;
 				d0 = d1;
@@ -3062,7 +3062,7 @@ static void bitfill32(unsigned long *dst, int dst_idx, u32 pat, u32 n)
 			*dst++ = val;
 			n -= 8;
 		}
-		while (n--)
+		for (;n;n--)
 			*dst++ = val;
 
 		// Trailing bits
@@ -3114,7 +3114,7 @@ static void bitxor32(unsigned long *dst, int dst_idx, u32 pat, u32 n)
 			*dst++ ^= val;
 			n -= 4;
 		}
-		while (n--)
+		for (;n;n--)
 			*dst++ ^= val;
 
 		// Trailing bits
@@ -3180,7 +3180,7 @@ static void amifb_fillrect(struct fb_info *info,
 		((unsigned long)info->screen_base & ~(BYTES_PER_LONG - 1));
 	dst_idx = ((unsigned long)info->screen_base & (BYTES_PER_LONG - 1)) * 8;
 	dst_idx += rect->dy * par->next_line * 8 + rect->dx;
-	while (height--) {
+	for (;height;height--) {
 		switch (rect->rop) {
 		case ROP_COPY:
 			fill_one_line(info->var.bits_per_pixel,
@@ -3277,7 +3277,7 @@ static void amifb_copyarea(struct fb_info *info,
 	dst_idx += dy * par->next_line * 8 + dx;
 	src_idx += sy * par->next_line * 8 + sx;
 	if (rev_copy) {
-		while (height--) {
+		for (;height;height--) {
 			dst_idx -= par->next_line * 8;
 			src_idx -= par->next_line * 8;
 			copy_one_line_rev(info->var.bits_per_pixel,
@@ -3285,7 +3285,7 @@ static void amifb_copyarea(struct fb_info *info,
 					  src_idx, width);
 		}
 	} else {
-		while (height--) {
+		for (;height;height--) {
 			copy_one_line(info->var.bits_per_pixel,
 				      par->next_plane, dst, dst_idx, src,
 				      src_idx, width);
@@ -3356,7 +3356,7 @@ static void amifb_imageblit(struct fb_info *info, const struct fb_image *image)
 		dst_idx += dy * par->next_line * 8 + dx;
 		src = image->data;
 		pitch = (image->width + 7) / 8;
-		while (height--) {
+		for (;height;height--) {
 			expand_one_line(info->var.bits_per_pixel,
 					par->next_plane, dst, dst_idx, width,
 					src, image->bg_color,

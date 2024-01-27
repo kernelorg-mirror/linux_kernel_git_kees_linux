@@ -142,7 +142,7 @@ static int vfat_hashi(const struct dentry *dentry, struct qstr *qstr)
 	len = vfat_striptail_len(qstr);
 
 	hash = init_name_hash(dentry);
-	while (len--)
+	for (;len;len--)
 		hash = partial_name_hash(nls_tolower(t, *name++), hash);
 	qstr->hash = end_name_hash(hash);
 

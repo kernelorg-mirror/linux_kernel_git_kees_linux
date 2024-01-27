@@ -476,7 +476,7 @@ static inline void o2hb_bio_wait_dec(struct o2hb_bio_wait_ctxt *wc,
 {
 	/* sadly atomic_sub_and_test() isn't available on all platforms.  The
 	 * good news is that the fast path only completes one at a time */
-	while(num--) {
+	for (;num;num--) {
 		if (atomic_dec_and_test(&wc->wc_num_reqs)) {
 			BUG_ON(num > 0);
 			complete(&wc->wc_io_complete);

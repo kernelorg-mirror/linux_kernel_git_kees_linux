@@ -168,7 +168,7 @@ static void fsl_re_dequeue(struct tasklet_struct *t)
 
 	spin_lock_irqsave(&re_chan->desc_lock, flags);
 	count =	FSL_RE_SLOT_FULL(in_be32(&re_chan->jrregs->oubring_slot_full));
-	while (count--) {
+	for (;count;count--) {
 		found = 0;
 		hwdesc = &re_chan->oub_ring_virt_addr[re_chan->oub_count];
 		list_for_each_entry_safe(desc, _desc, &re_chan->active_q,

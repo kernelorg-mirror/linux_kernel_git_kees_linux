@@ -139,7 +139,7 @@ static void slow_imageblit(const struct fb_image *image, struct fb_info *p,
 			shift = start_index;
 		}
 
-		while (j--) {
+		for (;j;j--) {
 			l--;
 			color = (*s & (1 << l)) ? fgcolor : bgcolor;
 			val |= FB_SHIFT_HIGH(p, color, shift);

@@ -212,7 +212,7 @@ void synth_write(const char *_buf, size_t count)
 {
 	const unsigned char *buf = (const unsigned char *) _buf;
 
-	while (count--)
+	for (;count;count--)
 		synth_buffer_add(*buf++);
 	synth_start();
 }

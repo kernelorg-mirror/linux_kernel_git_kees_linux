@@ -500,7 +500,7 @@ static int tegra_smmu_attach_dev(struct iommu_domain *domain,
 	return 0;
 
 disable:
-	while (index--) {
+	for (;index;index--) {
 		tegra_smmu_disable(smmu, fwspec->ids[index], as->id);
 		tegra_smmu_as_unprepare(smmu, as);
 	}

@@ -384,7 +384,7 @@ static void free_tx_desc(struct adapter *adapter, struct sge_txq *tq,
 	const int need_unmap = need_skb_unmap() && unmap;
 
 	sdesc = &tq->sdesc[cidx];
-	while (n--) {
+	for (;n;n--) {
 		/*
 		 * If we kept a reference to the original TX skb, we need to
 		 * unmap it from PCI DMA space (if required) and free it.

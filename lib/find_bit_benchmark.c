@@ -173,7 +173,7 @@ static int __init find_bit_test(void)
 	bitmap_zero(bitmap, BITMAP_LEN);
 	bitmap_zero(bitmap2, BITMAP_LEN);
 
-	while (nbits--) {
+	for (;nbits;nbits--) {
 		__set_bit(get_random_u32_below(BITMAP_LEN), bitmap);
 		__set_bit(get_random_u32_below(BITMAP_LEN), bitmap2);
 	}

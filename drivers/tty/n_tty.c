@@ -620,7 +620,7 @@ static int n_tty_process_echo_ops(struct tty_struct *tty, size_t *tail,
 			return -ENOSPC;
 
 		space -= num_bs;
-		while (num_bs--) {
+		for (;num_bs;num_bs--) {
 			tty_put_char(tty, '\b');
 			if (ldata->column > 0)
 				ldata->column--;
@@ -1509,7 +1509,7 @@ static void n_tty_lookahead_flow_ctrl(struct tty_struct *tty, const u8 *cp,
 	if (!I_IXON(tty))
 		return;
 
-	while (count--) {
+	for (;count;count--) {
 		if (fp)
 			flag = *fp++;
 		if (likely(flag == TTY_NORMAL))
@@ -1544,7 +1544,7 @@ n_tty_receive_buf_raw(struct tty_struct *tty, const u8 *cp, const u8 *fp,
 	struct n_tty_data *ldata = tty->disc_data;
 	u8 flag = TTY_NORMAL;
 
-	while (count--) {
+	for (;count;count--) {
 		if (fp)
 			flag = *fp++;
 		if (likely(flag == TTY_NORMAL))
@@ -1560,7 +1560,7 @@ n_tty_receive_buf_closing(struct tty_struct *tty, const u8 *cp, const u8 *fp,
 {
 	u8 flag = TTY_NORMAL;
 
-	while (count--) {
+	for (;count;count--) {
 		if (fp)
 			flag = *fp++;
 		if (likely(flag == TTY_NORMAL))
@@ -1575,7 +1575,7 @@ static void n_tty_receive_buf_standard(struct tty_struct *tty, const u8 *cp,
 	struct n_tty_data *ldata = tty->disc_data;
 	u8 flag = TTY_NORMAL;
 
-	while (count--) {
+	for (;count;count--) {
 		u8 c = *cp++;
 
 		if (fp)

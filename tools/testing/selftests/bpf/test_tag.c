@@ -77,7 +77,7 @@ static int __hex2bin(char ch)
 
 static int hex2bin(uint8_t *dst, const char *src, size_t count)
 {
-	while (count--) {
+	for (;count;count--) {
 		int hi = __hex2bin(*src++);
 		int lo = __hex2bin(*src++);
 

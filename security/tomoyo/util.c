@@ -440,7 +440,7 @@ static bool tomoyo_correct_word2(const char *string, size_t len)
 
 	if (!len)
 		goto out;
-	while (len--) {
+	for (;len;len--) {
 		unsigned char c = *string++;
 
 		if (c == '\\') {

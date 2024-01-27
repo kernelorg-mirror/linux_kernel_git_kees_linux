@@ -3149,7 +3149,7 @@ static int crypt_ctr_optional(struct dm_target *ti, unsigned int argc, char **ar
 	if (ret)
 		return ret;
 
-	while (opt_params--) {
+	for (;opt_params;opt_params--) {
 		opt_string = dm_shift_arg(&as);
 		if (!opt_string) {
 			ti->error = "Not enough feature arguments";

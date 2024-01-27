@@ -221,7 +221,7 @@ static inline u32 meson_spicc_pull_data(struct meson_spicc_device *spicc)
 	u32 data = 0;
 	u8 byte;
 
-	while (bytes--) {
+	for (;bytes;bytes--) {
 		byte = *spicc->tx_buf++;
 		data |= (byte & 0xff) << byte_shift;
 		byte_shift += 8;
@@ -238,7 +238,7 @@ static inline void meson_spicc_push_data(struct meson_spicc_device *spicc,
 	unsigned int byte_shift = 0;
 	u8 byte;
 
-	while (bytes--) {
+	for (;bytes;bytes--) {
 		byte = (data >> byte_shift) & 0xff;
 		*spicc->rx_buf++ = byte;
 		byte_shift += 8;

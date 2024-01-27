@@ -81,7 +81,7 @@ static int vb2_dma_sg_alloc_compacted(struct vb2_dma_sg_buf *buf,
 				break;
 
 			if (order == 0) {
-				while (last_page--)
+				for (;last_page;last_page--)
 					__free_page(buf->pages[last_page]);
 				return -ENOMEM;
 			}

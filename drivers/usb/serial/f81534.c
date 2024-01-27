@@ -229,7 +229,7 @@ static int f81534_set_register(struct usb_serial *serial, u16 reg, u8 data)
 	 * Our device maybe not reply when heavily loading, We'll retry for
 	 * F81534_USB_MAX_RETRY times.
 	 */
-	while (count--) {
+	for (;count;count--) {
 		status = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
 					 F81534_SET_GET_REGISTER,
 					 USB_TYPE_VENDOR | USB_DIR_OUT,
@@ -266,7 +266,7 @@ static int f81534_get_register(struct usb_serial *serial, u16 reg, u8 *data)
 	 * Our device maybe not reply when heavily loading, We'll retry for
 	 * F81534_USB_MAX_RETRY times.
 	 */
-	while (count--) {
+	for (;count;count--) {
 		status = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0),
 					 F81534_SET_GET_REGISTER,
 					 USB_TYPE_VENDOR | USB_DIR_IN,

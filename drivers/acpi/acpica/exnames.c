@@ -77,7 +77,7 @@ static char *acpi_ex_allocate_name_string(u32 prefix_count, u32 num_name_segs)
 	if (prefix_count == ACPI_UINT32_MAX) {
 		*temp_ptr++ = AML_ROOT_PREFIX;
 	} else {
-		while (prefix_count--) {
+		for (; prefix_count; prefix_count--) {
 			*temp_ptr++ = AML_PARENT_PREFIX;
 		}
 	}

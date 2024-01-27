@@ -63,7 +63,7 @@ static int bch2_pow(u64 n, u64 p, u64 *res)
 {
 	*res = 1;
 
-	while (p--) {
+	for (;p;p--) {
 		if (*res > div_u64(U64_MAX, n))
 			return -ERANGE;
 		*res *= n;

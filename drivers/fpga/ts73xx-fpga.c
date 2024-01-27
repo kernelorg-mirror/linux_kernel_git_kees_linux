@@ -55,7 +55,7 @@ static int ts73xx_fpga_write(struct fpga_manager *mgr, const char *buf,
 	int ret;
 	u8 reg;
 
-	while (count--) {
+	for (;count;count--) {
 		ret = readb_poll_timeout(priv->io_base + TS73XX_FPGA_CONFIG_REG,
 					 reg, !(reg & TS73XX_FPGA_WRITE_DONE),
 					 1, TS73XX_FPGA_WRITE_DONE_TIMEOUT);

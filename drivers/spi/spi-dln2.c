@@ -365,14 +365,14 @@ static int dln2_spi_copy_to_buf(u8 *dln2_buf, const u8 *src, u16 len, u8 bpw)
 		u16 *s = (u16 *)src;
 
 		len = len / 2;
-		while (len--)
+		for (;len;len--)
 			*d++ = cpu_to_le16p(s++);
 	} else {
 		__le32 *d = (__le32 *)dln2_buf;
 		u32 *s = (u32 *)src;
 
 		len = len / 4;
-		while (len--)
+		for (;len;len--)
 			*d++ = cpu_to_le32p(s++);
 	}
 #endif
@@ -398,14 +398,14 @@ static int dln2_spi_copy_from_buf(u8 *dest, const u8 *dln2_buf, u16 len, u8 bpw)
 		__le16 *s = (__le16 *)dln2_buf;
 
 		len = len / 2;
-		while (len--)
+		for (;len;len--)
 			*d++ = le16_to_cpup(s++);
 	} else {
 		u32 *d = (u32 *)dest;
 		__le32 *s = (__le32 *)dln2_buf;
 
 		len = len / 4;
-		while (len--)
+		for (;len;len--)
 			*d++ = get_unaligned_le32(s++);
 	}
 #endif

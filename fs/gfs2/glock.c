@@ -1820,7 +1820,7 @@ static int nq_m_sync(unsigned int num_gh, struct gfs2_holder *ghs,
 	for (x = 0; x < num_gh; x++) {
 		error = gfs2_glock_nq(p[x]);
 		if (error) {
-			while (x--)
+			for (;x;x--)
 				gfs2_glock_dq(p[x]);
 			break;
 		}
@@ -1875,7 +1875,7 @@ int gfs2_glock_nq_m(unsigned int num_gh, struct gfs2_holder *ghs)
 
 void gfs2_glock_dq_m(unsigned int num_gh, struct gfs2_holder *ghs)
 {
-	while (num_gh--)
+	for (;num_gh;num_gh--)
 		gfs2_glock_dq(&ghs[num_gh]);
 }
 

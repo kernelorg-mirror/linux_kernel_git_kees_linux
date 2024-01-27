@@ -211,7 +211,7 @@ static void asix_phy_reset(struct usbnet *dev, unsigned int reset_bits)
 	udelay(500);
 
 	/* See IEEE 802.3 "22.2.4.1.1 Reset": 500ms max */
-	while (timeout--) {
+	for (;timeout;timeout--) {
 		if (asix_mdio_read(dev->net, dev->mii.phy_id, MII_BMCR)
 							& BMCR_RESET)
 			udelay(100);

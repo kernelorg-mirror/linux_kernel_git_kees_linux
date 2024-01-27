@@ -1875,7 +1875,7 @@ static int isp1362_bus_resume(struct usb_hcd *hcd)
 		return status;
 	spin_lock_irqsave(&isp1362_hcd->lock, flags);
 	port = isp1362_read_reg32(isp1362_hcd, HCRHDESCA) & RH_A_NDP;
-	while (port--) {
+	for (;port;port--) {
 		u32 stat = isp1362_read_reg32(isp1362_hcd, HCRHPORT1 + port);
 
 		/* force global, not selective, resume */

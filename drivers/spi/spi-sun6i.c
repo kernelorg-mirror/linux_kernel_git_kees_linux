@@ -154,7 +154,7 @@ static inline void sun6i_spi_drain_fifo(struct sun6i_spi *sspi)
 	/* See how much data is available */
 	len = sun6i_spi_get_rx_fifo_count(sspi);
 
-	while (len--) {
+	for (;len;len--) {
 		byte = readb(sspi->base_addr + SUN6I_RXDATA_REG);
 		if (sspi->rx_buf)
 			*sspi->rx_buf++ = byte;

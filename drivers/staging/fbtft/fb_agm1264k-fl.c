@@ -397,7 +397,7 @@ static int write(struct fbtft_par *par, void *buf, size_t len)
 
 	gpiod_set_value(par->RW, 0); /* set write mode */
 
-	while (len--) {
+	for (;len;len--) {
 		u8 i, data;
 
 		data = *(u8 *)buf++;

@@ -725,7 +725,7 @@ int platform_device_add(struct platform_device *pdev)
 		pdev->id = PLATFORM_DEVID_AUTO;
 	}
 
-	while (i--) {
+	for (;i;i--) {
 		struct resource *r = &pdev->resource[i];
 		if (r->parent)
 			release_resource(r);
@@ -1048,7 +1048,7 @@ int __platform_register_drivers(struct platform_driver * const *drivers,
 	return 0;
 
 error:
-	while (i--) {
+	for (;i;i--) {
 		pr_debug("unregistering platform driver %ps\n", drivers[i]);
 		platform_driver_unregister(drivers[i]);
 	}
@@ -1069,7 +1069,7 @@ EXPORT_SYMBOL_GPL(__platform_register_drivers);
 void platform_unregister_drivers(struct platform_driver * const *drivers,
 				 unsigned int count)
 {
-	while (count--) {
+	for (;count;count--) {
 		pr_debug("unregistering platform driver %ps\n", drivers[count]);
 		platform_driver_unregister(drivers[count]);
 	}

@@ -1191,7 +1191,7 @@ static int decode_write_chunk(struct xdr_stream *xdr, u32 *length)
 
 	*length = 0;
 	segcount = be32_to_cpup(p);
-	while (segcount--) {
+	for (;segcount;segcount--) {
 		if (decode_rdma_segment(xdr, &seglength))
 			return -EIO;
 		*length += seglength;

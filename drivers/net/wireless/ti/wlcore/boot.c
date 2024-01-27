@@ -244,7 +244,7 @@ int wlcore_boot_upload_firmware(struct wl1271 *wl)
 
 	wl1271_debug(DEBUG_BOOT, "firmware chunks to be uploaded: %u", chunks);
 
-	while (chunks--) {
+	for (;chunks;chunks--) {
 		addr = be32_to_cpup((__be32 *) fw);
 		fw += sizeof(u32);
 		len = be32_to_cpup((__be32 *) fw);

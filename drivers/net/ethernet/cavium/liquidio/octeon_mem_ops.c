@@ -60,7 +60,7 @@ octeon_pci_fastwrite(struct octeon_device *oct, u8 __iomem *mapped_addr,
 
 	octeon_toggle_bar1_swapmode(oct, MEMOPS_IDX);
 
-	while (len--)
+	for (;len;len--)
 		writeb(*(hostbuf++), mapped_addr++);
 }
 
@@ -84,7 +84,7 @@ octeon_pci_fastread(struct octeon_device *oct, u8 __iomem *mapped_addr,
 
 	octeon_toggle_bar1_swapmode(oct, MEMOPS_IDX);
 
-	while (len--)
+	for (;len;len--)
 		*(hostbuf++) = readb(mapped_addr++);
 }
 

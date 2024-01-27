@@ -120,13 +120,13 @@ static int indirect_reg_write(void *context, unsigned int reg, unsigned int val)
 
 static void pmci_write_fifo(void __iomem *base, const u32 *buf, size_t count)
 {
-	while (count--)
+	for (;count;count--)
 		writel(*buf++, base);
 }
 
 static void pmci_read_fifo(void __iomem *base, u32 *buf, size_t count)
 {
-	while (count--)
+	for (;count;count--)
 		*buf++ = readl(base);
 }
 

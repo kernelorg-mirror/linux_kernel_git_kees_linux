@@ -713,7 +713,7 @@ sloop:
 	buff->head += pad + len;
 	m->size = htons(ntohs(m->size) + pad + len);
 	/* Add ev. padding from prev. sync_conn */
-	while (pad--)
+	for (;pad;pad--)
 		*(p++) = 0;
 
 	s = (union ip_vs_sync_conn *)p;
