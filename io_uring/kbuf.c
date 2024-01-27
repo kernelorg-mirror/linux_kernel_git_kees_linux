@@ -314,12 +314,12 @@ void io_destroy_buffers(struct io_ring_ctx *ctx)
 	for (i = 0; i < BGID_ARRAY; i++) {
 		if (!ctx->io_bl)
 			break;
-		__io_remove_buffers(ctx, &ctx->io_bl[i], -1U);
+		__io_remove_buffers(ctx, &ctx->io_bl[i], UINT_MAX);
 	}
 
 	xa_for_each(&ctx->io_bl_xa, index, bl) {
 		xa_erase(&ctx->io_bl_xa, bl->bgid);
-		__io_remove_buffers(ctx, bl, -1U);
+		__io_remove_buffers(ctx, bl, UINT_MAX);
 		kfree_rcu(bl, rcu);
 	}
 
@@ -742,7 +742,7 @@ int io_unregister_pbuf_ring(struct io_ring_ctx *ctx, void __user *arg)
 	if (!bl->is_mapped)
 		return -EINVAL;
 
-	__io_remove_buffers(ctx, bl, -1U);
+	__io_remove_buffers(ctx, bl, UINT_MAX);
 	if (bl->bgid >= BGID_ARRAY) {
 		xa_erase(&ctx->io_bl_xa, bl->bgid);
 		kfree_rcu(bl, rcu);

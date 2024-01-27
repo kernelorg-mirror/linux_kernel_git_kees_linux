@@ -32,7 +32,7 @@
 #define MER_ME (1<<0)
 #define MER_HIE (1<<1)
 
-#define SPURIOUS_IRQ	(-1U)
+#define SPURIOUS_IRQ	(UINT_MAX)
 
 static DEFINE_STATIC_KEY_FALSE(xintc_is_be);
 
@@ -144,7 +144,7 @@ static void xil_intc_irq_handler(struct irq_desc *desc)
 	do {
 		u32 hwirq = xintc_read(irqc, IVR);
 
-		if (hwirq == -1U)
+		if (hwirq == UINT_MAX)
 			break;
 
 		generic_handle_domain_irq(irqc->root_domain, hwirq);

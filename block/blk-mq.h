@@ -31,7 +31,7 @@ struct blk_mq_ctx {
 } ____cacheline_aligned_in_smp;
 
 enum {
-	BLK_MQ_NO_TAG		= -1U,
+	BLK_MQ_NO_TAG		= UINT_MAX,
 	BLK_MQ_TAG_MIN		= 1,
 	BLK_MQ_TAG_MAX		= BLK_MQ_NO_TAG - 1,
 };

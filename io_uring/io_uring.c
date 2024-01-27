@@ -141,7 +141,7 @@ struct io_defer_entry {
  * No waiters. It's larger than any valid value of the tw counter
  * so that tests against ->cq_wait_nr would fail and skip wake_up().
  */
-#define IO_CQ_WAKE_INIT		(-1U)
+#define IO_CQ_WAKE_INIT		(UINT_MAX)
 /* Forced wake up if there is a waiter regardless of ->cq_wait_nr */
 #define IO_CQ_WAKE_FORCE	(IO_CQ_WAKE_INIT >> 1)
 

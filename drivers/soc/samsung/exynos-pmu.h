@@ -11,7 +11,7 @@
 
 #include <linux/io.h>
 
-#define PMU_TABLE_END	(-1U)
+#define PMU_TABLE_END	(UINT_MAX)
 
 struct exynos_pmu_conf {
 	unsigned int offset;

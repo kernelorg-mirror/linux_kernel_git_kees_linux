@@ -172,25 +172,25 @@ xfs_inode_has_sickness(struct xfs_inode *ip, unsigned int mask)
 static inline bool
 xfs_fs_is_healthy(struct xfs_mount *mp)
 {
-	return !xfs_fs_has_sickness(mp, -1U);
+	return !xfs_fs_has_sickness(mp, UINT_MAX);
 }
 
 static inline bool
 xfs_rt_is_healthy(struct xfs_mount *mp)
 {
-	return !xfs_rt_has_sickness(mp, -1U);
+	return !xfs_rt_has_sickness(mp, UINT_MAX);
 }
 
 static inline bool
 xfs_ag_is_healthy(struct xfs_perag *pag)
 {
-	return !xfs_ag_has_sickness(pag, -1U);
+	return !xfs_ag_has_sickness(pag, UINT_MAX);
 }
 
 static inline bool
 xfs_inode_is_healthy(struct xfs_inode *ip)
 {
-	return !xfs_inode_has_sickness(ip, -1U);
+	return !xfs_inode_has_sickness(ip, UINT_MAX);
 }
 
 void xfs_fsop_geom_health(struct xfs_mount *mp, struct xfs_fsop_geom *geo);

@@ -2718,7 +2718,7 @@ xfs_rmap_has_records(
 	enum xbtree_recpacking	*outcome)
 {
 	union xfs_btree_key	mask = {
-		.rmap.rm_startblock = cpu_to_be32(-1U),
+		.rmap.rm_startblock = cpu_to_be32(UINT_MAX),
 	};
 	union xfs_btree_irec	low;
 	union xfs_btree_irec	high;

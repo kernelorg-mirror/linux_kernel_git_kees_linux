@@ -29,7 +29,7 @@
 
 #define OTX2_UNSUPP_LSE_DEPTH		GENMASK(6, 4)
 
-#define MCAST_INVALID_GRP		(-1U)
+#define MCAST_INVALID_GRP		(UINT_MAX)
 
 struct otx2_tc_flow_stats {
 	u64 bytes;

@@ -43,7 +43,7 @@ struct tda9887_priv {
 
 /* ---------------------------------------------------------------------- */
 
-#define UNSET       (-1U)
+#define UNSET       (UINT_MAX)
 
 struct tvnorm {
 	v4l2_std_id       std;

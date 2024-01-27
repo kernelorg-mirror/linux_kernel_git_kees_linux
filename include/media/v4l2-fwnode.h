@@ -57,7 +57,7 @@ struct v4l2_fwnode_endpoint {
  * All properties in &struct v4l2_fwnode_device_properties are initialized
  * to this value.
  */
-#define V4L2_FWNODE_PROPERTY_UNSET   (-1U)
+#define V4L2_FWNODE_PROPERTY_UNSET   (UINT_MAX)
 
 /**
  * enum v4l2_fwnode_orientation - possible device orientation

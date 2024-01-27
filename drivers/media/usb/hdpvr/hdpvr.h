@@ -26,7 +26,7 @@
 #define HD_PVR_PRODUCT_ID4	0x4903
 #define HD_PVR_PRODUCT_ID3	0x4982
 
-#define UNSET    (-1U)
+#define UNSET    (UINT_MAX)
 
 #define NUM_BUFFERS 64
 

@@ -1924,7 +1924,7 @@ xfs_refcount_recover_cow_leftovers(
 	};
 	union xfs_btree_irec		high = {
 		.rc.rc_domain		= XFS_REFC_DOMAIN_COW,
-		.rc.rc_startblock	= -1U,
+		.rc.rc_startblock	= UINT_MAX,
 	};
 	xfs_fsblock_t			fsb;
 	int				error;

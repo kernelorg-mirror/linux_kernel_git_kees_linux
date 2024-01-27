@@ -196,7 +196,7 @@ const struct super_operations proc_sops = {
 	.show_options	= proc_show_options,
 };
 
-enum {BIAS = -1U<<31};
+enum {BIAS = UINT_MAX<<31};
 
 static inline int use_pde(struct proc_dir_entry *pde)
 {

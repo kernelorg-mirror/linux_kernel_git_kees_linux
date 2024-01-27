@@ -295,8 +295,8 @@ struct sun_pci_dma_op {
 	int		direction;
 	char		*buf;
 };
-static struct sun_pci_dma_op sun_pci_dma_current = { -1U, 0, 0, NULL};
-static struct sun_pci_dma_op sun_pci_dma_pending = { -1U, 0, 0, NULL};
+static struct sun_pci_dma_op sun_pci_dma_current = { UINT_MAX, 0, 0, NULL};
+static struct sun_pci_dma_op sun_pci_dma_pending = { UINT_MAX, 0, 0, NULL};
 
 irqreturn_t floppy_interrupt(int irq, void *dev_id);
 
@@ -367,7 +367,7 @@ static void sun_pci_fd_enable_dma(void)
 	sun_pci_dma_pending.buf  = NULL;
 	sun_pci_dma_pending.len  = 0;
 	sun_pci_dma_pending.direction = 0;
-	sun_pci_dma_pending.addr = -1U;
+	sun_pci_dma_pending.addr = UINT_MAX;
 
 	sun_pci_dma_current.addr =
 		dma_map_single(sun_floppy_dev,
@@ -386,12 +386,12 @@ static void sun_pci_fd_enable_dma(void)
 static void sun_pci_fd_disable_dma(void)
 {
 	ebus_dma_enable(&sun_pci_fd_ebus_dma, 0);
-	if (sun_pci_dma_current.addr != -1U)
+	if (sun_pci_dma_current.addr != UINT_MAX)
 		dma_unmap_single(sun_floppy_dev,
 				 sun_pci_dma_current.addr,
 				 sun_pci_dma_current.len,
 				 sun_pci_dma_current.direction);
-	sun_pci_dma_current.addr = -1U;
+	sun_pci_dma_current.addr = UINT_MAX;
 }
 
 static void sun_pci_fd_set_dma_mode(int mode)

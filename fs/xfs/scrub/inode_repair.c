@@ -74,7 +74,7 @@
  * - Quotacheck will be scheduled if we repaired an inode that was so badly
  *   damaged that the ondisk inode had to be rebuilt.
  *
- * - Invalid user, group, or project IDs (aka -1U) will be reset to zero.
+ * - Invalid user, group, or project IDs (aka UINT_MAX) will be reset to zero.
  *   Setuid and setgid bits are cleared.
  *
  * - Data and attr forks are reset to extents format with zero extents if the
@@ -1268,7 +1268,7 @@ xrep_inode_ids(
 			xrep_force_quotacheck(sc, XFS_DQTYPE_GROUP);
 	}
 
-	if (sc->ip->i_projid == -1U) {
+	if (sc->ip->i_projid == UINT_MAX) {
 		sc->ip->i_projid = 0;
 		dirty = true;
 		if (XFS_IS_PQUOTA_ON(sc->mp))

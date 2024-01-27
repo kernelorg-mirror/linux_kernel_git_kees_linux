@@ -78,10 +78,10 @@ void generic_svm_setup(struct svm_test_data *svm, void *guest_rip, void *guest_r
 
 	memset(vmcb, 0, sizeof(*vmcb));
 	asm volatile ("vmsave %0\n\t" : : "a" (vmcb_gpa) : "memory");
-	vmcb_set_seg(&save->es, get_es(), 0, -1U, data_seg_attr);
-	vmcb_set_seg(&save->cs, get_cs(), 0, -1U, code_seg_attr);
-	vmcb_set_seg(&save->ss, get_ss(), 0, -1U, data_seg_attr);
-	vmcb_set_seg(&save->ds, get_ds(), 0, -1U, data_seg_attr);
+	vmcb_set_seg(&save->es, get_es(), 0, UINT_MAX, data_seg_attr);
+	vmcb_set_seg(&save->cs, get_cs(), 0, UINT_MAX, code_seg_attr);
+	vmcb_set_seg(&save->ss, get_ss(), 0, UINT_MAX, data_seg_attr);
+	vmcb_set_seg(&save->ds, get_ds(), 0, UINT_MAX, data_seg_attr);
 	vmcb_set_seg(&save->gdtr, 0, get_gdt().address, get_gdt().size, 0);
 	vmcb_set_seg(&save->idtr, 0, get_idt().address, get_idt().size, 0);
 

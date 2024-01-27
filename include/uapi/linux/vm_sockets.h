@@ -96,13 +96,13 @@
  * sockaddr_vm and indicates the context ID of the current endpoint.
  */
 
-#define VMADDR_CID_ANY -1U
+#define VMADDR_CID_ANY UINT_MAX
 
 /* Bind to any available port.  Works for the svm_port field of
  * sockaddr_vm.
  */
 
-#define VMADDR_PORT_ANY -1U
+#define VMADDR_PORT_ANY UINT_MAX
 
 /* Use this as the destination CID in an address when referring to the
  * hypervisor.  VMCI relies on it being 0, but this would be useful for other
@@ -148,7 +148,7 @@
 
 /* Invalid vSockets version. */
 
-#define VM_SOCKETS_INVALID_VERSION -1U
+#define VM_SOCKETS_INVALID_VERSION UINT_MAX
 
 /* The epoch (first) component of the vSockets version.  A single byte
  * representing the epoch component of the vSockets version.

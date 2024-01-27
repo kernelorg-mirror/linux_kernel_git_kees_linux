@@ -58,10 +58,10 @@ MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
 MODULE_VERSION(CX231XX_VERSION);
 
-static unsigned int card[]     = {[0 ... (CX231XX_MAXBOARDS - 1)] = -1U };
-static unsigned int video_nr[] = {[0 ... (CX231XX_MAXBOARDS - 1)] = -1U };
-static unsigned int vbi_nr[]   = {[0 ... (CX231XX_MAXBOARDS - 1)] = -1U };
-static unsigned int radio_nr[] = {[0 ... (CX231XX_MAXBOARDS - 1)] = -1U };
+static unsigned int card[]     = {[0 ... (CX231XX_MAXBOARDS - 1)] = UINT_MAX };
+static unsigned int video_nr[] = {[0 ... (CX231XX_MAXBOARDS - 1)] = UINT_MAX };
+static unsigned int vbi_nr[]   = {[0 ... (CX231XX_MAXBOARDS - 1)] = UINT_MAX };
+static unsigned int radio_nr[] = {[0 ... (CX231XX_MAXBOARDS - 1)] = UINT_MAX };
 
 module_param_array(card, int, NULL, 0444);
 module_param_array(video_nr, int, NULL, 0444);

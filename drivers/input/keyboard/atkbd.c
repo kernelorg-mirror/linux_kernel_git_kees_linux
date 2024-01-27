@@ -1010,7 +1010,7 @@ static void atkbd_apply_forced_release_keylist(struct atkbd* atkbd,
 	unsigned int i;
 
 	if (atkbd->set == 2)
-		for (i = 0; keys[i] != -1U; i++)
+		for (i = 0; keys[i] != UINT_MAX; i++)
 			__set_bit(keys[i], atkbd->force_release_mask);
 }
 
@@ -1019,7 +1019,7 @@ static void atkbd_apply_forced_release_keylist(struct atkbd* atkbd,
  * events so we have to do it ourselves.
  */
 static unsigned int atkbd_dell_laptop_forced_release_keys[] = {
-	0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x8b, 0x8f, 0x93, -1U
+	0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x8b, 0x8f, 0x93, UINT_MAX
 };
 
 /*
@@ -1027,35 +1027,35 @@ static unsigned int atkbd_dell_laptop_forced_release_keys[] = {
  * for its video switch
  */
 static unsigned int atkbd_hp_forced_release_keys[] = {
-	0x94, -1U
+	0x94, UINT_MAX
 };
 
 /*
  * Samsung NC10,NC20 with Fn+F? key release not working
  */
 static unsigned int atkbd_samsung_forced_release_keys[] = {
-	0x82, 0x83, 0x84, 0x86, 0x88, 0x89, 0xb3, 0xf7, 0xf9, -1U
+	0x82, 0x83, 0x84, 0x86, 0x88, 0x89, 0xb3, 0xf7, 0xf9, UINT_MAX
 };
 
 /*
  * Amilo Pi 3525 key release for Fn+Volume keys not working
  */
 static unsigned int atkbd_amilo_pi3525_forced_release_keys[] = {
-	0x20, 0xa0, 0x2e, 0xae, 0x30, 0xb0, -1U
+	0x20, 0xa0, 0x2e, 0xae, 0x30, 0xb0, UINT_MAX
 };
 
 /*
  * Amilo Xi 3650 key release for light touch bar not working
  */
 static unsigned int atkbd_amilo_xi3650_forced_release_keys[] = {
-	0x67, 0xed, 0x90, 0xa2, 0x99, 0xa4, 0xae, 0xb0, -1U
+	0x67, 0xed, 0x90, 0xa2, 0x99, 0xa4, 0xae, 0xb0, UINT_MAX
 };
 
 /*
  * Soltech TA12 system with broken key release on volume keys and mute key
  */
 static unsigned int atkdb_soltech_ta12_forced_release_keys[] = {
-	0xa0, 0xae, 0xb0, -1U
+	0xa0, 0xae, 0xb0, UINT_MAX
 };
 
 /*
@@ -1063,7 +1063,7 @@ static unsigned int atkdb_soltech_ta12_forced_release_keys[] = {
  * keys, with key list below common among them
  */
 static unsigned int atkbd_volume_forced_release_keys[] = {
-	0xae, 0xb0, -1U
+	0xae, 0xb0, UINT_MAX
 };
 
 /*

@@ -410,7 +410,7 @@ xchk_agf_xref_cntbt(
 		return;
 
 	/* Any freespace at all? */
-	error = xfs_alloc_lookup_le(sc->sa.cnt_cur, 0, -1U, &have);
+	error = xfs_alloc_lookup_le(sc->sa.cnt_cur, 0, UINT_MAX, &have);
 	if (!xchk_should_check_xref(sc, &error, &sc->sa.cnt_cur))
 		return;
 	if (!have) {

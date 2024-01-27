@@ -632,7 +632,7 @@ __xfs_getfsmap_datadev(
 	}
 	info->low.rm_startblock = XFS_FSB_TO_AGBNO(mp, start_fsb);
 
-	info->high.rm_startblock = -1U;
+	info->high.rm_startblock = UINT_MAX;
 	info->high.rm_owner = ULLONG_MAX;
 	info->high.rm_offset = ULLONG_MAX;
 	info->high.rm_blockcount = 0;
@@ -814,7 +814,7 @@ xfs_getfsmap_check_keys(
 		if (low_key->fmr_offset)
 			return false;
 	}
-	if (high_key->fmr_flags != -1U &&
+	if (high_key->fmr_flags != UINT_MAX &&
 	    (high_key->fmr_flags & (FMR_OF_SPECIAL_OWNER |
 				    FMR_OF_EXTENT_MAP))) {
 		if (high_key->fmr_offset && high_key->fmr_offset != U64_MAX)

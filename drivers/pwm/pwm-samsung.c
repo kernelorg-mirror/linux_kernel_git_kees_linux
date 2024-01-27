@@ -286,7 +286,7 @@ static void pwm_samsung_disable(struct pwm_chip *chip, struct pwm_device *pwm)
 	 * In case the PWM is at 100% duty cycle, force a manual
 	 * update to prevent the signal from staying high.
 	 */
-	if (readl(our_chip->base + REG_TCMPB(pwm->hwpwm)) == (u32)-1U)
+	if (readl(our_chip->base + REG_TCMPB(pwm->hwpwm)) == (u32)UINT_MAX)
 		__pwm_samsung_manual_update(our_chip, pwm);
 
 	our_chip->disabled_mask |= BIT(pwm->hwpwm);

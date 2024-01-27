@@ -680,7 +680,7 @@ enum {
 	((policy & ((1 << BLK_MQ_F_ALLOC_POLICY_BITS) - 1)) \
 		<< BLK_MQ_F_ALLOC_POLICY_START_BIT)
 
-#define BLK_MQ_NO_HCTX_IDX	(-1U)
+#define BLK_MQ_NO_HCTX_IDX	(UINT_MAX)
 
 struct gendisk *__blk_mq_alloc_disk(struct blk_mq_tag_set *set, void *queuedata,
 		struct lock_class_key *lkclass);

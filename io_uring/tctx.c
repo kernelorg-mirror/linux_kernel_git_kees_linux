@@ -246,7 +246,7 @@ static int io_ring_add_registered_fd(struct io_uring_task *tctx, int fd,
  * Register a ring fd to avoid fdget/fdput for each io_uring_enter()
  * invocation. User passes in an array of struct io_uring_rsrc_update
  * with ->data set to the ring_fd, and ->offset given for the desired
- * index. If no index is desired, application may set ->offset == -1U
+ * index. If no index is desired, application may set ->offset == UINT_MAX
  * and we'll find an available index. Returns number of entries
  * successfully processed, or < 0 on error if none were processed.
  */
@@ -281,7 +281,7 @@ int io_ringfd_register(struct io_ring_ctx *ctx, void __user *__arg,
 			break;
 		}
 
-		if (reg.offset == -1U) {
+		if (reg.offset == UINT_MAX) {
 			start = 0;
 			end = IO_RINGFD_REG_MAX;
 		} else {

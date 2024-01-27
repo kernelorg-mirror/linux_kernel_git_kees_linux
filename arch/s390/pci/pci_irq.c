@@ -279,7 +279,7 @@ int arch_setup_msi_irqs(struct pci_dev *pdev, int nvec, int type)
 	int rc, irq;
 
 	zdev->aisb = ULONG_MAX;
-	zdev->msi_first_bit = -1U;
+	zdev->msi_first_bit = UINT_MAX;
 	if (type == PCI_CAP_ID_MSI && nvec > 1)
 		return 1;
 	msi_vecs = min_t(unsigned int, nvec, zdev->max_msi);
@@ -387,7 +387,7 @@ void arch_teardown_msi_irqs(struct pci_dev *pdev)
 		zdev->aibv = NULL;
 	}
 
-	if ((irq_delivery == DIRECTED) && zdev->msi_first_bit != -1U)
+	if ((irq_delivery == DIRECTED) && zdev->msi_first_bit != UINT_MAX)
 		airq_iv_free(zpci_ibv[0], zdev->msi_first_bit, zdev->msi_nr_irqs);
 }
 

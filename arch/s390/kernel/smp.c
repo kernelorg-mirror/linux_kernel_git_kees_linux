@@ -96,7 +96,7 @@ EXPORT_SYMBOL(smp_cpu_mtid);
 __vector128 __initdata boot_cpu_vector_save_area[__NUM_VXRS];
 #endif
 
-static unsigned int smp_max_threads __initdata = -1U;
+static unsigned int smp_max_threads __initdata = UINT_MAX;
 cpumask_t cpu_setup_mask;
 
 static int __init early_nosmt(char *s)
@@ -307,7 +307,7 @@ static void pcpu_start_fn(struct pcpu *pcpu, void (*func)(void *), void *data)
 	lc->restart_stack = lc->kernel_stack;
 	lc->restart_fn = (unsigned long) func;
 	lc->restart_data = (unsigned long) data;
-	lc->restart_source = -1U;
+	lc->restart_source = UINT_MAX;
 	pcpu_sigp_retry(pcpu, SIGP_RESTART, 0);
 }
 
@@ -847,7 +847,7 @@ static void smp_start_secondary(void *cpuvoid)
 	S390_lowcore.restart_stack = (unsigned long)restart_stack;
 	S390_lowcore.restart_fn = (unsigned long)do_restart;
 	S390_lowcore.restart_data = 0;
-	S390_lowcore.restart_source = -1U;
+	S390_lowcore.restart_source = UINT_MAX;
 	S390_lowcore.restart_flags = 0;
 	restore_access_regs(S390_lowcore.access_regs_save_area);
 	cpu_init();

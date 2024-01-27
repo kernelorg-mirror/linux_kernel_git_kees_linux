@@ -41,7 +41,7 @@ module_param(disable_usb_speed_check, int, 0444);
 MODULE_PARM_DESC(disable_usb_speed_check,
 		 "override min bandwidth requirement of 480M bps");
 
-static unsigned int card[]     = {[0 ... (EM28XX_MAXBOARDS - 1)] = -1U };
+static unsigned int card[]     = {[0 ... (EM28XX_MAXBOARDS - 1)] = UINT_MAX };
 module_param_array(card,  int, NULL, 0444);
 MODULE_PARM_DESC(card,     "card type");
 

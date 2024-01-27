@@ -50,7 +50,7 @@ MODULE_DESCRIPTION("device driver for various i2c TV sound decoder / audiomux ch
 MODULE_AUTHOR("Eric Sandeen, Steve VanDeBogart, Greg Alexander, Gerd Knorr");
 MODULE_LICENSE("GPL");
 
-#define UNSET    (-1U)
+#define UNSET    (UINT_MAX)
 
 /* ---------------------------------------------------------------------- */
 /* our structs                                                            */

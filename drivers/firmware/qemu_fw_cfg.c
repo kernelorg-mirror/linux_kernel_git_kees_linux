@@ -131,7 +131,7 @@ end:
 static ssize_t fw_cfg_read_blob(u16 key,
 				void *buf, loff_t pos, size_t count)
 {
-	u32 glk = -1U;
+	u32 glk = UINT_MAX;
 	acpi_status status;
 
 	/* If we have ACPI, ensure mutual exclusion against any potential
@@ -161,7 +161,7 @@ static ssize_t fw_cfg_read_blob(u16 key,
 static ssize_t fw_cfg_write_blob(u16 key,
 				 void *buf, loff_t pos, size_t count)
 {
-	u32 glk = -1U;
+	u32 glk = UINT_MAX;
 	acpi_status status;
 	ssize_t ret = count;
 

@@ -767,7 +767,7 @@ static unsigned int get_tag(struct nullb_queue *nq)
 	do {
 		tag = find_first_zero_bit(nq->tag_map, nq->queue_depth);
 		if (tag >= nq->queue_depth)
-			return -1U;
+			return UINT_MAX;
 	} while (test_and_set_bit_lock(tag, nq->tag_map));
 
 	return tag;
@@ -786,7 +786,7 @@ static struct nullb_cmd *__alloc_cmd(struct nullb_queue *nq)
 	unsigned int tag;
 
 	tag = get_tag(nq);
-	if (tag != -1U) {
+	if (tag != UINT_MAX) {
 		cmd = &nq->cmds[tag];
 		cmd->tag = tag;
 		cmd->error = BLK_STS_OK;
@@ -1911,7 +1911,7 @@ static int setup_commands(struct nullb_queue *nq)
 
 	for (i = 0; i < nq->queue_depth; i++) {
 		cmd = &nq->cmds[i];
-		cmd->tag = -1U;
+		cmd->tag = UINT_MAX;
 	}
 
 	return 0;

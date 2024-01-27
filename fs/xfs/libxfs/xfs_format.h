@@ -1220,7 +1220,7 @@ static inline bool xfs_dinode_has_large_extent_counts(
  * This corresponds (after conversion to a Unix timestamp) with an incore
  * expiration of Jul  2 20:20:24 UTC 2486.
  *
- * The ondisk field supports values up to -1U, which corresponds to an incore
+ * The ondisk field supports values up to UINT_MAX, which corresponds to an incore
  * expiration in 2514.  This is beyond the maximum the bigtime inode timestamp,
  * so we cap the maximum bigtime quota expiration to the max inode timestamp.
  */

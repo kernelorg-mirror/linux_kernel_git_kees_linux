@@ -1626,7 +1626,7 @@ static int migrate_type_cmp(void *a, void *b)
 	struct page_stat *r = b;
 
 	/* for internal use to find free'd page */
-	if (l->migrate_type == -1U)
+	if (l->migrate_type == UINT_MAX)
 		return 0;
 
 	if (l->migrate_type < r->migrate_type)
@@ -1647,7 +1647,7 @@ static int gfp_flags_cmp(void *a, void *b)
 	struct page_stat *r = b;
 
 	/* for internal use to find free'd page */
-	if (l->gfp_flags == -1U)
+	if (l->gfp_flags == UINT_MAX)
 		return 0;
 
 	if (l->gfp_flags < r->gfp_flags)

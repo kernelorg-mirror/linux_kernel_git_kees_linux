@@ -35,7 +35,7 @@
 
 #define MODULE_NAME "dm1105"
 
-#define UNSET (-1U)
+#define UNSET (UINT_MAX)
 
 #define DM1105_BOARD_NOAUTO			UNSET
 #define DM1105_BOARD_UNKNOWN			0

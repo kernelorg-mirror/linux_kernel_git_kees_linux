@@ -34,7 +34,7 @@
 
 #define CX88_VERSION "1.0.0"
 
-#define UNSET (-1U)
+#define UNSET (UINT_MAX)
 
 #define CX88_MAXBOARDS 8
 

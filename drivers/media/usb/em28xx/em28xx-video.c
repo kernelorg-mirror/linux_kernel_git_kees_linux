@@ -74,9 +74,9 @@ MODULE_VERSION(EM28XX_VERSION);
 					 EM25XX_FRMDATAHDR_BYTE2_FRAME_END |   \
 					 EM25XX_FRMDATAHDR_BYTE2_FRAME_ID)
 
-static unsigned int video_nr[] = {[0 ... (EM28XX_MAXBOARDS - 1)] = -1U };
-static unsigned int vbi_nr[]   = {[0 ... (EM28XX_MAXBOARDS - 1)] = -1U };
-static unsigned int radio_nr[] = {[0 ... (EM28XX_MAXBOARDS - 1)] = -1U };
+static unsigned int video_nr[] = {[0 ... (EM28XX_MAXBOARDS - 1)] = UINT_MAX };
+static unsigned int vbi_nr[]   = {[0 ... (EM28XX_MAXBOARDS - 1)] = UINT_MAX };
+static unsigned int radio_nr[] = {[0 ... (EM28XX_MAXBOARDS - 1)] = UINT_MAX };
 
 module_param_array(video_nr, int, NULL, 0444);
 module_param_array(vbi_nr, int, NULL, 0444);

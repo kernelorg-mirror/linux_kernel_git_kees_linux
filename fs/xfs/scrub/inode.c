@@ -445,15 +445,15 @@ xchk_dinode(
 	 * di_uid/di_gid -- -1 isn't invalid, but there's no way that
 	 * userspace could have created that.
 	 */
-	if (dip->di_uid == cpu_to_be32(-1U) ||
-	    dip->di_gid == cpu_to_be32(-1U))
+	if (dip->di_uid == cpu_to_be32(UINT_MAX) ||
+	    dip->di_gid == cpu_to_be32(UINT_MAX))
 		xchk_ino_set_warning(sc, ino);
 
 	/*
 	 * project id of -1 isn't supposed to be valid, but the kernel didn't
 	 * always validate that.
 	 */
-	if (prid == -1U)
+	if (prid == UINT_MAX)
 		xchk_ino_set_warning(sc, ino);
 
 	/* di_format */

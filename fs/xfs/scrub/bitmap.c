@@ -455,7 +455,7 @@ xbitmap32_destroy(
 {
 	struct xbitmap32_node	*bn;
 
-	while ((bn = xbitmap32_tree_iter_first(&bitmap->xb_root, 0, -1U))) {
+	while ((bn = xbitmap32_tree_iter_first(&bitmap->xb_root, 0, UINT_MAX))) {
 		xbitmap32_tree_remove(bn, &bitmap->xb_root);
 		kfree(bn);
 	}

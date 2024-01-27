@@ -34,7 +34,7 @@ struct mlxsw_sp_sb_cm {
 	   freeze_thresh:1;
 };
 
-#define MLXSW_SP_SB_INFI -1U
+#define MLXSW_SP_SB_INFI UINT_MAX
 #define MLXSW_SP_SB_REST -2U
 
 struct mlxsw_sp_sb_pm {

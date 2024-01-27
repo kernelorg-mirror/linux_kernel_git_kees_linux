@@ -233,7 +233,7 @@ void efx_siena_init_rx_queue(struct efx_rx_queue *rx_queue)
 	rx_queue->added_count = 0;
 	rx_queue->notified_count = 0;
 	rx_queue->removed_count = 0;
-	rx_queue->min_fill = -1U;
+	rx_queue->min_fill = UINT_MAX;
 	efx_init_rx_recycle_ring(rx_queue);
 
 	rx_queue->page_remove = 0;

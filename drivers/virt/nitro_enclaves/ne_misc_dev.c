@@ -1306,7 +1306,7 @@ static long ne_enclave_ioctl(struct file *file, unsigned int cmd, unsigned long 
 
 		/*
 		 * Do not use well-known CIDs - 0, 1, 2 - for enclaves.
-		 * VMADDR_CID_ANY = -1U
+		 * VMADDR_CID_ANY = UINT_MAX
 		 * VMADDR_CID_HYPERVISOR = 0
 		 * VMADDR_CID_LOCAL = 1
 		 * VMADDR_CID_HOST = 2

@@ -3272,7 +3272,7 @@ put_result:
 	err = -ENOMEM;
 	if (!dh)
 		goto out;
-	dh->minor = -1U;
+	dh->minor = UINT_MAX;
 	dh->ret_code = NO_ERROR;
 	err = nla_put_drbd_cfg_context(skb, resource, NULL, NULL);
 	if (err)
@@ -3396,7 +3396,7 @@ put_result:
 	if (!dh)
 		goto out;
 	dh->ret_code = retcode;
-	dh->minor = -1U;
+	dh->minor = UINT_MAX;
 	if (retcode == NO_ERROR) {
 		dh->minor = device->minor;
 		err = nla_put_drbd_cfg_context(skb, device->resource, NULL, device);
@@ -3522,7 +3522,7 @@ put_result:
 	if (!dh)
 		goto out;
 	dh->ret_code = retcode;
-	dh->minor = -1U;
+	dh->minor = UINT_MAX;
 	if (retcode == NO_ERROR) {
 		struct net_conf *net_conf;
 
@@ -3664,7 +3664,7 @@ put_result:
 	if (!dh)
 		goto out;
 	dh->ret_code = retcode;
-	dh->minor = -1U;
+	dh->minor = UINT_MAX;
 	if (retcode == NO_ERROR) {
 		struct peer_device_info peer_device_info;
 		struct peer_device_statistics peer_device_statistics;
@@ -3930,7 +3930,7 @@ next_resource:
 			 * configuration. */
 			struct drbd_connection *connection;
 
-			dh->minor = -1U;
+			dh->minor = UINT_MAX;
 			dh->ret_code = NO_ERROR;
 			connection = the_only_connection(resource);
 			if (nla_put_drbd_cfg_context(skb, resource, connection, NULL))
@@ -4584,7 +4584,7 @@ int notify_resource_state(struct sk_buff *skb,
 	dh = genlmsg_put(skb, 0, seq, &drbd_genl_family, 0, DRBD_RESOURCE_STATE);
 	if (!dh)
 		goto nla_put_failure;
-	dh->minor = -1U;
+	dh->minor = UINT_MAX;
 	dh->ret_code = NO_ERROR;
 	if (nla_put_drbd_cfg_context(skb, resource, NULL, NULL) ||
 	    nla_put_notification_header(skb, type) ||
@@ -4686,7 +4686,7 @@ int notify_connection_state(struct sk_buff *skb,
 	dh = genlmsg_put(skb, 0, seq, &drbd_genl_family, 0, DRBD_CONNECTION_STATE);
 	if (!dh)
 		goto nla_put_failure;
-	dh->minor = -1U;
+	dh->minor = UINT_MAX;
 	dh->ret_code = NO_ERROR;
 	if (nla_put_drbd_cfg_context(skb, connection->resource, connection, NULL) ||
 	    nla_put_notification_header(skb, type) ||
@@ -4737,7 +4737,7 @@ int notify_peer_device_state(struct sk_buff *skb,
 	dh = genlmsg_put(skb, 0, seq, &drbd_genl_family, 0, DRBD_PEER_DEVICE_STATE);
 	if (!dh)
 		goto nla_put_failure;
-	dh->minor = -1U;
+	dh->minor = UINT_MAX;
 	dh->ret_code = NO_ERROR;
 	if (nla_put_drbd_cfg_context(skb, resource, peer_device->connection, peer_device->device) ||
 	    nla_put_notification_header(skb, type) ||
@@ -4820,7 +4820,7 @@ static int notify_initial_state_done(struct sk_buff *skb, unsigned int seq)
 	dh = genlmsg_put(skb, 0, seq, &drbd_genl_family, 0, DRBD_INITIAL_STATE_DONE);
 	if (!dh)
 		goto nla_put_failure;
-	dh->minor = -1U;
+	dh->minor = UINT_MAX;
 	dh->ret_code = NO_ERROR;
 	if (nla_put_notification_header(skb, NOTIFY_EXISTS))
 		goto nla_put_failure;

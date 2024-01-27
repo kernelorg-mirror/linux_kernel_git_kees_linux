@@ -365,7 +365,7 @@ static unsigned int ir_update_mapping(struct rc_dev *dev,
  * for it.
  *
  * return:	index of the mapping containing scancode in question
- *		or -1U in case of failure.
+ *		or UINT_MAX in case of failure.
  */
 static unsigned int ir_establish_scancode(struct rc_dev *dev,
 					  struct rc_map *rc_map,
@@ -397,7 +397,7 @@ static unsigned int ir_establish_scancode(struct rc_dev *dev,
 	/* No previous mapping found, we might need to grow the table */
 	if (rc_map->size == rc_map->len) {
 		if (!resize || ir_resize_table(dev, rc_map, GFP_ATOMIC))
-			return -1U;
+			return UINT_MAX;
 	}
 
 	/* i is the proper index to insert our new keycode */
@@ -517,7 +517,7 @@ static int rc_map_cmp(const void *key, const void *elt)
  * This routine performs binary search in RC keykeymap table for
  * given scancode.
  *
- * return:	index in the table, -1U if not found
+ * return:	index in the table, UINT_MAX if not found
  */
 static unsigned int ir_lookup_by_scancode(const struct rc_map *rc_map,
 					  u64 scancode)
@@ -527,7 +527,7 @@ static unsigned int ir_lookup_by_scancode(const struct rc_map *rc_map,
 	res = bsearch(&scancode, rc_map->scan, rc_map->len,
 		      sizeof(struct rc_map_table), rc_map_cmp);
 	if (!res)
-		return -1U;
+		return UINT_MAX;
 	else
 		return res - rc_map->scan;
 }

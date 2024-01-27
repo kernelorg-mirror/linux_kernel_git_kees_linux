@@ -57,7 +57,7 @@
 #define RAW_LINES            640
 #define RAW_BPL             1024
 
-#define UNSET (-1U)
+#define UNSET (UINT_MAX)
 
 /* Min. value in VDELAY register. */
 #define MIN_VDELAY 2

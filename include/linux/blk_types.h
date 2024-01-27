@@ -255,7 +255,7 @@ static inline void bio_issue_init(struct bio_issue *issue,
 typedef __u32 __bitwise blk_opf_t;
 
 typedef unsigned int blk_qc_t;
-#define BLK_QC_T_NONE		-1U
+#define BLK_QC_T_NONE		UINT_MAX
 
 /*
  * main unit of I/O for the block layer and lower layers (ie drivers and

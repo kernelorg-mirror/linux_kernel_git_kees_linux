@@ -5882,7 +5882,7 @@ static int rtnl_stats_get_parse(const struct nlmsghdr *nlh,
 
 	filters->mask[0] = filter_mask;
 	for (i = 1; i < ARRAY_SIZE(filters->mask); i++)
-		filters->mask[i] = -1U;
+		filters->mask[i] = UINT_MAX;
 
 	err = nlmsg_parse(nlh, sizeof(struct if_stats_msg), tb,
 			  IFLA_STATS_GETSET_MAX, rtnl_stats_get_policy, extack);

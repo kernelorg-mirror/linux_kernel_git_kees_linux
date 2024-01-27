@@ -60,7 +60,7 @@ MODULE_PARM_DESC(card, "card type");
 
 static unsigned int cx23885_devcount;
 
-#define NO_SYNC_LINE (-1U)
+#define NO_SYNC_LINE (UINT_MAX)
 
 /* FIXME, these allocations will change when
  * analog arrives. The be reviewed.

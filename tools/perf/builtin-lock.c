@@ -2374,7 +2374,7 @@ static int parse_lock_type(const struct option *opt __maybe_unused, const char *
 	for (tok = strtok_r(s, ", ", &tmp); tok; tok = strtok_r(NULL, ", ", &tmp)) {
 		unsigned int flags = get_type_flag(tok);
 
-		if (flags == -1U) {
+		if (flags == UINT_MAX) {
 			pr_err("Unknown lock flags: %s\n", tok);
 			ret = -1;
 			break;

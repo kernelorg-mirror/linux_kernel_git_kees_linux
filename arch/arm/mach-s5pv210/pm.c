@@ -145,8 +145,8 @@ static int s5pv210_suspend_enter(suspend_state_t state)
 	S3C_PMDBG("%s: wakeup masks: %08x,%08x\n", __func__,
 			s5pv210_irqwake_intmask, eint_wakeup_mask);
 
-	if (s5pv210_irqwake_intmask == -1U
-	    && eint_wakeup_mask == -1U) {
+	if (s5pv210_irqwake_intmask == UINT_MAX
+	    && eint_wakeup_mask == UINT_MAX) {
 		pr_err("%s: No wake-up sources!\n", __func__);
 		pr_err("%s: Aborting sleep\n", __func__);
 		return -EINVAL;

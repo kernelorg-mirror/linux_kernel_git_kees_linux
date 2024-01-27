@@ -1089,7 +1089,7 @@ static inline void vma_iter_init(struct vma_iterator *vmi,
 #ifdef CONFIG_SCHED_MM_CID
 
 enum mm_cid_state {
-	MM_CID_UNSET = -1U,		/* Unset state has lazy_put flag set. */
+	MM_CID_UNSET = UINT_MAX,		/* Unset state has lazy_put flag set. */
 	MM_CID_LAZY_PUT = (1U << 31),
 };
 

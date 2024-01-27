@@ -124,7 +124,7 @@ DEFINE_TEST_ARRAY(u32) = {
 	{1U << 16, 1U << 15, 3*(1U << 15), 1U << 15, 1U << 31, false, false, false},
 	{1U << 31, 1U << 31, 0, 0, 0, true, false, true},
 
-	{-2U, 1U, -1U, -3U, -2U, false, false, false},
+	{-2U, 1U, UINT_MAX, -3U, -2U, false, false, false},
 	{-4U, 5U, 1U, -9U, -20U, true, false, true},
 };
 

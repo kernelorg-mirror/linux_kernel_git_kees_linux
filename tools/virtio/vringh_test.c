@@ -92,7 +92,7 @@ static void find_cpus(unsigned int *first, unsigned int *last)
 {
 	unsigned int i;
 
-	*first = -1U;
+	*first = UINT_MAX;
 	*last = 0;
 	for (i = 0; i < 4096; i++) {
 		cpu_set_t set;

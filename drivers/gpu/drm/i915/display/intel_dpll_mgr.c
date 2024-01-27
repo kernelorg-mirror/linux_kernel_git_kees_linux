@@ -3088,8 +3088,8 @@ static int icl_calc_mg_pll_state(struct intel_crtc_state *crtc_state,
 				MG_PLL_TDC_COLDST_COLDSTART;
 			pll_state->mg_pll_bias_mask = 0;
 		} else {
-			pll_state->mg_pll_tdc_coldst_bias_mask = -1U;
-			pll_state->mg_pll_bias_mask = -1U;
+			pll_state->mg_pll_tdc_coldst_bias_mask = UINT_MAX;
+			pll_state->mg_pll_bias_mask = UINT_MAX;
 		}
 
 		pll_state->mg_pll_tdc_coldst_bias &=
@@ -3493,8 +3493,8 @@ static bool mg_pll_get_hw_state(struct drm_i915_private *i915,
 		hw_state->mg_pll_tdc_coldst_bias_mask = MG_PLL_TDC_COLDST_COLDSTART;
 		hw_state->mg_pll_bias_mask = 0;
 	} else {
-		hw_state->mg_pll_tdc_coldst_bias_mask = -1U;
-		hw_state->mg_pll_bias_mask = -1U;
+		hw_state->mg_pll_tdc_coldst_bias_mask = UINT_MAX;
+		hw_state->mg_pll_bias_mask = UINT_MAX;
 	}
 
 	hw_state->mg_pll_tdc_coldst_bias &= hw_state->mg_pll_tdc_coldst_bias_mask;
