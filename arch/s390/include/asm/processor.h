@@ -366,7 +366,7 @@ static inline unsigned long __rewind_psw(psw_t psw, unsigned long ilc)
 {
 	unsigned long mask;
 
-	mask = (psw.mask & PSW_MASK_EA) ? -1UL :
+	mask = (psw.mask & PSW_MASK_EA) ? ULONG_MAX :
 	       (psw.mask & PSW_MASK_BA) ? (1UL << 31) - 1 :
 					  (1UL << 24) - 1;
 	return (psw.addr - ilc) & mask;

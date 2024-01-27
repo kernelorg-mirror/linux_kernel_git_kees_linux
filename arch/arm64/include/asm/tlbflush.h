@@ -266,7 +266,7 @@ static inline void flush_tlb_mm(struct mm_struct *mm)
 	__tlbi(aside1is, asid);
 	__tlbi_user(aside1is, asid);
 	dsb(ish);
-	mmu_notifier_arch_invalidate_secondary_tlbs(mm, 0, -1UL);
+	mmu_notifier_arch_invalidate_secondary_tlbs(mm, 0, ULONG_MAX);
 }
 
 static inline void __flush_tlb_page_nosync(struct mm_struct *mm,

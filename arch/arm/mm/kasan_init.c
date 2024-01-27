@@ -246,7 +246,7 @@ void __init kasan_init(void)
 					    kasan_mem_to_shadow((void *)VMALLOC_END));
 
 	kasan_populate_early_shadow(kasan_mem_to_shadow((void *)VMALLOC_END),
-				    kasan_mem_to_shadow((void *)-1UL) + 1);
+				    kasan_mem_to_shadow((void *)ULONG_MAX) + 1);
 
 	for_each_mem_range(i, &pa_start, &pa_end) {
 		void *start = __va(pa_start);

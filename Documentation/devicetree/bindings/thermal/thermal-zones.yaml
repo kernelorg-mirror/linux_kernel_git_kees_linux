@@ -209,7 +209,7 @@ patternProperties:
                 description:
                   A list of cooling device phandles along with the minimum
                   and maximum cooling state specifiers for each cooling
-                  device. Using the THERMAL_NO_LIMIT (-1UL) constant in the
+                  device. Using the THERMAL_NO_LIMIT (ULONG_MAX) constant in the
                   cooling-device phandle limit specifier lets the framework
                   use the minimum and maximum cooling state for that cooling
                   device automatically.

@@ -103,7 +103,7 @@ void update_cr_regs(struct task_struct *task)
 		if (test_tsk_thread_flag(task, TIF_UPROBE_SINGLESTEP))
 			new.control.val |= PER_EVENT_IFETCH;
 		new.start.val = 0;
-		new.end.val = -1UL;
+		new.end.val = ULONG_MAX;
 	}
 
 	/* Take care of the PER enablement bit in the PSW. */
@@ -165,7 +165,7 @@ static inline unsigned long __peek_user_per(struct task_struct *child,
 	else if (addr == offsetof(struct per_struct_kernel, cr11))
 		/* End address of the active per set. */
 		return test_thread_flag(TIF_SINGLE_STEP) ?
-			-1UL : child->thread.per_user.end;
+			ULONG_MAX : child->thread.per_user.end;
 	else if (addr == offsetof(struct per_struct_kernel, bits))
 		/* Single-step bit. */
 		return test_thread_flag(TIF_SINGLE_STEP) ?

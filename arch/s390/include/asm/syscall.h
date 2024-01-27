@@ -64,7 +64,7 @@ static inline void syscall_get_arguments(struct task_struct *task,
 					 struct pt_regs *regs,
 					 unsigned long *args)
 {
-	unsigned long mask = -1UL;
+	unsigned long mask = ULONG_MAX;
 	unsigned int n = 6;
 
 #ifdef CONFIG_COMPAT

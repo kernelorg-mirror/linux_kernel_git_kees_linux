@@ -1688,7 +1688,7 @@ void __init get_pfn_range_for_nid(unsigned int nid,
 	unsigned long this_start_pfn, this_end_pfn;
 	int i;
 
-	*start_pfn = -1UL;
+	*start_pfn = ULONG_MAX;
 	*end_pfn = 0;
 
 	for_each_mem_pfn_range(i, nid, &this_start_pfn, &this_end_pfn, NULL) {
@@ -1696,7 +1696,7 @@ void __init get_pfn_range_for_nid(unsigned int nid,
 		*end_pfn = max(*end_pfn, this_end_pfn);
 	}
 
-	if (*start_pfn == -1UL)
+	if (*start_pfn == ULONG_MAX)
 		*start_pfn = 0;
 }
 

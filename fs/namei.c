@@ -3347,7 +3347,7 @@ static struct dentry *atomic_open(struct nameidata *nd, struct dentry *dentry,
 				  struct file *file,
 				  int open_flag, umode_t mode)
 {
-	struct dentry *const DENTRY_NOT_SET = (void *) -1UL;
+	struct dentry *const DENTRY_NOT_SET = (void *) ULONG_MAX;
 	struct inode *dir =  nd->path.dentry->d_inode;
 	int error;
 

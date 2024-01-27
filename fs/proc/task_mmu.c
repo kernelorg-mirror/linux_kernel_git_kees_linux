@@ -148,7 +148,7 @@ static void *m_start(struct seq_file *m, loff_t *ppos)
 	struct mm_struct *mm;
 
 	/* See m_next(). Zero at the start or after lseek. */
-	if (last_addr == -1UL)
+	if (last_addr == ULONG_MAX)
 		return NULL;
 
 	priv->task = get_proc_task(priv->inode);
@@ -180,7 +180,7 @@ static void *m_start(struct seq_file *m, loff_t *ppos)
 static void *m_next(struct seq_file *m, void *v, loff_t *ppos)
 {
 	if (*ppos == -2UL) {
-		*ppos = -1UL;
+		*ppos = ULONG_MAX;
 		return NULL;
 	}
 	return proc_get_vma(m->private, ppos);
@@ -1298,7 +1298,7 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
 
 			inc_tlb_flush_pending(mm);
 			mmu_notifier_range_init(&range, MMU_NOTIFY_SOFT_DIRTY,
-						0, mm, 0, -1UL);
+						0, mm, 0, ULONG_MAX);
 			mmu_notifier_invalidate_range_start(&range);
 		}
 		walk_page_range(mm, 0, -1, &clear_refs_walk_ops, &cp);

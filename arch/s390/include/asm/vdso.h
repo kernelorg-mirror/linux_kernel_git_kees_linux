@@ -15,7 +15,7 @@
 #ifdef CONFIG_COMPAT
 #define VDSO32_SYMBOL(tsk, name) ((tsk)->mm->context.vdso_base + (vdso32_offset_##name))
 #else
-#define VDSO32_SYMBOL(tsk, name) (-1UL)
+#define VDSO32_SYMBOL(tsk, name) (ULONG_MAX)
 #endif
 
 extern struct vdso_data *vdso_data;

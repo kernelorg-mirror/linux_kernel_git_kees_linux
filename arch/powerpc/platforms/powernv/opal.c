@@ -1228,7 +1228,7 @@ void powernv_set_nmmu_ptcr(unsigned long ptcr)
 	int rc;
 
 	if (firmware_has_feature(FW_FEATURE_OPAL)) {
-		rc = opal_nmmu_set_ptcr(-1UL, ptcr);
+		rc = opal_nmmu_set_ptcr(ULONG_MAX, ptcr);
 		if (rc != OPAL_SUCCESS && rc != OPAL_UNSUPPORTED)
 			pr_warn("%s: Unable to set nest mmu ptcr\n", __func__);
 	}

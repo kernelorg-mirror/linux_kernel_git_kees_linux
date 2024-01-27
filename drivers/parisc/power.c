@@ -196,13 +196,13 @@ static int __init power_init(void)
 	if (ret == PDC_OK)
 		ret = pdc_soft_power_button(1);
 	if (ret != PDC_OK)
-		soft_power_reg = -1UL;
+		soft_power_reg = ULONG_MAX;
 
 	switch (soft_power_reg) {
 	case 0:		printk(KERN_INFO DRIVER_NAME ": Gecko-style soft power switch enabled.\n");
 			break;
 
-	case -1UL:	printk(KERN_INFO DRIVER_NAME ": Soft power switch support not available.\n");
+	case ULONG_MAX:	printk(KERN_INFO DRIVER_NAME ": Soft power switch support not available.\n");
 			return -ENODEV;
 
 	default:	printk(KERN_INFO DRIVER_NAME ": Soft power switch at 0x%08lx enabled.\n",

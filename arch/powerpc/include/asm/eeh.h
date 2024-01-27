@@ -347,7 +347,7 @@ static inline void eeh_probe_device(struct pci_dev *dev) { }
 static inline void eeh_remove_device(struct pci_dev *dev) { }
 
 #define EEH_POSSIBLE_ERROR(val, type) (0)
-#define EEH_IO_ERROR_VALUE(size) (-1UL)
+#define EEH_IO_ERROR_VALUE(size) (ULONG_MAX)
 static inline int eeh_phb_pe_create(struct pci_controller *phb) { return 0; }
 #endif /* CONFIG_EEH */
 

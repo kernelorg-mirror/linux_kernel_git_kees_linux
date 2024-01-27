@@ -105,7 +105,7 @@ static inline unsigned long mm_untag_mask(struct mm_struct *mm)
 
 static inline void mm_reset_untag_mask(struct mm_struct *mm)
 {
-	mm->context.untag_mask = -1UL;
+	mm->context.untag_mask = ULONG_MAX;
 }
 
 #define arch_pgtable_dma_compat arch_pgtable_dma_compat

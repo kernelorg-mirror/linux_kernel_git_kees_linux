@@ -309,7 +309,7 @@ lock_retry_remap:
 		 * of the folio and set the buffer uptodate.
 		 */
 handle_hole:
-		bh->b_blocknr = -1UL;
+		bh->b_blocknr = ULONG_MAX;
 		clear_buffer_mapped(bh);
 handle_zblock:
 		folio_zero_range(folio, i * blocksize, blocksize);

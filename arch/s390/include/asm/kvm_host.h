@@ -998,7 +998,7 @@ struct kvm_arch{
 	spinlock_t kzdev_list_lock;
 };
 
-#define KVM_HVA_ERR_BAD		(-1UL)
+#define KVM_HVA_ERR_BAD		(ULONG_MAX)
 #define KVM_HVA_ERR_RO_BAD	(-2UL)
 
 static inline bool kvm_is_error_hva(unsigned long addr)

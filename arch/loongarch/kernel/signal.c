@@ -907,7 +907,7 @@ static void __user *get_sigframe(struct ksignal *ksig, struct pt_regs *regs,
 	 */
 	if (on_sig_stack(sp) &&
 	    !likely(on_sig_stack(sp - sizeof(struct rt_sigframe))))
-		return (void __user __force *)(-1UL);
+		return (void __user __force *)(ULONG_MAX);
 
 	sp = sigsp(sp, ksig);
 	sp = round_down(sp, 16);

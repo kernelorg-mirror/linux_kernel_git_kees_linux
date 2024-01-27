@@ -17,7 +17,7 @@
 
 struct mm_struct;
 
-#define NO_INTERLEAVE_INDEX (-1UL)	/* use task il_prev for interleaving */
+#define NO_INTERLEAVE_INDEX (ULONG_MAX)	/* use task il_prev for interleaving */
 
 #ifdef CONFIG_NUMA
 

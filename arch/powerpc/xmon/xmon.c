@@ -1974,7 +1974,7 @@ extern void xmon_mtspr(int spr, unsigned long value);
 static int
 read_spr(int n, unsigned long *vp)
 {
-	unsigned long ret = -1UL;
+	unsigned long ret = ULONG_MAX;
 	int ok = 0;
 
 	if (setjmp(bus_error_jmp) == 0) {

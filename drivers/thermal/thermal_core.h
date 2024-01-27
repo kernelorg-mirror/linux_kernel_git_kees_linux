@@ -29,7 +29,7 @@
 #endif
 
 /* Initial state of a cooling device during binding */
-#define THERMAL_NO_TARGET -1UL
+#define THERMAL_NO_TARGET ULONG_MAX
 
 /* Init section thermal table */
 extern struct thermal_governor *__governor_thermal_table[];

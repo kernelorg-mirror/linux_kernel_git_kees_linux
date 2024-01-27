@@ -1912,7 +1912,7 @@ static void cfdiag_get_cpu_speed(void)
 	 * CPU Measurement Sampling Facility is turned off.
 	 */
 	mhz = __ecag(ECAG_CPU_ATTRIBUTE, 0);
-	if (mhz != -1UL)
+	if (mhz != ULONG_MAX)
 		cfdiag_cpu_speed = mhz & 0xffffffff;
 }
 

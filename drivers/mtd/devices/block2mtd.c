@@ -70,7 +70,7 @@ static int _block2mtd_erase(struct block2mtd_dev *dev, loff_t to, size_t len)
 
 		max = page_address(page) + PAGE_SIZE;
 		for (p=page_address(page); p<max; p++)
-			if (*p != -1UL) {
+			if (*p != ULONG_MAX) {
 				lock_page(page);
 				memset(page_address(page), 0xff, PAGE_SIZE);
 				set_page_dirty(page);

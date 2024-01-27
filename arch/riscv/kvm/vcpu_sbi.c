@@ -14,16 +14,16 @@
 
 #ifndef CONFIG_RISCV_SBI_V01
 static const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_v01 = {
-	.extid_start = -1UL,
-	.extid_end = -1UL,
+	.extid_start = ULONG_MAX,
+	.extid_end = ULONG_MAX,
 	.handler = NULL,
 };
 #endif
 
 #ifndef CONFIG_RISCV_PMU_SBI
 static const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_pmu = {
-	.extid_start = -1UL,
-	.extid_end = -1UL,
+	.extid_start = ULONG_MAX,
+	.extid_end = ULONG_MAX,
 	.handler = NULL,
 };
 #endif

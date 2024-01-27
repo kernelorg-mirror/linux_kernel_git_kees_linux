@@ -345,7 +345,7 @@ long do_syscall_trace_enter(struct pt_regs *regs)
 			 * regs->gr[20] to an invalid syscall number,
 			 * that is handled by tracesys_next.
 			 */
-			regs->gr[20] = -1UL;
+			regs->gr[20] = ULONG_MAX;
 			return -1;
 		}
 	}

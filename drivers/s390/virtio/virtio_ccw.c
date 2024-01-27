@@ -216,7 +216,7 @@ static void virtio_airq_handler(struct airq_struct *airq,
 	/* Walk through indicators field, summary indicator active. */
 	for (ai = 0;;) {
 		ai = airq_iv_scan(info->aiv, ai, airq_iv_end(info->aiv));
-		if (ai == -1UL)
+		if (ai == ULONG_MAX)
 			break;
 		vring_interrupt(0, (void *)airq_iv_get_ptr(info->aiv, ai));
 	}
@@ -225,7 +225,7 @@ static void virtio_airq_handler(struct airq_struct *airq,
 	/* Walk through indicators field, summary indicator not active. */
 	for (ai = 0;;) {
 		ai = airq_iv_scan(info->aiv, ai, airq_iv_end(info->aiv));
-		if (ai == -1UL)
+		if (ai == ULONG_MAX)
 			break;
 		vring_interrupt(0, (void *)airq_iv_get_ptr(info->aiv, ai));
 	}
@@ -278,7 +278,7 @@ static unsigned long get_airq_indicator(struct virtqueue *vqs[], int nvqs,
 			return 0;
 		write_lock_irqsave(&info->lock, flags);
 		bit = airq_iv_alloc(info->aiv, nvqs);
-		if (bit == -1UL) {
+		if (bit == ULONG_MAX) {
 			/* Not enough vacancies. */
 			write_unlock_irqrestore(&info->lock, flags);
 			continue;

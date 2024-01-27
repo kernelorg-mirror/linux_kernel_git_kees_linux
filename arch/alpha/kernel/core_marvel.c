@@ -181,10 +181,10 @@ io7_clear_errors(struct io7 *io7)
 	for (port = 0; port < 4; port++) {
 		csrs = IO7_CSRS_KERN(io7->pe, port);
 
-		csrs->POx_ERR_SUM.csr = -1UL;
-		csrs->POx_TLB_ERR.csr = -1UL;
-		csrs->POx_SPL_COMPLT.csr = -1UL;
-		csrs->POx_TRANS_SUM.csr = -1UL;
+		csrs->POx_ERR_SUM.csr = ULONG_MAX;
+		csrs->POx_TLB_ERR.csr = ULONG_MAX;
+		csrs->POx_SPL_COMPLT.csr = ULONG_MAX;
+		csrs->POx_TRANS_SUM.csr = ULONG_MAX;
 	}
 
 	/*
@@ -192,9 +192,9 @@ io7_clear_errors(struct io7 *io7)
 	 */
 	p7csrs = IO7_PORT7_CSRS_KERN(io7->pe);
 
-	p7csrs->PO7_ERROR_SUM.csr = -1UL;
-	p7csrs->PO7_UNCRR_SYM.csr = -1UL;
-	p7csrs->PO7_CRRCT_SYM.csr = -1UL;
+	p7csrs->PO7_ERROR_SUM.csr = ULONG_MAX;
+	p7csrs->PO7_UNCRR_SYM.csr = ULONG_MAX;
+	p7csrs->PO7_CRRCT_SYM.csr = ULONG_MAX;
 }
 
 

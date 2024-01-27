@@ -29,7 +29,7 @@ struct z_erofs_decompressor {
 };
 
 /* some special page->private (unsigned long, see below) */
-#define Z_EROFS_SHORTLIVED_PAGE		(-1UL << 2)
+#define Z_EROFS_SHORTLIVED_PAGE		(ULONG_MAX << 2)
 #define Z_EROFS_PREALLOCATED_PAGE	(-2UL << 2)
 
 /*

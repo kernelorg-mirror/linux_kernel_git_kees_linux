@@ -3367,7 +3367,7 @@ static void aen_process_gait(u8 isc)
 	for (si = 0;;) {
 		/* Scan adapter summary indicator bit vector */
 		si = airq_iv_scan(aift->sbv, si, airq_iv_end(aift->sbv));
-		if (si == -1UL) {
+		if (si == ULONG_MAX) {
 			if (first || found) {
 				/* Re-enable interrupts. */
 				zpci_set_irq_ctrl(SIC_IRQ_MODE_SINGLE, isc,

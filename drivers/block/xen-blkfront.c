@@ -160,7 +160,7 @@ MODULE_PARM_DESC(trusted, "Is the backend trusted");
 	__CONST_RING_SIZE(blkif, XEN_PAGE_SIZE * (info)->nr_ring_pages)
 
 /*
- * ring-ref%u i=(-1UL) would take 11 characters + 'ring-ref' is 8, so 19
+ * ring-ref%u i=(ULONG_MAX) would take 11 characters + 'ring-ref' is 8, so 19
  * characters are enough. Define to 20 to keep consistent with backend.
  */
 #define RINGREF_NAME_LEN (20)

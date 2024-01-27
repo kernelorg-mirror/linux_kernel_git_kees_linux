@@ -237,7 +237,7 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs * regs, size_t frame_size)
 
 	/* Overflow on alternate signal stack gives SIGSEGV. */
 	if (on_sig_stack(sp) && !on_sig_stack((sp - frame_size) & -8UL))
-		return (void __user *) -1UL;
+		return (void __user *) ULONG_MAX;
 
 	/* This is the X/Open sanctioned signal stack switching.  */
 	if (ka->sa.sa_flags & SA_ONSTACK) {
@@ -266,7 +266,7 @@ static int setup_frame32(struct ksignal *ksig, sigset_t *set,
 		frame_size -= sizeof(frame->sregs_ext.vxrs_low) +
 			      sizeof(frame->sregs_ext.vxrs_high);
 	frame = get_sigframe(&ksig->ka, regs, frame_size);
-	if (frame == (void __user *) -1UL)
+	if (frame == (void __user *) ULONG_MAX)
 		return -EFAULT;
 
 	/* Set up backchain. */
@@ -352,7 +352,7 @@ static int setup_rt_frame32(struct ksignal *ksig, sigset_t *set,
 			      sizeof(frame->uc.uc_mcontext_ext.vxrs_high);
 	}
 	frame = get_sigframe(&ksig->ka, regs, frame_size);
-	if (frame == (void __user *) -1UL)
+	if (frame == (void __user *) ULONG_MAX)
 		return -EFAULT;
 
 	/* Set up backchain. */

@@ -1046,7 +1046,7 @@ static void rw_journal_sectors(struct dm_integrity_c *ic, blk_opf_t opf,
 
 	if (unlikely(dm_integrity_failed(ic))) {
 		if (comp)
-			complete_journal_io(-1UL, comp);
+			complete_journal_io(ULONG_MAX, comp);
 		return;
 	}
 
@@ -1077,7 +1077,7 @@ static void rw_journal_sectors(struct dm_integrity_c *ic, blk_opf_t opf,
 				      "reading journal" : "writing journal", r);
 		if (comp) {
 			WARN_ONCE(1, "asynchronous dm_io failed: %d", r);
-			complete_journal_io(-1UL, comp);
+			complete_journal_io(ULONG_MAX, comp);
 		}
 	}
 }
@@ -1168,7 +1168,7 @@ static void copy_from_journal(struct dm_integrity_c *ic, unsigned int section, u
 	BUG_ON((target | n_sectors | offset) & (unsigned int)(ic->sectors_per_block - 1));
 
 	if (unlikely(dm_integrity_failed(ic))) {
-		fn(-1UL, data);
+		fn(ULONG_MAX, data);
 		return;
 	}
 
@@ -1191,7 +1191,7 @@ static void copy_from_journal(struct dm_integrity_c *ic, unsigned int section, u
 	r = dm_io(&io_req, 1, &io_loc, NULL);
 	if (unlikely(r)) {
 		WARN_ONCE(1, "asynchronous dm_io failed: %d", r);
-		fn(-1UL, data);
+		fn(ULONG_MAX, data);
 	}
 }
 

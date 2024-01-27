@@ -350,7 +350,7 @@ static inline long plpar_guest_create(unsigned long flags, unsigned long *guest_
 	unsigned long token;
 	long rc;
 
-	token = -1UL;
+	token = ULONG_MAX;
 	do {
 		rc = plpar_hcall(H_GUEST_CREATE, retbuf, flags, token);
 		if (rc == H_SUCCESS)
@@ -584,7 +584,7 @@ static inline long pseries_rpt_invalidate(u64 pid, u64 target, u64 type,
 			all = H_RPTI_TYPE_ALL;
 retry:
 		rc = plpar_hcall_norets(H_RPT_INVALIDATE, pid, target,
-					all, page_sizes, 0, -1UL);
+					all, page_sizes, 0, ULONG_MAX);
 		if (rc == H_BUSY) {
 			cpu_relax();
 			goto retry;

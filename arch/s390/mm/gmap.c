@@ -63,7 +63,7 @@ static struct gmap *gmap_alloc(unsigned long limit)
 		atype = _ASCE_TYPE_REGION2;
 		etype = _REGION2_ENTRY_EMPTY;
 	} else {
-		limit = -1UL;
+		limit = ULONG_MAX;
 		atype = _ASCE_TYPE_REGION1;
 		etype = _REGION1_ENTRY_EMPTY;
 	}
@@ -119,7 +119,7 @@ struct gmap *gmap_create(struct mm_struct *mm, unsigned long limit)
 	if (list_is_singular(&mm->context.gmap_list))
 		gmap_asce = gmap->asce;
 	else
-		gmap_asce = -1UL;
+		gmap_asce = ULONG_MAX;
 	WRITE_ONCE(mm->context.gmap_asce, gmap_asce);
 	spin_unlock(&mm->context.lock);
 	return gmap;
@@ -270,7 +270,7 @@ void gmap_remove(struct gmap *gmap)
 		gmap_asce = list_first_entry(&gmap->mm->context.gmap_list,
 					     struct gmap, list)->asce;
 	else
-		gmap_asce = -1UL;
+		gmap_asce = ULONG_MAX;
 	WRITE_ONCE(gmap->mm->context.gmap_asce, gmap_asce);
 	spin_unlock(&gmap->mm->context.lock);
 	synchronize_rcu();
@@ -814,7 +814,7 @@ static inline unsigned long *gmap_table_walk(struct gmap *gmap,
 		return NULL;
 
 	if (asce_type != _ASCE_TYPE_REGION1 &&
-	    gaddr & (-1UL << (31 + (asce_type >> 2) * 11)))
+	    gaddr & (ULONG_MAX << (31 + (asce_type >> 2) * 11)))
 		return NULL;
 
 	switch (asce_type) {
@@ -1587,7 +1587,7 @@ static void gmap_unshadow(struct gmap *sg)
 	if (sg->removed)
 		return;
 	sg->removed = 1;
-	gmap_call_notifier(sg, 0, -1UL);
+	gmap_call_notifier(sg, 0, ULONG_MAX);
 	gmap_flush_tlb(sg);
 	table = __va(sg->asce & _ASCE_ORIGIN);
 	switch (sg->asce & _ASCE_TYPE_MASK) {
@@ -1683,9 +1683,9 @@ struct gmap *gmap_shadow(struct gmap *parent, unsigned long asce,
 	if (sg)
 		return sg;
 	/* Create a new shadow gmap */
-	limit = -1UL >> (33 - (((asce & _ASCE_TYPE_MASK) >> 2) * 11));
+	limit = ULONG_MAX >> (33 - (((asce & _ASCE_TYPE_MASK) >> 2) * 11));
 	if (asce & _ASCE_REAL_SPACE)
-		limit = -1UL;
+		limit = ULONG_MAX;
 	new = gmap_alloc(limit);
 	if (!new)
 		return ERR_PTR(-ENOMEM);

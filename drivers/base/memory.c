@@ -900,7 +900,7 @@ void remove_memory_block_devices(unsigned long start, unsigned long size)
 		mem = find_memory_block_by_id(block_id);
 		if (WARN_ON_ONCE(!mem))
 			continue;
-		num_poisoned_pages_sub(-1UL, memblk_nr_poison(mem));
+		num_poisoned_pages_sub(ULONG_MAX, memblk_nr_poison(mem));
 		unregister_memory_block_under_nodes(mem);
 		remove_memory_block(mem);
 	}

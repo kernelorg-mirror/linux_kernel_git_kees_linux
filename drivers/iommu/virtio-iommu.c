@@ -439,7 +439,7 @@ static int viommu_replay_mappings(struct viommu_domain *vdomain)
 	struct virtio_iommu_req_map map;
 
 	spin_lock_irqsave(&vdomain->mappings_lock, flags);
-	node = interval_tree_iter_first(&vdomain->mappings, 0, -1UL);
+	node = interval_tree_iter_first(&vdomain->mappings, 0, ULONG_MAX);
 	while (node) {
 		mapping = container_of(node, struct viommu_mapping, iova);
 		map = (struct virtio_iommu_req_map) {
@@ -455,7 +455,7 @@ static int viommu_replay_mappings(struct viommu_domain *vdomain)
 		if (ret)
 			break;
 
-		node = interval_tree_iter_next(node, 0, -1UL);
+		node = interval_tree_iter_next(node, 0, ULONG_MAX);
 	}
 	spin_unlock_irqrestore(&vdomain->mappings_lock, flags);
 
@@ -1132,7 +1132,7 @@ static int viommu_probe(struct virtio_device *vdev)
 	struct viommu_dev *viommu = NULL;
 	struct device *dev = &vdev->dev;
 	u64 input_start = 0;
-	u64 input_end = -1UL;
+	u64 input_end = ULONG_MAX;
 	int ret;
 
 	if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1) ||

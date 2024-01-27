@@ -122,7 +122,7 @@ EXPORT_SYMBOL_GPL(kexec_crash_loaded);
  * KIMAGE_NO_DEST is an impossible destination address..., for
  * allocating pages whose destination address we do not care about.
  */
-#define KIMAGE_NO_DEST (-1UL)
+#define KIMAGE_NO_DEST (ULONG_MAX)
 #define PAGE_COUNT(x) (((x) + PAGE_SIZE - 1) >> PAGE_SHIFT)
 
 static struct page *kimage_alloc_page(struct kimage *image,

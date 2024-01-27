@@ -83,7 +83,7 @@ void num_poisoned_pages_inc(unsigned long pfn)
 void num_poisoned_pages_sub(unsigned long pfn, long i)
 {
 	atomic_long_sub(i, &num_poisoned_pages);
-	if (pfn != -1UL)
+	if (pfn != ULONG_MAX)
 		memblk_nr_poison_sub(pfn, i);
 }
 

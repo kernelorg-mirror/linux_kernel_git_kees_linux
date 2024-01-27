@@ -259,24 +259,24 @@ static int csr_insn(struct kvm_vcpu *vcpu, struct kvm_run *run, ulong insn)
 	/* Decode the CSR instruction */
 	switch (GET_FUNCT3(insn)) {
 	case GET_FUNCT3(INSN_MATCH_CSRRW):
-		wr_mask = -1UL;
+		wr_mask = ULONG_MAX;
 		new_val = rs1_val;
 		break;
 	case GET_FUNCT3(INSN_MATCH_CSRRS):
 		wr_mask = rs1_val;
-		new_val = -1UL;
+		new_val = ULONG_MAX;
 		break;
 	case GET_FUNCT3(INSN_MATCH_CSRRC):
 		wr_mask = rs1_val;
 		new_val = 0;
 		break;
 	case GET_FUNCT3(INSN_MATCH_CSRRWI):
-		wr_mask = -1UL;
+		wr_mask = ULONG_MAX;
 		new_val = rs1_num;
 		break;
 	case GET_FUNCT3(INSN_MATCH_CSRRSI):
 		wr_mask = rs1_num;
-		new_val = -1UL;
+		new_val = ULONG_MAX;
 		break;
 	case GET_FUNCT3(INSN_MATCH_CSRRCI):
 		wr_mask = rs1_num;

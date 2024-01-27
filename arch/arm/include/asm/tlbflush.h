@@ -78,7 +78,7 @@
 # endif
 #else
 # define v4_possible_flags	0
-# define v4_always_flags	(-1UL)
+# define v4_always_flags	(ULONG_MAX)
 #endif
 
 #define fa_tlb_flags	(TLB_WB | TLB_DCLEAN | TLB_BARRIER | \
@@ -94,7 +94,7 @@
 # endif
 #else
 # define fa_possible_flags	0
-# define fa_always_flags	(-1UL)
+# define fa_always_flags	(ULONG_MAX)
 #endif
 
 #define v4wbi_tlb_flags	(TLB_WB | TLB_DCLEAN | \
@@ -111,7 +111,7 @@
 # endif
 #else
 # define v4wbi_possible_flags	0
-# define v4wbi_always_flags	(-1UL)
+# define v4wbi_always_flags	(ULONG_MAX)
 #endif
 
 #define fr_tlb_flags	(TLB_WB | TLB_DCLEAN | TLB_L2CLEAN_FR | \
@@ -128,7 +128,7 @@
 # endif
 #else
 # define fr_possible_flags	0
-# define fr_always_flags	(-1UL)
+# define fr_always_flags	(ULONG_MAX)
 #endif
 
 #define v4wb_tlb_flags	(TLB_WB | TLB_DCLEAN | \
@@ -145,7 +145,7 @@
 # endif
 #else
 # define v4wb_possible_flags	0
-# define v4wb_always_flags	(-1UL)
+# define v4wb_always_flags	(ULONG_MAX)
 #endif
 
 #define v6wbi_tlb_flags (TLB_WB | TLB_DCLEAN | TLB_BARRIER | \
@@ -164,7 +164,7 @@
 # endif
 #else
 # define v6wbi_possible_flags	0
-# define v6wbi_always_flags	(-1UL)
+# define v6wbi_always_flags	(ULONG_MAX)
 #endif
 
 #define v7wbi_tlb_flags_smp	(TLB_WB | TLB_BARRIER | \
@@ -193,7 +193,7 @@
 # endif
 #else
 # define v7wbi_possible_flags	0
-# define v7wbi_always_flags	(-1UL)
+# define v7wbi_always_flags	(ULONG_MAX)
 #endif
 
 #ifndef _TLB

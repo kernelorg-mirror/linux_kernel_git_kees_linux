@@ -765,7 +765,7 @@ static inline bool is_mergeable_anon_vma(struct anon_vma *anon_vma1,
  *
  * We don't check here for the merged mmap wrapping around the end of pagecache
  * indices (16TB on ia32) because do_mmap() does not permit mmap's which
- * wrap, nor mmaps which cover the final page at index -1UL.
+ * wrap, nor mmaps which cover the final page at index ULONG_MAX.
  *
  * We assume the vma may be removed as part of the merge.
  */

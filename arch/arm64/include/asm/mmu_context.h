@@ -301,7 +301,7 @@ void arm64_mm_context_put(struct mm_struct *mm);
 #define mm_untag_mask mm_untag_mask
 static inline unsigned long mm_untag_mask(struct mm_struct *mm)
 {
-	return -1UL >> 8;
+	return ULONG_MAX >> 8;
 }
 
 #include <asm-generic/mmu_context.h>

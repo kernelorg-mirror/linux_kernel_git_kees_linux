@@ -183,7 +183,7 @@ static struct vm_area_struct *proc_get_vma(struct proc_maps_private *priv,
 	if (vma) {
 		*ppos = vma->vm_start;
 	} else {
-		*ppos = -1UL;
+		*ppos = ULONG_MAX;
 	}
 
 	return vma;
@@ -196,7 +196,7 @@ static void *m_start(struct seq_file *m, loff_t *ppos)
 	struct mm_struct *mm;
 
 	/* See proc_get_vma(). Zero at the start or after lseek. */
-	if (last_addr == -1UL)
+	if (last_addr == ULONG_MAX)
 		return NULL;
 
 	/* pin the task and mm whilst we play with them */

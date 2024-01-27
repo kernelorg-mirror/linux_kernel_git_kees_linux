@@ -1215,9 +1215,9 @@ static int intel_ir_set_vcpu_affinity(struct irq_data *data, void *info)
 		irte_pi.p_urgent = 0;
 		irte_pi.p_vector = vcpu_pi_info->vector;
 		irte_pi.pda_l = (vcpu_pi_info->pi_desc_addr >>
-				(32 - PDA_LOW_BIT)) & ~(-1UL << PDA_LOW_BIT);
+				(32 - PDA_LOW_BIT)) & ~(ULONG_MAX << PDA_LOW_BIT);
 		irte_pi.pda_h = (vcpu_pi_info->pi_desc_addr >> 32) &
-				~(-1UL << PDA_HIGH_BIT);
+				~(ULONG_MAX << PDA_HIGH_BIT);
 
 		modify_irte(&ir_data->irq_2_iommu, &irte_pi);
 	}

@@ -57,7 +57,7 @@ static inline void __tlb_flush_mm(struct mm_struct *mm)
 	cpumask_copy(mm_cpumask(mm), &mm->context.cpu_attach_mask);
 	barrier();
 	gmap_asce = READ_ONCE(mm->context.gmap_asce);
-	if (MACHINE_HAS_IDTE && gmap_asce != -1UL) {
+	if (MACHINE_HAS_IDTE && gmap_asce != ULONG_MAX) {
 		if (gmap_asce)
 			__tlb_flush_idte(gmap_asce);
 		__tlb_flush_idte(mm->context.asce);

@@ -34,7 +34,7 @@ static int io_sqe_buffer_register(struct io_ring_ctx *ctx, struct iovec *iov,
 
 static const struct io_mapped_ubuf dummy_ubuf = {
 	/* set invalid range, so io_import_fixed() fails meeting it */
-	.ubuf = -1UL,
+	.ubuf = ULONG_MAX,
 	.ubuf_end = 0,
 };
 

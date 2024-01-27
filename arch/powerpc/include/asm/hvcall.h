@@ -486,7 +486,7 @@
 #define H_RPTI_PAGE_64K	0x02
 #define H_RPTI_PAGE_2M	0x04
 #define H_RPTI_PAGE_1G	0x08
-#define H_RPTI_PAGE_ALL (-1UL)
+#define H_RPTI_PAGE_ALL (ULONG_MAX)
 
 /* Flags for H_GUEST_{S,G}_STATE */
 #define H_GUEST_FLAGS_WIDE     (1UL<<(63-0))

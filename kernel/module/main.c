@@ -79,7 +79,7 @@ static DECLARE_WORK(init_free_wq, do_free_init);
 static LLIST_HEAD(init_free_list);
 
 struct mod_tree_root mod_tree __cacheline_aligned = {
-	.addr_min = -1UL,
+	.addr_min = ULONG_MAX,
 };
 
 struct symsearch {

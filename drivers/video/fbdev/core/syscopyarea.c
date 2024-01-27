@@ -218,7 +218,7 @@ bitcpy_rev(struct fb_info *p, unsigned long *dst, unsigned dst_idx,
 			while (n--)
 				*dst-- = *src--;
 			/* Trailing bits */
-			if (last != -1UL)
+			if (last != ULONG_MAX)
 				*dst = comp(*src, *dst, last);
 		}
 	} else {

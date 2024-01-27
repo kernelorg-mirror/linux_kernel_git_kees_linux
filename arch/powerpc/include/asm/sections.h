@@ -48,7 +48,7 @@ static inline unsigned long kernel_toc_addr(void)
 {
 #ifdef CONFIG_PPC_KERNEL_PCREL
 	BUILD_BUG();
-	return -1UL;
+	return ULONG_MAX;
 #else
 	unsigned long toc_ptr;
 
@@ -75,7 +75,7 @@ static inline int overlaps_kernel_text(unsigned long start, unsigned long end)
 }
 
 #else
-static inline unsigned long kernel_toc_addr(void) { BUILD_BUG(); return -1UL; }
+static inline unsigned long kernel_toc_addr(void) { BUILD_BUG(); return ULONG_MAX; }
 #endif
 
 #endif /* __KERNEL__ */

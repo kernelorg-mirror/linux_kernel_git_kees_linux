@@ -622,7 +622,7 @@ qla4_82xx_pci_set_window(struct scsi_qla_host *ha, unsigned long long addr)
 		/* if bits 19:18&17:11 are on */
 		if ((addr & 0x00ff800) == 0xff800) {
 			printk("%s: QM access not handled.\n", __func__);
-			addr = -1UL;
+			addr = ULONG_MAX;
 		}
 
 		window = OCM_WIN(addr);
@@ -664,7 +664,7 @@ qla4_82xx_pci_set_window(struct scsi_qla_host *ha, unsigned long long addr)
 			printk("%s: Warning:%s Unknown address range!\n",
 			    __func__, DRIVER_NAME);
 		}
-		addr = -1UL;
+		addr = ULONG_MAX;
 	}
 	return addr;
 }
@@ -717,7 +717,7 @@ static int qla4_82xx_pci_mem_read_direct(struct scsi_qla_host *ha,
 	 * do not access.
 	 */
 	start = qla4_82xx_pci_set_window(ha, off);
-	if ((start == -1UL) ||
+	if ((start == ULONG_MAX) ||
 	    (qla4_82xx_pci_is_same_window(ha, off + size - 1) == 0)) {
 		write_unlock_irqrestore(&ha->hw_lock, flags);
 		printk(KERN_ERR"%s out of bound pci memory access. "
@@ -790,7 +790,7 @@ qla4_82xx_pci_mem_write_direct(struct scsi_qla_host *ha, u64 off,
 	 * do not access.
 	 */
 	start = qla4_82xx_pci_set_window(ha, off);
-	if ((start == -1UL) ||
+	if ((start == ULONG_MAX) ||
 	    (qla4_82xx_pci_is_same_window(ha, off + size - 1) == 0)) {
 		write_unlock_irqrestore(&ha->hw_lock, flags);
 		printk(KERN_ERR"%s out of bound pci memory access. "

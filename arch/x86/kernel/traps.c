@@ -510,7 +510,7 @@ static enum kernel_gp_hint get_kernel_gp_address(struct pt_regs *regs,
 		return GP_NO_HINT;
 
 	*addr = (unsigned long)insn_get_addr_ref(&insn, regs);
-	if (*addr == -1UL)
+	if (*addr == ULONG_MAX)
 		return GP_NO_HINT;
 
 #ifdef CONFIG_X86_64

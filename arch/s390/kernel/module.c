@@ -108,7 +108,7 @@ static void check_rela(Elf_Rela *rela, struct module *me)
 	case R_390_GOTPLT32:	/* 32 bit offset to jump slot.  */
 	case R_390_GOTPLT64:	/* 64 bit offset to jump slot.	*/
 	case R_390_GOTPLTENT:	/* 32 bit rel. offset to jump slot >> 1. */
-		if (info->got_offset == -1UL) {
+		if (info->got_offset == ULONG_MAX) {
 			info->got_offset = me->arch.got_size;
 			me->arch.got_size += sizeof(void*);
 		}
@@ -120,7 +120,7 @@ static void check_rela(Elf_Rela *rela, struct module *me)
 	case R_390_PLTOFF16:	/* 16 bit offset from GOT to PLT. */
 	case R_390_PLTOFF32:	/* 32 bit offset from GOT to PLT. */
 	case R_390_PLTOFF64:	/* 16 bit offset from GOT to PLT. */
-		if (info->plt_offset == -1UL) {
+		if (info->plt_offset == ULONG_MAX) {
 			info->plt_offset = me->arch.plt_size;
 			me->arch.plt_size += PLT_ENTRY_SIZE;
 		}
@@ -176,8 +176,8 @@ int module_frob_arch_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
 			   "_GLOBAL_OFFSET_TABLE_") == 0)
 			/* "Define" it as absolute. */
 			symbols[i].st_shndx = SHN_ABS;
-		me->arch.syminfo[i].got_offset = -1UL;
-		me->arch.syminfo[i].plt_offset = -1UL;
+		me->arch.syminfo[i].got_offset = ULONG_MAX;
+		me->arch.syminfo[i].plt_offset = ULONG_MAX;
 		me->arch.syminfo[i].got_initialized = 0;
 		me->arch.syminfo[i].plt_initialized = 0;
 	}

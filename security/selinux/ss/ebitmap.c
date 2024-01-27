@@ -453,7 +453,7 @@ int ebitmap_read(struct ebitmap *e, void *fp)
 
 		index = (startbit - n->startbit) / EBITMAP_UNIT_SIZE;
 		while (map) {
-			n->maps[index++] = map & (-1UL);
+			n->maps[index++] = map & (ULONG_MAX);
 			map = EBITMAP_SHIFT_UNIT_SIZE(map);
 		}
 	}

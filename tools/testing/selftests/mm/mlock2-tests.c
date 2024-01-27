@@ -111,7 +111,7 @@ static unsigned long get_value_for_name(unsigned long addr, const char *name)
 	size_t size = 0;
 	char *value_ptr;
 	FILE *smaps = NULL;
-	unsigned long value = -1UL;
+	unsigned long value = ULONG_MAX;
 
 	smaps = seek_to_smaps_entry(addr);
 	if (!smaps) {

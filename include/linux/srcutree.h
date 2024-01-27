@@ -132,7 +132,7 @@ struct srcu_struct {
 #define __SRCU_USAGE_INIT(name)									\
 {												\
 	.lock = __SPIN_LOCK_UNLOCKED(name.lock),						\
-	.srcu_gp_seq_needed = -1UL,								\
+	.srcu_gp_seq_needed = ULONG_MAX,								\
 	.work = __DELAYED_WORK_INITIALIZER(name.work, NULL, 0),					\
 }
 

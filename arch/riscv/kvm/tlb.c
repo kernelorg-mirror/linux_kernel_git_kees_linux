@@ -298,7 +298,7 @@ static void make_xfence_request(struct kvm *kvm,
 
 	bitmap_zero(vcpu_mask, KVM_MAX_VCPUS);
 	kvm_for_each_vcpu(i, vcpu, kvm) {
-		if (hbase != -1UL) {
+		if (hbase != ULONG_MAX) {
 			if (vcpu->vcpu_id < hbase)
 				continue;
 			if (!(hmask & (1UL << (vcpu->vcpu_id - hbase))))

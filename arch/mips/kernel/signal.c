@@ -567,7 +567,7 @@ void __user *get_sigframe(struct ksignal *ksig, struct pt_regs *regs,
 	 * Return an always-bogus address instead so we will die with SIGSEGV.
 	 */
 	if (on_sig_stack(sp) && !likely(on_sig_stack(sp - frame_size)))
-		return (void __user __force *)(-1UL);
+		return (void __user __force *)(ULONG_MAX);
 
 	/*
 	 * FPU emulator may have its own trampoline active just

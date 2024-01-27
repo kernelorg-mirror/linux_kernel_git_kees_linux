@@ -366,7 +366,7 @@ static void kvmppc_radix_flush_pwc(struct kvm *kvm, u64 lpid)
 		rc = pseries_rpt_invalidate(lpid, H_RPTI_TARGET_CMMU,
 					    H_RPTI_TYPE_NESTED |
 					    H_RPTI_TYPE_PWC, H_RPTI_PAGE_ALL,
-					    0, -1UL);
+					    0, ULONG_MAX);
 	if (rc)
 		pr_err("KVM: TLB PWC invalidation hcall failed, rc=%ld\n", rc);
 }
