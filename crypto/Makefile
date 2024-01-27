@@ -2,6 +2,7 @@
 #
 # Cryptographic API
 #
+UBSAN_UNSIGNED_WRAP := n
 
 obj-$(CONFIG_CRYPTO) += crypto.o
 crypto-y := api.o cipher.o compress.o
