@@ -2115,6 +2115,7 @@ EXPORT_SYMBOL(__pskb_copy_fclone);
  *	reloaded after call to this function.
  */
 
+__unsigned_wrap
 int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
 		     gfp_t gfp_mask)
 {
@@ -2681,6 +2682,7 @@ EXPORT_SYMBOL(pskb_trim_rcsum_slow);
  *
  * It is pretty complicated. Luckily, it is called only in exceptional cases.
  */
+__unsigned_wrap
 void *__pskb_pull_tail(struct sk_buff *skb, int delta)
 {
 	/* If skb has not enough free space at tail, get new one
