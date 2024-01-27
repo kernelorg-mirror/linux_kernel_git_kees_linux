@@ -150,7 +150,7 @@ static int keyring_instantiate(struct key *keyring,
  * Multiply 64-bits by 32-bits to 96-bits and fold back to 64-bit.  Ideally we'd
  * fold the carry back too, but that requires inline asm.
  */
-static u64 mult_64x32_and_fold(u64 x, u32 y)
+static __unsigned_wrap u64 mult_64x32_and_fold(u64 x, u32 y)
 {
 	u64 hi = (u64)(u32)(x >> 32) * y;
 	u64 lo = (u64)(u32)(x) * y;
@@ -160,7 +160,7 @@ static u64 mult_64x32_and_fold(u64 x, u32 y)
 /*
  * Hash a key type and description.
  */
-static void hash_key_type_and_desc(struct keyring_index_key *index_key)
+static __unsigned_wrap void hash_key_type_and_desc(struct keyring_index_key *index_key)
 {
 	const unsigned level_shift = ASSOC_ARRAY_LEVEL_STEP;
 	const unsigned long fan_mask = ASSOC_ARRAY_FAN_MASK;
