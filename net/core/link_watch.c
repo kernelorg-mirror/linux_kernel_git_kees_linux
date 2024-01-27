@@ -130,7 +130,7 @@ static void linkwatch_add_event(struct net_device *dev)
 }
 
 
-static void linkwatch_schedule_work(int urgent)
+static __unsigned_wrap void linkwatch_schedule_work(int urgent)
 {
 	unsigned long delay = linkwatch_nextevent - jiffies;
 
