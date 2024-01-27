@@ -39,7 +39,7 @@
 #define init_name_hash(salt)		(unsigned long)(salt)
 
 /* partial hash update function. Assume roughly 4 bits per character */
-static inline unsigned long
+static inline __unsigned_wrap unsigned long
 partial_name_hash(unsigned long c, unsigned long prevhash)
 {
 	return (prevhash + (c << 4) + (c >> 4)) * 11;
