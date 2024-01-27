@@ -775,7 +775,7 @@ pipe_fasync(int fd, struct file *filp, int on)
 unsigned long account_pipe_buffers(struct user_struct *user,
 				   unsigned long old, unsigned long new)
 {
-	return atomic_long_add_return(new - old, &user->pipe_bufs);
+	return atomic_long_add_return(sub_wrap(typeof(new), new, old), &user->pipe_bufs);
 }
 
 bool too_many_pipe_buffers_soft(unsigned long user_bufs)
