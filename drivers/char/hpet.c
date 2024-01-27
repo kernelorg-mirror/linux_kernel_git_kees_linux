@@ -720,7 +720,7 @@ static struct ctl_table_header *sysctl_header;
  */
 #define	TICK_CALIBRATE	(1000UL)
 
-static unsigned long __hpet_calibrate(struct hpets *hpetp)
+static __unsigned_wrap unsigned long __hpet_calibrate(struct hpets *hpetp)
 {
 	struct hpet_timer __iomem *timer = NULL;
 	unsigned long t, m, count, i, flags, start;
