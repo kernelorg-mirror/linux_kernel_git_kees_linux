@@ -69,6 +69,7 @@ static inline void update_vdso_data(struct vdso_data *vdata,
 	vdso_ts->nsec	= tk->tkr_mono.xtime_nsec;
 }
 
+__unsigned_wrap
 void update_vsyscall(struct timekeeper *tk)
 {
 	struct vdso_data *vdata = __arch_get_k_vdso_data();
