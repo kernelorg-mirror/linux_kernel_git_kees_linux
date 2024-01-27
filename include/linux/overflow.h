@@ -142,6 +142,14 @@ static inline bool __must_check __must_check_overflow(bool overflow)
 		__sum;					\
 	})
 
+#define inc_wrap(var, offset)					\
+	({							\
+		if (check_add_overflow(var, offset, &var)) {	\
+			/* do nothing */			\
+		}						\
+		var;						\
+	})
+
 /**
  * check_sub_overflow() - Calculate subtraction with overflow checking
  * @a: minuend; value to subtract from
@@ -173,6 +181,14 @@ static inline bool __must_check __must_check_overflow(bool overflow)
 			/* do nothing */		\
 		}					\
 		__val;					\
+	})
+
+#define dec_wrap(var, offset)					\
+	({							\
+		if (check_sub_overflow(var, offset, &var)) {	\
+			/* do nothing */			\
+		}						\
+		var;						\
 	})
 
 /**
