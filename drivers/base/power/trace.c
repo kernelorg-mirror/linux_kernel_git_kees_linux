@@ -140,7 +140,8 @@ static unsigned int read_magic_time(void)
  * This is just the sdbm hash function with a user-supplied
  * seed and final size parameter.
  */
-static unsigned int hash_string(unsigned int seed, const char *data, unsigned int mod)
+static __unsigned_wrap
+unsigned int hash_string(unsigned int seed, const char *data, unsigned int mod)
 {
 	unsigned char c;
 	while ((c = *data++) != 0) {
