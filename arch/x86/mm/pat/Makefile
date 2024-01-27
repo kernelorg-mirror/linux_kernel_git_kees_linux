@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0
+UBSAN_UNSIGNED_WRAP := n
 
 obj-y				:= set_memory.o memtype.o
 
