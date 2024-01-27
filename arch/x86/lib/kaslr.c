@@ -46,6 +46,7 @@ static inline u16 i8254(void)
 	return timer;
 }
 
+__unsigned_wrap
 unsigned long kaslr_get_random_long(const char *purpose)
 {
 #ifdef CONFIG_X86_64
