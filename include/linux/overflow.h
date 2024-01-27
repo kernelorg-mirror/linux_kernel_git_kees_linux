@@ -207,6 +207,24 @@ static inline bool __must_check __must_check_overflow(bool overflow)
 	__must_check_overflow(__builtin_mul_overflow(a, b, d))
 
 /**
+ * mul_wrap() - Intentionally perform a wrapping multiplication
+ * @type: type to check underflow against
+ * @a: first factor
+ * @b: second factor
+ *
+ * Return the potentially wrapped-around multiplication without
+ * tripping any overflow sanitizers that may be enabled.
+ */
+#define mul_wrap(type, a, b)				\
+	({						\
+		type __val;				\
+		if (check_mul_overflow(a, b, &__val)) {	\
+			/* do nothing */		\
+		}					\
+		__val;					\
+	})
+
+/**
  * check_shl_overflow() - Calculate a left-shifted value and check overflow
  * @a: Value to be shifted
  * @s: How many bits left to shift
