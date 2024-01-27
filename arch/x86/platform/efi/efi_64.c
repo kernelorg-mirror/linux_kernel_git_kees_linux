@@ -65,6 +65,7 @@ static struct mm_struct *efi_prev_mm;
  * We don't want the pgd on the pgd_list and cannot use pgd_alloc() for the
  * allocation.
  */
+__unsigned_wrap
 int __init efi_alloc_page_tables(void)
 {
 	pgd_t *pgd, *efi_pgd;
@@ -104,7 +105,7 @@ fail:
 /*
  * Add low kernel mappings for passing arguments to EFI functions.
  */
-void efi_sync_low_kernel_mappings(void)
+__unsigned_wrap void efi_sync_low_kernel_mappings(void)
 {
 	unsigned num_entries;
 	pgd_t *pgd_k, *pgd_efi;

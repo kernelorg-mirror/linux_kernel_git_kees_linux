@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0
+UBSAN_SANITIZE := n
 KASAN_SANITIZE := n
 GCOV_PROFILE := n
 
