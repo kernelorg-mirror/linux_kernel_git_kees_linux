@@ -55,7 +55,7 @@ ptrdiff_t rseq_offset;
  * Size of the registered rseq area. 0 if the registration was
  * unsuccessful.
  */
-unsigned int rseq_size = -1U;
+unsigned int rseq_size = UINT_MAX;
 
 /* Flags used during rseq registration.  */
 unsigned int rseq_flags;
@@ -64,7 +64,7 @@ unsigned int rseq_flags;
  * rseq feature size supported by the kernel. 0 if the registration was
  * unsuccessful.
  */
-unsigned int rseq_feature_size = -1U;
+unsigned int rseq_feature_size = UINT_MAX;
 
 static int rseq_ownership;
 static int rseq_reg_success;	/* At least one rseq registration has succeded. */
@@ -208,8 +208,8 @@ void rseq_exit(void)
 	if (!rseq_ownership)
 		return;
 	rseq_offset = 0;
-	rseq_size = -1U;
-	rseq_feature_size = -1U;
+	rseq_size = UINT_MAX;
+	rseq_feature_size = UINT_MAX;
 	rseq_ownership = 0;
 }
 

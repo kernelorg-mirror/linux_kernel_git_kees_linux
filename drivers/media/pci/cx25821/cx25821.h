@@ -30,8 +30,8 @@
 
 #include <linux/mutex.h>
 
-#define UNSET (-1U)
-#define NO_SYNC_LINE (-1U)
+#define UNSET (UINT_MAX)
+#define NO_SYNC_LINE (UINT_MAX)
 
 #define CX25821_MAXBOARDS 2
 

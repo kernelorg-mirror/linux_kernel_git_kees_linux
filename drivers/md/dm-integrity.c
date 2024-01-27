@@ -1326,7 +1326,7 @@ static void remove_journal_node(struct dm_integrity_c *ic, struct journal_node *
 	init_journal_node(node);
 }
 
-#define NOT_FOUND	(-1U)
+#define NOT_FOUND	(UINT_MAX)
 
 static unsigned int find_journal_node(struct dm_integrity_c *ic, sector_t sector, sector_t *next_sector)
 {

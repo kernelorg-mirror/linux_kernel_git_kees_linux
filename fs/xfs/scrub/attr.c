@@ -598,7 +598,7 @@ xchk_xattr(
 			.allow_incomplete = true,
 		},
 	};
-	xfs_dablk_t			last_checked = -1U;
+	xfs_dablk_t			last_checked = UINT_MAX;
 	int				error = 0;
 
 	if (!xfs_inode_hasattr(sc->ip))

@@ -319,7 +319,7 @@ static int rockchip_pmu_set_idle_request(struct rockchip_pm_domain *pd,
 			     pd_info->req_w_mask);
 	else
 		regmap_update_bits(pmu->regmap, pmu->info->req_offset + pd_req_offset,
-				   pd_info->req_mask, idle ? -1U : 0);
+				   pd_info->req_mask, idle ? UINT_MAX : 0);
 
 	wmb();
 
@@ -508,7 +508,7 @@ static void rockchip_do_pmu_set_power_domain(struct rockchip_pm_domain *pd,
 			     (pd->info->pwr_mask | pd->info->pwr_w_mask));
 	else
 		regmap_update_bits(pmu->regmap, pmu->info->pwr_offset + pd_pwr_offset,
-				   pd->info->pwr_mask, on ? 0 : -1U);
+				   pd->info->pwr_mask, on ? 0 : UINT_MAX);
 
 	wmb();
 

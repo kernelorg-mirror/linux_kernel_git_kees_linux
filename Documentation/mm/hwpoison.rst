@@ -126,7 +126,7 @@ Testing
 
   corrupt-filter-dev-major, corrupt-filter-dev-minor
 	Only handle memory failures to pages associated with the file
-	system defined by block device major/minor.  -1U is the
+	system defined by block device major/minor.  UINT_MAX is the
 	wildcard value.  This should be only used for testing with
 	artificial injection.
 

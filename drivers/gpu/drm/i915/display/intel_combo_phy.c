@@ -117,9 +117,9 @@ static bool icl_verify_procmon_ref_values(struct drm_i915_private *dev_priv,
 	ret = check_phy_reg(dev_priv, phy, ICL_PORT_COMP_DW1(phy),
 			    (0xff << 16) | 0xff, procmon->dw1);
 	ret &= check_phy_reg(dev_priv, phy, ICL_PORT_COMP_DW9(phy),
-			     -1U, procmon->dw9);
+			     UINT_MAX, procmon->dw9);
 	ret &= check_phy_reg(dev_priv, phy, ICL_PORT_COMP_DW10(phy),
-			     -1U, procmon->dw10);
+			     UINT_MAX, procmon->dw10);
 
 	return ret;
 }

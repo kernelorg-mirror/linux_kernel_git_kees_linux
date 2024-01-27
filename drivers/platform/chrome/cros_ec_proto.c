@@ -905,7 +905,7 @@ bool cros_ec_check_features(struct cros_ec_dev *ec, int feature)
 	struct ec_response_get_features *features = &ec->features;
 	int ret;
 
-	if (features->flags[0] == -1U && features->flags[1] == -1U) {
+	if (features->flags[0] == UINT_MAX && features->flags[1] == UINT_MAX) {
 		/* features bitmap not read yet */
 		ret = cros_ec_cmd(ec->ec_dev, 0, EC_CMD_GET_FEATURES + ec->cmd_offset,
 				  NULL, 0, features, sizeof(*features));

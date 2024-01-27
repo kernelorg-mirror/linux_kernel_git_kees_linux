@@ -1125,7 +1125,7 @@ static int bm_rw(struct drbd_device *device, const unsigned int flags, unsigned 
 		unsigned int hint;
 		for (hint = 0; hint < b->n_bitmap_hints; hint++) {
 			i = b->al_bitmap_hints[hint];
-			if (i >= num_pages) /* == -1U: no hint here. */
+			if (i >= num_pages) /* == UINT_MAX: no hint here. */
 				continue;
 			/* Several AL-extents may point to the same page. */
 			if (!test_and_clear_bit(BM_PAGE_HINT_WRITEOUT,
@@ -1389,7 +1389,7 @@ static int __bm_change_bits_to(struct drbd_device *device, const unsigned long s
 	struct drbd_bitmap *b = device->bitmap;
 	unsigned long *p_addr = NULL;
 	unsigned long bitnr;
-	unsigned int last_page_nr = -1U;
+	unsigned int last_page_nr = UINT_MAX;
 	int c = 0;
 	int changed_total = 0;
 
@@ -1615,7 +1615,7 @@ int drbd_bm_count_bits(struct drbd_device *device, const unsigned long s, const 
 	struct drbd_bitmap *b = device->bitmap;
 	unsigned long *p_addr = NULL;
 	unsigned long bitnr;
-	unsigned int page_nr = -1U;
+	unsigned int page_nr = UINT_MAX;
 	int c = 0;
 
 	/* If this is called without a bitmap, that is a bug.  But just to be

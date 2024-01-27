@@ -38,7 +38,7 @@
 #endif
 #include "tda8290.h"
 
-#define UNSET (-1U)
+#define UNSET (UINT_MAX)
 
 /* ----------------------------------------------------------- */
 /* enums                                                       */

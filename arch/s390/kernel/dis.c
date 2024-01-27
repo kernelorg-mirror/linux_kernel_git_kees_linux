@@ -380,7 +380,7 @@ static unsigned int extract_operand(unsigned char *code,
 	/* Sign extend value if the operand is signed or pc relative.  */
 	if ((operand->flags & (OPERAND_SIGNED | OPERAND_PCREL)) &&
 	    (val & (1U << (operand->bits - 1))))
-		val |= (-1U << (operand->bits - 1)) << 1;
+		val |= (UINT_MAX << (operand->bits - 1)) << 1;
 
 	/* Double value if the operand is pc relative.	*/
 	if (operand->flags & OPERAND_PCREL)

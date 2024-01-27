@@ -448,7 +448,7 @@ static void __init setup_lowcore(void)
 	lc->restart_stack = (unsigned long) restart_stack;
 	lc->restart_fn = (unsigned long) do_restart;
 	lc->restart_data = 0;
-	lc->restart_source = -1U;
+	lc->restart_source = UINT_MAX;
 	lc->spinlock_lockval = arch_spin_lockval(0);
 	lc->spinlock_index = 0;
 	arch_spin_lock_setup(0);

@@ -1709,6 +1709,32 @@ static const struct block_device_operations null_ops = {
 	.report_zones	= null_report_zones,
 };
 
+<<<<<<< HEAD
+=======
+static int setup_commands(struct nullb_queue *nq)
+{
+	struct nullb_cmd *cmd;
+	int i;
+
+	nq->cmds = kcalloc(nq->queue_depth, sizeof(*cmd), GFP_KERNEL);
+	if (!nq->cmds)
+		return -ENOMEM;
+
+	nq->tag_map = bitmap_zalloc(nq->queue_depth, GFP_KERNEL);
+	if (!nq->tag_map) {
+		kfree(nq->cmds);
+		return -ENOMEM;
+	}
+
+	for (i = 0; i < nq->queue_depth; i++) {
+		cmd = &nq->cmds[i];
+		cmd->tag = UINT_MAX;
+	}
+
+	return 0;
+}
+
+>>>>>>> aa1f820f5524 ([WIP] treewide: negative unsigned constant -1U: use UINT_MAX)
 static int setup_queues(struct nullb *nullb)
 {
 	int nqueues = nr_cpu_ids;

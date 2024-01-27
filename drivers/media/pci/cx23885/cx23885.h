@@ -28,7 +28,7 @@
 
 #define CX23885_VERSION "0.0.4"
 
-#define UNSET (-1U)
+#define UNSET (UINT_MAX)
 
 #define CX23885_MAXBOARDS 8
 

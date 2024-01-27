@@ -31,7 +31,7 @@ xfs_refcount_encode_startblock(
 
 	/*
 	 * low level btree operations need to handle the generic btree range
-	 * query functions (which set rc_domain == -1U), so we check that the
+	 * query functions (which set rc_domain == UINT_MAX), so we check that the
 	 * domain is /not/ shared.
 	 */
 	start = startblock & ~XFS_REFC_COWFLAG;

@@ -922,7 +922,7 @@ struct drbd_config_context {
 	unsigned int minor;
 	/* assigned from request attributes, if present */
 	unsigned int volume;
-#define VOLUME_UNSPECIFIED		(-1U)
+#define VOLUME_UNSPECIFIED		(UINT_MAX)
 	/* pointer into the request skb,
 	 * limited lifetime! */
 	char *resource_name;

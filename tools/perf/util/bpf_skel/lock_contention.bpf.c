@@ -385,7 +385,7 @@ int contention_begin(u64 *ctx)
 			if (task)
 				pelem->flags = BPF_CORE_READ(task, pid);
 			else
-				pelem->flags = -1U;
+				pelem->flags = UINT_MAX;
 
 		} else {
 			task = bpf_get_current_task_btf();
@@ -393,7 +393,7 @@ int contention_begin(u64 *ctx)
 
 		if (task) {
 			if (update_task_data(task) < 0 && lock_owner)
-				pelem->flags = -1U;
+				pelem->flags = UINT_MAX;
 		}
 	}
 

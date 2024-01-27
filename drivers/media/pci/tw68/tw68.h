@@ -32,7 +32,7 @@
 
 #include "tw68-reg.h"
 
-#define	UNSET	(-1U)
+#define	UNSET	(UINT_MAX)
 
 #define TW68_NORMS ( \
 	V4L2_STD_NTSC    | V4L2_STD_PAL       | V4L2_STD_SECAM    | \

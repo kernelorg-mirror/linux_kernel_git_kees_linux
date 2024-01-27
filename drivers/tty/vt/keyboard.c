@@ -151,7 +151,7 @@ static bool rep;			/* flag telling character repeat */
 
 static int shift_state = 0;
 
-static unsigned int ledstate = -1U;			/* undefined */
+static unsigned int ledstate = UINT_MAX;			/* undefined */
 static unsigned char ledioctl;
 static bool vt_switch;
 
@@ -1032,7 +1032,7 @@ static int kbd_led_trigger_activate(struct led_classdev *cdev)
 		container_of(cdev->trigger, struct kbd_led_trigger, trigger);
 
 	tasklet_disable(&keyboard_tasklet);
-	if (ledstate != -1U)
+	if (ledstate != UINT_MAX)
 		led_trigger_event(&trigger->trigger,
 				  ledstate & trigger->mask ?
 					LED_FULL : LED_OFF);
@@ -1618,7 +1618,7 @@ static void kbd_start(struct input_handle *handle)
 {
 	tasklet_disable(&keyboard_tasklet);
 
-	if (ledstate != -1U)
+	if (ledstate != UINT_MAX)
 		kbd_update_leds_helper(handle, &ledstate);
 
 	tasklet_enable(&keyboard_tasklet);

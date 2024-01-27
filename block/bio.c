@@ -734,7 +734,7 @@ static int bio_cpu_dead(unsigned int cpu, struct hlist_node *node)
 	if (bs->cache) {
 		struct bio_alloc_cache *cache = per_cpu_ptr(bs->cache, cpu);
 
-		bio_alloc_cache_prune(cache, -1U);
+		bio_alloc_cache_prune(cache, UINT_MAX);
 	}
 	return 0;
 }
@@ -751,7 +751,7 @@ static void bio_alloc_cache_destroy(struct bio_set *bs)
 		struct bio_alloc_cache *cache;
 
 		cache = per_cpu_ptr(bs->cache, cpu);
-		bio_alloc_cache_prune(cache, -1U);
+		bio_alloc_cache_prune(cache, UINT_MAX);
 	}
 	free_percpu(bs->cache);
 	bs->cache = NULL;

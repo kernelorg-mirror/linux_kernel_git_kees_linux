@@ -61,7 +61,7 @@ static unsigned int cx88_devcount;
 static LIST_HEAD(cx88_devlist);
 static DEFINE_MUTEX(devlist);
 
-#define NO_SYNC_LINE (-1U)
+#define NO_SYNC_LINE (UINT_MAX)
 
 /*
  * @lpi: lines per IRQ, or 0 to not generate irqs. Note: IRQ to be

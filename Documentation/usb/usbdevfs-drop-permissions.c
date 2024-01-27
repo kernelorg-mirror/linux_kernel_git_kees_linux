@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
 	 * Drop privileges but keep the ability to claim all
 	 * free interfaces (i.e., those not used by kernel drivers)
 	 */
-	drop_privileges(fd, -1U);
+	drop_privileges(fd, UINT_MAX);
 
 	printf("Available options:\n"
 		"[0] Exit now\n"

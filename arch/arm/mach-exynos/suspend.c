@@ -33,7 +33,7 @@
 #include "common.h"
 #include "smc.h"
 
-#define REG_TABLE_END (-1U)
+#define REG_TABLE_END (UINT_MAX)
 
 #define EXYNOS5420_CPU_STATE	0x28
 
@@ -532,7 +532,7 @@ static int exynos_suspend_enter(suspend_state_t state)
 	pr_debug("%s: wakeup masks: %08x,%08x\n", __func__,
 		  exynos_irqwake_intmask, eint_wakeup_mask);
 
-	if (exynos_irqwake_intmask == -1U
+	if (exynos_irqwake_intmask == UINT_MAX
 	    && eint_wakeup_mask == EXYNOS_EINT_WAKEUP_MASK_DISABLED) {
 		pr_err("%s: No wake-up sources!\n", __func__);
 		pr_err("%s: Aborting sleep\n", __func__);

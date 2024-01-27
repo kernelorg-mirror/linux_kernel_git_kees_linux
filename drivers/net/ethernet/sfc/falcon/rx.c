@@ -753,7 +753,7 @@ void ef4_init_rx_queue(struct ef4_rx_queue *rx_queue)
 	rx_queue->added_count = 0;
 	rx_queue->notified_count = 0;
 	rx_queue->removed_count = 0;
-	rx_queue->min_fill = -1U;
+	rx_queue->min_fill = UINT_MAX;
 	ef4_init_rx_recycle_ring(efx, rx_queue);
 
 	rx_queue->page_remove = 0;

@@ -42,7 +42,7 @@
 #include "tda18271.h"
 #include "xc4000.h"
 
-#define UNSET (-1U)
+#define UNSET (UINT_MAX)
 
 /*
  * Driver modprobe parameters

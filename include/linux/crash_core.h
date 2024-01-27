@@ -71,7 +71,7 @@ struct kexec_segment;
 #define KEXEC_CRASH_HP_REMOVE_CPU		2
 #define KEXEC_CRASH_HP_ADD_MEMORY		3
 #define KEXEC_CRASH_HP_REMOVE_MEMORY		4
-#define KEXEC_CRASH_HP_INVALID_CPU		-1U
+#define KEXEC_CRASH_HP_INVALID_CPU		UINT_MAX
 
 extern void __crash_kexec(struct pt_regs *regs);
 extern void crash_kexec(struct pt_regs *regs);

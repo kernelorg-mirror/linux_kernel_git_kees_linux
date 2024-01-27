@@ -48,7 +48,7 @@ MODULE_LICENSE("GPL");
 
 /* ---------------------------------------------------------------------- */
 
-#define UNSET       (-1U)
+#define UNSET       (UINT_MAX)
 #define PREFIX      "saa6588: "
 #define dprintk     if (debug) printk
 

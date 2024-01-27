@@ -43,7 +43,7 @@ enum sensors {
 	MAX_SENSOR_TYPE,
 };
 
-#define INVALID_INDEX (-1U)
+#define INVALID_INDEX (UINT_MAX)
 
 /*
  * 'compatible' string properties for sensor types as defined in old

@@ -478,7 +478,7 @@ static struct io_wq_work *io_get_next_work(struct io_wq_acct *acct,
 {
 	struct io_wq_work_node *node, *prev;
 	struct io_wq_work *work, *tail;
-	unsigned int stall_hash = -1U;
+	unsigned int stall_hash = UINT_MAX;
 	struct io_wq *wq = worker->wq;
 
 	wq_list_for_each(node, prev, &acct->work_list) {
@@ -502,13 +502,13 @@ static struct io_wq_work *io_get_next_work(struct io_wq_acct *acct,
 			wq_list_cut(&acct->work_list, &tail->list, prev);
 			return work;
 		}
-		if (stall_hash == -1U)
+		if (stall_hash == UINT_MAX)
 			stall_hash = hash;
 		/* fast forward to a next hash, for-each will fix up @prev */
 		node = &tail->list;
 	}
 
-	if (stall_hash != -1U) {
+	if (stall_hash != UINT_MAX) {
 		bool unstalled;
 
 		/*
@@ -606,7 +606,7 @@ static void io_worker_handle_work(struct io_wq_acct *acct,
 			if (linked)
 				io_wq_enqueue(wq, linked);
 
-			if (hash != -1U && !next_hashed) {
+			if (hash != UINT_MAX && !next_hashed) {
 				/* serialize hash clear with wake_up() */
 				spin_lock_irq(&wq->hash->wait.lock);
 				clear_bit(hash, &wq->hash->map);

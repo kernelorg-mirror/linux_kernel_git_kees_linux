@@ -2376,14 +2376,14 @@ static int translate_desc(struct vhost_virtqueue *vq, u64 addr, u32 len,
 
 /* Each buffer in the virtqueues is actually a chain of descriptors.  This
  * function returns the next descriptor in the chain,
- * or -1U if we're at the end. */
+ * or UINT_MAX if we're at the end. */
 static unsigned next_desc(struct vhost_virtqueue *vq, struct vring_desc *desc)
 {
 	unsigned int next;
 
 	/* If this descriptor says it doesn't chain, we're done. */
 	if (!(desc->flags & cpu_to_vhost16(vq, VRING_DESC_F_NEXT)))
-		return -1U;
+		return UINT_MAX;
 
 	/* Check they're not leading us off end of descriptors. */
 	next = vhost16_to_cpu(vq, READ_ONCE(desc->next));
