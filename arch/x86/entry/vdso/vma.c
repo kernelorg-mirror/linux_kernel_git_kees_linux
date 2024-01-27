@@ -220,7 +220,7 @@ static const struct vm_special_mapping vvar_mapping = {
  * @image          - blob to map
  * @addr           - request a specific address (zero to map at free addr)
  */
-static int map_vdso(const struct vdso_image *image, unsigned long addr)
+static __unsigned_wrap int map_vdso(const struct vdso_image *image, unsigned long addr)
 {
 	struct mm_struct *mm = current->mm;
 	struct vm_area_struct *vma;
@@ -286,7 +286,7 @@ up_fail:
  *
  * Only used for the 64-bit and x32 vdsos.
  */
-static unsigned long vdso_addr(unsigned long start, unsigned len)
+static __unsigned_wrap unsigned long vdso_addr(unsigned long start, unsigned len)
 {
 	unsigned long addr, end;
 	unsigned offset;
@@ -319,7 +319,7 @@ static unsigned long vdso_addr(unsigned long start, unsigned len)
 	return addr;
 }
 
-static int map_vdso_randomized(const struct vdso_image *image)
+static __unsigned_wrap int map_vdso_randomized(const struct vdso_image *image)
 {
 	unsigned long addr = vdso_addr(current->mm->start_stack, image->size-image->sym_vvar_start);
 
