@@ -347,7 +347,8 @@ static inline bool is_timers_nohz_active(void)
 static inline bool is_timers_nohz_active(void) { return false; }
 #endif /* NO_HZ_COMMON */
 
-static unsigned long round_jiffies_common(unsigned long j, int cpu,
+static __unsigned_wrap
+unsigned long round_jiffies_common(unsigned long j, int cpu,
 		bool force_up)
 {
 	int rem;
@@ -433,7 +434,7 @@ EXPORT_SYMBOL_GPL(__round_jiffies);
  *
  * The return value is the rounded version of the @j parameter.
  */
-unsigned long __round_jiffies_relative(unsigned long j, int cpu)
+__unsigned_wrap unsigned long __round_jiffies_relative(unsigned long j, int cpu)
 {
 	unsigned long j0 = jiffies;
 
@@ -510,7 +511,7 @@ EXPORT_SYMBOL_GPL(__round_jiffies_up);
  * of firing does not matter too much, as long as they don't fire too
  * early.
  */
-unsigned long __round_jiffies_up_relative(unsigned long j, int cpu)
+__unsigned_wrap unsigned long __round_jiffies_up_relative(unsigned long j, int cpu)
 {
 	unsigned long j0 = jiffies;
 
@@ -565,7 +566,7 @@ static inline void timer_set_idx(struct timer_list *timer, unsigned int idx)
  * Helper function to calculate the array index for a given expiry
  * time.
  */
-static inline unsigned calc_index(unsigned long expires, unsigned lvl,
+static inline __unsigned_wrap unsigned calc_index(unsigned long expires, unsigned lvl,
 				  unsigned long *bucket_expiry)
 {
 
@@ -582,7 +583,7 @@ static inline unsigned calc_index(unsigned long expires, unsigned lvl,
 	return LVL_OFFS(lvl) + (expires & LVL_MASK);
 }
 
-static int calc_wheel_index(unsigned long expires, unsigned long clk,
+static __unsigned_wrap int calc_wheel_index(unsigned long expires, unsigned long clk,
 			    unsigned long *bucket_expiry)
 {
 	unsigned long delta = expires - clk;
@@ -1062,7 +1063,7 @@ static struct timer_base *lock_timer_base(struct timer_list *timer,
 #define MOD_TIMER_REDUCE		0x02
 #define MOD_TIMER_NOTPENDING		0x04
 
-static inline int
+static inline __unsigned_wrap int
 __mod_timer(struct timer_list *timer, unsigned long expires, unsigned int options)
 {
 	unsigned long clk = 0, flags, bucket_expiry;
@@ -2540,7 +2541,7 @@ static void process_timeout(struct timer_list *t)
  * jiffies will be returned. In all cases the return value is guaranteed
  * to be non-negative.
  */
-signed long __sched schedule_timeout(signed long timeout)
+signed __unsigned_wrap long __sched schedule_timeout(signed long timeout)
 {
 	struct process_timer timer;
 	unsigned long expire;
