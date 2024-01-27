@@ -883,7 +883,7 @@ static inline int pfn_level_offset(u64 pfn, int level)
 
 static inline u64 level_mask(int level)
 {
-	return -1ULL << level_to_offset_bits(level);
+	return U64_MAX << level_to_offset_bits(level);
 }
 
 static inline u64 level_size(int level)

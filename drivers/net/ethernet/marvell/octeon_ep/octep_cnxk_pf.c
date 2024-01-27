@@ -704,17 +704,17 @@ static void octep_enable_interrupts_cnxk_pf(struct octep_device *oct)
 
 	octep_write_csr64(oct, CNXK_SDP_EPF_IRERR_RINT_ENA_W1S, intr_mask);
 	octep_write_csr64(oct, CNXK_SDP_EPF_ORERR_RINT_ENA_W1S, intr_mask);
-	octep_write_csr64(oct, CNXK_SDP_EPF_OEI_RINT_ENA_W1S, -1ULL);
+	octep_write_csr64(oct, CNXK_SDP_EPF_OEI_RINT_ENA_W1S, U64_MAX);
 
-	octep_write_csr64(oct, CNXK_SDP_EPF_VFIRE_RINT_ENA_W1S(0), -1ULL);
-	octep_write_csr64(oct, CNXK_SDP_EPF_VFORE_RINT_ENA_W1S(0), -1ULL);
+	octep_write_csr64(oct, CNXK_SDP_EPF_VFIRE_RINT_ENA_W1S(0), U64_MAX);
+	octep_write_csr64(oct, CNXK_SDP_EPF_VFORE_RINT_ENA_W1S(0), U64_MAX);
 
 	octep_write_csr64(oct, CNXK_SDP_EPF_MISC_RINT_ENA_W1S, intr_mask);
 	octep_write_csr64(oct, CNXK_SDP_EPF_DMA_RINT_ENA_W1S, intr_mask);
-	octep_write_csr64(oct, CNXK_SDP_EPF_MBOX_RINT_ENA_W1S(0), -1ULL);
+	octep_write_csr64(oct, CNXK_SDP_EPF_MBOX_RINT_ENA_W1S(0), U64_MAX);
 
-	octep_write_csr64(oct, CNXK_SDP_EPF_DMA_VF_RINT_ENA_W1S(0), -1ULL);
-	octep_write_csr64(oct, CNXK_SDP_EPF_PP_VF_RINT_ENA_W1S(0), -1ULL);
+	octep_write_csr64(oct, CNXK_SDP_EPF_DMA_VF_RINT_ENA_W1S(0), U64_MAX);
+	octep_write_csr64(oct, CNXK_SDP_EPF_PP_VF_RINT_ENA_W1S(0), U64_MAX);
 }
 
 /* Disable all interrupts */
@@ -731,17 +731,17 @@ static void octep_disable_interrupts_cnxk_pf(struct octep_device *oct)
 
 	octep_write_csr64(oct, CNXK_SDP_EPF_IRERR_RINT_ENA_W1C, intr_mask);
 	octep_write_csr64(oct, CNXK_SDP_EPF_ORERR_RINT_ENA_W1C, intr_mask);
-	octep_write_csr64(oct, CNXK_SDP_EPF_OEI_RINT_ENA_W1C, -1ULL);
+	octep_write_csr64(oct, CNXK_SDP_EPF_OEI_RINT_ENA_W1C, U64_MAX);
 
-	octep_write_csr64(oct, CNXK_SDP_EPF_VFIRE_RINT_ENA_W1C(0), -1ULL);
-	octep_write_csr64(oct, CNXK_SDP_EPF_VFORE_RINT_ENA_W1C(0), -1ULL);
+	octep_write_csr64(oct, CNXK_SDP_EPF_VFIRE_RINT_ENA_W1C(0), U64_MAX);
+	octep_write_csr64(oct, CNXK_SDP_EPF_VFORE_RINT_ENA_W1C(0), U64_MAX);
 
 	octep_write_csr64(oct, CNXK_SDP_EPF_MISC_RINT_ENA_W1C, intr_mask);
 	octep_write_csr64(oct, CNXK_SDP_EPF_DMA_RINT_ENA_W1C, intr_mask);
-	octep_write_csr64(oct, CNXK_SDP_EPF_MBOX_RINT_ENA_W1C(0), -1ULL);
+	octep_write_csr64(oct, CNXK_SDP_EPF_MBOX_RINT_ENA_W1C(0), U64_MAX);
 
-	octep_write_csr64(oct, CNXK_SDP_EPF_DMA_VF_RINT_ENA_W1C(0), -1ULL);
-	octep_write_csr64(oct, CNXK_SDP_EPF_PP_VF_RINT_ENA_W1C(0), -1ULL);
+	octep_write_csr64(oct, CNXK_SDP_EPF_DMA_VF_RINT_ENA_W1C(0), U64_MAX);
+	octep_write_csr64(oct, CNXK_SDP_EPF_PP_VF_RINT_ENA_W1C(0), U64_MAX);
 }
 
 /* Get new Octeon Read Index: index of descriptor that Octeon reads next. */

@@ -217,7 +217,7 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
 		u64 data[64];
 	} branch_stack = {
 		/* 1 branch_entry */
-		.data = {1, -1ULL, 211, 212, 213},
+		.data = {1, U64_MAX, 211, 212, 213},
 	};
 	u64 regs[64];
 	const u32 raw_data[] = {0x12345678, 0x0a0b0c0d, 0x11020304, 0x05060708, 0 };

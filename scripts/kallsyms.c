@@ -56,7 +56,7 @@ static struct addr_range text_ranges[] = {
 #define text_range_inittext (&text_ranges[1])
 
 static struct addr_range percpu_range = {
-	"__per_cpu_start", "__per_cpu_end", -1ULL, 0
+	"__per_cpu_start", "__per_cpu_end", ~0ULL, 0
 };
 
 static struct sym_entry **table;

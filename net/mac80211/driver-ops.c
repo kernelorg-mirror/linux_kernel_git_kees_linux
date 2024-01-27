@@ -240,7 +240,7 @@ int drv_conf_tx(struct ieee80211_local *local,
 u64 drv_get_tsf(struct ieee80211_local *local,
 		struct ieee80211_sub_if_data *sdata)
 {
-	u64 ret = -1ULL;
+	u64 ret = U64_MAX;
 
 	might_sleep();
 	lockdep_assert_wiphy(local->hw.wiphy);

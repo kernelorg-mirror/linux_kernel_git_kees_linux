@@ -6,7 +6,7 @@
 #include "vmcs12.h"
 #include "vmx.h"
 
-#define EVMPTR_INVALID (-1ULL)
+#define EVMPTR_INVALID (U64_MAX)
 #define EVMPTR_MAP_PENDING (-2ULL)
 
 enum nested_evmptrld_status {

@@ -4011,7 +4011,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
 			return 1;
 
 		/* only enable bit supported */
-		if (data & (-1ULL << 1))
+		if (data & (U64_MAX << 1))
 			return 1;
 
 		vcpu->arch.msr_kvm_poll_control = data;

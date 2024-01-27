@@ -238,7 +238,7 @@ static __init void detect_machine_facilities(void)
 	if (test_facility(139) && (tod_clock_base.tod >> 63)) {
 		/* Enabled signed clock comparator comparisons */
 		S390_lowcore.machine_flags |= MACHINE_FLAG_SCC;
-		clock_comparator_max = -1ULL >> 1;
+		clock_comparator_max = U64_MAX >> 1;
 		system_ctl_set_bit(0, CR0_CLOCK_COMPARATOR_SIGN_BIT);
 	}
 	if (IS_ENABLED(CONFIG_PCI) && test_facility(153)) {

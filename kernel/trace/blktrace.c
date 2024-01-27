@@ -504,7 +504,7 @@ static void blk_trace_setup_lba(struct blk_trace *bt,
 		bt->end_lba = bdev->bd_start_sect + bdev_nr_sectors(bdev);
 	} else {
 		bt->start_lba = 0;
-		bt->end_lba = -1ULL;
+		bt->end_lba = U64_MAX;
 	}
 }
 

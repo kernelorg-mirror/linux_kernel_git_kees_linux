@@ -1566,7 +1566,7 @@ static int cs_etm__synth_branch_sample(struct cs_etm_queue *etmq,
 	if (etm->synth_opts.last_branch) {
 		dummy_bs = (struct dummy_branch_stack){
 			.nr = 1,
-			.hw_idx = -1ULL,
+			.hw_idx = U64_MAX,
 			.entries = {
 				.from = sample.ip,
 				.to = sample.addr,

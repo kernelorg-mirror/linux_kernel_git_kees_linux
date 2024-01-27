@@ -10607,7 +10607,7 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
 	struct btrfs_chunk_map *map = NULL;
 	struct btrfs_device *device = NULL;
 	struct btrfs_swap_info bsi = {
-		.lowest_ppage = (sector_t)-1ULL,
+		.lowest_ppage = (sector_t)U64_MAX,
 	};
 	int ret = 0;
 	u64 isize;

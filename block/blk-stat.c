@@ -19,7 +19,7 @@ struct blk_queue_stats {
 
 void blk_rq_stat_init(struct blk_rq_stat *stat)
 {
-	stat->min = -1ULL;
+	stat->min = U64_MAX;
 	stat->max = stat->nr_samples = stat->mean = 0;
 	stat->batch = 0;
 }

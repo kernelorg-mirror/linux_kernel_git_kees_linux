@@ -381,7 +381,7 @@ static int __init eiointc_init(struct eiointc_priv *priv, int parent_irq,
 {
 	int i;
 
-	node_map = node_map ? node_map : -1ULL;
+	node_map = node_map ? node_map : U64_MAX;
 	for_each_possible_cpu(i) {
 		if (node_map & (1ULL << (cpu_to_eio_node(i)))) {
 			node_set(cpu_to_eio_node(i), priv->node_map);

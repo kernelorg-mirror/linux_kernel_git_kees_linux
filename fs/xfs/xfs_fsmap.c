@@ -70,7 +70,7 @@ xfs_fsmap_owner_to_rmap(
 
 	switch (src->fmr_owner) {
 	case 0:			/* "lowest owner id possible" */
-	case -1ULL:		/* "highest owner id possible" */
+	case U64_MAX:		/* "highest owner id possible" */
 		dest->rm_owner = 0;
 		break;
 	case XFS_FMR_OWN_FREE:
@@ -252,7 +252,7 @@ xfs_getfsmap_rec_before_start(
 	const struct xfs_rmap_irec	*rec,
 	xfs_daddr_t			rec_daddr)
 {
-	if (info->low_daddr != -1ULL)
+	if (info->low_daddr != U64_MAX)
 		return rec_daddr < info->low_daddr;
 	if (info->low.rm_blockcount)
 		return xfs_rmap_compare(rec, &info->low) < 0;
@@ -817,10 +817,10 @@ xfs_getfsmap_check_keys(
 	if (high_key->fmr_flags != -1U &&
 	    (high_key->fmr_flags & (FMR_OF_SPECIAL_OWNER |
 				    FMR_OF_EXTENT_MAP))) {
-		if (high_key->fmr_offset && high_key->fmr_offset != -1ULL)
+		if (high_key->fmr_offset && high_key->fmr_offset != U64_MAX)
 			return false;
 	}
-	if (high_key->fmr_length && high_key->fmr_length != -1ULL)
+	if (high_key->fmr_length && high_key->fmr_length != U64_MAX)
 		return false;
 
 	if (low_key->fmr_device > high_key->fmr_device)
@@ -983,7 +983,7 @@ xfs_getfsmap(
 		info.dev = handlers[i].dev;
 		info.last = false;
 		info.pag = NULL;
-		info.low_daddr = -1ULL;
+		info.low_daddr = U64_MAX;
 		info.low.rm_blockcount = 0;
 		error = handlers[i].fn(tp, dkeys, &info);
 		if (error)

@@ -1669,7 +1669,7 @@ struct range __weak arch_get_mappable_range(void)
 {
 	struct range mhp_range = {
 		.start = 0UL,
-		.end = -1ULL,
+		.end = U64_MAX,
 	};
 	return mhp_range;
 }

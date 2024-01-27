@@ -153,7 +153,7 @@ static inline bool range_check(struct vringh *vrh, u64 addr, size_t *len,
 
 	/* To end of memory? */
 	if (unlikely(addr + *len == 0)) {
-		if (range->end_incl == -1ULL)
+		if (range->end_incl == U64_MAX)
 			return true;
 		goto truncate;
 	}
@@ -304,7 +304,7 @@ __vringh_iov(struct vringh *vrh, u16 i,
 {
 	int err, count = 0, indirect_count = 0, up_next, desc_max;
 	struct vring_desc desc, *descs;
-	struct vringh_range range = { -1ULL, 0 }, slowrange;
+	struct vringh_range range = { U64_MAX, 0 }, slowrange;
 	bool slow = false;
 
 	/* We start traversing vring's descriptor table. */

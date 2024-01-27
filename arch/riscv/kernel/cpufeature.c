@@ -727,7 +727,7 @@ static int check_unaligned_access(void *param)
 	/* Unalign src as well, but differently (off by 1 + 2 = 3). */
 	src = dst + (MISALIGNED_BUFFER_SIZE / 2);
 	src += 2;
-	word_cycles = -1ULL;
+	word_cycles = U64_MAX;
 	/* Do a warmup. */
 	__riscv_copy_words_unaligned(dst, src, MISALIGNED_COPY_SIZE);
 	preempt_disable();
@@ -751,7 +751,7 @@ static int check_unaligned_access(void *param)
 			word_cycles = end_cycles - start_cycles;
 	}
 
-	byte_cycles = -1ULL;
+	byte_cycles = U64_MAX;
 	__riscv_copy_bytes_unaligned(dst, src, MISALIGNED_COPY_SIZE);
 	start_jiffies = jiffies;
 	while ((now = jiffies) == start_jiffies)

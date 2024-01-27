@@ -759,7 +759,7 @@ struct xfs_legacy_timestamp {
  * We round down the ondisk limit so that the bigtime quota and inode max
  * timestamps will be the same.
  */
-#define XFS_BIGTIME_TIME_MAX	((int64_t)((-1ULL / NSEC_PER_SEC) & ~0x3ULL))
+#define XFS_BIGTIME_TIME_MAX	((int64_t)((U64_MAX / NSEC_PER_SEC) & ~0x3ULL))
 
 /*
  * Bigtime epoch is set exactly to the minimum time value that a traditional
@@ -1499,7 +1499,7 @@ struct xfs_owner_info {
  * to tell us we have a special owner value. We use these for static metadata
  * allocated at mkfs/growfs time, as well as for freespace management metadata.
  */
-#define XFS_RMAP_OWN_NULL	(-1ULL)	/* No owner, for growfs */
+#define XFS_RMAP_OWN_NULL	(U64_MAX)	/* No owner, for growfs */
 #define XFS_RMAP_OWN_UNKNOWN	(-2ULL)	/* Unknown owner, for EFI recovery */
 #define XFS_RMAP_OWN_FS		(-3ULL)	/* static fs metadata */
 #define XFS_RMAP_OWN_LOG	(-4ULL)	/* static fs metadata */

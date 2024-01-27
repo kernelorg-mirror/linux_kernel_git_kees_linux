@@ -4621,7 +4621,7 @@ static void bnxt_init_stats(struct bnxt *bp)
 		if (bp->flags & BNXT_FLAG_CHIP_P5_PLUS)
 			mask = (1ULL << 48) - 1;
 		else
-			mask = -1ULL;
+			mask = U64_MAX;
 		bnxt_fill_masks(stats->hw_masks, mask, stats->len / 8);
 	}
 	if (bp->flags & BNXT_FLAG_PORT_STATS) {
@@ -9292,7 +9292,7 @@ static void __bnxt_accumulate_stats(__le64 *hw_stats, u64 *sw_stats, u64 *masks,
 		if (ignore_zero && !hw)
 			continue;
 
-		if (masks[i] == -1ULL)
+		if (masks[i] == U64_MAX)
 			sw_stats[i] = hw;
 		else
 			bnxt_add_one_ctr(hw, &sw_stats[i], masks[i]);

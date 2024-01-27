@@ -1753,7 +1753,7 @@ static void __mcheck_cpu_mce_banks_init(void)
 		 * the required vendor quirks before
 		 * __mcheck_cpu_init_clear_banks() does the final bank setup.
 		 */
-		b->ctl = -1ULL;
+		b->ctl = U64_MAX;
 		b->init = true;
 	}
 }

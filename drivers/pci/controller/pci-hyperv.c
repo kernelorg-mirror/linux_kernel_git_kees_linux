@@ -67,7 +67,7 @@ enum pci_protocol_version_t {
 	PCI_PROTOCOL_VERSION_1_4 = PCI_MAKE_VERSION(1, 4),	/* WS2022 */
 };
 
-#define CPU_AFFINITY_ALL	-1ULL
+#define CPU_AFFINITY_ALL	U64_MAX
 
 /*
  * Supported protocol versions in the order of probing - highest go

@@ -22,7 +22,7 @@
 
 #define PREFETCH_SIZE 128
 #define PREFETCH_BITS 7
-#define PREFETCH_SENTINEL ((dm_block_t) -1ULL)
+#define PREFETCH_SENTINEL ((dm_block_t) U64_MAX)
 
 struct prefetch_set {
 	struct mutex lock;

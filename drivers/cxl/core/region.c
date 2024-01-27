@@ -496,7 +496,7 @@ static ssize_t resource_show(struct device *dev, struct device_attribute *attr,
 {
 	struct cxl_region *cxlr = to_cxl_region(dev);
 	struct cxl_region_params *p = &cxlr->params;
-	u64 resource = -1ULL;
+	u64 resource = U64_MAX;
 	ssize_t rc;
 
 	rc = down_read_interruptible(&cxl_region_rwsem);

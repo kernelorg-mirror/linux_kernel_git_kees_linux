@@ -58,7 +58,7 @@ static u64 __read_cgroup_id(const char *path)
 
 	handle.fh.handle_bytes = sizeof(handle.cgroup_id);
 	if (name_to_handle_at(AT_FDCWD, path, &handle.fh, &mount_id, 0) < 0)
-		return -1ULL;
+		return U64_MAX;
 
 	return handle.cgroup_id;
 }
@@ -77,7 +77,7 @@ int read_cgroup_id(struct cgroup *cgrp)
 	return 0;
 }
 #else
-static inline u64 __read_cgroup_id(const char *path __maybe_unused) { return -1ULL; }
+static inline u64 __read_cgroup_id(const char *path __maybe_unused) { return U64_MAX; }
 #endif  /* HAVE_FILE_HANDLE */
 
 #ifndef CGROUP2_SUPER_MAGIC

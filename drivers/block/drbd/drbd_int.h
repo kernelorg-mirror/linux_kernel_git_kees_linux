@@ -60,7 +60,7 @@ extern int drbd_proc_details;
 
 #define ID_IN_SYNC      (4711ULL)
 #define ID_OUT_OF_SYNC  (4712ULL)
-#define ID_SYNCER (-1ULL)
+#define ID_SYNCER (U64_MAX)
 
 #define UUID_NEW_BM_OFFSET ((u64)0x0001000000000000ULL)
 

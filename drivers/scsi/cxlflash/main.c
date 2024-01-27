@@ -1273,7 +1273,7 @@ static void afu_err_intr_init(struct afu *afu)
 	 */
 
 	/* mask all */
-	writeq_be(-1ULL, &afu->afu_map->global.regs.aintr_mask);
+	writeq_be(U64_MAX, &afu->afu_map->global.regs.aintr_mask);
 	/* set LISN# to send and point to primary master context */
 	reg = ((u64) (((hwq->ctx_hndl << 8) | SISL_MSI_ASYNC_ERROR)) << 40);
 
@@ -1281,13 +1281,13 @@ static void afu_err_intr_init(struct afu *afu)
 		reg |= 1;	/* Bit 63 indicates local lun */
 	writeq_be(reg, &afu->afu_map->global.regs.afu_ctrl);
 	/* clear all */
-	writeq_be(-1ULL, &afu->afu_map->global.regs.aintr_clear);
+	writeq_be(U64_MAX, &afu->afu_map->global.regs.aintr_clear);
 	/* unmask bits that are of interest */
 	/* note: afu can send an interrupt after this step */
 	writeq_be(SISL_ASTATUS_MASK, &afu->afu_map->global.regs.aintr_mask);
 	/* clear again in case a bit came on after previous clear but before */
 	/* unmask */
-	writeq_be(-1ULL, &afu->afu_map->global.regs.aintr_clear);
+	writeq_be(U64_MAX, &afu->afu_map->global.regs.aintr_clear);
 
 	/* Clear/Set internal lun bits */
 	fc_port_regs = get_fc_port_regs(cfg, 0);

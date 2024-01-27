@@ -637,7 +637,7 @@ extend_lmmio_len(unsigned long start, unsigned long end, unsigned long lba_len)
 
 	end += lba_len;
 	if (end < start) /* fix overflow */
-		end = -1ULL;
+		end = U64_MAX;
 
 	pr_debug("LBA: lmmio_space [0x%lx-0x%lx] - current\n", start, end);
 

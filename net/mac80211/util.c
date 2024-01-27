@@ -4729,7 +4729,7 @@ void ieee80211_recalc_dtim(struct ieee80211_local *local,
 	struct ps_data *ps;
 	u8 bcns_from_dtim;
 
-	if (tsf == -1ULL || !beacon_int || !dtim_period)
+	if (tsf == U64_MAX || !beacon_int || !dtim_period)
 		return;
 
 	if (sdata->vif.type == NL80211_IFTYPE_AP ||

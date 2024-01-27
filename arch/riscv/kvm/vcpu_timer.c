@@ -280,7 +280,7 @@ int kvm_riscv_vcpu_timer_reset(struct kvm_vcpu *vcpu)
 {
 	struct kvm_vcpu_timer *t = &vcpu->arch.timer;
 
-	t->next_cycles = -1ULL;
+	t->next_cycles = U64_MAX;
 	return kvm_riscv_vcpu_timer_cancel(&vcpu->arch.timer);
 }
 

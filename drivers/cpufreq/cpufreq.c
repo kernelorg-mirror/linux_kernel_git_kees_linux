@@ -155,7 +155,7 @@ u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy)
 {
 	u64 idle_time = get_cpu_idle_time_us(cpu, io_busy ? wall : NULL);
 
-	if (idle_time == -1ULL)
+	if (idle_time == U64_MAX)
 		return get_cpu_idle_time_jiffy(cpu, wall);
 	else if (!io_busy)
 		idle_time += get_cpu_iowait_time_us(cpu, wall);

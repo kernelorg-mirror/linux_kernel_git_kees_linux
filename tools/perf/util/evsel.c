@@ -2359,11 +2359,11 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
 
 	memset(data, 0, sizeof(*data));
 	data->cpu = data->pid = data->tid = -1;
-	data->stream_id = data->id = data->time = -1ULL;
+	data->stream_id = data->id = data->time = U64_MAX;
 	data->period = evsel->core.attr.sample_period;
 	data->cpumode = event->header.misc & PERF_RECORD_MISC_CPUMODE_MASK;
 	data->misc    = event->header.misc;
-	data->id = -1ULL;
+	data->id = U64_MAX;
 	data->data_src = PERF_MEM_DATA_SRC_NONE;
 	data->vcpu = -1;
 
@@ -2709,7 +2709,7 @@ int evsel__parse_sample_timestamp(struct evsel *evsel, union perf_event *event,
 
 	if (event->header.type != PERF_RECORD_SAMPLE) {
 		struct perf_sample data = {
-			.time = -1ULL,
+			.time = U64_MAX,
 		};
 
 		if (!evsel->core.attr.sample_id_all)

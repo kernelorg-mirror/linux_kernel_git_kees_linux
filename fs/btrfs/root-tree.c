@@ -59,7 +59,7 @@ static void btrfs_read_root_item(struct extent_buffer *eb, int slot,
  * root_item: the root item of the tree we look for
  * root_key: the root key of the tree we look for
  *
- * If ->offset of 'search_key' is -1ULL, it means we are not sure the offset
+ * If ->offset of 'search_key' is U64_MAX, it means we are not sure the offset
  * of the search key, just lookup the root with the highest offset for a
  * given objectid.
  *
@@ -78,7 +78,7 @@ int btrfs_find_root(struct btrfs_root *root, const struct btrfs_key *search_key,
 	if (ret < 0)
 		return ret;
 
-	if (search_key->offset != -1ULL) {	/* the search key is exact */
+	if (search_key->offset != U64_MAX) {	/* the search key is exact */
 		if (ret > 0)
 			goto out;
 	} else {

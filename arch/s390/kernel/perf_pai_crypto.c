@@ -304,7 +304,7 @@ static void paicrypt_read(struct perf_event *event)
 	new = paicrypt_getall(event);
 	local64_set(&event->hw.prev_count, new);
 	delta = (prev <= new) ? new - prev
-			      : (-1ULL - prev) + new + 1;	 /* overflow */
+			      : (U64_MAX - prev) + new + 1;	 /* overflow */
 	local64_add(delta, &event->count);
 }
 

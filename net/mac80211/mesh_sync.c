@@ -74,7 +74,7 @@ void mesh_sync_adjust_tsf(struct ieee80211_sub_if_data *sdata)
 		drv_offset_tsf(local, sdata, tsfdelta);
 	} else {
 		tsf = drv_get_tsf(local, sdata);
-		if (tsf != -1ULL)
+		if (tsf != U64_MAX)
 			drv_set_tsf(local, sdata, tsf + tsfdelta);
 	}
 }

@@ -105,7 +105,7 @@ static __always_inline bool perf_raw_frag_last(const struct perf_raw_frag *frag)
  *  nr: number of taken branches stored in entries[]
  *  hw_idx: The low level index of raw branch records
  *          for the most recent branch.
- *          -1ULL means invalid/unknown.
+ *          U64_MAX means invalid/unknown.
  *
  * Note that nr can vary from sample to sample
  * branches (to, from) are stored from most recent

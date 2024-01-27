@@ -19,7 +19,7 @@
 static void hwprobe_arch_id(struct riscv_hwprobe *pair,
 			    const struct cpumask *cpus)
 {
-	u64 id = -1ULL;
+	u64 id = U64_MAX;
 	bool first = true;
 	int cpu;
 
@@ -48,7 +48,7 @@ static void hwprobe_arch_id(struct riscv_hwprobe *pair,
 		 * value.
 		 */
 		if (id != cpu_id) {
-			id = -1ULL;
+			id = U64_MAX;
 			break;
 		}
 	}
@@ -150,12 +150,12 @@ static bool hwprobe_ext0_has(const struct cpumask *cpus, unsigned long ext)
 static u64 hwprobe_misaligned(const struct cpumask *cpus)
 {
 	int cpu;
-	u64 perf = -1ULL;
+	u64 perf = U64_MAX;
 
 	for_each_cpu(cpu, cpus) {
 		int this_perf = per_cpu(misaligned_access_speed, cpu);
 
-		if (perf == -1ULL)
+		if (perf == U64_MAX)
 			perf = this_perf;
 
 		if (perf != this_perf) {
@@ -164,7 +164,7 @@ static u64 hwprobe_misaligned(const struct cpumask *cpus)
 		}
 	}
 
-	if (perf == -1ULL)
+	if (perf == U64_MAX)
 		return RISCV_HWPROBE_MISALIGNED_UNKNOWN;
 
 	return perf;
