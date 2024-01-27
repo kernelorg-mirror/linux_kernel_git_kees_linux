@@ -25,7 +25,7 @@ struct word_at_a_time {
  * that works for the bytemasks without having to
  * mask them first.
  */
-static inline long count_masked_bytes(unsigned long mask)
+static inline __unsigned_wrap long count_masked_bytes(unsigned long mask)
 {
 	return mask*0x0001020304050608ul >> 56;
 }
@@ -33,7 +33,7 @@ static inline long count_masked_bytes(unsigned long mask)
 #else	/* 32-bit case */
 
 /* Carl Chatfield / Jan Achrenius G+ version for 32-bit */
-static inline long count_masked_bytes(long mask)
+static inline __unsigned_wrap long count_masked_bytes(long mask)
 {
 	/* (000000 0000ff 00ffff ffffff) -> ( 1 1 2 3 ) */
 	long a = (0x0ff0001+mask) >> 23;
@@ -44,7 +44,7 @@ static inline long count_masked_bytes(long mask)
 #endif
 
 /* Return nonzero if it has a zero */
-static inline unsigned long has_zero(unsigned long a, unsigned long *bits, const struct word_at_a_time *c)
+static inline __unsigned_wrap unsigned long has_zero(unsigned long a, unsigned long *bits, const struct word_at_a_time *c)
 {
 	unsigned long mask = ((a - c->one_bits) & ~a) & c->high_bits;
 	*bits = mask;
@@ -56,7 +56,7 @@ static inline unsigned long prep_zero_mask(unsigned long a, unsigned long bits, 
 	return bits;
 }
 
-static inline unsigned long create_zero_mask(unsigned long bits)
+static inline __unsigned_wrap unsigned long create_zero_mask(unsigned long bits)
 {
 	bits = (bits - 1) & ~bits;
 	return bits >> 7;
