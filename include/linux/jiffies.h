@@ -6,6 +6,7 @@
 #include <linux/limits.h>
 #include <linux/math64.h>
 #include <linux/minmax.h>
+#include <linux/overflow.h>
 #include <linux/types.h>
 #include <linux/time.h>
 #include <linux/timex.h>
@@ -127,7 +128,7 @@ static inline u64 get_jiffies_64(void)
 #define time_after(a,b)		\
 	(typecheck(unsigned long, a) && \
 	 typecheck(unsigned long, b) && \
-	 ((long)((b) - (a)) < 0))
+	 ((long)wrapping_sub(unsigned long, (b), (a)) < 0))
 /**
  * time_before - returns true if the time a is before time b.
  * @a: first comparable as unsigned long
@@ -147,7 +148,7 @@ static inline u64 get_jiffies_64(void)
 #define time_after_eq(a,b)	\
 	(typecheck(unsigned long, a) && \
 	 typecheck(unsigned long, b) && \
-	 ((long)((a) - (b)) >= 0))
+	 ((long)wrapping_sub(unsigned long, (a), (b)) >= 0))
 /**
  * time_before_eq - returns true if the time a is before or the same as time b.
  * @a: first comparable as unsigned long
@@ -198,7 +199,7 @@ static inline u64 get_jiffies_64(void)
 #define time_after64(a,b)	\
 	(typecheck(__u64, a) &&	\
 	 typecheck(__u64, b) && \
-	 ((__s64)((b) - (a)) < 0))
+	 ((__s64)wrapping_sub(__u64, (b), (a)) < 0))
 /**
  * time_before64 - returns true if the time a is before time b.
  * @a: first comparable as __u64
@@ -221,10 +222,10 @@ static inline u64 get_jiffies_64(void)
  *
  * Return: %true is time a is after or the same as time b, otherwise %false.
  */
-#define time_after_eq64(a,b)	\
+#define time_after_eq64(a, b)	\
 	(typecheck(__u64, a) && \
 	 typecheck(__u64, b) && \
-	 ((__s64)((a) - (b)) >= 0))
+	 ((__s64)wrapping_sub(__u64, (a), (b)) >= 0))
 /**
  * time_before_eq64 - returns true if the time a is before or the same as time b.
  * @a: first comparable as __u64
