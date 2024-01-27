@@ -374,6 +374,7 @@ SYSCALL_DEFINE1(adjtimex_time32, struct old_timex32 __user *, utp)
  *
  * Return: milliseconds value
  */
+__unsigned_wrap
 unsigned int jiffies_to_msecs(const unsigned long j)
 {
 #if HZ <= MSEC_PER_SEC && !(MSEC_PER_SEC % HZ)
@@ -397,6 +398,7 @@ EXPORT_SYMBOL(jiffies_to_msecs);
  *
  * Return: microseconds value
  */
+__unsigned_wrap
 unsigned int jiffies_to_usecs(const unsigned long j)
 {
 	/*
@@ -446,6 +448,7 @@ EXPORT_SYMBOL(jiffies_to_usecs);
  *
  * Return: seconds since the epoch time for the given input date
  */
+__unsigned_wrap
 time64_t mktime64(const unsigned int year0, const unsigned int mon0,
 		const unsigned int day, const unsigned int hour,
 		const unsigned int min, const unsigned int sec)
@@ -520,6 +523,7 @@ EXPORT_SYMBOL(set_normalized_timespec64);
  *
  * Return: the timespec64 representation of the nsec parameter.
  */
+__unsigned_wrap
 struct timespec64 ns_to_timespec64(s64 nsec)
 {
 	struct timespec64 ts = { 0, 0 };
@@ -613,6 +617,7 @@ EXPORT_SYMBOL(__usecs_to_jiffies);
  *
  * Return: jiffies value
  */
+__unsigned_wrap
 unsigned long
 timespec64_to_jiffies(const struct timespec64 *value)
 {
@@ -635,6 +640,7 @@ EXPORT_SYMBOL(timespec64_to_jiffies);
  * @jiffies: jiffies value
  * @value: pointer to &struct timespec64
  */
+__unsigned_wrap
 void
 jiffies_to_timespec64(const unsigned long jiffies, struct timespec64 *value)
 {
@@ -659,6 +665,7 @@ EXPORT_SYMBOL(jiffies_to_timespec64);
  *
  * Return: jiffies converted to clock_t (CLOCKS_PER_SEC)
  */
+__unsigned_wrap
 clock_t jiffies_to_clock_t(unsigned long x)
 {
 #if (TICK_NSEC % (NSEC_PER_SEC / USER_HZ)) == 0
@@ -679,6 +686,7 @@ EXPORT_SYMBOL(jiffies_to_clock_t);
  *
  * Return: clock_t value converted to jiffies
  */
+__unsigned_wrap
 unsigned long clock_t_to_jiffies(unsigned long x)
 {
 #if (HZ % USER_HZ)==0
@@ -702,6 +710,7 @@ EXPORT_SYMBOL(clock_t_to_jiffies);
  *
  * Return: jiffies_64 value converted to 64-bit "clock_t" (CLOCKS_PER_SEC)
  */
+__unsigned_wrap
 u64 jiffies_64_to_clock_t(u64 x)
 {
 #if (TICK_NSEC % (NSEC_PER_SEC / USER_HZ)) == 0
@@ -730,6 +739,7 @@ EXPORT_SYMBOL(jiffies_64_to_clock_t);
  *
  * Return: nsec value converted to 64-bit "clock_t" (CLOCKS_PER_SEC)
  */
+__unsigned_wrap
 u64 nsec_to_clock_t(u64 x)
 {
 #if (NSEC_PER_SEC % USER_HZ) == 0
@@ -752,6 +762,7 @@ u64 nsec_to_clock_t(u64 x)
  *
  * Return: nanoseconds value
  */
+__unsigned_wrap
 u64 jiffies64_to_nsecs(u64 j)
 {
 #if !(NSEC_PER_SEC % HZ)
@@ -768,6 +779,7 @@ EXPORT_SYMBOL(jiffies64_to_nsecs);
  *
  * Return: milliseconds value
  */
+__unsigned_wrap
 u64 jiffies64_to_msecs(const u64 j)
 {
 #if HZ <= MSEC_PER_SEC && !(MSEC_PER_SEC % HZ)
@@ -793,6 +805,7 @@ EXPORT_SYMBOL(jiffies64_to_msecs);
  *
  * Return: nsecs converted to jiffies64 value
  */
+__unsigned_wrap
 u64 nsecs_to_jiffies64(u64 n)
 {
 #if (NSEC_PER_SEC % HZ) == 0
