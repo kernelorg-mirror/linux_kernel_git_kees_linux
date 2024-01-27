@@ -10,7 +10,8 @@
 
 extern struct neigh_table arp_tbl;
 
-static inline u32 arp_hashfn(const void *pkey, const struct net_device *dev, u32 *hash_rnd)
+static inline __unsigned_wrap
+u32 arp_hashfn(const void *pkey, const struct net_device *dev, u32 *hash_rnd)
 {
 	u32 key = *(const u32 *)pkey;
 	u32 val = key ^ hash32_ptr(dev);
