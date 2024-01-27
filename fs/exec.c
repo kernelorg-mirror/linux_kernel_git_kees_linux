@@ -186,7 +186,7 @@ out:
 static void acct_arg_size(struct linux_binprm *bprm, unsigned long pages)
 {
 	struct mm_struct *mm = current->mm;
-	long diff = (long)(pages - bprm->vma_pages);
+	long diff = sub_wrap(long, pages, bprm->vma_pages);
 
 	if (!mm || !diff)
 		return;
