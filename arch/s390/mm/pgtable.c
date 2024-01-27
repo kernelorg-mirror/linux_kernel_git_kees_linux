@@ -54,7 +54,7 @@ static inline void ptep_ipte_local(struct mm_struct *mm, unsigned long addr,
 		asce = READ_ONCE(mm->context.gmap_asce);
 		if (asce == 0UL || nodat)
 			opt |= IPTE_NODAT;
-		if (asce != -1UL) {
+		if (asce != ULONG_MAX) {
 			asce = asce ? : mm->context.asce;
 			opt |= IPTE_GUEST_ASCE;
 		}
@@ -74,7 +74,7 @@ static inline void ptep_ipte_global(struct mm_struct *mm, unsigned long addr,
 		asce = READ_ONCE(mm->context.gmap_asce);
 		if (asce == 0UL || nodat)
 			opt |= IPTE_NODAT;
-		if (asce != -1UL) {
+		if (asce != ULONG_MAX) {
 			asce = asce ? : mm->context.asce;
 			opt |= IPTE_GUEST_ASCE;
 		}

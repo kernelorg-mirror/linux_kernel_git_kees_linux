@@ -857,7 +857,7 @@ void radix__flush_tlb_mm(struct mm_struct *mm)
 			if (atomic_read(&mm->context.copros) > 0)
 				tgt |= H_RPTI_TARGET_NMMU;
 			pseries_rpt_invalidate(pid, tgt, H_RPTI_TYPE_TLB,
-					       H_RPTI_PAGE_ALL, 0, -1UL);
+					       H_RPTI_PAGE_ALL, 0, ULONG_MAX);
 		} else if (cputlb_use_tlbie()) {
 			if (mm_needs_flush_escalation(mm))
 				_tlbie_pid(pid, RIC_FLUSH_ALL);
@@ -868,7 +868,7 @@ void radix__flush_tlb_mm(struct mm_struct *mm)
 		}
 	}
 	preempt_enable();
-	mmu_notifier_arch_invalidate_secondary_tlbs(mm, 0, -1UL);
+	mmu_notifier_arch_invalidate_secondary_tlbs(mm, 0, ULONG_MAX);
 }
 EXPORT_SYMBOL(radix__flush_tlb_mm);
 
@@ -895,14 +895,14 @@ static void __flush_all_mm(struct mm_struct *mm, bool fullmm)
 			if (atomic_read(&mm->context.copros) > 0)
 				tgt |= H_RPTI_TARGET_NMMU;
 			pseries_rpt_invalidate(pid, tgt, type,
-					       H_RPTI_PAGE_ALL, 0, -1UL);
+					       H_RPTI_PAGE_ALL, 0, ULONG_MAX);
 		} else if (cputlb_use_tlbie())
 			_tlbie_pid(pid, RIC_FLUSH_ALL);
 		else
 			_tlbiel_pid_multicast(mm, pid, RIC_FLUSH_ALL);
 	}
 	preempt_enable();
-	mmu_notifier_arch_invalidate_secondary_tlbs(mm, 0, -1UL);
+	mmu_notifier_arch_invalidate_secondary_tlbs(mm, 0, ULONG_MAX);
 }
 
 void radix__flush_all_mm(struct mm_struct *mm)
@@ -1001,7 +1001,7 @@ EXPORT_SYMBOL(radix__flush_tlb_kernel_range);
 /*
  * Doesn't appear to be used anywhere. Remove.
  */
-#define TLB_FLUSH_ALL -1UL
+#define TLB_FLUSH_ALL ULONG_MAX
 
 /*
  * Number of pages above which we invalidate the entire PID rather than

@@ -134,7 +134,7 @@ static ssize_t fault_opcodes_write(struct file *file, const char __user *buf,
 		} else {
 			range_end = range_start;
 		}
-		if (range_start == range_end && range_start == -1UL) {
+		if (range_start == range_end && range_start == ULONG_MAX) {
 			bitmap_zero(fault->opcodes, sizeof(fault->opcodes) *
 				    BITS_PER_BYTE);
 			break;

@@ -240,7 +240,7 @@ static unsigned long imsic_mrif_atomic_or(struct imsic_mrif *mrif,
 }
 
 #define imsic_mrif_atomic_write(__mrif, __ptr, __new_val)	\
-		imsic_mrif_atomic_rmw(__mrif, __ptr, __new_val, -1UL)
+		imsic_mrif_atomic_rmw(__mrif, __ptr, __new_val, ULONG_MAX)
 #define imsic_mrif_atomic_read(__mrif, __ptr)			\
 		imsic_mrif_atomic_or(__mrif, __ptr, 0)
 
@@ -906,7 +906,7 @@ int kvm_riscv_aia_imsic_rw_attr(struct kvm *kvm, unsigned long type,
 	if (vsfile_cpu < 0) {
 		if (write) {
 			rc = imsic_mrif_rmw(imsic->swfile, imsic->nr_eix,
-					    isel, NULL, *val, -1UL);
+					    isel, NULL, *val, ULONG_MAX);
 			imsic_swfile_extirq_update(vcpu);
 		} else
 			rc = imsic_mrif_rmw(imsic->swfile, imsic->nr_eix,

@@ -1049,7 +1049,7 @@ EXPORT_SYMBOL(vga_client_register);
  */
 
 #define MAX_USER_CARDS         CONFIG_VGA_ARB_MAX_GPUS
-#define PCI_INVALID_CARD       ((struct pci_dev *)-1UL)
+#define PCI_INVALID_CARD       ((struct pci_dev *)ULONG_MAX)
 
 /* Each user has an array of these, tracking which cards have locks */
 struct vga_arb_user_card {

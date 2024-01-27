@@ -131,7 +131,7 @@ static void gstage_remote_tlb_flush(struct kvm *kvm, u32 level, gpa_t addr)
 		return;
 	addr &= ~(BIT(order) - 1);
 
-	kvm_riscv_hfence_gvma_vmid_gpa(kvm, -1UL, 0, addr, BIT(order), order);
+	kvm_riscv_hfence_gvma_vmid_gpa(kvm, ULONG_MAX, 0, addr, BIT(order), order);
 }
 
 static int gstage_set_pte(struct kvm *kvm, u32 level,

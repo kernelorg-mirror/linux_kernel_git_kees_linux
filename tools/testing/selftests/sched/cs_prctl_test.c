@@ -118,7 +118,7 @@ static unsigned long get_cs_cookie(int pid)
 		    (unsigned long)&cookie);
 	if (ret) {
 		printf("Not a core sched system\n");
-		return -1UL;
+		return ULONG_MAX;
 	}
 
 	return cookie;

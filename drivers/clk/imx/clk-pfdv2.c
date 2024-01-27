@@ -106,7 +106,7 @@ static int clk_pfdv2_determine_rate(struct clk_hw *hw,
 					528000000,
 					req->best_parent_rate
 				       };
-	unsigned long best_rate = -1UL, rate = req->rate;
+	unsigned long best_rate = ULONG_MAX, rate = req->rate;
 	unsigned long best_parent_rate = req->best_parent_rate;
 	u64 tmp;
 	u8 frac;

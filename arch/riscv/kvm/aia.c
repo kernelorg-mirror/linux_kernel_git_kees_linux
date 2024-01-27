@@ -605,7 +605,7 @@ int kvm_riscv_aia_init(void)
 		return -ENODEV;
 
 	/* Figure-out number of bits in HGEIE */
-	csr_write(CSR_HGEIE, -1UL);
+	csr_write(CSR_HGEIE, ULONG_MAX);
 	kvm_riscv_aia_nr_hgei = fls_long(csr_read(CSR_HGEIE));
 	csr_write(CSR_HGEIE, 0);
 	if (kvm_riscv_aia_nr_hgei)

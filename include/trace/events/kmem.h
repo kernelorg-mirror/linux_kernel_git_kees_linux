@@ -189,15 +189,15 @@ TRACE_EVENT(mm_page_alloc,
 	),
 
 	TP_fast_assign(
-		__entry->pfn		= page ? page_to_pfn(page) : -1UL;
+		__entry->pfn		= page ? page_to_pfn(page) : ULONG_MAX;
 		__entry->order		= order;
 		__entry->gfp_flags	= (__force unsigned long)gfp_flags;
 		__entry->migratetype	= migratetype;
 	),
 
 	TP_printk("page=%p pfn=0x%lx order=%d migratetype=%d gfp_flags=%s",
-		__entry->pfn != -1UL ? pfn_to_page(__entry->pfn) : NULL,
-		__entry->pfn != -1UL ? __entry->pfn : 0,
+		__entry->pfn != ULONG_MAX ? pfn_to_page(__entry->pfn) : NULL,
+		__entry->pfn != ULONG_MAX ? __entry->pfn : 0,
 		__entry->order,
 		__entry->migratetype,
 		show_gfp_flags(__entry->gfp_flags))
@@ -218,15 +218,15 @@ DECLARE_EVENT_CLASS(mm_page,
 	),
 
 	TP_fast_assign(
-		__entry->pfn		= page ? page_to_pfn(page) : -1UL;
+		__entry->pfn		= page ? page_to_pfn(page) : ULONG_MAX;
 		__entry->order		= order;
 		__entry->migratetype	= migratetype;
 		__entry->percpu_refill	= percpu_refill;
 	),
 
 	TP_printk("page=%p pfn=0x%lx order=%u migratetype=%d percpu_refill=%d",
-		__entry->pfn != -1UL ? pfn_to_page(__entry->pfn) : NULL,
-		__entry->pfn != -1UL ? __entry->pfn : 0,
+		__entry->pfn != ULONG_MAX ? pfn_to_page(__entry->pfn) : NULL,
+		__entry->pfn != ULONG_MAX ? __entry->pfn : 0,
 		__entry->order,
 		__entry->migratetype,
 		__entry->percpu_refill)
@@ -253,7 +253,7 @@ TRACE_EVENT(mm_page_pcpu_drain,
 	),
 
 	TP_fast_assign(
-		__entry->pfn		= page ? page_to_pfn(page) : -1UL;
+		__entry->pfn		= page ? page_to_pfn(page) : ULONG_MAX;
 		__entry->order		= order;
 		__entry->migratetype	= migratetype;
 	),

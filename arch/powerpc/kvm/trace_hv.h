@@ -314,7 +314,7 @@ TRACE_EVENT(kvm_page_fault_enter,
 		__entry->gpte_r	  = hptep[2];
 		__entry->ea	  = ea;
 		__entry->dsisr	  = dsisr;
-		__entry->base_gfn = memslot ? memslot->base_gfn : -1UL;
+		__entry->base_gfn = memslot ? memslot->base_gfn : ULONG_MAX;
 		__entry->slot_flags = memslot ? memslot->flags : 0;
 	),
 

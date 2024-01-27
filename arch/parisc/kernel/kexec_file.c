@@ -23,7 +23,7 @@ static void *elf_load(struct kimage *image, char *kernel_buf,
 	struct elfhdr ehdr;
 	struct kexec_elf_info elf_info;
 	struct kexec_buf kbuf = { .image = image, .buf_min = 0,
-				  .buf_max = -1UL, };
+				  .buf_max = ULONG_MAX, };
 
 	ret = kexec_build_elf_info(kernel_buf, kernel_len, &ehdr, &elf_info);
 	if (ret)

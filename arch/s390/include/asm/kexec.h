@@ -21,10 +21,10 @@
  */
 
 /* Maximum physical address we can use pages from */
-#define KEXEC_SOURCE_MEMORY_LIMIT (-1UL)
+#define KEXEC_SOURCE_MEMORY_LIMIT (ULONG_MAX)
 
 /* Maximum address we can reach in physical address mode */
-#define KEXEC_DESTINATION_MEMORY_LIMIT (-1UL)
+#define KEXEC_DESTINATION_MEMORY_LIMIT (ULONG_MAX)
 
 /* Maximum address we can use for the control pages */
 /* Not more than 2GB */
@@ -34,7 +34,7 @@
 #define KEXEC_CONTROL_MEMORY_GFP (GFP_DMA | __GFP_NORETRY)
 
 /* Maximum address we can use for the crash control pages */
-#define KEXEC_CRASH_CONTROL_MEMORY_LIMIT (-1UL)
+#define KEXEC_CRASH_CONTROL_MEMORY_LIMIT (ULONG_MAX)
 
 /* Allocate one page for the pdp and the second for the code */
 #define KEXEC_CONTROL_PAGE_SIZE 4096

@@ -1137,7 +1137,7 @@ static int fill_bitmap_rle_bits(struct drbd_device *device,
 	do {
 		tmp = (toggle == 0) ? _drbd_bm_find_next_zero(device, c->bit_offset)
 				    : _drbd_bm_find_next(device, c->bit_offset);
-		if (tmp == -1UL)
+		if (tmp == ULONG_MAX)
 			tmp = c->bm_bits;
 		rl = tmp - c->bit_offset;
 

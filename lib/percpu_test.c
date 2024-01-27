@@ -46,8 +46,8 @@ static int __init percpu_test_init(void)
 	__this_cpu_add(ulong_counter, 1UL);
 	CHECK(ul, ulong_counter, 1);
 
-	ul += -1UL;
-	__this_cpu_add(ulong_counter, -1UL);
+	ul += ULONG_MAX;
+	__this_cpu_add(ulong_counter, ULONG_MAX);
 	CHECK(ul, ulong_counter, 0);
 
 	ul += -(unsigned long)1;

@@ -185,7 +185,7 @@ static inline void __user *compat_get_sigframe(struct ksignal *ksig,
 	 * Return an always-bogus address instead so we will die with SIGSEGV.
 	 */
 	if (on_sig_stack(sp) && !likely(on_sig_stack(sp - framesize)))
-		return (void __user __force *)(-1UL);
+		return (void __user __force *)(ULONG_MAX);
 
 	/* This is the X/Open sanctioned signal stack switching. */
 	sp = sigsp(sp, ksig) - framesize;

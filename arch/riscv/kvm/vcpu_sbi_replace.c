@@ -59,7 +59,7 @@ static int kvm_sbi_ext_ipi_handler(struct kvm_vcpu *vcpu, struct kvm_run *run,
 
 	kvm_riscv_vcpu_pmu_incr_fw(vcpu, SBI_PMU_FW_IPI_SENT);
 	kvm_for_each_vcpu(i, tmp, vcpu->kvm) {
-		if (hbase != -1UL) {
+		if (hbase != ULONG_MAX) {
 			if (tmp->vcpu_id < hbase)
 				continue;
 			if (!(hmask & (1UL << (tmp->vcpu_id - hbase))))

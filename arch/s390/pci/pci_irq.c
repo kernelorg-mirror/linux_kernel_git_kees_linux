@@ -159,7 +159,7 @@ static void zpci_handle_cpu_local_irq(bool rescan)
 	for (bit = 0;;) {
 		/* Scan the directed IRQ bit vector */
 		bit = airq_iv_scan(dibv, bit, airq_iv_end(dibv));
-		if (bit == -1UL) {
+		if (bit == ULONG_MAX) {
 			if (!rescan || irqs_on++)
 				/* End of second scan with interrupts on. */
 				break;
@@ -198,7 +198,7 @@ static void zpci_handle_fallback_irq(void)
 
 	for (cpu = 0;;) {
 		cpu = airq_iv_scan(zpci_sbv, cpu, airq_iv_end(zpci_sbv));
-		if (cpu == -1UL) {
+		if (cpu == ULONG_MAX) {
 			if (irqs_on++)
 				/* End of second scan with interrupts on. */
 				break;
@@ -243,7 +243,7 @@ static void zpci_floating_irq_handler(struct airq_struct *airq,
 	for (si = 0;;) {
 		/* Scan adapter summary indicator bit vector */
 		si = airq_iv_scan(zpci_sbv, si, airq_iv_end(zpci_sbv));
-		if (si == -1UL) {
+		if (si == ULONG_MAX) {
 			if (irqs_on++)
 				/* End of second scan with interrupts on. */
 				break;
@@ -258,7 +258,7 @@ static void zpci_floating_irq_handler(struct airq_struct *airq,
 		aibv = zpci_ibv[si];
 		for (ai = 0;;) {
 			ai = airq_iv_scan(aibv, ai, airq_iv_end(aibv));
-			if (ai == -1UL)
+			if (ai == ULONG_MAX)
 				break;
 			inc_irq_stat(IRQIO_MSI);
 			airq_iv_lock(aibv, ai);
@@ -278,7 +278,7 @@ int arch_setup_msi_irqs(struct pci_dev *pdev, int nvec, int type)
 	int cpu_addr;
 	int rc, irq;
 
-	zdev->aisb = -1UL;
+	zdev->aisb = ULONG_MAX;
 	zdev->msi_first_bit = -1U;
 	if (type == PCI_CAP_ID_MSI && nvec > 1)
 		return 1;
@@ -287,12 +287,12 @@ int arch_setup_msi_irqs(struct pci_dev *pdev, int nvec, int type)
 	if (irq_delivery == DIRECTED) {
 		/* Allocate cpu vector bits */
 		bit = airq_iv_alloc(zpci_ibv[0], msi_vecs);
-		if (bit == -1UL)
+		if (bit == ULONG_MAX)
 			return -EIO;
 	} else {
 		/* Allocate adapter summary indicator bit */
 		bit = airq_iv_alloc_bit(zpci_sbv);
-		if (bit == -1UL)
+		if (bit == ULONG_MAX)
 			return -EIO;
 		zdev->aisb = bit;
 
@@ -377,10 +377,10 @@ void arch_teardown_msi_irqs(struct pci_dev *pdev)
 		msi->irq = 0;
 	}
 
-	if (zdev->aisb != -1UL) {
+	if (zdev->aisb != ULONG_MAX) {
 		zpci_ibv[zdev->aisb] = NULL;
 		airq_iv_free_bit(zpci_sbv, zdev->aisb);
-		zdev->aisb = -1UL;
+		zdev->aisb = ULONG_MAX;
 	}
 	if (zdev->aibv) {
 		airq_iv_release(zdev->aibv);

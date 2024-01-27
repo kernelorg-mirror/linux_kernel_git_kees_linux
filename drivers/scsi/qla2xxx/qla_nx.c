@@ -568,7 +568,7 @@ qla82xx_pci_set_window(struct qla_hw_data *ha, unsigned long long addr)
 		if ((addr & 0x00ff800) == 0xff800) {
 			ql_log(ql_log_warn, vha, 0xb004,
 			    "%s: QM access not handled.\n", __func__);
-			addr = -1UL;
+			addr = ULONG_MAX;
 		}
 		window = OCM_WIN(addr);
 		ha->ddr_mn_window = window;
@@ -611,7 +611,7 @@ qla82xx_pci_set_window(struct qla_hw_data *ha, unsigned long long addr)
 			    "%s: Warning:%s Unknown address range!.\n",
 			    __func__, QLA2XXX_DRIVER_NAME);
 		}
-		addr = -1UL;
+		addr = ULONG_MAX;
 	}
 	return addr;
 }
@@ -663,7 +663,7 @@ static int qla82xx_pci_mem_read_direct(struct qla_hw_data *ha,
 	 * do not access.
 	 */
 	start = qla82xx_pci_set_window(ha, off);
-	if ((start == -1UL) ||
+	if ((start == ULONG_MAX) ||
 		(qla82xx_pci_is_same_window(ha, off + size - 1) == 0)) {
 		write_unlock_irqrestore(&ha->hw_lock, flags);
 		ql_log(ql_log_fatal, vha, 0xb008,
@@ -735,7 +735,7 @@ qla82xx_pci_mem_write_direct(struct qla_hw_data *ha,
 	 * do not access.
 	 */
 	start = qla82xx_pci_set_window(ha, off);
-	if ((start == -1UL) ||
+	if ((start == ULONG_MAX) ||
 		(qla82xx_pci_is_same_window(ha, off + size - 1) == 0)) {
 		write_unlock_irqrestore(&ha->hw_lock, flags);
 		ql_log(ql_log_fatal, vha, 0xb009,

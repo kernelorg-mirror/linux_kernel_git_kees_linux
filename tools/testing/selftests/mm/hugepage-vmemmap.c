@@ -54,7 +54,7 @@ static unsigned long virt_to_pfn(void *addr)
 
 	fd = open("/proc/self/pagemap", O_RDONLY);
 	if (fd < 0)
-		return -1UL;
+		return ULONG_MAX;
 
 	lseek(fd, (unsigned long)addr / pagesize * sizeof(pagemap), SEEK_SET);
 	read(fd, &pagemap, sizeof(pagemap));
@@ -123,7 +123,7 @@ int main(int argc, char **argv)
 	write_bytes(addr, maplength);
 
 	pfn = virt_to_pfn(addr);
-	if (pfn == -1UL) {
+	if (pfn == ULONG_MAX) {
 		munmap(addr, maplength);
 		perror("virt_to_pfn");
 		exit(1);

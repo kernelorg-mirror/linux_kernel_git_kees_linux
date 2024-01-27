@@ -520,7 +520,7 @@ void kvmhv_flush_lpid(u64 lpid)
 					    H_RPTI_TYPE_NESTED |
 					    H_RPTI_TYPE_TLB | H_RPTI_TYPE_PWC |
 					    H_RPTI_TYPE_PAT,
-					    H_RPTI_PAGE_ALL, 0, -1UL);
+					    H_RPTI_PAGE_ALL, 0, ULONG_MAX);
 	if (rc)
 		pr_err("KVM: TLB LPID invalidation hcall failed, rc=%ld\n", rc);
 }

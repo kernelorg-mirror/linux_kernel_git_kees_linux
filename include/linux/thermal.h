@@ -18,7 +18,7 @@
 #include <uapi/linux/thermal.h>
 
 /* invalid cooling state */
-#define THERMAL_CSTATE_INVALID -1UL
+#define THERMAL_CSTATE_INVALID ULONG_MAX
 
 /* No upper/lower limit requirement */
 #define THERMAL_NO_LIMIT	((u32)~0)

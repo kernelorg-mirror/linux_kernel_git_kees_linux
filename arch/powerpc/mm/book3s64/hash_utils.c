@@ -2063,7 +2063,7 @@ void hpt_clear_stress(void)
 		unsigned long last_group;
 		last_group = stress_hpt_struct[cpu].last_group[g];
 
-		if (last_group != -1UL) {
+		if (last_group != ULONG_MAX) {
 			int i;
 			for (i = 0; i < HPTES_PER_GROUP; i++) {
 				if (mmu_hash_ops.hpte_remove(last_group) == -1)
@@ -2083,7 +2083,7 @@ void hpt_do_stress(unsigned long ea, unsigned long hpte_group)
 	if (hpte_group == last_group)
 		return;
 
-	if (last_group != -1UL) {
+	if (last_group != ULONG_MAX) {
 		int i;
 		/*
 		 * Concurrent CPUs might be inserting into this group, so

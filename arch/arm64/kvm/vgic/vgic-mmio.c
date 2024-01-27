@@ -25,7 +25,7 @@ unsigned long vgic_mmio_read_raz(struct kvm_vcpu *vcpu,
 unsigned long vgic_mmio_read_rao(struct kvm_vcpu *vcpu,
 				 gpa_t addr, unsigned int len)
 {
-	return -1UL;
+	return ULONG_MAX;
 }
 
 void vgic_mmio_write_wi(struct kvm_vcpu *vcpu, gpa_t addr,

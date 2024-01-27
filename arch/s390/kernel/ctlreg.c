@@ -92,7 +92,7 @@ void system_ctlreg_modify(unsigned int cr, unsigned long data, int request)
 	switch (request) {
 	case CTLREG_SET_BIT:
 		pp.orval  = 1UL << data;
-		pp.andval = -1UL;
+		pp.andval = ULONG_MAX;
 		break;
 	case CTLREG_CLEAR_BIT:
 		pp.orval  = 0;

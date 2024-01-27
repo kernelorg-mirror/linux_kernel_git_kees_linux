@@ -192,7 +192,7 @@ struct map_info {
 	const char *name;
 	unsigned long size;
 	resource_size_t phys;
-#define NO_XIP (-1UL)
+#define NO_XIP (ULONG_MAX)
 
 	void __iomem *virt;
 	void *cached;

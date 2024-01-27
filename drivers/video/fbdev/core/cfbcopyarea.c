@@ -272,7 +272,7 @@ bitcpy_rev(struct fb_info *p, unsigned long __iomem *dst, unsigned dst_idx,
 				FB_WRITEL(FB_READL(src--), dst--);
 
 			// Trailing bits
-			if (last != -1UL)
+			if (last != ULONG_MAX)
 				FB_WRITEL( comp( FB_READL(src), FB_READL(dst), last), dst);
 		}
 	} else {

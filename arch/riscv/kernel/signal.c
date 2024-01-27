@@ -254,7 +254,7 @@ SYSCALL_DEFINE0(rt_sigreturn)
 	if (restore_altstack(&frame->uc.uc_stack))
 		goto badframe;
 
-	regs->cause = -1UL;
+	regs->cause = ULONG_MAX;
 
 	return regs->a0;
 
@@ -306,7 +306,7 @@ static inline void __user *get_sigframe(struct ksignal *ksig,
 	 * Return an always-bogus address instead so we will die with SIGSEGV.
 	 */
 	if (on_sig_stack(sp) && !likely(on_sig_stack(sp - framesize)))
-		return (void __user __force *)(-1UL);
+		return (void __user __force *)(ULONG_MAX);
 
 	/* This is the X/Open sanctioned signal stack switching. */
 	sp = sigsp(sp, ksig) - framesize;
@@ -412,7 +412,7 @@ void arch_do_signal_or_restart(struct pt_regs *regs)
 		retval = regs->a0;
 
 		/* Avoid additional syscall restarting via ret_from_exception */
-		regs->cause = -1UL;
+		regs->cause = ULONG_MAX;
 
 		/*
 		 * Prepare for system call restart. We do this here so that a

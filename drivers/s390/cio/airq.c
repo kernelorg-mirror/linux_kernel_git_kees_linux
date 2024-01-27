@@ -219,7 +219,7 @@ EXPORT_SYMBOL(airq_iv_release);
  * @num: number of consecutive irq bits to allocate
  *
  * Returns the bit number of the first irq in the allocated block of irqs,
- * or -1UL if no bit is available or the AIRQ_IV_ALLOC flag has not been
+ * or ULONG_MAX if no bit is available or the AIRQ_IV_ALLOC flag has not been
  * specified
  */
 unsigned long airq_iv_alloc(struct airq_iv *iv, unsigned long num)
@@ -227,7 +227,7 @@ unsigned long airq_iv_alloc(struct airq_iv *iv, unsigned long num)
 	unsigned long bit, i, flags;
 
 	if (!iv->avail || num == 0)
-		return -1UL;
+		return ULONG_MAX;
 	spin_lock_irqsave(&iv->lock, flags);
 	bit = find_first_bit_inv(iv->avail, iv->bits);
 	while (bit + num <= iv->bits) {
@@ -245,7 +245,7 @@ unsigned long airq_iv_alloc(struct airq_iv *iv, unsigned long num)
 		bit = find_next_bit_inv(iv->avail, iv->bits, bit + i + 1);
 	}
 	if (bit + num > iv->bits)
-		bit = -1UL;
+		bit = ULONG_MAX;
 	spin_unlock_irqrestore(&iv->lock, flags);
 	return bit;
 }
@@ -286,7 +286,7 @@ EXPORT_SYMBOL(airq_iv_free);
  * @end: bit number to end the search
  *
  * Returns the bit number of the next non-zero interrupt bit, or
- * -1UL if the scan completed without finding any more any non-zero bits.
+ * ULONG_MAX if the scan completed without finding any more any non-zero bits.
  */
 unsigned long airq_iv_scan(struct airq_iv *iv, unsigned long start,
 			   unsigned long end)
@@ -296,7 +296,7 @@ unsigned long airq_iv_scan(struct airq_iv *iv, unsigned long start,
 	/* Find non-zero bit starting from 'ivs->next'. */
 	bit = find_next_bit_inv(iv->vector, end, start);
 	if (bit >= end)
-		return -1UL;
+		return ULONG_MAX;
 	clear_bit_inv(bit, iv->vector);
 	return bit;
 }

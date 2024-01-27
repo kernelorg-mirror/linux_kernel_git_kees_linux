@@ -11,15 +11,15 @@
 
 /* Maximum physical address we can use pages from */
 
-#define KEXEC_SOURCE_MEMORY_LIMIT (-1UL)
+#define KEXEC_SOURCE_MEMORY_LIMIT (ULONG_MAX)
 
 /* Maximum address we can reach in physical address mode */
 
-#define KEXEC_DESTINATION_MEMORY_LIMIT (-1UL)
+#define KEXEC_DESTINATION_MEMORY_LIMIT (ULONG_MAX)
 
 /* Maximum address we can use for the control code buffer */
 
-#define KEXEC_CONTROL_MEMORY_LIMIT (-1UL)
+#define KEXEC_CONTROL_MEMORY_LIMIT (ULONG_MAX)
 
 #define KEXEC_CONTROL_PAGE_SIZE 4096
 

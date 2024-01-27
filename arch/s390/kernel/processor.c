@@ -42,7 +42,7 @@ static bool machine_has_cpu_mhz;
 
 void __init cpu_detect_mhz_feature(void)
 {
-	if (test_facility(34) && __ecag(ECAG_CPU_ATTRIBUTE, 0) != -1UL)
+	if (test_facility(34) && __ecag(ECAG_CPU_ATTRIBUTE, 0) != ULONG_MAX)
 		machine_has_cpu_mhz = true;
 }
 

@@ -221,7 +221,7 @@ inline void flush_dcache_folio_impl(struct folio *folio)
 #define PG_dcache_dirty		PG_arch_1
 #define PG_dcache_cpu_shift	32UL
 #define PG_dcache_cpu_mask	\
-	((1UL<<ilog2(roundup_pow_of_two(NR_CPUS)))-1UL)
+	((1UL<<ilog2(roundup_pow_of_two(NR_CPUS)))ULONG_MAX)
 
 #define dcache_dirty_cpu(folio) \
 	(((folio)->flags >> PG_dcache_cpu_shift) & PG_dcache_cpu_mask)

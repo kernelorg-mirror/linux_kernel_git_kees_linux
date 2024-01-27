@@ -619,7 +619,7 @@ static struct page_stat *page_stat__findnew_caller(struct page_stat *pstat)
 
 static bool valid_page(u64 pfn_or_page)
 {
-	if (use_pfn && pfn_or_page == -1UL)
+	if (use_pfn && pfn_or_page == ULONG_MAX)
 		return false;
 	if (!use_pfn && pfn_or_page == 0)
 		return false;

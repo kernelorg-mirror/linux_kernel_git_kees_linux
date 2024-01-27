@@ -94,7 +94,7 @@ static inline void syscall_get_arguments(struct task_struct *task,
 					 struct pt_regs *regs,
 					 unsigned long *args)
 {
-	unsigned long val, mask = -1UL;
+	unsigned long val, mask = ULONG_MAX;
 	unsigned int n = 6;
 
 	if (is_tsk_32bit_task(task))
