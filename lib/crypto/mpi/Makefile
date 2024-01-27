@@ -2,6 +2,7 @@
 #
 # MPI multiprecision maths library (from gpg)
 #
+UBSAN_WRAP_UNSIGNED := n
 
 obj-$(CONFIG_MPILIB) = mpi.o
 

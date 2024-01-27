@@ -2,6 +2,7 @@
 #
 # Makefile for some libs needed in the kernel.
 #
+UBSAN_WRAP_UNSIGNED := n
 
 ccflags-remove-$(CONFIG_FUNCTION_TRACER) += $(CC_FLAGS_FTRACE)
 

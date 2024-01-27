@@ -2,6 +2,7 @@
 # Any varying coverage in these files is non-deterministic
 # and is generally not a function of system call inputs.
 KCOV_INSTRUMENT		:= n
+UBSAN_WRAP_UNSIGNED := n
 
 obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o
 

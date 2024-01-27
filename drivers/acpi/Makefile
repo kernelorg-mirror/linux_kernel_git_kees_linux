@@ -2,6 +2,7 @@
 #
 # Makefile for the Linux ACPI interpreter
 #
+UBSAN_WRAP_UNSIGNED := n
 
 ccflags-$(CONFIG_ACPI_DEBUG)	+= -DACPI_DEBUG_OUTPUT
 

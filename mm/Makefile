@@ -2,6 +2,7 @@
 #
 # Makefile for the linux memory manager.
 #
+UBSAN_WRAP_UNSIGNED := n
 
 KASAN_SANITIZE_slab_common.o := n
 KASAN_SANITIZE_slub.o := n
