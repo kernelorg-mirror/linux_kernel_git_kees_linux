@@ -1383,10 +1383,15 @@ retry:
 }
 EXPORT_SYMBOL(netlink_unicast);
 
+__unsigned_wrap
 int netlink_has_listeners(struct sock *sk, unsigned int group)
 {
 	int res = 0;
 	struct listeners *listeners;
+
+	/* groups appears to be 1-index here... ? */
+	if (group == 0)
+		pr_warn("Called with group == 0 ?!\n");
 
 	BUG_ON(!netlink_is_kernel(sk));
 

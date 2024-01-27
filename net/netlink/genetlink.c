@@ -1824,7 +1824,7 @@ static int genl_bind(struct net *net, int group)
 		if (family->n_mcgrps == 0)
 			continue;
 
-		i = group - family->mcgrp_offset;
+		i = sub_wrap(int, group, family->mcgrp_offset);
 		if (i < 0 || i >= family->n_mcgrps)
 			continue;
 
