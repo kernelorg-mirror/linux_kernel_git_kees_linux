@@ -9,6 +9,7 @@
 #include <linux/errno.h>
 #include <linux/find.h>
 #include <linux/limits.h>
+#include <linux/overflow.h>
 #include <linux/string.h>
 #include <linux/types.h>
 #include <linux/bitmap-str.h>
@@ -212,7 +213,7 @@ void bitmap_fold(unsigned long *dst, const unsigned long *orig,
 		unsigned int sz, unsigned int nbits);
 
 #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
-#define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
+#define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> ((type_max(typeof(nbits)) - (nbits) + 1) & (BITS_PER_LONG - 1)))
 
 static inline void bitmap_zero(unsigned long *dst, unsigned int nbits)
 {
