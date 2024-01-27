@@ -13,7 +13,7 @@
 
 #define DELTA 0x9E3779B9
 
-static void TEA_transform(__u32 buf[4], __u32 const in[])
+static __unsigned_wrap void TEA_transform(__u32 buf[4], __u32 const in[])
 {
 	__u32	sum = 0;
 	__u32	b0 = buf[0], b1 = buf[1];
@@ -50,7 +50,7 @@ static void TEA_transform(__u32 buf[4], __u32 const in[])
 /*
  * Basic cut-down MD4 transform.  Returns only 32 bits of result.
  */
-static __u32 half_md4_transform(__u32 buf[4], __u32 const in[8])
+static __unsigned_wrap __u32 half_md4_transform(__u32 buf[4], __u32 const in[8])
 {
 	__u32 a = buf[0], b = buf[1], c = buf[2], d = buf[3];
 
@@ -100,7 +100,7 @@ static __u32 half_md4_transform(__u32 buf[4], __u32 const in[8])
 #undef H
 
 /* The old legacy hash */
-static __u32 dx_hack_hash_unsigned(const char *name, int len)
+static __unsigned_wrap __u32 dx_hack_hash_unsigned(const char *name, int len)
 {
 	__u32 hash, hash0 = 0x12a3fe2d, hash1 = 0x37abe8f9;
 	const unsigned char *ucp = (const unsigned char *) name;
@@ -116,7 +116,7 @@ static __u32 dx_hack_hash_unsigned(const char *name, int len)
 	return hash0 << 1;
 }
 
-static __u32 dx_hack_hash_signed(const char *name, int len)
+static __unsigned_wrap __u32 dx_hack_hash_signed(const char *name, int len)
 {
 	__u32 hash, hash0 = 0x12a3fe2d, hash1 = 0x37abe8f9;
 	const signed char *scp = (const signed char *) name;
@@ -132,7 +132,7 @@ static __u32 dx_hack_hash_signed(const char *name, int len)
 	return hash0 << 1;
 }
 
-static void str2hashbuf_signed(const char *msg, int len, __u32 *buf, int num)
+static __unsigned_wrap void str2hashbuf_signed(const char *msg, int len, __u32 *buf, int num)
 {
 	__u32	pad, val;
 	int	i;
@@ -158,7 +158,7 @@ static void str2hashbuf_signed(const char *msg, int len, __u32 *buf, int num)
 		*buf++ = pad;
 }
 
-static void str2hashbuf_unsigned(const char *msg, int len, __u32 *buf, int num)
+static __unsigned_wrap void str2hashbuf_unsigned(const char *msg, int len, __u32 *buf, int num)
 {
 	__u32	pad, val;
 	int	i;
