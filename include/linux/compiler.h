@@ -217,7 +217,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
  * offset_to_ptr - convert a relative memory offset to an absolute pointer
  * @off:	the address of the 32-bit offset value
  */
-static inline void *offset_to_ptr(const int *off)
+static inline __unsigned_wrap void *offset_to_ptr(const int *off)
 {
 	return (void *)((unsigned long)off + *off);
 }
