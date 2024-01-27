@@ -1566,7 +1566,7 @@ static void gc_worker(struct work_struct *work)
 		cond_resched();
 		i++;
 
-		delta_time = nfct_time_stamp - end_time;
+		delta_time = sub_wrap(typeof(delta_time), nfct_time_stamp, end_time);
 		if (delta_time > 0 && i < hashsz) {
 			gc_work->avg_timeout = next_run;
 			gc_work->count = count;
