@@ -723,7 +723,7 @@ static inline void tk_update_leap_state(struct timekeeper *tk)
 /*
  * Update the ktime_t based scalar nsec members of the timekeeper
  */
-static inline void tk_update_ktime_data(struct timekeeper *tk)
+static inline __unsigned_wrap void tk_update_ktime_data(struct timekeeper *tk)
 {
 	u64 seconds;
 	u32 nsec;
@@ -1921,7 +1921,8 @@ device_initcall(timekeeping_init_ops);
 /*
  * Apply a multiplier adjustment to the timekeeper
  */
-static __always_inline void timekeeping_apply_adjustment(struct timekeeper *tk,
+static __always_inline __unsigned_wrap
+void timekeeping_apply_adjustment(struct timekeeper *tk,
 							 s64 offset,
 							 s32 mult_adj)
 {
@@ -1999,7 +2000,8 @@ static __always_inline void timekeeping_apply_adjustment(struct timekeeper *tk,
  * Adjust the timekeeper's multiplier to the correct frequency
  * and also to reduce the accumulated error value.
  */
-static void timekeeping_adjust(struct timekeeper *tk, s64 offset)
+static __unsigned_wrap
+void timekeeping_adjust(struct timekeeper *tk, s64 offset)
 {
 	u32 mult;
 
@@ -2109,7 +2111,8 @@ static inline unsigned int accumulate_nsecs_to_secs(struct timekeeper *tk)
  *
  * Returns the unconsumed cycles.
  */
-static u64 logarithmic_accumulation(struct timekeeper *tk, u64 offset,
+static __unsigned_wrap
+u64 logarithmic_accumulation(struct timekeeper *tk, u64 offset,
 				    u32 shift, unsigned int *clock_set)
 {
 	u64 interval = tk->cycle_interval << shift;
