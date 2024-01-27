@@ -77,7 +77,7 @@ static long get_nr_inodes(void)
 	int i;
 	long sum = 0;
 	for_each_possible_cpu(i)
-		sum += per_cpu(nr_inodes, i);
+		inc_wrap(sum, per_cpu(nr_inodes, i));
 	return sum < 0 ? 0 : sum;
 }
 
@@ -86,7 +86,7 @@ static inline long get_nr_inodes_unused(void)
 	int i;
 	long sum = 0;
 	for_each_possible_cpu(i)
-		sum += per_cpu(nr_unused, i);
+		inc_wrap(sum, per_cpu(nr_unused, i));
 	return sum < 0 ? 0 : sum;
 }
 
@@ -506,7 +506,7 @@ static inline void inode_sb_list_del(struct inode *inode)
 	}
 }
 
-static unsigned long hash(struct super_block *sb, unsigned long hashval)
+static __unsigned_wrap unsigned long hash(struct super_block *sb, unsigned long hashval)
 {
 	unsigned long tmp;
 
