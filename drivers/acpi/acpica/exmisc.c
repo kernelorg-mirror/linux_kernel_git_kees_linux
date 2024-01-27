@@ -119,6 +119,7 @@ acpi_ex_get_object_reference(union acpi_operand_object *obj_desc,
  *
  ******************************************************************************/
 
+__unsigned_wrap
 u64 acpi_ex_do_math_op(u16 opcode, u64 integer0, u64 integer1)
 {
 
