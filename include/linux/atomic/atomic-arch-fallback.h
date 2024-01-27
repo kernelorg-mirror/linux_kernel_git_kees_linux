@@ -7,6 +7,7 @@
 #define _LINUX_ATOMIC_FALLBACK_H
 
 #include <linux/compiler.h>
+#include <linux/overflow.h>
 
 #if defined(arch_xchg)
 #define raw_xchg arch_xchg
@@ -2419,7 +2420,7 @@ raw_atomic_fetch_add_unless(atomic_t *v, int a, int u)
 	do {
 		if (unlikely(c == u))
 			break;
-	} while (!raw_atomic_try_cmpxchg(v, &c, c + a));
+	} while (!raw_atomic_try_cmpxchg(v, &c, wrapping_add(int, c, a)));
 
 	return c;
 #endif
@@ -2488,7 +2489,7 @@ raw_atomic_inc_unless_negative(atomic_t *v)
 	do {
 		if (unlikely(c < 0))
 			return false;
-	} while (!raw_atomic_try_cmpxchg(v, &c, c + 1));
+	} while (!raw_atomic_try_cmpxchg(v, &c, wrapping_add(int, c, 1)));
 
 	return true;
 #endif
@@ -2515,7 +2516,7 @@ raw_atomic_dec_unless_positive(atomic_t *v)
 	do {
 		if (unlikely(c > 0))
 			return false;
-	} while (!raw_atomic_try_cmpxchg(v, &c, c - 1));
+	} while (!raw_atomic_try_cmpxchg(v, &c, wrapping_sub(int, c, 1)));
 
 	return true;
 #endif
@@ -2540,7 +2541,7 @@ raw_atomic_dec_if_positive(atomic_t *v)
 	int dec, c = raw_atomic_read(v);
 
 	do {
-		dec = c - 1;
+		dec = wrapping_sub(int, c, 1);
 		if (unlikely(dec < 0))
 			break;
 	} while (!raw_atomic_try_cmpxchg(v, &c, dec));
@@ -4531,7 +4532,7 @@ raw_atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u)
 	do {
 		if (unlikely(c == u))
 			break;
-	} while (!raw_atomic64_try_cmpxchg(v, &c, c + a));
+	} while (!raw_atomic64_try_cmpxchg(v, &c, wrapping_add(s64, c, a)));
 
 	return c;
 #endif
@@ -4600,7 +4601,7 @@ raw_atomic64_inc_unless_negative(atomic64_t *v)
 	do {
 		if (unlikely(c < 0))
 			return false;
-	} while (!raw_atomic64_try_cmpxchg(v, &c, c + 1));
+	} while (!raw_atomic64_try_cmpxchg(v, &c, wrapping_add(s64, c, 1)));
 
 	return true;
 #endif
@@ -4627,7 +4628,7 @@ raw_atomic64_dec_unless_positive(atomic64_t *v)
 	do {
 		if (unlikely(c > 0))
 			return false;
-	} while (!raw_atomic64_try_cmpxchg(v, &c, c - 1));
+	} while (!raw_atomic64_try_cmpxchg(v, &c, wrapping_sub(s64, c, 1)));
 
 	return true;
 #endif
@@ -4652,7 +4653,7 @@ raw_atomic64_dec_if_positive(atomic64_t *v)
 	s64 dec, c = raw_atomic64_read(v);
 
 	do {
-		dec = c - 1;
+		dec = wrapping_sub(s64, c, 1);
 		if (unlikely(dec < 0))
 			break;
 	} while (!raw_atomic64_try_cmpxchg(v, &c, dec));
@@ -4662,4 +4663,4 @@ raw_atomic64_dec_if_positive(atomic64_t *v)
 }
 
 #endif /* _LINUX_ATOMIC_FALLBACK_H */
-// eec048affea735b8464f58e6d96992101f8f85f1
+// e1aa766aaec0a0b05a388b99e91d31a047e26158
