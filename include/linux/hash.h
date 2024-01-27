@@ -57,7 +57,7 @@
 #ifndef HAVE_ARCH__HASH_32
 #define __hash_32 __hash_32_generic
 #endif
-static inline u32 __hash_32_generic(u32 val)
+static inline __unsigned_wrap u32 __hash_32_generic(u32 val)
 {
 	return val * GOLDEN_RATIO_32;
 }
@@ -71,7 +71,7 @@ static inline u32 hash_32(u32 val, unsigned int bits)
 #ifndef HAVE_ARCH_HASH_64
 #define hash_64 hash_64_generic
 #endif
-static __always_inline u32 hash_64_generic(u64 val, unsigned int bits)
+static __always_inline __unsigned_wrap u32 hash_64_generic(u64 val, unsigned int bits)
 {
 #if BITS_PER_LONG == 64
 	/* 64x64-bit multiply is efficient on all 64-bit processors */
