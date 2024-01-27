@@ -488,8 +488,12 @@ struct resource *pnp_get_resource(struct pnp_dev *dev,
 
 	list_for_each_entry(pnp_res, &dev->resources, list) {
 		res = &pnp_res->res;
-		if (pnp_resource_type(res) == type && num-- == 0)
-			return res;
+		if (num == 0) {
+			if (pnp_resource_type(res) == type)
+				return res;
+			break;
+		}
+		num--;
 	}
 	return NULL;
 }
