@@ -57,7 +57,7 @@ u32 __get_random_u32_below(u32 ceil);
  * distribution, suitable for all uses. Fastest when ceil is a constant, but
  * still fast for variable ceil as well.
  */
-static inline u32 get_random_u32_below(u32 ceil)
+static inline __unsigned_wrap u32 get_random_u32_below(u32 ceil)
 {
 	if (!__builtin_constant_p(ceil))
 		return __get_random_u32_below(ceil);
@@ -95,7 +95,7 @@ static inline u32 get_random_u32_below(u32 ceil)
  * distribution, suitable for all uses. Fastest when floor is a constant, but
  * still fast for variable floor as well.
  */
-static inline u32 get_random_u32_above(u32 floor)
+static inline __unsigned_wrap u32 get_random_u32_above(u32 floor)
 {
 	BUILD_BUG_ON_MSG(__builtin_constant_p(floor) && floor == U32_MAX,
 			 "get_random_u32_above() must take floor < U32_MAX");
@@ -107,7 +107,7 @@ static inline u32 get_random_u32_above(u32 floor)
  * distribution, suitable for all uses. Fastest when floor and ceil are
  * constant, but still fast for variable floor and ceil as well.
  */
-static inline u32 get_random_u32_inclusive(u32 floor, u32 ceil)
+static inline __unsigned_wrap u32 get_random_u32_inclusive(u32 floor, u32 ceil)
 {
 	BUILD_BUG_ON_MSG(__builtin_constant_p(floor) && __builtin_constant_p(ceil) &&
 			 (floor > ceil || ceil - floor == U32_MAX),
