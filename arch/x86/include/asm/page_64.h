@@ -9,6 +9,7 @@
 #include <asm/alternative.h>
 
 #include <linux/kmsan-checks.h>
+#include <linux/overflow.h>
 
 /* duplicated to the one in bootmem.h */
 extern unsigned long max_pfn;
@@ -18,7 +19,8 @@ extern unsigned long page_offset_base;
 extern unsigned long vmalloc_base;
 extern unsigned long vmemmap_base;
 
-static __always_inline unsigned long __phys_addr_nodebug(unsigned long x)
+static __always_inline __unsigned_wrap
+unsigned long __phys_addr_nodebug(unsigned long x)
 {
 	unsigned long y = x - __START_KERNEL_map;
 
@@ -34,7 +36,8 @@ extern unsigned long __phys_addr_symbol(unsigned long);
 #else
 #define __phys_addr(x)		__phys_addr_nodebug(x)
 #define __phys_addr_symbol(x) \
-	((unsigned long)(x) - __START_KERNEL_map + phys_base)
+	(add_wrap(unsigned long, sub_wrap(unsigned long,	\
+		(unsigned long)(x), __START_KERNEL_map), phys_base))
 #endif
 
 #define __phys_reloc_hide(x)	(x)
