@@ -165,7 +165,7 @@ EXPORT_SYMBOL(rtc_valid_tm);
  * rtc_tm_to_time64 - Converts rtc_time to time64_t.
  * Convert Gregorian date to seconds since 01-01-1970 00:00:00.
  */
-time64_t rtc_tm_to_time64(struct rtc_time *tm)
+__unsigned_wrap time64_t rtc_tm_to_time64(struct rtc_time *tm)
 {
 	return mktime64(((unsigned int)tm->tm_year + 1900), tm->tm_mon + 1,
 			tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
