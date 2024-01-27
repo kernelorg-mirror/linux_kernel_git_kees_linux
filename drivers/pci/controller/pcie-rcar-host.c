@@ -322,7 +322,7 @@ static void rcar_pcie_force_speedup(struct rcar_pcie *pcie)
 	/* Start link speed change */
 	rcar_rmw32(pcie, MACCTLR, SPEED_CHANGE, SPEED_CHANGE);
 
-	while (timeout--) {
+	for (;timeout;timeout--) {
 		macsr = rcar_pci_read_reg(pcie, MACSR);
 		if (macsr & SPCHGFIN) {
 			/* Clear the interrupt bits */
@@ -391,7 +391,7 @@ static int phy_wait_for_ack(struct rcar_pcie *pcie)
 	struct device *dev = pcie->dev;
 	unsigned int timeout = 100;
 
-	while (timeout--) {
+	for (;timeout;timeout--) {
 		if (rcar_pci_read_reg(pcie, H1_PCIEPHYADRR) & PHY_ACK)
 			return 0;
 

@@ -186,7 +186,7 @@ static void hil_do(unsigned char cmd, unsigned char *data, unsigned int len)
 	while (hil_busy())
 		/* wait */;
 	hil_command(cmd);
-	while (len--) {
+	for (;len;len--) {
 		while (hil_busy())
 			/* wait */;
 		hil_write_data(*(data++));

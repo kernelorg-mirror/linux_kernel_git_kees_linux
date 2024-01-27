@@ -489,7 +489,7 @@ static void emit_pte(struct xe_migrate *m,
 		ofs += chunk * 8;
 		ptes -= chunk;
 
-		while (chunk--) {
+		for (;chunk;chunk--) {
 			u64 addr, flags = 0;
 			bool devmem = false;
 

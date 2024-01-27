@@ -50,7 +50,7 @@ name_hash(const unsigned char *name)
 {
 	unsigned long hash = 0;
 	unsigned int len = strlen((const char *)name);
-	while (len--)
+	for (;len;len--)
 		hash = partial_name_hash(*name++, hash);
 	return (unsigned int)hash;
 }

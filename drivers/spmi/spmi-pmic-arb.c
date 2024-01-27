@@ -276,7 +276,7 @@ static int pmic_arb_wait_for_done(struct spmi_controller *ctrl,
 	offset = rc;
 	offset += PMIC_ARB_STATUS;
 
-	while (timeout--) {
+	for (;timeout;timeout--) {
 		status = readl_relaxed(base + offset);
 
 		if (status & PMIC_ARB_STATUS_DONE) {

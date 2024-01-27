@@ -534,7 +534,7 @@ static int bcmgenet_hfb_insert_data(struct bcmgenet_priv *priv, u32 f_index,
 	index = f_index * priv->hw_params->hfb_filter_size + offset / 2;
 	tmp = bcmgenet_hfb_readl(priv, index * sizeof(u32));
 
-	while (size--) {
+	for (;size;size--) {
 		if (offset++ & 1) {
 			tmp &= ~0x300FF;
 			tmp |= (*(unsigned char *)val++);

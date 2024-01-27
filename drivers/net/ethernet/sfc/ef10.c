@@ -873,7 +873,7 @@ fail:
 	 * buffer for MC_CMD_UNLINK_PIOBUF because it's shorter.
 	 */
 	BUILD_BUG_ON(MC_CMD_LINK_PIOBUF_IN_LEN < MC_CMD_UNLINK_PIOBUF_IN_LEN);
-	while (index--) {
+	for (;index;index--) {
 		MCDI_SET_DWORD(inbuf, UNLINK_PIOBUF_IN_TXQ_INSTANCE,
 			       nic_data->pio_write_vi_base + index);
 		efx_mcdi_rpc(efx, MC_CMD_UNLINK_PIOBUF,

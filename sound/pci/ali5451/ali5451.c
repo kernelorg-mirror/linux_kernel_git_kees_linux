@@ -441,7 +441,7 @@ static int snd_ali_reset_5451(struct snd_ali *codec)
 	mdelay(5);
 	
 	wCount = 200;
-	while(wCount--) {
+	for (;wCount;wCount--) {
 		wReg = snd_ali_codec_peek(codec, 0, AC97_POWERDOWN);
 		if ((wReg & 0x000f) == 0x000f)
 			return 0;

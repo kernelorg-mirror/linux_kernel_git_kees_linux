@@ -1037,7 +1037,7 @@ static int rtw89_fw_download_main(struct rtw89_dev *rtwdev,
 	u8 section_num = info->section_num;
 	int ret;
 
-	while (section_num--) {
+	for (;section_num;section_num--) {
 		ret = __rtw89_fw_download_main(rtwdev, section_info);
 		if (ret)
 			return ret;

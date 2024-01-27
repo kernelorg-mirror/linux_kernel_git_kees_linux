@@ -5448,7 +5448,7 @@ mpt3sas_atto_validate_nvram(struct MPT3SAS_ADAPTER *ioc,
 	ckSum = ATTO_SASNVR_CKSUM_SEED;
 	len = sizeof(struct ATTO_SAS_NVRAM);
 
-	while (len--)
+	for (;len;len--)
 		ckSum = ckSum + pb[len];
 
 	if (ckSum) {

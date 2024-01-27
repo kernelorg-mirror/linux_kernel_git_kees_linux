@@ -550,7 +550,7 @@ static int dma_4v_map_sg(struct device *dev, struct scatterlist *sglist,
 
 		/* Insert into HW table */
 		paddr &= IO_PAGE_MASK;
-		while (npages--) {
+		for (;npages;npages--) {
 			err = iommu_batch_add(paddr, mask);
 			if (unlikely(err < 0L))
 				goto iommu_map_failed;

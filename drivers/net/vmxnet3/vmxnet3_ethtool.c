@@ -1147,7 +1147,7 @@ vmxnet3_get_rss(struct net_device *netdev, struct ethtool_rxfh_param *rxfh)
 		return 0;
 	if (n > UPT1_RSS_MAX_IND_TABLE_SIZE)
 		return 0;
-	while (n--)
+	for (;n;n--)
 		rxfh->indir[n] = rssConf->indTable[n];
 	return 0;
 

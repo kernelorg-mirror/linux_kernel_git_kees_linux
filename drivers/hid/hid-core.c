@@ -1462,7 +1462,7 @@ static void implement(const struct hid_device *hid, u8 *report,
 
 static int search(__s32 *array, __s32 value, unsigned n)
 {
-	while (n--) {
+	for (;n;n--) {
 		if (*array++ == value)
 			return 0;
 	}

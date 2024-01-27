@@ -95,7 +95,7 @@ EXPORT_SYMBOL_GPL(gpio_request_array);
  */
 void gpio_free_array(const struct gpio *array, size_t num)
 {
-	while (num--)
+	for (;num;num--)
 		gpio_free((array++)->gpio);
 }
 EXPORT_SYMBOL_GPL(gpio_free_array);

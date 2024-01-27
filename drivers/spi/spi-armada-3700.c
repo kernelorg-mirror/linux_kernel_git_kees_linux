@@ -473,7 +473,7 @@ static void a3700_spi_header_set(struct a3700_spi *a3700_spi)
 
 			/* transfer 1~3 bytes through address count */
 			val = 0;
-			while (addr_cnt--) {
+			for (;addr_cnt;addr_cnt--) {
 				val = (val << 8) | a3700_spi->tx_buf[0];
 				a3700_spi->tx_buf++;
 			}

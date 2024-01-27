@@ -867,17 +867,17 @@ static void copy_bswap32(u32 *dst, const u32 *src, unsigned int words)
 {
 	/* src or dst can be unaligned, but not both */
 	if ((unsigned long)src & 3) {
-		while (words--) {
+		for (;words;words--) {
 			*dst++ = swab32(get_unaligned(src));
 			src++;
 		}
 	} else if ((unsigned long)dst & 3) {
-		while (words--) {
+		for (;words;words--) {
 			put_unaligned(swab32(*src++), dst);
 			dst++;
 		}
 	} else {
-		while (words--)
+		for (;words;words--)
 			*dst++ = swab32(*src++);
 	}
 }
@@ -886,17 +886,17 @@ static void copy_wswap32(u32 *dst, const u32 *src, unsigned int words)
 {
 	/* src or dst can be unaligned, but not both */
 	if ((unsigned long)src & 3) {
-		while (words--) {
+		for (;words;words--) {
 			*dst++ = swahw32(get_unaligned(src));
 			src++;
 		}
 	} else if ((unsigned long)dst & 3) {
-		while (words--) {
+		for (;words;words--) {
 			put_unaligned(swahw32(*src++), dst);
 			dst++;
 		}
 	} else {
-		while (words--)
+		for (;words;words--)
 			*dst++ = swahw32(*src++);
 	}
 }

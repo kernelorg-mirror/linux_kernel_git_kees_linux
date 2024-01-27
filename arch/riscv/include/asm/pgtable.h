@@ -480,7 +480,7 @@ static inline void update_mmu_cache_range(struct vm_fault *vmf,
 	 * Relying on flush_tlb_fix_spurious_fault would suffice, but
 	 * the extra traps reduce performance.  So, eagerly SFENCE.VMA.
 	 */
-	while (nr--)
+	for (;nr;nr--)
 		local_flush_tlb_page(address + nr * PAGE_SIZE);
 }
 #define update_mmu_cache(vma, addr, ptep) \

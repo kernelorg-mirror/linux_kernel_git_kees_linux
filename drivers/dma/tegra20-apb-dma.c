@@ -651,7 +651,7 @@ static void tegra_dma_tasklet(struct tasklet_struct *t)
 		trace_tegra_dma_complete_cb(&tdc->dma_chan, cb_count,
 					    cb.callback);
 		spin_unlock_irqrestore(&tdc->lock, flags);
-		while (cb_count--)
+		for (;cb_count;cb_count--)
 			dmaengine_desc_callback_invoke(&cb, NULL);
 		spin_lock_irqsave(&tdc->lock, flags);
 	}

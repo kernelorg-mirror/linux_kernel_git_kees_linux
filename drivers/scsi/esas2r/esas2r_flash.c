@@ -112,7 +112,7 @@ static u8 esas2r_calc_byte_xor_cksum(u8 *addr, u32 len, u8 seed)
 		addr += 4;
 		len -= 4;
 	}
-	while (len--) {
+	for (;len;len--) {
 		cksum = cksum ^ *addr;
 		addr++;
 	}
@@ -124,7 +124,7 @@ static u8 esas2r_calc_byte_cksum(void *addr, u32 len, u8 seed)
 	u8 *p = (u8 *)addr;
 	u8 cksum = seed;
 
-	while (len--)
+	for (;len;len--)
 		cksum = cksum + p[len];
 	return cksum;
 }
@@ -1027,7 +1027,7 @@ bool esas2r_read_flash_block(struct esas2r_adapter *a,
 		from += len;
 		size -= len;
 
-		while (len--) {
+		for (;len;len--) {
 			*end++ = esas2r_read_data_byte(a, offset);
 			offset++;
 		}

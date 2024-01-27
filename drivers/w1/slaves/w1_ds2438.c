@@ -65,7 +65,7 @@ static int w1_ds2438_get_page(struct w1_slave *sl, int pageno, u8 *buf)
 	u8 crc;
 	size_t count;
 
-	while (retries--) {
+	for (;retries;retries--) {
 		if (w1_reset_select_slave(sl))
 			continue;
 		w1_buf[0] = W1_DS2438_RECALL_MEMORY;
@@ -100,7 +100,7 @@ static int w1_ds2438_get_temperature(struct w1_slave *sl, int16_t *temperature)
 
 	mutex_lock(&sl->master->bus_mutex);
 
-	while (retries--) {
+	for (;retries;retries--) {
 		if (w1_reset_select_slave(sl))
 			continue;
 		w1_write_8(sl->master, W1_DS2438_CONVERT_TEMP);
@@ -139,7 +139,7 @@ static int w1_ds2438_change_config_bit(struct w1_slave *sl, u8 mask, u8 value)
 	u8 status;
 	int perform_write = 0;
 
-	while (retries--) {
+	for (;retries;retries--) {
 		if (w1_reset_select_slave(sl))
 			continue;
 		w1_buf[0] = W1_DS2438_RECALL_MEMORY;
@@ -171,7 +171,7 @@ static int w1_ds2438_change_config_bit(struct w1_slave *sl, u8 mask, u8 value)
 
 	if (perform_write) {
 		retries = W1_DS2438_RETRIES;
-		while (retries--) {
+		for (;retries;retries--) {
 			if (w1_reset_select_slave(sl))
 				continue;
 			w1_buf[0] = W1_DS2438_WRITE_SCRATCH;
@@ -201,7 +201,7 @@ static int w1_ds2438_change_offset_register(struct w1_slave *sl, u8 *value)
 		memcpy(&w1_buf[2], w1_page1_buf, DS2438_PAGE_SIZE - 1); /* last register reserved */
 		w1_buf[7] = value[0]; /* change only offset register */
 		w1_buf[8] = value[1];
-		while (retries--) {
+		for (;retries;retries--) {
 			if (w1_reset_select_slave(sl))
 				continue;
 			w1_buf[0] = W1_DS2438_WRITE_SCRATCH;
@@ -235,7 +235,7 @@ static int w1_ds2438_get_voltage(struct w1_slave *sl,
 		goto pre_unlock;
 	}
 
-	while (retries--) {
+	for (;retries;retries--) {
 		if (w1_reset_select_slave(sl))
 			continue;
 		w1_write_8(sl->master, W1_DS2438_CONVERT_VOLTAGE);

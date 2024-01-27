@@ -191,7 +191,7 @@ static inline wchar_t *UniStrncpy(wchar_t *ucs1, const wchar_t *ucs2, size_t n)
 		*ucs1++ = *ucs2++;
 
 	n++;
-	while (n--)		/* Pad with nulls */
+	for (;n;n--)		/* Pad with nulls */
 		*ucs1++ = 0;
 	return anchor;
 }
@@ -207,7 +207,7 @@ static inline wchar_t *UniStrncpy_le(wchar_t *ucs1, const wchar_t *ucs2, size_t 
 		*ucs1++ = __le16_to_cpu(*ucs2++);
 
 	n++;
-	while (n--)		/* Pad with nulls */
+	for (;n;n--)		/* Pad with nulls */
 		*ucs1++ = 0;
 	return anchor;
 }

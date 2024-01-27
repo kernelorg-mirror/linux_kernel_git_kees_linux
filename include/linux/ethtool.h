@@ -311,7 +311,7 @@ bool ethtool_convert_link_mode_to_legacy_u32(u32 *legacy_u32,
 
 static inline void ethtool_stats_init(u64 *stats, unsigned int n)
 {
-	while (n--)
+	for (;n;n--)
 		stats[n] = ETHTOOL_STAT_NOT_SET;
 }
 

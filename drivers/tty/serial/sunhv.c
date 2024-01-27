@@ -415,7 +415,7 @@ static int fill_con_write_page(const char *s, unsigned int n,
 	char *p = con_write_page;
 	int left = PAGE_SIZE;
 
-	while (n--) {
+	for (;n;n--) {
 		if (*s == '\n') {
 			if (left < 2)
 				break;

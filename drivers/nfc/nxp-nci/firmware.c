@@ -75,7 +75,7 @@ static u16 nxp_nci_fw_crc(u8 const *buffer, size_t len)
 {
 	u16 crc = 0xffff;
 
-	while (len--) {
+	for (;len;len--) {
 		crc = ((crc >> 8) | (crc << 8)) ^ *buffer++;
 		crc ^= (crc & 0xff) >> 4;
 		crc ^= (crc & 0xff) << 12;

@@ -680,7 +680,7 @@ static void nouveau_dmem_migrate_chunk(struct nouveau_drm *drm,
 	nouveau_dmem_fence_done(&fence);
 	nouveau_pfns_map(svmm, args->vma->vm_mm, args->start, pfns, i);
 
-	while (nr_dma--) {
+	for (;nr_dma;nr_dma--) {
 		dma_unmap_page(drm->dev->dev, dma_addrs[nr_dma], PAGE_SIZE,
 				DMA_BIDIRECTIONAL);
 	}

@@ -614,7 +614,7 @@ static inline void memcpy_u64s_small(void *dst, const void *src,
 	u64 *d = dst;
 	const u64 *s = src;
 
-	while (u64s--)
+	for (;u64s;u64s--)
 		*d++ = *s++;
 }
 
@@ -632,7 +632,7 @@ static inline void __memcpy_u64s(void *dst, const void *src,
 	u64 *d = dst;
 	const u64 *s = src;
 
-	while (u64s--)
+	for (;u64s;u64s--)
 		*d++ = *s++;
 #endif
 }
@@ -680,7 +680,7 @@ static inline void __memmove_u64s_up_small(void *_dst, const void *_src,
 	u64 *dst = (u64 *) _dst + u64s;
 	u64 *src = (u64 *) _src + u64s;
 
-	while (u64s--)
+	for (;u64s;u64s--)
 		*--dst = *--src;
 }
 
@@ -708,7 +708,7 @@ static inline void __memmove_u64s_up(void *_dst, const void *_src,
 		     : "0" (u64s), "1" (dst), "2" (src)
 		     : "memory");
 #else
-	while (u64s--)
+	for (;u64s;u64s--)
 		*dst-- = *src--;
 #endif
 }

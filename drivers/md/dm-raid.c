@@ -2734,7 +2734,7 @@ static int rs_setup_takeover(struct raid_set *rs)
 	clear_bit(MD_ARRAY_FIRST_USE, &mddev->flags);
 	mddev->recovery_cp = MaxSector;
 
-	while (d--) {
+	for (;d;d--) {
 		rdev = &rs->dev[d].rdev;
 
 		if (test_bit(d, (void *) rs->rebuild_disks)) {

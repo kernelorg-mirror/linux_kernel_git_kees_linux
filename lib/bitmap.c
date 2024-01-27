@@ -210,7 +210,7 @@ void bitmap_cut(unsigned long *dst, const unsigned long *src,
 
 	memmove(dst, src, len * sizeof(*dst));
 
-	while (cut--) {
+	for (;cut;cut--) {
 		for (i = first / BITS_PER_LONG; i < len; i++) {
 			if (i < len - 1)
 				carry = dst[i + 1] & 1UL;

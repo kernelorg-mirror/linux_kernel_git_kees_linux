@@ -1224,7 +1224,7 @@ static void __init of_unittest_check_addr(const char *node_path,
 
 	expected = tab_exp;
 	count = tab_exp_count;
-	while (count--) {
+	for (;count;count--) {
 		ret = of_address_to_resource(np, expected->index, &res);
 		unittest(!ret, "of_address_to_resource(%pOF, %d) returned error %d\n",
 			 np, expected->index, ret);

@@ -81,7 +81,7 @@ static const u32 CRC_LUT[256] = {
 static u32 dvb_crc32(u32 crc, u8 *data, u32 len)
 {
 	/* from libdvbv5 */
-	while (len--)
+	for (;len;len--)
 		crc = (crc << 8) ^ CRC_LUT[((crc >> 24) ^ *data++) & 0xff];
 	return crc;
 }

@@ -99,7 +99,7 @@ void c2p_iplan2(void *dst, const void *src, u32 dx, u32 dy, u32 width,
 	first |= first << 16;
 	last = 0xffffU ^ (0xffffU >> ((dst_idx+width) % 16));
 	last |= last << 16;
-	while (height--) {
+	for (;height;height--) {
 		c = src;
 		p = dst;
 		w = width;

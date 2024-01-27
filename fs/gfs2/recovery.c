@@ -242,7 +242,7 @@ static int foreach_descriptor(struct gfs2_jdesc *jd, u32 start,
 			return error;
 		}
 
-		while (length--)
+		for (;length;length--)
 			gfs2_replay_incr_blk(jd, &start);
 
 		brelse(bh);

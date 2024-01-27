@@ -556,7 +556,7 @@ static int arm_v7s_map_pages(struct io_pgtable_ops *ops, unsigned long iova,
 	if (!(prot & (IOMMU_READ | IOMMU_WRITE)))
 		return 0;
 
-	while (pgcount--) {
+	for (;pgcount;pgcount--) {
 		ret = __arm_v7s_map(data, iova, paddr, pgsize, prot, 1, data->pgd,
 				    gfp);
 		if (ret)
@@ -745,7 +745,7 @@ static size_t arm_v7s_unmap_pages(struct io_pgtable_ops *ops, unsigned long iova
 	if (WARN_ON(iova >= (1ULL << data->iop.cfg.ias)))
 		return 0;
 
-	while (pgcount--) {
+	for (;pgcount;pgcount--) {
 		ret = __arm_v7s_unmap(data, gather, iova, pgsize, 1, data->pgd);
 		if (!ret)
 			break;

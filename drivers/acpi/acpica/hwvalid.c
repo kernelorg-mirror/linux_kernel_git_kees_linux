@@ -312,7 +312,7 @@ acpi_status acpi_hw_validate_io_block(u64 address, u32 bit_width, u32 count)
 {
 	acpi_status status;
 
-	while (count--) {
+	for (; count; count--) {
 		status = acpi_hw_validate_io_request((acpi_io_address)address,
 						     bit_width);
 		if (ACPI_FAILURE(status))

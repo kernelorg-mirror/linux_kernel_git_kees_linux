@@ -39,7 +39,7 @@ static __always_inline void __set_page_state(void *addr, unsigned long num_pages
 {
 	unsigned long paddr = __pa(addr) & PAGE_MASK;
 
-	while (num_pages--) {
+	for (;num_pages;num_pages--) {
 		essa(paddr, cmd);
 		paddr += PAGE_SIZE;
 	}

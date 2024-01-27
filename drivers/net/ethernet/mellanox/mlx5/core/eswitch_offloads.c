@@ -2866,7 +2866,7 @@ static void mlx5_esw_offloads_rep_event_unpair(struct mlx5_eswitch *esw,
 
 	mlx5_esw_for_each_rep(esw, i, rep) {
 		rep_type = NUM_REP_TYPES;
-		while (rep_type--) {
+		for (;rep_type;rep_type--) {
 			ops = esw->offloads.rep_ops[rep_type];
 			if (atomic_read(&rep->rep_data[rep_type].state) == REP_LOADED &&
 			    ops->event)

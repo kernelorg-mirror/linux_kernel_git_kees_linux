@@ -979,7 +979,7 @@ static int wpcm450_config_set(struct pinctrl_dev *pctldev, unsigned int pin,
 	struct wpcm450_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
 	int ret;
 
-	while (num_configs--) {
+	for (;num_configs;num_configs--) {
 		ret = wpcm450_config_set_one(pctrl, pin, *configs++);
 		if (ret)
 			return ret;

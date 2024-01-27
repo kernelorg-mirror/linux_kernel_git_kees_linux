@@ -975,7 +975,7 @@ int auxtrace_index__process(int fd, u64 size, struct perf_session *session,
 	if (sizeof(u64) + nr * sizeof(struct auxtrace_index_entry) > size)
 		return -1;
 
-	while (nr--) {
+	for (;nr;nr--) {
 		int err;
 
 		err = auxtrace_index__process_entry(fd, head, needs_swap);

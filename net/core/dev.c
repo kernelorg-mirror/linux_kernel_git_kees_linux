@@ -2861,7 +2861,7 @@ int netdev_bind_sb_channel_queue(struct net_device *dev,
 	/* Provide a way for Tx queue to find the tc_to_txq map or
 	 * XPS map for itself.
 	 */
-	while (count--)
+	for (;count;count--)
 		netdev_get_tx_queue(dev, count + offset)->sb_dev = sb_dev;
 
 	return 0;
@@ -10021,7 +10021,7 @@ static int netif_alloc_rx_queues(struct net_device *dev)
 
 err_rxq_info:
 	/* Rollback successful reg's and free other resources */
-	while (i--)
+	for (;i;i--)
 		xdp_rxq_info_unreg(&rx[i].xdp_rxq);
 	kvfree(dev->_rx);
 	dev->_rx = NULL;

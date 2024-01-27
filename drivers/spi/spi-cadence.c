@@ -491,7 +491,7 @@ static int cdns_unprepare_transfer_hardware(struct spi_controller *ctlr)
 	unsigned int cnt = xspi->tx_fifo_depth;
 
 	if (spi_controller_is_target(ctlr)) {
-		while (cnt--)
+		for (;cnt;cnt--)
 			cdns_spi_read(xspi, CDNS_SPI_RXD);
 	}
 

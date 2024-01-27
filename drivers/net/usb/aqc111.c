@@ -1117,7 +1117,7 @@ static int aqc111_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
 	/* Get the first RX packet descriptor */
 	pkt_desc_ptr = (u64 *)(skb->data + desc_offset);
 
-	while (pkt_count--) {
+	for (;pkt_count;pkt_count--) {
 		u64 pkt_desc = le64_to_cpup(pkt_desc_ptr);
 		u32 pkt_len_with_padd = 0;
 		u32 pkt_len = 0;

@@ -105,7 +105,7 @@ static int ghash_update(struct shash_desc *desc,
 
 	if (srclen) {
 		dctx->bytes = GHASH_BLOCK_SIZE - srclen;
-		while (srclen--)
+		for (;srclen;srclen--)
 			*dst++ ^= *src++;
 	}
 

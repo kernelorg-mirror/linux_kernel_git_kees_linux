@@ -20,7 +20,7 @@ static int ci_ulpi_wait(struct ci_hdrc *ci, u32 mask)
 {
 	unsigned long usec = 10000;
 
-	while (usec--) {
+	for (;usec;usec--) {
 		if (!hw_read(ci, OP_ULPI_VIEWPORT, mask))
 			return 0;
 

@@ -224,7 +224,7 @@ void vivid_sliced_vbi_out_process(struct vivid_dev *dev,
 	dev->vbi_out_have_cc[0] = false;
 	dev->vbi_out_have_cc[1] = false;
 	dev->vbi_out_have_wss = false;
-	while (elems--) {
+	for (;elems;elems--) {
 		switch (vbi->id) {
 		case V4L2_SLICED_CAPTION_525:
 			if ((dev->std_out & V4L2_STD_525_60) && vbi->line == 21) {

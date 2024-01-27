@@ -391,7 +391,7 @@ ascii2desc(char const *s, u8 *buf, unsigned len)
 	t += USB_DT_STRING << 8;	/* Now t is first 16 bits to store */
 
 	n = len;
-	while (n--) {
+	for (;n;n--) {
 		*buf++ = t;
 		if (!n--)
 			break;

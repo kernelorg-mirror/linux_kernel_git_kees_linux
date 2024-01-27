@@ -1293,7 +1293,7 @@ static inline u32 bch2_snapshot_nth_parent_skip(struct bch_fs *c, u32 id, u32 n,
 	while (snapshot_list_has_id(skip, id))
 		id = __bch2_snapshot_parent(c, id);
 
-	while (n--) {
+	for (;n;n--) {
 		do {
 			id = __bch2_snapshot_parent(c, id);
 		} while (snapshot_list_has_id(skip, id));

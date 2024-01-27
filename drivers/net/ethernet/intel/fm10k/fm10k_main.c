@@ -1756,7 +1756,7 @@ static int fm10k_alloc_q_vectors(struct fm10k_intfc *interface)
 err_out:
 	fm10k_reset_num_queues(interface);
 
-	while (v_idx--)
+	for (;v_idx;v_idx--)
 		fm10k_free_q_vector(interface, v_idx);
 
 	return -ENOMEM;

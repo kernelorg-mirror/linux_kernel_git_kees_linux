@@ -42,7 +42,7 @@ static inline void ata_mfp_out(char c)
 static void atari_mfp_console_write(struct console *co, const char *str,
 				    unsigned int count)
 {
-	while (count--) {
+	for (;count;count--) {
 		if (*str == '\n')
 			ata_mfp_out('\r');
 		ata_mfp_out(*str++);
@@ -61,7 +61,7 @@ static inline void ata_scc_out(char c)
 static void atari_scc_console_write(struct console *co, const char *str,
 				    unsigned int count)
 {
-	while (count--) {
+	for (;count;count--) {
 		if (*str == '\n')
 			ata_scc_out('\r');
 		ata_scc_out(*str++);
@@ -78,7 +78,7 @@ static inline void ata_midi_out(char c)
 static void atari_midi_console_write(struct console *co, const char *str,
 				     unsigned int count)
 {
-	while (count--) {
+	for (;count;count--) {
 		if (*str == '\n')
 			ata_midi_out('\r');
 		ata_midi_out(*str++);
@@ -114,7 +114,7 @@ static void atari_par_console_write(struct console *co, const char *str,
 	if (!printer_present)
 		return;
 
-	while (count--) {
+	for (;count;count--) {
 		if (*str == '\n') {
 			if (!ata_par_out('\r')) {
 				printer_present = 0;

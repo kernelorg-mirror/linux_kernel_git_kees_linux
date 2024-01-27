@@ -2055,7 +2055,7 @@ con3270_write(struct console *co, const char *str, unsigned int count)
 	u8 c;
 
 	spin_lock_irqsave(&tp->view.lock, flags);
-	while (count--) {
+	for (;count;count--) {
 		c = *str++;
 		if (c == 0x0a) {
 			tty3270_cr(tp);

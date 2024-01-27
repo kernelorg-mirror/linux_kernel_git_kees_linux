@@ -641,7 +641,7 @@ static void xhci_debugfs_create_ports(struct xhci_hcd *xhci,
 
 	parent = debugfs_create_dir("ports", parent);
 
-	while (num_ports--) {
+	for (;num_ports;num_ports--) {
 		scnprintf(port_name, sizeof(port_name), "port%02d",
 			  num_ports + 1);
 		dir = debugfs_create_dir(port_name, parent);

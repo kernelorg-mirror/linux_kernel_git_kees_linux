@@ -217,7 +217,7 @@ static void rtl8180_handle_rx(struct ieee80211_hw *dev)
 	s8 signal = 1;
 	dma_addr_t mapping;
 
-	while (count--) {
+	for (;count;count--) {
 		void *entry = priv->rx_ring + priv->rx_idx * priv->rx_ring_sz;
 		struct sk_buff *skb = priv->rx_buf[priv->rx_idx];
 		u32 flags, flags2, flags3 = 0;

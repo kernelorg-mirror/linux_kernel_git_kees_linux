@@ -473,7 +473,7 @@ static int test_stat_multiplexing(void)
 
 	/* wait loop */
 	count = WAIT_COUNT;
-	while (count--)
+	for (;count;count--)
 		;
 
 	perf_evsel__read(evsel, 0, 0, &expected_counts);
@@ -513,7 +513,7 @@ static int test_stat_multiplexing(void)
 
 	/* wait loop */
 	count = WAIT_COUNT;
-	while (count--)
+	for (;count;count--)
 		;
 
 	i = 0;

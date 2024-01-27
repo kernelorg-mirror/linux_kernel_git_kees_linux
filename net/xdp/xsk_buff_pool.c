@@ -576,7 +576,7 @@ static u32 xp_alloc_new_from_fq(struct xsk_buff_pool *pool, struct xdp_buff **xd
 	cached_cons = pool->fq->cached_cons;
 	nb_entries = max;
 	i = max;
-	while (i--) {
+	for (;i;i--) {
 		struct xdp_buff_xsk *xskb;
 		u64 addr;
 		bool ok;
@@ -616,7 +616,7 @@ static u32 xp_alloc_reused(struct xsk_buff_pool *pool, struct xdp_buff **xdp, u3
 	nb_entries = min_t(u32, nb_entries, pool->free_list_cnt);
 
 	i = nb_entries;
-	while (i--) {
+	for (;i;i--) {
 		xskb = list_first_entry(&pool->free_list, struct xdp_buff_xsk, free_list_node);
 		list_del_init(&xskb->free_list_node);
 

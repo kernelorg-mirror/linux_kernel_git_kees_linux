@@ -301,7 +301,7 @@ static void pci1xxxx_process_read_data(struct uart_port *port,
 	 * in DWORDs. If there are less than four remaining valid_byte_count
 	 * to read, the data is received one byte at a time.
 	 */
-	while (valid_burst_count--) {
+	for (;valid_burst_count;valid_burst_count--) {
 		if (*buff_index > (RX_BUF_SIZE - UART_BURST_SIZE))
 			break;
 		burst_buf = (u32 *)&rx_buff[*buff_index];
@@ -507,10 +507,11 @@ static unsigned int pci1xxxx_get_max_port(int subsys_dev)
 	unsigned int i = MAX_PORTS;
 
 	if (subsys_dev < ARRAY_SIZE(logical_to_physical_port_idx))
-		while (i--) {
+	{for (;i;i--) {
 			if (logical_to_physical_port_idx[subsys_dev][i] != -1)
 				return logical_to_physical_port_idx[subsys_dev][i] + 1;
 		}
+	}
 
 	if (subsys_dev == PCI_SUBDEVICE_ID_EFAR_PCI11414)
 		return 4;

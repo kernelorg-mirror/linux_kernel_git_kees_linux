@@ -397,8 +397,9 @@ static void vc_uniscr_clear_lines(struct vc_data *vc, unsigned int y,
 				  unsigned int nr)
 {
 	if (vc->vc_uni_lines)
-		while (nr--)
+	{for (;nr;nr--)
 			memset32(vc->vc_uni_lines[y++], ' ', vc->vc_cols);
+	}
 }
 
 /* juggling array rotation algorithm (complexity O(N), size complexity O(1)) */
@@ -553,7 +554,7 @@ void vc_uniscr_copy_line(const struct vc_data *vc, void *dest, bool viewed,
 		u16 *p = (u16 *)pos;
 		int mask = vc->vc_hi_font_mask | 0xff;
 		u32 *uni_buf = dest;
-		while (nr--) {
+		for (;nr;nr--) {
 			u16 glyph = scr_readw(p++) & mask;
 			*uni_buf++ = inverse_translate(vc, glyph, true);
 		}
@@ -3063,7 +3064,7 @@ static void vt_console_print(struct console *co, const char *b, unsigned count)
 	start = (ushort *)vc->vc_pos;
 	start_x = vc->state.x;
 	cnt = 0;
-	while (count--) {
+	for (;count;count--) {
 		c = *b++;
 		if (c == 10 || c == 13 || c == 8 || vc->vc_need_wrap) {
 			if (cnt && con_is_visible(vc))

@@ -155,7 +155,7 @@ static int __init phy_wait_for_ack(struct pci_channel *chan)
 {
 	unsigned int timeout = 100;
 
-	while (timeout--) {
+	for (;timeout;timeout--) {
 		if (pci_read_reg(chan, SH4A_PCIEPHYADRR) & (1 << BITS_ACK))
 			return 0;
 
@@ -169,7 +169,7 @@ static int __init pci_wait_for_irq(struct pci_channel *chan, unsigned int mask)
 {
 	unsigned int timeout = 100;
 
-	while (timeout--) {
+	for (;timeout;timeout--) {
 		if ((pci_read_reg(chan, SH4A_PCIEINTR) & mask) == mask)
 			return 0;
 
@@ -278,7 +278,7 @@ static int __init phy_init(struct sh7786_pcie_port *port)
 	/* Disable clock */
 	clk_disable(&port->phy_clk);
 
-	while (timeout--) {
+	for (;timeout;timeout--) {
 		if (pci_read_reg(chan, SH4A_PCIEPHYSR))
 			return 0;
 

@@ -1380,7 +1380,7 @@ static void __init ppc_476fpe_pciex_check_link(struct ppc4xx_pciex_port *port)
 		return;
 	}
 
-	while (timeout_ms--) {
+	for (;timeout_ms;timeout_ms--) {
 		val = in_le32(mbase + PECFG_TLDLP);
 
 		if ((val & mask) == mask)

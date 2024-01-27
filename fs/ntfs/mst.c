@@ -57,7 +57,7 @@ int post_read_mst_fixup(NTFS_RECORD *b, const u32 size)
 	/*
 	 * Check for incomplete multi sector transfer(s).
 	 */
-	while (usa_count--) {
+	for (;usa_count;usa_count--) {
 		if (*data_pos != usn) {
 			/*
 			 * Incomplete multi sector transfer detected! )-:
@@ -73,7 +73,7 @@ int post_read_mst_fixup(NTFS_RECORD *b, const u32 size)
 	usa_count = le16_to_cpu(b->usa_count) - 1;
 	data_pos = (u16*)b + NTFS_BLOCK_SIZE/sizeof(u16) - 1;
 	/* Fixup all sectors. */
-	while (usa_count--) {
+	for (;usa_count;usa_count--) {
 		/*
 		 * Increment position in usa and restore original data from
 		 * the usa into the data buffer.
@@ -140,7 +140,7 @@ int pre_write_mst_fixup(NTFS_RECORD *b, const u32 size)
 	/* Position in data of first u16 that needs fixing up. */
 	data_pos = (le16*)b + NTFS_BLOCK_SIZE/sizeof(le16) - 1;
 	/* Fixup all sectors. */
-	while (usa_count--) {
+	for (;usa_count;usa_count--) {
 		/*
 		 * Increment the position in the usa and save the
 		 * original data from the data buffer into the usa.
@@ -176,7 +176,7 @@ void post_write_mst_fixup(NTFS_RECORD *b)
 	data_pos = (le16*)b + NTFS_BLOCK_SIZE/sizeof(le16) - 1;
 
 	/* Fixup all sectors. */
-	while (usa_count--) {
+	for (;usa_count;usa_count--) {
 		/*
 		 * Increment position in usa and restore original data from
 		 * the usa into the data buffer.

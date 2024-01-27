@@ -149,7 +149,7 @@ static psmouse_ret_t vmmouse_report_events(struct psmouse *psmouse)
 	unsigned int queue_length;
 	unsigned int count = 255;
 
-	while (count--) {
+	for (;count;count--) {
 		/* See if we have motion data. */
 		VMMOUSE_CMD(ABSPOINTER_STATUS, 0,
 			    status, dummy1, dummy2, dummy3);

@@ -83,7 +83,7 @@ static inline void bit_putcs_aligned(struct vc_data *vc, struct fb_info *info,
 	u32 idx = vc->vc_font.width >> 3;
 	u8 *src;
 
-	while (cnt--) {
+	for (;cnt;cnt--) {
 		src = vc->vc_font.data + (scr_readw(s++)&
 					  charmask)*cellsize;
 
@@ -118,7 +118,7 @@ static inline void bit_putcs_unaligned(struct vc_data *vc,
 	u32 idx = vc->vc_font.width >> 3;
 	u8 *src;
 
-	while (cnt--) {
+	for (;cnt;cnt--) {
 		src = vc->vc_font.data + (scr_readw(s++)&
 					  charmask)*cellsize;
 

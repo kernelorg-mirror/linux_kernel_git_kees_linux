@@ -1055,7 +1055,7 @@ int v4l2_compat_get_array_args(struct file *file, void *mbuf,
 			if (num_planes == 0)
 				return 0;
 
-			while (num_planes--) {
+			for (;num_planes;num_planes--) {
 				err = get_v4l2_plane32(p64, p32, b64->memory);
 				if (err)
 					return err;
@@ -1125,7 +1125,7 @@ int v4l2_compat_put_array_args(struct file *file, void __user *user_ptr,
 			if (num_planes == 0)
 				return 0;
 
-			while (num_planes--) {
+			for (;num_planes;num_planes--) {
 				err = put_v4l2_plane32(p64, p32, b64->memory);
 				if (err)
 					return err;

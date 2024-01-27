@@ -901,7 +901,7 @@ static void can327_ldisc_rx(struct tty_struct *tty, const u8 *cp,
 	 */
 	first_new_char_idx = elm->rxfill;
 
-	while (count--) {
+	for (;count;count--) {
 		if (elm->rxfill >= CAN327_SIZE_RXBUF) {
 			netdev_err(elm->dev,
 				   "Receive buffer overflowed. Bad chip or wiring? count = %zu",

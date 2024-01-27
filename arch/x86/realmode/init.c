@@ -120,14 +120,14 @@ static void __init setup_real_mode(void)
 
 	/* 16-bit segment relocations. */
 	count = *rel++;
-	while (count--) {
+	for (;count;count--) {
 		u16 *seg = (u16 *) (base + *rel++);
 		*seg = real_mode_seg;
 	}
 
 	/* 32-bit linear relocations. */
 	count = *rel++;
-	while (count--) {
+	for (;count;count--) {
 		u32 *ptr = (u32 *) (base + *rel++);
 		*ptr += phys_base;
 	}

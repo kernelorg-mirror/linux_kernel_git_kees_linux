@@ -124,7 +124,7 @@ static u8 flash_csum(struct qib_flash *ifp, int adjust)
 	len = ifp->if_length;
 	if (len > sizeof(struct qib_flash))
 		len = sizeof(struct qib_flash);
-	while (len--)
+	for (;len;len--)
 		csum += *ip++;
 	csum -= ifp->if_csum;
 	csum = ~csum;

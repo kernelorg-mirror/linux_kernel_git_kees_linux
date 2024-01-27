@@ -211,7 +211,7 @@ csio_mb_params(struct csio_hw *hw, struct csio_mb *mbp, uint32_t tmo,
 
 	/* Write Params */
 	if (wr) {
-		while (nparams--) {
+		for (;nparams;nparams--) {
 			temp_params = *params++;
 			temp_val = *val++;
 

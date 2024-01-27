@@ -2831,7 +2831,7 @@ static void hclge_handle_error_module_log(struct hnae3_ae_dev *ae_dev,
 		set_bit(sum_info->reset_type, &ae_dev->hw_err_reset_req);
 	mod_num = sum_info->mod_num;
 
-	while (mod_num--) {
+	for (;mod_num;mod_num--) {
 		if (offset >= buf_size) {
 			dev_err(dev, "The offset(%u) exceeds buf's size(%u).\n",
 				offset, buf_size);

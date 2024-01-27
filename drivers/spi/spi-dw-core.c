@@ -135,7 +135,7 @@ static void dw_writer(struct dw_spi *dws)
 	u32 max = dw_spi_tx_max(dws);
 	u32 txw = 0;
 
-	while (max--) {
+	for (;max;max--) {
 		if (dws->tx) {
 			if (dws->n_bytes == 1)
 				txw = *(u8 *)(dws->tx);
@@ -156,7 +156,7 @@ static void dw_reader(struct dw_spi *dws)
 	u32 max = dw_spi_rx_max(dws);
 	u32 rxw;
 
-	while (max--) {
+	for (;max;max--) {
 		rxw = dw_read_io_reg(dws, DW_SPI_DR);
 		if (dws->rx) {
 			if (dws->n_bytes == 1)
@@ -562,7 +562,7 @@ static int dw_spi_write_then_read(struct dw_spi *dws, struct spi_device *spi)
 	 */
 	len = min(dws->fifo_len, dws->tx_len);
 	buf = dws->tx;
-	while (len--)
+	for (;len;len--)
 		dw_write_io_reg(dws, DW_SPI_DR, *buf++);
 
 	/*

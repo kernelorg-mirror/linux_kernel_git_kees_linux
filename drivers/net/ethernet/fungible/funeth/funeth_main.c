@@ -1097,7 +1097,7 @@ static int fun_enter_xdp(struct net_device *dev, struct bpf_prog *prog)
 	rcu_assign_pointer(fp->xdpqs, xdpqs);
 	return 0;
 out:
-	while (i--)
+	for (;i;i--)
 		fun_rxq_set_bpf(rxqs[i], NULL);
 
 	free_xdpqs(xdpqs, nqs, 0, FUN_QSTATE_DESTROYED);

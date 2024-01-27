@@ -1617,7 +1617,7 @@ out_gunlock:
 	if (gfs2_holder_initialized(&rd_gh))
 		gfs2_glock_dq_uninit(&rd_gh);
 
-	while (x--) {
+	for (;x;x--) {
 		if (gfs2_holder_queued(ghs + x))
 			gfs2_glock_dq(ghs + x);
 		gfs2_holder_uninit(ghs + x);
@@ -1767,7 +1767,7 @@ static int gfs2_exchange(struct inode *odir, struct dentry *odentry,
 out_end_trans:
 	gfs2_trans_end(sdp);
 out_gunlock:
-	while (x--) {
+	for (;x;x--) {
 		if (gfs2_holder_queued(ghs + x))
 			gfs2_glock_dq(ghs + x);
 		gfs2_holder_uninit(ghs + x);

@@ -1108,7 +1108,7 @@ static const char *_rbd_dev_v1_snap_name(struct rbd_device *rbd_dev, u32 which)
 	/* Skip over names until we find the one we are looking for */
 
 	snap_name = rbd_dev->header.snap_names;
-	while (which--)
+	for (;which;which--)
 		snap_name += strlen(snap_name) + 1;
 
 	return kstrdup(snap_name, GFP_KERNEL);
@@ -3776,7 +3776,7 @@ static int rbd_request_lock(struct rbd_device *rbd_dev)
 		u32 n;
 
 		ceph_decode_32_safe(&p, end, n, e_inval); /* num_acks */
-		while (n--) {
+		for (;n;n--) {
 			u8 struct_v;
 			u32 len;
 

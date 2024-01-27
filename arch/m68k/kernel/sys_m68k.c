@@ -123,7 +123,7 @@ cache_flush_040 (unsigned long addr, int scope, int cache, unsigned long len)
 	len = (len + 15) >> 4;
       }
       i = (PAGE_SIZE - (paddr & ~PAGE_MASK)) >> 4;
-      while (len--)
+      for (;len;len--)
 	{
 	  switch (cache)
 	    {
@@ -284,7 +284,7 @@ cache_flush_060 (unsigned long addr, int scope, int cache, unsigned long len)
       }
       len = (len + 15) >> 4;
       i = (PAGE_SIZE - (paddr & ~PAGE_MASK)) >> 4;
-      while (len--)
+      for (;len;len--)
 	{
 	  switch (cache)
 	    {
@@ -416,7 +416,7 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
 			if (cache & FLUSH_CACHE_DATA)
 				cacr |= 0x400;
 			len >>= 2;
-			while (len--) {
+			for (;len;len--) {
 				__asm__ __volatile__ ("movec %1, %%caar\n\t"
 						      "movec %0, %%cacr"
 						      : /* no outputs */

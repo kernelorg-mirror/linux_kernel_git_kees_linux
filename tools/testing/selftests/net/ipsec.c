@@ -123,7 +123,7 @@ static void randomize_buffer(void *buf, size_t buflen)
 	if (!buflen)
 		return;
 
-	while (words--)
+	for (;words;words--)
 		*p++ = rand();
 
 	if (leftover) {

@@ -126,7 +126,7 @@ static void t3_read_indirect(struct adapter *adap, unsigned int addr_reg,
 			     unsigned int data_reg, u32 *vals,
 			     unsigned int nregs, unsigned int start_idx)
 {
-	while (nregs--) {
+	for (;nregs;nregs--) {
 		t3_write_reg(adap, addr_reg, start_idx);
 		*vals++ = t3_read_reg(adap, data_reg);
 		start_idx++;
@@ -156,7 +156,7 @@ int t3_mc7_bd_read(struct mc7 *mc7, unsigned int start, unsigned int n,
 		return -EINVAL;
 
 	start *= (8 << mc7->width);
-	while (n--) {
+	for (;n;n--) {
 		int i;
 		u64 val64 = 0;
 

@@ -217,7 +217,7 @@ static void memrnd(void *s, size_t n)
 	for (; n >= 4; n -= 4)
 		*dword++ = rand();
 	byte = (void *)dword;
-	while (n--)
+	for (;n;n--)
 		*byte++ = rand();
 }
 

@@ -960,7 +960,7 @@ static void rtw_pci_tx_isr(struct rtw_dev *rtwdev, struct rtw_pci *rtwpci,
 	else
 		count = ring->r.len - (ring->r.rp - cur_rp);
 
-	while (count--) {
+	for (;count;count--) {
 		skb = skb_dequeue(&ring->queue);
 		if (!skb) {
 			rtw_err(rtwdev, "failed to dequeue %d skb TX queue %d, BD=0x%08x, rp %d -> %d\n",
@@ -1057,7 +1057,7 @@ static u32 rtw_pci_rx_napi(struct rtw_dev *rtwdev, struct rtw_pci *rtwpci,
 	count = rtw_pci_get_hw_rx_ring_nr(rtwdev, rtwpci);
 	count = min(count, limit);
 
-	while (count--) {
+	for (;count;count--) {
 		rtw_pci_dma_check(rtwdev, ring, cur_rp);
 		skb = ring->buf[cur_rp];
 		dma = *((dma_addr_t *)skb->cb);

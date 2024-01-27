@@ -126,7 +126,7 @@ static irqreturn_t sun4i_ps2_interrupt(int irq, void *dev_id)
 	}
 
 	rval = (fifo_status >> 16) & 0x3;
-	while (rval--) {
+	for (;rval;rval--) {
 		byte = readl(drvdata->reg_base + PS2_REG_DATA) & 0xff;
 		serio_interrupt(drvdata->serio, byte, rxflags);
 	}

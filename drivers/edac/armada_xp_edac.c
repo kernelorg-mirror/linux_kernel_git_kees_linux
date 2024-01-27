@@ -478,9 +478,9 @@ static void aurora_l2_check(struct edac_device_ctl_info *dci)
 
 clear_remaining:
 	/* report remaining errors */
-	while (cnt_ue--)
+	for (;cnt_ue;cnt_ue--)
 		edac_device_handle_ue(dci, 0, 0, "details unavailable (multiple errors)");
-	while (cnt_ce--)
+	for (;cnt_ce;cnt_ce--)
 		edac_device_handle_ue(dci, 0, 0, "details unavailable (multiple errors)");
 }
 

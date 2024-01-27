@@ -30,7 +30,7 @@ bit_entry(struct nvkm_bios *bios, u8 id, struct bit_entry *bit)
 	if (likely(bios->bit_offset)) {
 		u8  entries = nvbios_rd08(bios, bios->bit_offset + 10);
 		u32 entry   = bios->bit_offset + 12;
-		while (entries--) {
+		for (;entries;entries--) {
 			if (nvbios_rd08(bios, entry + 0) == id) {
 				bit->id      = nvbios_rd08(bios, entry + 0);
 				bit->version = nvbios_rd08(bios, entry + 1);

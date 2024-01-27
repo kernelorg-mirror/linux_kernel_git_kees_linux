@@ -77,7 +77,7 @@ static noinline void microbenchmark(unsigned long iters)
 	pr_info("%s begin | iters: %lu\n", __func__, iters);
 
 	cycles = get_cycles();
-	while (iters--) {
+	for (;iters;iters--) {
 		unsigned long addr = iters & ((PAGE_SIZE << 8) - 1);
 		int type = !(iters & 0x7f) ? KCSAN_ACCESS_ATOMIC :
 				(!(iters & 0xf) ? KCSAN_ACCESS_WRITE : 0);

@@ -63,7 +63,7 @@ static inline int wait_for_space(struct fb_info *info, u32 space)
 	u8 __iomem *mmio = par->mmio_start_virtual;
 
 	tail = par->cur_tail;
-	while (count--) {
+	for (;count;count--) {
 		head = i810_readl(IRING + 4, mmio) & RBUFFER_HEAD_MASK;	
 		if ((tail == head) || 
 		    (tail > head && 

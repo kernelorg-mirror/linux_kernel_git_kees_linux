@@ -71,7 +71,7 @@ bitfill_aligned(struct fb_info *p, unsigned long __iomem *dst, int dst_idx,
 			FB_WRITEL(pat, dst++);
 			n -= 8;
 		}
-		while (n--)
+		for (;n;n--)
 			FB_WRITEL(pat, dst++);
 
 		// Trailing bits
@@ -128,7 +128,7 @@ bitfill_unaligned(struct fb_info *p, unsigned long __iomem *dst, int dst_idx,
 			pat = pat << left | pat >> right;
 			n -= 4;
 		}
-		while (n--) {
+		for (;n;n--) {
 			FB_WRITEL(pat, dst++);
 			pat = pat << left | pat >> right;
 		}
@@ -193,7 +193,7 @@ bitfill_aligned_rev(struct fb_info *p, unsigned long __iomem *dst,
 			dst++;
 			n -= 8;
 		}
-		while (n--) {
+		for (;n;n--) {
 			FB_WRITEL(FB_READL(dst) ^ val, dst);
 			dst++;
 		}
@@ -261,7 +261,7 @@ bitfill_unaligned_rev(struct fb_info *p, unsigned long __iomem *dst,
 			pat = pat << left | pat >> right;
 			n -= 4;
 		}
-		while (n--) {
+		for (;n;n--) {
 			FB_WRITEL(FB_READL(dst) ^ pat, dst);
 			dst++;
 			pat = pat << left | pat >> right;
@@ -324,7 +324,7 @@ void cfb_fillrect(struct fb_info *p, const struct fb_fillrect *rect)
 			fill_op32 = bitfill_aligned;
 			break;
 		}
-		while (height--) {
+		for (;height;height--) {
 			dst += dst_idx >> (ffs(bits) - 1);
 			dst_idx &= (bits - 1);
 			fill_op32(p, dst, dst_idx, pat, width*bpp, bits,
@@ -354,7 +354,7 @@ void cfb_fillrect(struct fb_info *p, const struct fb_fillrect *rect)
 			fill_op = bitfill_unaligned;
 			break;
 		}
-		while (height--) {
+		for (;height;height--) {
 			dst += dst_idx / bits;
 			dst_idx &= (bits - 1);
 			r = dst_idx % bpp;

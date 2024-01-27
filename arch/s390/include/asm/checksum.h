@@ -68,7 +68,7 @@ static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
 	csum += *ptr++;
 	csum += *ptr++;
 	ihl -= 4;
-	while (ihl--)
+	for (;ihl;ihl--)
 		csum += *ptr++;
 	csum += (csum >> 32) | (csum << 32);
 	return csum_fold((__force __wsum)(csum >> 32));

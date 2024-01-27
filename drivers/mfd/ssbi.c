@@ -96,7 +96,7 @@ static int ssbi_wait_mask(struct ssbi *ssbi, u32 set_mask, u32 clr_mask)
 	u32 timeout = SSBI_TIMEOUT_US;
 	u32 val;
 
-	while (timeout--) {
+	for (;timeout;timeout--) {
 		val = ssbi_readl(ssbi, SSBI2_STATUS);
 		if (((val & set_mask) == set_mask) && ((val & clr_mask) == 0))
 			return 0;
@@ -175,7 +175,7 @@ ssbi_pa_transfer(struct ssbi *ssbi, u32 cmd, u8 *data)
 
 	ssbi_writel(ssbi, cmd, SSBI_PA_CMD);
 
-	while (timeout--) {
+	for (;timeout;timeout--) {
 		rd_status = ssbi_readl(ssbi, SSBI_PA_RD_STATUS);
 
 		if (rd_status & SSBI_PA_RD_STATUS_TRANS_DENIED)

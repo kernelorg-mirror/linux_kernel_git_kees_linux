@@ -54,7 +54,7 @@ void update_cache(struct vm_area_struct *vma, unsigned long address,
 	if ((vma->vm_flags & VM_EXEC) && dirty) {
 		unsigned int nr = folio_nr_pages(folio);
 
-		while (nr--)
+		for (;nr;nr--)
 			sync_icache_dcache(folio_page(folio, nr));
 	}
 }

@@ -1287,7 +1287,7 @@ static int __send_pkts(struct ifobject *ifobject, struct xsk_socket_info *xsk, b
 		}
 		nb_frags_left = nb_frags;
 
-		while (nb_frags_left--) {
+		for (;nb_frags_left;nb_frags_left--) {
 			struct xdp_desc *tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx + i);
 
 			tx_desc->addr = pkt_get_addr(pkt, ifobject->umem);

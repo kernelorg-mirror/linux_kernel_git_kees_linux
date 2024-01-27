@@ -83,7 +83,7 @@ int ef4_mtd_add(struct ef4_nic *efx, struct ef4_mtd_partition *parts,
 	return 0;
 
 fail:
-	while (i--) {
+	for (;i;i--) {
 		part = (struct ef4_mtd_partition *)((char *)parts +
 						    i * sizeof_part);
 		ef4_mtd_remove_partition(part);

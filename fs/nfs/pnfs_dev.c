@@ -68,7 +68,7 @@ nfs4_deviceid_hash(const struct nfs4_deviceid *id)
 	unsigned int nbytes = NFS4_DEVICEID4_SIZE;
 	u32 x = 0;
 
-	while (nbytes--) {
+	for (;nbytes;nbytes--) {
 		x *= 37;
 		x += *cptr++;
 	}

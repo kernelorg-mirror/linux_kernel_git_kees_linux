@@ -74,7 +74,7 @@ async_sum_product(struct page *dest, unsigned int d_off,
 	b = page_address(srcs[1]) + src_offs[1];
 	c = page_address(dest) + d_off;
 
-	while (len--) {
+	for (;len;len--) {
 		ax    = amul[*a++];
 		bx    = bmul[*b++];
 		*c++ = ax ^ bx;
@@ -143,7 +143,7 @@ async_mult(struct page *dest, unsigned int d_off, struct page *src,
 	d = page_address(dest) + d_off;
 	s = page_address(src) + s_off;
 
-	while (len--)
+	for (;len;len--)
 		*d++ = qmul[*s++];
 
 	return NULL;

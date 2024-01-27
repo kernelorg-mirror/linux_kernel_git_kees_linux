@@ -108,7 +108,7 @@ static int xgene_cle_poll_cmd_done(void __iomem *base,
 	u32 status, loop = 10;
 	int ret = -EBUSY;
 
-	while (loop--) {
+	for (;loop;loop--) {
 		status = ioread32(base + INDCMD_STATUS);
 		if (status & cmd) {
 			ret = 0;

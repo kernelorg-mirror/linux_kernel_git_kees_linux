@@ -1056,7 +1056,7 @@ static void handle_setup(struct at91_udc *udc, struct at91_ep *ep, u32 csr)
 	/* read and ack SETUP; hard-fail for bogus packets */
 	rxcount = (csr & AT91_UDP_RXBYTECNT) >> 16;
 	if (likely(rxcount == 8)) {
-		while (rxcount--)
+		for (;rxcount;rxcount--)
 			pkt.raw[i++] = __raw_readb(dreg);
 		if (pkt.r.bRequestType & USB_DIR_IN) {
 			csr |= AT91_UDP_DIR;
@@ -1407,7 +1407,7 @@ static irqreturn_t at91_udc_irq (int irq, void *_udc)
 		disable_clock = 1;
 	}
 
-	while (rescans--) {
+	for (;rescans;rescans--) {
 		u32 status;
 
 		status = at91_udp_read(udc, AT91_UDP_ISR)

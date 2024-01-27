@@ -717,7 +717,7 @@ int amdgpu_acpi_pcie_performance_request(struct amdgpu_device *adev,
 	params.length = sizeof(struct atcs_pref_req_input);
 	params.pointer = &atcs_input;
 
-	while (retry--) {
+	for (;retry;retry--) {
 		info = amdgpu_atcs_call(atcs, ATCS_FUNCTION_PCIE_PERFORMANCE_REQUEST, &params);
 		if (!info)
 			return -EIO;

@@ -3154,12 +3154,12 @@ static __le32 ext4_xattr_hash_entry(char *name, size_t name_len, __le32 *value,
 {
 	__u32 hash = 0;
 
-	while (name_len--) {
+	for (;name_len;name_len--) {
 		hash = (hash << NAME_HASH_SHIFT) ^
 		       (hash >> (8*sizeof(hash) - NAME_HASH_SHIFT)) ^
 		       (unsigned char)*name++;
 	}
-	while (value_count--) {
+	for (;value_count;value_count--) {
 		hash = (hash << VALUE_HASH_SHIFT) ^
 		       (hash >> (8*sizeof(hash) - VALUE_HASH_SHIFT)) ^
 		       le32_to_cpu(*value++);
@@ -3176,12 +3176,12 @@ static __le32 ext4_xattr_hash_entry_signed(char *name, size_t name_len, __le32 *
 {
 	__u32 hash = 0;
 
-	while (name_len--) {
+	for (;name_len;name_len--) {
 		hash = (hash << NAME_HASH_SHIFT) ^
 		       (hash >> (8*sizeof(hash) - NAME_HASH_SHIFT)) ^
 		       (signed char)*name++;
 	}
-	while (value_count--) {
+	for (;value_count;value_count--) {
 		hash = (hash << VALUE_HASH_SHIFT) ^
 		       (hash >> (8*sizeof(hash) - VALUE_HASH_SHIFT)) ^
 		       le32_to_cpu(*value++);

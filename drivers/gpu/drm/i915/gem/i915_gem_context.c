@@ -997,7 +997,7 @@ static int intel_context_set_gem(struct intel_context *ce,
 
 static void __unpin_engines(struct i915_gem_engines *e, unsigned int count)
 {
-	while (count--) {
+	for (;count;count--) {
 		struct intel_context *ce = e->engines[count], *child;
 
 		if (!ce || !test_bit(CONTEXT_PERMA_PIN, &ce->flags))
@@ -1016,7 +1016,7 @@ static void unpin_engines(struct i915_gem_engines *e)
 
 static void __free_engines(struct i915_gem_engines *e, unsigned int count)
 {
-	while (count--) {
+	for (;count;count--) {
 		if (!e->engines[count])
 			continue;
 

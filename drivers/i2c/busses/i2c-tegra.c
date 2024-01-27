@@ -357,7 +357,7 @@ static void i2c_writesl_vi(struct tegra_i2c_dev *i2c_dev, void *data,
 	 * Recommended software work around is to read I2C register after
 	 * each write to TX_FIFO register to flush out the data.
 	 */
-	while (len--)
+	for (;len;len--)
 		i2c_writel(i2c_dev, *data32++, reg);
 }
 

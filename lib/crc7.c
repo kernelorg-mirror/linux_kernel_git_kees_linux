@@ -64,7 +64,7 @@ EXPORT_SYMBOL(crc7_be_syndrome_table);
  */
 u8 crc7_be(u8 crc, const u8 *buffer, size_t len)
 {
-	while (len--)
+	for (;len;len--)
 		crc = crc7_be_byte(crc, *buffer++);
 	return crc;
 }

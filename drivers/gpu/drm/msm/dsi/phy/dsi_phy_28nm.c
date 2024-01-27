@@ -82,7 +82,7 @@ static bool pll_28nm_poll_for_ready(struct dsi_pll_28nm *pll_28nm,
 	bool pll_locked = false;
 	u32 val;
 
-	while (nb_tries--) {
+	for (;nb_tries;nb_tries--) {
 		val = dsi_phy_read(pll_28nm->phy->pll_base + REG_DSI_28nm_PHY_PLL_STATUS);
 		pll_locked = !!(val & DSI_28nm_PHY_PLL_STATUS_PLL_RDY);
 

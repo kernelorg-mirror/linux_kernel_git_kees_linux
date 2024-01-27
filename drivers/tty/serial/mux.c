@@ -371,7 +371,7 @@ static void mux_console_write(struct console *co, const char *s, unsigned count)
 	while(UART_GET_FIFO_CNT(&mux_ports[0].port))
 		udelay(1);
 
-	while(count--) {
+	for (;count;count--) {
 		if(*s == '\n') {
 			UART_PUT_CHAR(&mux_ports[0].port, '\r');
 		}

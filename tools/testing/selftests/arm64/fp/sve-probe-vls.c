@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 	ksft_test_result_pass("All vector lengths valid\n");
 
 	/* Print out the vector lengths in ascending order: */
-	while (nvqs--)
+	for (;nvqs;nvqs--)
 		ksft_print_msg("%u\n", 16 * vqs[nvqs]);
 
 	ksft_exit_pass();

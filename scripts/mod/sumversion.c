@@ -71,7 +71,7 @@ static inline uint32_t H(uint32_t x, uint32_t y, uint32_t z)
 /* XXX: this stuff can be optimized */
 static inline void le32_to_cpu_array(uint32_t *buf, unsigned int words)
 {
-	while (words--) {
+	for (;words;words--) {
 		*buf = ntohl(*buf);
 		buf++;
 	}
@@ -79,7 +79,7 @@ static inline void le32_to_cpu_array(uint32_t *buf, unsigned int words)
 
 static inline void cpu_to_le32_array(uint32_t *buf, unsigned int words)
 {
-	while (words--) {
+	for (;words;words--) {
 		*buf = htonl(*buf);
 		buf++;
 	}

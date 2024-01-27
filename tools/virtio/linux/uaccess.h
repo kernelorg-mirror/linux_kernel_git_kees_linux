@@ -25,7 +25,7 @@ extern void *__user_addr_min, *__user_addr_max;
 static void volatile_memcpy(volatile char *to, const volatile char *from, 
 			    unsigned long n)
 {
-	while (n--)
+	for (;n;n--)
 		*(to++) = *(from++);
 }
 

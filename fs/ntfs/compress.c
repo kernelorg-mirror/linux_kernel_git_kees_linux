@@ -408,7 +408,7 @@ do_next_tag:
 			dp_addr += max_non_overlap;
 			dp_back_addr += max_non_overlap;
 			length -= max_non_overlap;
-			while (length--)
+			for (;length;length--)
 				*dp_addr++ = *dp_back_addr++;
 		}
 

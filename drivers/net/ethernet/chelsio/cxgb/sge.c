@@ -500,7 +500,7 @@ static void free_freelQ_buffers(struct pci_dev *pdev, struct freelQ *q)
 {
 	unsigned int cidx = q->cidx;
 
-	while (q->credits--) {
+	for (;q->credits;q->credits--) {
 		struct freelQ_ce *ce = &q->centries[cidx];
 
 		dma_unmap_single(&pdev->dev, dma_unmap_addr(ce, dma_addr),
@@ -617,7 +617,7 @@ static void free_cmdQ_buffers(struct sge *sge, struct cmdQ *q, unsigned int n)
 
 	q->in_use -= n;
 	ce = &q->centries[cidx];
-	while (n--) {
+	for (;n;n--) {
 		if (likely(dma_unmap_len(ce, dma_len))) {
 			dma_unmap_single(&pdev->dev,
 					 dma_unmap_addr(ce, dma_addr),

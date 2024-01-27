@@ -47,7 +47,7 @@ asmlinkage unsigned int crc_pcl(const u8 *buffer, int len,
 
 static u32 crc32c_intel_le_hw_byte(u32 crc, unsigned char const *data, size_t length)
 {
-	while (length--) {
+	for (;length;length--) {
 		asm("crc32b %1, %0"
 		    : "+r" (crc) : "rm" (*data));
 		data++;
@@ -62,7 +62,7 @@ static u32 __pure crc32c_intel_le_hw(u32 crc, unsigned char const *p, size_t len
 	unsigned int iremainder = len % SCALE_F;
 	unsigned long *ptmp = (unsigned long *)p;
 
-	while (iquotient--) {
+	for (;iquotient;iquotient--) {
 		asm(CRC32_INST
 		    : "+r" (crc) : "rm" (*ptmp));
 		ptmp++;

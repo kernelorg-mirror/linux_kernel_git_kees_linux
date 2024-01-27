@@ -80,7 +80,7 @@ static void rtw89_pci_release_fwcmd(struct rtw89_dev *rtwdev,
 	struct sk_buff *skb;
 	u32 qlen;
 
-	while (cnt--) {
+	for (;cnt;cnt--) {
 		skb = skb_dequeue(&rtwpci->h2c_queue);
 		if (!skb) {
 			rtw89_err(rtwdev, "failed to pre-release fwcmd\n");
@@ -93,7 +93,7 @@ static void rtw89_pci_release_fwcmd(struct rtw89_dev *rtwdev,
 	if (!release_all)
 	       qlen = qlen > RTW89_PCI_MULTITAG ? qlen - RTW89_PCI_MULTITAG : 0;
 
-	while (qlen--) {
+	for (;qlen;qlen--) {
 		skb = skb_dequeue(&rtwpci->h2c_release_queue);
 		if (!skb) {
 			rtw89_err(rtwdev, "failed to release fwcmd\n");
@@ -422,7 +422,7 @@ static void rtw89_pci_reclaim_txbd(struct rtw89_dev *rtwdev, struct rtw89_pci_tx
 	u32 cnt;
 
 	cnt = rtw89_pci_txbd_recalc(rtwdev, tx_ring);
-	while (cnt--) {
+	for (;cnt;cnt--) {
 		txwd = list_first_entry_or_null(&tx_ring->busy_pages, struct rtw89_pci_tx_wd, list);
 		if (!txwd) {
 			rtw89_warn(rtwdev, "No busy txwd pages available\n");

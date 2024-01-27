@@ -238,7 +238,7 @@ static unsigned long get_acpi_srat_table(void)
 	num_entries = (len - sizeof(struct acpi_table_header)) / size;
 	entry = (u8 *)(root_table + sizeof(struct acpi_table_header));
 
-	while (num_entries--) {
+	for (;num_entries;num_entries--) {
 		if (size == ACPI_RSDT_ENTRY_SIZE)
 			acpi_table = *(u32 *)entry;
 		else

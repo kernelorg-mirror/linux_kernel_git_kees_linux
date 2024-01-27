@@ -151,7 +151,7 @@ static int efivarfs_d_hash(const struct dentry *dentry, struct qstr *qstr)
 		hash = partial_name_hash(*s++, hash);
 
 	/* GUID is case-insensitive. */
-	while (len--)
+	for (;len;len--)
 		hash = partial_name_hash(tolower(*s++), hash);
 
 	qstr->hash = end_name_hash(hash);

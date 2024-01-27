@@ -61,7 +61,7 @@ syscall_get_arguments(struct task_struct *task, struct pt_regs *regs,
 	unsigned int n = 6;
 	unsigned int i = 0;
 
-	while (n--) {
+	for (;n;n--) {
 		args[i++] = (*inside_ptregs);
 		inside_ptregs--;
 	}

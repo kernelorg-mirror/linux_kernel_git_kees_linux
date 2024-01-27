@@ -1370,7 +1370,7 @@ int ocfs2_block_group_set_bits(handle_t *handle,
 				   le16_to_cpu(bg->bg_free_bits_count),
 				   num_bits);
 	}
-	while(num_bits--)
+	for (;num_bits;num_bits--)
 		ocfs2_set_bit(bit_off++, bitmap);
 
 	ocfs2_journal_dirty(handle, group_bh);
@@ -2415,7 +2415,7 @@ static int ocfs2_block_group_clear_bits(handle_t *handle,
 	}
 
 	tmp = num_bits;
-	while(tmp--) {
+	for (;tmp;tmp--) {
 		ocfs2_clear_bit((bit_off + tmp),
 				(unsigned long *) bg->bg_bitmap);
 		if (undo_fn)

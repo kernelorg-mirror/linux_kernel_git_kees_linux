@@ -36,7 +36,7 @@ gf100_vmm_pgt_pte(struct nvkm_vmm *vmm, struct nvkm_mmu_pt *pt,
 	u64 data = base;
 
 	if (map->ctag && !(map->next & (1ULL << 44))) {
-		while (ptes--) {
+		for (;ptes;ptes--) {
 			data = base | ((map->ctag >> 1) << 44);
 			if (!(map->ctag++ & 1))
 				data |= BIT_ULL(60);
@@ -47,7 +47,7 @@ gf100_vmm_pgt_pte(struct nvkm_vmm *vmm, struct nvkm_mmu_pt *pt,
 	} else {
 		map->type += ptes * map->ctag;
 
-		while (ptes--) {
+		for (;ptes;ptes--) {
 			VMM_WO064(pt, vmm, ptei++ * 8, data);
 			data += map->next;
 		}
@@ -68,7 +68,7 @@ gf100_vmm_pgt_dma(struct nvkm_vmm *vmm, struct nvkm_mmu_pt *pt,
 	if (map->page->shift == PAGE_SHIFT) {
 		VMM_SPAM(vmm, "DMAA %08x %08x PTE(s)", ptei, ptes);
 		nvkm_kmap(pt->memory);
-		while (ptes--) {
+		for (;ptes;ptes--) {
 			const u64 data = (*map->dma++ >> 8) | map->type;
 			VMM_WO064(pt, vmm, ptei++ * 8, data);
 			map->type += map->ctag;

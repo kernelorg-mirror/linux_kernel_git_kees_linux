@@ -793,7 +793,7 @@ void pwm_add_table(struct pwm_lookup *table, size_t num)
 {
 	mutex_lock(&pwm_lookup_lock);
 
-	while (num--) {
+	for (;num;num--) {
 		list_add_tail(&table->list, &pwm_lookup_list);
 		table++;
 	}
@@ -810,7 +810,7 @@ void pwm_remove_table(struct pwm_lookup *table, size_t num)
 {
 	mutex_lock(&pwm_lookup_lock);
 
-	while (num--) {
+	for (;num;num--) {
 		list_del(&table->list);
 		table++;
 	}

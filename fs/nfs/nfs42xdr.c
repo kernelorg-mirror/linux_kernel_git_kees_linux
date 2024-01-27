@@ -1233,7 +1233,7 @@ static int decode_listxattrs(struct xdr_stream *xdr,
 	 * until they don't fit anymore, just in case the server did
 	 * something odd.
 	 */
-	while (count--) {
+	for (;count;count--) {
 		p = xdr_inline_decode(xdr, 4);
 		if (unlikely(!p))
 			return -EIO;

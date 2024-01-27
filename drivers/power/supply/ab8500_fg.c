@@ -2950,7 +2950,7 @@ static int ab8500_fg_sysfs_psy_create_attrs(struct ab8500_fg *di)
 	return 0;
 sysfs_psy_create_attrs_failed_ab8505:
 	dev_err(&di->fg_psy->dev, "Failed creating sysfs psy attrs for ab8505.\n");
-	while (i--)
+	for (;i;i--)
 		device_remove_file(&di->fg_psy->dev,
 				   &ab8505_fg_sysfs_psy_attrs[i]);
 

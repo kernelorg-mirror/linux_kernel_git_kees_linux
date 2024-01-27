@@ -33,7 +33,7 @@ static void xor_avx_2(unsigned long bytes, unsigned long * __restrict p0,
 
 	kernel_fpu_begin();
 
-	while (lines--) {
+	for (;lines;lines--) {
 #undef BLOCK
 #define BLOCK(i, reg) \
 do { \
@@ -61,7 +61,7 @@ static void xor_avx_3(unsigned long bytes, unsigned long * __restrict p0,
 
 	kernel_fpu_begin();
 
-	while (lines--) {
+	for (;lines;lines--) {
 #undef BLOCK
 #define BLOCK(i, reg) \
 do { \
@@ -93,7 +93,7 @@ static void xor_avx_4(unsigned long bytes, unsigned long * __restrict p0,
 
 	kernel_fpu_begin();
 
-	while (lines--) {
+	for (;lines;lines--) {
 #undef BLOCK
 #define BLOCK(i, reg) \
 do { \
@@ -129,7 +129,7 @@ static void xor_avx_5(unsigned long bytes, unsigned long * __restrict p0,
 
 	kernel_fpu_begin();
 
-	while (lines--) {
+	for (;lines;lines--) {
 #undef BLOCK
 #define BLOCK(i, reg) \
 do { \

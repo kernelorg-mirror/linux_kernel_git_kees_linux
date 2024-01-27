@@ -263,11 +263,13 @@ static void qed_memcpy_hw(struct qed_hwfn *p_hwfn,
 		host_addr = (u32 *)((u8 *)addr + done);
 		reg_addr = (u32 __iomem *)REG_ADDR(p_hwfn, hw_offset);
 		if (to_device)
-			while (dw_count--)
+		{for (;dw_count;dw_count--)
 				DIRECT_REG_WR(reg_addr++, *host_addr++);
+		}
 		else
-			while (dw_count--)
-				*host_addr++ = DIRECT_REG_RD(reg_addr++);
+		{for (;dw_count;dw_count--)
+			*host_addr++ = DIRECT_REG_RD(reg_addr++);
+		}
 
 		done += quota;
 	}

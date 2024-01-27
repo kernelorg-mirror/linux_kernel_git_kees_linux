@@ -260,7 +260,7 @@ static bool svc_rdma_refresh_recvs(struct svcxprt_rdma *rdma,
 		return false;
 
 	recv_chain = NULL;
-	while (wanted--) {
+	for (;wanted;wanted--) {
 		ctxt = svc_rdma_recv_ctxt_get(rdma);
 		if (!ctxt)
 			break;
@@ -307,7 +307,7 @@ bool svc_rdma_post_recvs(struct svcxprt_rdma *rdma)
 	 * posted Receive and one RPC in process.
 	 */
 	total = (rdma->sc_max_requests * 2) + rdma->sc_recv_batch;
-	while (total--) {
+	for (;total;total--) {
 		struct svc_rdma_recv_ctxt *ctxt;
 
 		ctxt = svc_rdma_recv_ctxt_alloc(rdma);

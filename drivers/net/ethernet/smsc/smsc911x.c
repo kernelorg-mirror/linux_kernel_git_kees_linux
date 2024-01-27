@@ -241,7 +241,7 @@ smsc911x_tx_writefifo(struct smsc911x_data *pdata, unsigned int *buf,
 	spin_lock_irqsave(&pdata->dev_lock, flags);
 
 	if (pdata->config.flags & SMSC911X_SWAP_FIFO) {
-		while (wordcount--)
+		for (;wordcount;wordcount--)
 			__smsc911x_reg_write(pdata, TX_DATA_FIFO,
 					     swab32(*buf++));
 		goto out;
@@ -253,7 +253,7 @@ smsc911x_tx_writefifo(struct smsc911x_data *pdata, unsigned int *buf,
 	}
 
 	if (pdata->config.flags & SMSC911X_USE_16BIT) {
-		while (wordcount--)
+		for (;wordcount;wordcount--)
 			__smsc911x_reg_write(pdata, TX_DATA_FIFO, *buf++);
 		goto out;
 	}
@@ -273,7 +273,7 @@ smsc911x_tx_writefifo_shift(struct smsc911x_data *pdata, unsigned int *buf,
 	spin_lock_irqsave(&pdata->dev_lock, flags);
 
 	if (pdata->config.flags & SMSC911X_SWAP_FIFO) {
-		while (wordcount--)
+		for (;wordcount;wordcount--)
 			__smsc911x_reg_write_shift(pdata, TX_DATA_FIFO,
 					     swab32(*buf++));
 		goto out;
@@ -286,7 +286,7 @@ smsc911x_tx_writefifo_shift(struct smsc911x_data *pdata, unsigned int *buf,
 	}
 
 	if (pdata->config.flags & SMSC911X_USE_16BIT) {
-		while (wordcount--)
+		for (;wordcount;wordcount--)
 			__smsc911x_reg_write_shift(pdata,
 						 TX_DATA_FIFO, *buf++);
 		goto out;
@@ -307,7 +307,7 @@ smsc911x_rx_readfifo(struct smsc911x_data *pdata, unsigned int *buf,
 	spin_lock_irqsave(&pdata->dev_lock, flags);
 
 	if (pdata->config.flags & SMSC911X_SWAP_FIFO) {
-		while (wordcount--)
+		for (;wordcount;wordcount--)
 			*buf++ = swab32(__smsc911x_reg_read(pdata,
 							    RX_DATA_FIFO));
 		goto out;
@@ -319,7 +319,7 @@ smsc911x_rx_readfifo(struct smsc911x_data *pdata, unsigned int *buf,
 	}
 
 	if (pdata->config.flags & SMSC911X_USE_16BIT) {
-		while (wordcount--)
+		for (;wordcount;wordcount--)
 			*buf++ = __smsc911x_reg_read(pdata, RX_DATA_FIFO);
 		goto out;
 	}
@@ -339,7 +339,7 @@ smsc911x_rx_readfifo_shift(struct smsc911x_data *pdata, unsigned int *buf,
 	spin_lock_irqsave(&pdata->dev_lock, flags);
 
 	if (pdata->config.flags & SMSC911X_SWAP_FIFO) {
-		while (wordcount--)
+		for (;wordcount;wordcount--)
 			*buf++ = swab32(__smsc911x_reg_read_shift(pdata,
 							    RX_DATA_FIFO));
 		goto out;
@@ -352,7 +352,7 @@ smsc911x_rx_readfifo_shift(struct smsc911x_data *pdata, unsigned int *buf,
 	}
 
 	if (pdata->config.flags & SMSC911X_USE_16BIT) {
-		while (wordcount--)
+		for (;wordcount;wordcount--)
 			*buf++ = __smsc911x_reg_read_shift(pdata,
 								RX_DATA_FIFO);
 		goto out;
@@ -1204,7 +1204,7 @@ smsc911x_rx_fastforward(struct smsc911x_data *pdata, unsigned int pktwords)
 			SMSC_WARN(pdata, hw, "Timed out waiting for "
 				  "RX FFWD to finish, RX_DP_CTRL: 0x%08X", val);
 	} else {
-		while (pktwords--)
+		for (;pktwords;pktwords--)
 			smsc911x_reg_read(pdata, RX_DATA_FIFO);
 	}
 }
@@ -1682,7 +1682,7 @@ static int smsc911x_open(struct net_device *dev)
 	smsc911x_reg_write(pdata, INT_EN, temp);
 
 	timeout = 1000;
-	while (timeout--) {
+	for (;timeout;timeout--) {
 		if (pdata->software_irq_signal)
 			break;
 		msleep(1);

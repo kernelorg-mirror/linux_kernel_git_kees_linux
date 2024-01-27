@@ -468,7 +468,7 @@ __bread(struct block_device *bdev, sector_t block, unsigned size)
 static inline __must_check
 struct buffer_head *get_nth_bh(struct buffer_head *bh, unsigned int count)
 {
-	while (count--)
+	for (;count;count--)
 		bh = bh->b_this_page;
 	get_bh(bh);
 	return bh;

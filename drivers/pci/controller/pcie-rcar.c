@@ -35,7 +35,7 @@ int rcar_pcie_wait_for_phyrdy(struct rcar_pcie *pcie)
 {
 	unsigned int timeout = 10;
 
-	while (timeout--) {
+	for (;timeout;timeout--) {
 		if (rcar_pci_read_reg(pcie, PCIEPHYSR) & PHYRDY)
 			return 0;
 
@@ -49,7 +49,7 @@ int rcar_pcie_wait_for_dl(struct rcar_pcie *pcie)
 {
 	unsigned int timeout = 10000;
 
-	while (timeout--) {
+	for (;timeout;timeout--) {
 		if ((rcar_pci_read_reg(pcie, PCIETSTR) & DATA_LINK_ACTIVE))
 			return 0;
 

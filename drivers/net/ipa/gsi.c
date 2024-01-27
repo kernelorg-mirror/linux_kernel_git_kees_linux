@@ -1925,7 +1925,7 @@ err_unwind_modem:
 	}
 
 err_unwind:
-	while (channel_id--)
+	for (;channel_id;channel_id--)
 		gsi_channel_teardown_one(gsi, channel_id);
 
 	mutex_unlock(&gsi->mutex);
@@ -2330,7 +2330,7 @@ static int gsi_channel_init(struct gsi *gsi, u32 count,
 	return ret;
 
 err_unwind:
-	while (i--) {
+	for (;i;i--) {
 		if (ipa_gsi_endpoint_data_empty(&data[i]))
 			continue;
 		if (modem_alloc && data[i].ee_id == GSI_EE_MODEM) {

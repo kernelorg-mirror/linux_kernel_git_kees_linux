@@ -2192,7 +2192,7 @@ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
 
 	/* Wait for command to complete */
 	wait = XGBE_RATECHANGE_COUNT;
-	while (wait--) {
+	for (;wait;wait--) {
 		if (!XP_IOREAD_BITS(pdata, XP_DRIVER_INT_RO, STATUS))
 			goto do_rx_adaptation;
 

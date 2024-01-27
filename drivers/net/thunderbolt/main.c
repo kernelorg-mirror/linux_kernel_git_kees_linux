@@ -501,7 +501,7 @@ static int tbnet_alloc_rx_buffers(struct tbnet *net, unsigned int nbuffers)
 	struct tbnet_ring *ring = &net->rx_ring;
 	int ret;
 
-	while (nbuffers--) {
+	for (;nbuffers;nbuffers--) {
 		struct device *dma_dev = tb_ring_dma_device(ring->ring);
 		unsigned int index = ring->prod & (TBNET_RING_SIZE - 1);
 		struct tbnet_frame *tf = &ring->frames[index];

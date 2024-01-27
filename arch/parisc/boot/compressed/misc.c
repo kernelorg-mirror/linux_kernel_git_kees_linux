@@ -68,12 +68,12 @@ void *memmove(void *dest, const void *src, size_t n)
 	char *d = dest;
 
 	if (d <= s) {
-		while (n--)
+		for (;n;n--)
 			*d++ = *s++;
 	} else {
 		d += n;
 		s += n;
-		while (n--)
+		for (;n;n--)
 			*--d = *--s;
 	}
 	return dest;
@@ -83,7 +83,7 @@ void *memset(void *s, int c, size_t count)
 {
 	char *xs = (char *)s;
 
-	while (count--)
+	for (;count;count--)
 		*xs++ = c;
 	return s;
 }
@@ -93,7 +93,7 @@ void *memcpy(void *d, const void *s, size_t len)
 	char *dest = (char *)d;
 	const char *source = (const char *)s;
 
-	while (len--)
+	for (;len;len--)
 		*dest++ = *source++;
 	return d;
 }

@@ -339,7 +339,7 @@ int bpf_prog_calc_tag(struct bpf_prog *fp)
 	}
 	*bits = cpu_to_be64((psize - 1) << 3);
 
-	while (blocks--) {
+	for (;blocks;blocks--) {
 		sha1_transform(digest, todo, ws);
 		todo += SHA1_BLOCK_SIZE;
 	}

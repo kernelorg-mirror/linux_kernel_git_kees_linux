@@ -92,7 +92,7 @@ static s32 fm10k_tlv_attr_get_null_string(u32 *attr, unsigned char *string)
 	len = *attr >> FM10K_TLV_LEN_SHIFT;
 	attr++;
 
-	while (len--)
+	for (;len;len--)
 		string[len] = (u8)(attr[len / 4] >> (8 * (len % 4)));
 
 	return 0;

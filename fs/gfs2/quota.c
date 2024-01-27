@@ -1003,7 +1003,7 @@ out_ipres:
 out_alloc:
 	gfs2_glock_dq_uninit(&i_gh);
 out_dq:
-	while (qx--)
+	for (;qx;qx--)
 		gfs2_glock_dq_uninit(&ghs[qx]);
 	inode_unlock(&ip->i_inode);
 	kfree(ghs);
@@ -1117,7 +1117,7 @@ int gfs2_quota_lock(struct gfs2_inode *ip, kuid_t uid, kgid_t gid)
 	if (!error)
 		set_bit(GIF_QD_LOCKED, &ip->i_flags);
 	else {
-		while (x--)
+		for (;x;x--)
 			gfs2_glock_dq_uninit(&ip->i_qadata->qa_qd_ghs[x]);
 		gfs2_quota_unhold(ip);
 	}

@@ -317,7 +317,7 @@ void free_tx_desc(struct adapter *adap, struct sge_txq *q,
 	struct tx_sw_desc *d;
 
 	d = &q->sdesc[cidx];
-	while (n--) {
+	for (;n;n--) {
 		if (d->skb) {                       /* an SGL is present */
 			if (unmap && d->addr[0]) {
 				unmap_skb(adap->pdev_dev, d->skb, d->addr);
@@ -2133,7 +2133,7 @@ void cxgb4_eosw_txq_free_desc(struct adapter *adap,
 	struct tx_sw_desc *d;
 
 	d = &eosw_txq->desc[eosw_txq->last_cidx];
-	while (ndesc--) {
+	for (;ndesc;ndesc--) {
 		if (d->skb) {
 			if (d->addr[0]) {
 				unmap_skb(adap->pdev_dev, d->skb, d->addr);

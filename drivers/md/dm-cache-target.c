@@ -2161,7 +2161,7 @@ static int parse_features(struct cache_args *ca, struct dm_arg_set *as,
 	if (r)
 		return -EINVAL;
 
-	while (argc--) {
+	for (;argc;argc--) {
 		arg = dm_shift_arg(as);
 
 		if (!strcasecmp(arg, "writeback")) {
@@ -2580,7 +2580,7 @@ static int copy_ctr_args(struct cache *cache, int argc, const char **argv)
 	for (i = 0; i < argc; i++) {
 		copy[i] = kstrdup(argv[i], GFP_KERNEL);
 		if (!copy[i]) {
-			while (i--)
+			for (;i;i--)
 				kfree(copy[i]);
 			kfree(copy);
 			return -ENOMEM;

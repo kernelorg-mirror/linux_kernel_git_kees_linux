@@ -715,7 +715,7 @@ static void max310x_handle_rx(struct uart_port *port, unsigned int rxlen)
 			rxlen = port->fifosize;
 		}
 
-		while (rxlen--) {
+		for (;rxlen;rxlen--) {
 			ch = max310x_port_read(port, MAX310X_RHR_REG);
 			sts = max310x_port_read(port, MAX310X_LSR_IRQSTS_REG);
 

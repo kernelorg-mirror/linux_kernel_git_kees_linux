@@ -893,7 +893,7 @@ static int nfs_readdir_folio_filler(struct nfs_readdir_descriptor *desc,
 
 static void nfs_readdir_free_pages(struct page **pages, size_t npages)
 {
-	while (npages--)
+	for (;npages;npages--)
 		put_page(pages[npages]);
 	kfree(pages);
 }

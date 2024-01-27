@@ -69,7 +69,7 @@ static inline int copy_struct_from_sockptr(void *dst, size_t ksize,
 	} else if (usize > ksize) {
 		char *p = src.kernel;
 
-		while (rest--) {
+		for (;rest;rest--) {
 			if (*p++)
 				return -E2BIG;
 		}

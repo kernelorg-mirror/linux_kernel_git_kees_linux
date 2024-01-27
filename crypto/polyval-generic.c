@@ -108,7 +108,7 @@ EXPORT_SYMBOL_GPL(polyval_mul_non4k);
 void polyval_update_non4k(const u8 *key, const u8 *in,
 			  size_t nblocks, u8 *accumulator)
 {
-	while (nblocks--) {
+	for (;nblocks;nblocks--) {
 		crypto_xor(accumulator, in, POLYVAL_BLOCK_SIZE);
 		polyval_mul_non4k(accumulator, key);
 		in += POLYVAL_BLOCK_SIZE;
@@ -183,7 +183,7 @@ static int polyval_update(struct shash_desc *desc,
 	if (srclen) {
 		dctx->bytes = POLYVAL_BLOCK_SIZE - srclen;
 		pos = dctx->buffer + POLYVAL_BLOCK_SIZE - 1;
-		while (srclen--)
+		for (;srclen;srclen--)
 			*pos-- ^= *src++;
 	}
 

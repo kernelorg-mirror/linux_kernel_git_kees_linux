@@ -34749,7 +34749,7 @@ static void rcu_stress(struct maple_tree *mt, bool forward)
 	}
 
 	i = count = ARRAY_SIZE(readers);
-	while (i--) {
+	for (;i;i--) {
 		unsigned long id;
 
 		id = i / 2 * 10;
@@ -34786,7 +34786,7 @@ static void rcu_stress(struct maple_tree *mt, bool forward)
 		rcu_stress_rev(mt, &test, count, test_reader);
 
 	test.stop = true;
-	while (count--)
+	for (;count;count--)
 		pthread_join(readers[count], NULL);
 
 	mt_validate(mt);
@@ -34867,7 +34867,7 @@ static void *rcu_val(void *ptr)
 	void *entry;
 
 	rcu_register_thread();
-	while (count--) {
+	for (;count;count--) {
 		usleep(test->val_sleep);
 		/*
 		 * No locking required, regular API locking is handled in the
@@ -34902,7 +34902,7 @@ static void *rcu_loop(void *ptr)
 	 * Loop through the test->range_start - test->range_end test->count
 	 * times
 	 */
-	while (count--) {
+	for (;count;count--) {
 		usleep(test->loop_sleep);
 		rcu_read_lock();
 		mas_for_each(&mas, entry, test->range_end) {

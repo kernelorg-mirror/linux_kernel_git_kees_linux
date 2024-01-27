@@ -141,7 +141,7 @@ static void dw8250_tx_wait_empty(struct uart_port *p)
 	unsigned int delay_threshold = tries - 1000;
 	unsigned int lsr;
 
-	while (tries--) {
+	for (;tries;tries--) {
 		lsr = readb (p->membase + (UART_LSR << p->regshift));
 		up->lsr_saved_flags |= lsr & up->lsr_save_mask;
 

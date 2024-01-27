@@ -1365,7 +1365,7 @@ static struct drm_plane *tegra_dc_add_planes(struct drm_device *drm,
 		if (IS_ERR(planes[i])) {
 			err = PTR_ERR(planes[i]);
 
-			while (i--)
+			for (;i;i--)
 				planes[i]->funcs->destroy(planes[i]);
 
 			primary->funcs->destroy(primary);

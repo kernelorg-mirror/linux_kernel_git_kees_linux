@@ -671,7 +671,7 @@ static void amiga_serial_putc(char c)
 static void amiga_serial_console_write(struct console *co, const char *s,
 				       unsigned int count)
 {
-	while (count--) {
+	for (;count;count--) {
 		if (*s == '\n')
 			amiga_serial_putc('\r');
 		amiga_serial_putc(*s++);

@@ -132,7 +132,7 @@ static inline void syscall_get_arguments(struct task_struct *task,
 	if (mips_syscall_is_indirect(task, regs))
 		i++;
 
-	while (n--)
+	for (;n;n--)
 		mips_get_syscall_arg(args++, task, regs, i++);
 }
 

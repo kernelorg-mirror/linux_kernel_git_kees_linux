@@ -44,7 +44,7 @@ static int iomap_read_fifo(struct m_can_classdev *cdev, int offset, void *val, s
 	struct m_can_pci_priv *priv = cdev_to_priv(cdev);
 	void __iomem *src = priv->base + offset;
 
-	while (val_count--) {
+	for (;val_count;val_count--) {
 		*(unsigned int *)val = ioread32(src);
 		val += 4;
 		src += 4;
@@ -68,7 +68,7 @@ static int iomap_write_fifo(struct m_can_classdev *cdev, int offset,
 	struct m_can_pci_priv *priv = cdev_to_priv(cdev);
 	void __iomem *dst = priv->base + offset;
 
-	while (val_count--) {
+	for (;val_count;val_count--) {
 		iowrite32(*(unsigned int *)val, dst);
 		val += 4;
 		dst += 4;

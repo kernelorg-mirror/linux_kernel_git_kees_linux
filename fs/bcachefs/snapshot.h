@@ -93,7 +93,7 @@ static inline u32 bch2_snapshot_parent(struct bch_fs *c, u32 id)
 static inline u32 bch2_snapshot_nth_parent(struct bch_fs *c, u32 id, u32 n)
 {
 	rcu_read_lock();
-	while (n--)
+	for (;n;n--)
 		id = __bch2_snapshot_parent(c, id);
 	rcu_read_unlock();
 

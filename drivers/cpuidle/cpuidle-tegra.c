@@ -65,7 +65,7 @@ static int tegra_cpuidle_wait_for_secondary_cpus_parking(void)
 {
 	unsigned int retries = 3;
 
-	while (retries--) {
+	for (;retries;retries--) {
 		unsigned int delay_us = 10;
 		unsigned int timeout_us = 500 * 1000 / delay_us;
 

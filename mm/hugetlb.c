@@ -2760,7 +2760,7 @@ static void return_unused_surplus_pages(struct hstate *h,
 	 * remove_pool_hugetlb_folio() will balance the freed pages across the
 	 * on-line nodes with memory and will handle the hstate accounting.
 	 */
-	while (nr_pages--) {
+	for (;nr_pages;nr_pages--) {
 		struct folio *folio;
 
 		folio = remove_pool_hugetlb_folio(h, &node_states[N_MEMORY], 1);

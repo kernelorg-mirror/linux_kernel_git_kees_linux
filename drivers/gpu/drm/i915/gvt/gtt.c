@@ -2796,7 +2796,7 @@ void intel_vgpu_reset_ggtt(struct intel_vgpu *vgpu, bool invalidate_old)
 
 	index = vgpu_aperture_gmadr_base(vgpu) >> PAGE_SHIFT;
 	num_entries = vgpu_aperture_sz(vgpu) >> PAGE_SHIFT;
-	while (num_entries--) {
+	for (;num_entries;num_entries--) {
 		if (invalidate_old) {
 			ggtt_get_host_entry(vgpu->gtt.ggtt_mm, &old_entry, index);
 			ggtt_invalidate_pte(vgpu, &old_entry);
@@ -2806,7 +2806,7 @@ void intel_vgpu_reset_ggtt(struct intel_vgpu *vgpu, bool invalidate_old)
 
 	index = vgpu_hidden_gmadr_base(vgpu) >> PAGE_SHIFT;
 	num_entries = vgpu_hidden_sz(vgpu) >> PAGE_SHIFT;
-	while (num_entries--) {
+	for (;num_entries;num_entries--) {
 		if (invalidate_old) {
 			ggtt_get_host_entry(vgpu->gtt.ggtt_mm, &old_entry, index);
 			ggtt_invalidate_pte(vgpu, &old_entry);

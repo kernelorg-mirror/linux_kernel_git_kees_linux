@@ -1618,7 +1618,7 @@ static void serial_console_write(struct console *co, const char *s,
 
 	amiga_custom.intena = IF_TBE;
 
-	while (count--) {
+	for (;count;count--) {
 		if (*s == '\n')
 			amiga_serial_putc('\r');
 		amiga_serial_putc(*s++);

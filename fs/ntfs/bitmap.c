@@ -134,7 +134,7 @@ int __ntfs_bitmap_set_bits_in_run(struct inode *vi, const s64 start_bit,
 
 		bit = cnt;
 		byte = kaddr + len;
-		while (bit--) {
+		for (;bit;bit--) {
 			if (value)
 				*byte |= 1 << bit;
 			else

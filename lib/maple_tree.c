@@ -2867,7 +2867,7 @@ static int mas_spanning_rebalance(struct ma_state *mas,
 	 * the tree is performed and the parent pointers are updated.
 	 * See mas_topiary_replace() for more information.
 	 */
-	while (count--) {
+	for (;count;count--) {
 		mast->bn->b_end--;
 		mast->bn->type = mte_node_type(mast->orig_l->node);
 		split = mas_mab_to_node(mas, mast->bn, &left, &right, &middle,

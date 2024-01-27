@@ -450,7 +450,7 @@ static int hci_dev_connect_gates(struct nfc_hci_dev *hdev, u8 gate_count,
 				 const struct nfc_hci_gate *gates)
 {
 	int r;
-	while (gate_count--) {
+	for (;gate_count;gate_count--) {
 		r = nfc_hci_connect_gate(hdev, NFC_HCI_HOST_CONTROLLER_ID,
 					 gates->gate, gates->pipe);
 		if (r < 0)

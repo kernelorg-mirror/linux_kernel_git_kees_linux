@@ -129,7 +129,7 @@ int nfp_shared_buf_register(struct nfp_pf *pf)
 	return 0;
 
 err_unreg_prev:
-	while (i--)
+	for (;i;i--)
 		devlink_sb_unregister(devlink,
 				      le32_to_cpu(pf->shared_bufs[i].id));
 	kfree(pf->shared_bufs);

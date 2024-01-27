@@ -177,7 +177,7 @@ static int tpm_tcg_read_bytes(struct tpm_tis_data *data, u32 addr, u16 len,
 
 	switch (io_mode) {
 	case TPM_TIS_PHYS_8:
-		while (len--)
+		for (;len;len--)
 			*result++ = ioread8(phy->iobase + addr);
 		break;
 	case TPM_TIS_PHYS_16:
@@ -200,7 +200,7 @@ static int tpm_tcg_write_bytes(struct tpm_tis_data *data, u32 addr, u16 len,
 
 	switch (io_mode) {
 	case TPM_TIS_PHYS_8:
-		while (len--)
+		for (;len;len--)
 			tpm_tis_iowrite8(*value++, phy->iobase, addr);
 		break;
 	case TPM_TIS_PHYS_16:

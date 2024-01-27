@@ -622,7 +622,7 @@ static int __maybe_unused tegra_tsensor_suspend(struct device *dev)
 	return 0;
 
 enable_channel:
-	while (i--)
+	for (;i;i--)
 		tegra_tsensor_enable_hw_channel(ts, i);
 
 	return err;

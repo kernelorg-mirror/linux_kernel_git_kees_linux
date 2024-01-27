@@ -46,7 +46,7 @@ int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
 	int ret;
 	u32 out, retry = (timeout_ms * 1000) / delayus;
 
-	while (retry--) {
+	for (;retry;retry--) {
 		ret = mhi_read_reg_field(mhi_cntrl, base, offset, mask, &out);
 		if (ret)
 			return ret;

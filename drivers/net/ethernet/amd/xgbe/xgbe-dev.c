@@ -341,7 +341,7 @@ static int xgbe_write_rss_reg(struct xgbe_prv_data *pdata, unsigned int type,
 	XGMAC_IOWRITE_BITS(pdata, MAC_RSSAR, OB, 1);
 
 	wait = 1000;
-	while (wait--) {
+	for (;wait;wait--) {
 		if (!XGMAC_IOREAD_BITS(pdata, MAC_RSSAR, OB))
 			goto unlock;
 
@@ -362,7 +362,7 @@ static int xgbe_write_rss_hash_key(struct xgbe_prv_data *pdata)
 	unsigned int *key = (unsigned int *)&pdata->rss_key;
 	int ret;
 
-	while (key_regs--) {
+	for (;key_regs;key_regs--) {
 		ret = xgbe_write_rss_reg(pdata, XGBE_RSS_HASH_KEY_TYPE,
 					 key_regs, *key++);
 		if (ret)
@@ -1041,7 +1041,7 @@ static void xgbe_set_mac_addn_addrs(struct xgbe_prv_data *pdata)
 	}
 
 	/* Clear remaining additional MAC address entries */
-	while (addn_macs--)
+	for (;addn_macs;addn_macs--)
 		xgbe_set_mac_reg(pdata, NULL, &mac_reg);
 }
 

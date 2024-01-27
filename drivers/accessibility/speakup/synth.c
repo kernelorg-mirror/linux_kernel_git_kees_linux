@@ -210,7 +210,7 @@ void spk_do_flush(void)
 
 void synth_write(const char *buf, size_t count)
 {
-	while (count--)
+	for (;count;count--)
 		synth_buffer_add(*buf++);
 	synth_start();
 }

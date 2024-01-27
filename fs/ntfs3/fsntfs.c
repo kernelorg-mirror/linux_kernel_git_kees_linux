@@ -152,7 +152,7 @@ bool ntfs_fix_pre_write(struct NTFS_RECORD_HEADER *rhdr, size_t bytes)
 
 	ptr = Add2Ptr(rhdr, SECTOR_SIZE - sizeof(short));
 
-	while (fn--) {
+	for (;fn;fn--) {
 		*++fixup = *ptr;
 		*ptr = sample;
 		ptr += SECTOR_SIZE / sizeof(short);
@@ -188,7 +188,7 @@ int ntfs_fix_post_read(struct NTFS_RECORD_HEADER *rhdr, size_t bytes,
 	ptr = Add2Ptr(rhdr, SECTOR_SIZE - sizeof(short));
 	ret = 0;
 
-	while (fn--) {
+	for (;fn;fn--) {
 		/* Test current word. */
 		if (*ptr != sample) {
 			/* Fixup does not match! Is it serious error? */
@@ -1001,7 +1001,7 @@ static inline __le32 security_hash(const void *sd, size_t bytes)
 	const __le32 *ptr = sd;
 
 	bytes >>= 2;
-	while (bytes--)
+	for (;bytes;bytes--)
 		hash = ((hash >> 0x1D) | (hash << 3)) + le32_to_cpu(*ptr++);
 	return cpu_to_le32(hash);
 }

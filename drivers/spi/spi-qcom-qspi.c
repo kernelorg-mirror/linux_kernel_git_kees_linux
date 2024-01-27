@@ -583,7 +583,7 @@ static irqreturn_t pio_write(struct qcom_qspi *ctrl)
 		ctrl->xfer.rem_bytes -= wr_size;
 
 		byte_buf = xfer_buf;
-		while (wr_size--)
+		for (;wr_size;wr_size--)
 			writel(*byte_buf++,
 			       ctrl->base + PIO_DATAOUT_1B);
 		ctrl->xfer.tx_buf = byte_buf;

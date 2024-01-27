@@ -15,7 +15,7 @@ void outsb(unsigned long __addr, const void *src, unsigned long count)
 	void __iomem *addr = (void __iomem *) __addr;
 	const u8 *p = src;
 
-	while (count--)
+	for (;count;count--)
 		__raw_writeb(*p++, addr);
 }
 EXPORT_SYMBOL(outsb);
@@ -24,7 +24,7 @@ void outsw(unsigned long __addr, const void *src, unsigned long count)
 {
 	void __iomem *addr = (void __iomem *) __addr;
 
-	while (count--) {
+	for (;count;count--) {
 		__raw_writew(*(u16 *)src, addr);
 		src += sizeof(u16);
 	}
@@ -42,14 +42,14 @@ void outsl(unsigned long __addr, const void *src, unsigned long count)
 	switch (((unsigned long)src) & 0x3) {
 	case 0x0:
 		/* src is naturally aligned */
-		while (count--) {
+		for (;count;count--) {
 			__raw_writel(*(u32 *)src, addr);
 			src += sizeof(u32);
 		}
 		break;
 	case 0x2:
 		/* 2-byte alignment */
-		while (count--) {
+		for (;count;count--) {
 			l = (*(u16 *)src) << 16;
 			l |= *(u16 *)(src + sizeof(u16));
 			__raw_writel(l, addr);
@@ -61,7 +61,7 @@ void outsl(unsigned long __addr, const void *src, unsigned long count)
 		l = (*(u8 *)src) << 24;
 		l |= (*(u16 *)(src + sizeof(u8))) << 8;
 		src += sizeof(u8) + sizeof(u16);
-		while (count--) {
+		for (;count;count--) {
 			l2 = *(u32 *)src;
 			l |= (l2 >> 24);
 			__raw_writel(l, addr);
@@ -73,7 +73,7 @@ void outsl(unsigned long __addr, const void *src, unsigned long count)
 		/* Hold a byte in l each time, grab 3 bytes from l2 */
 		l = (*(u8 *)src) << 24;
 		src += sizeof(u8);
-		while (count--) {
+		for (;count;count--) {
 			l2 = *(u32 *)src;
 			l |= (l2 >> 8);
 			__raw_writel(l, addr);
@@ -107,7 +107,7 @@ void insb(unsigned long __addr, void *dst, unsigned long count)
 			count -= 4;
 		}
 		pb = (u8 *)pi;
-		while (count--)
+		for (;count;count--)
 			*pb++ = __raw_readb(addr);
 	}
 }
@@ -148,7 +148,7 @@ void insl(unsigned long __addr, void *dst, unsigned long count)
 	if (count) {
 		if ((((unsigned long)dst) & 0x3) == 0) {
 			u32 *pi = dst;
-			while (count--)
+			for (;count;count--)
 				*pi++ = __raw_readl(addr);
 		} else {
 			u32 l = 0, l2, *pi;
@@ -162,7 +162,7 @@ void insl(unsigned long __addr, void *dst, unsigned long count)
 				l = __raw_readl(addr);
 				*ps++ = l;
 				pi = (u32 *)ps;
-				while (count--) {
+				for (;count;count--) {
 					l2 = __raw_readl(addr);
 					*pi++ = (l << 16) | (l2 >> 16);
 					l = l2;
@@ -179,7 +179,7 @@ void insl(unsigned long __addr, void *dst, unsigned long count)
 				ps = (u16 *)pb;
 				*ps++ = ((l >> 8) & 0xffff);
 				pi = (u32 *)ps;
-				while (count--) {
+				for (;count;count--) {
 					l2 = __raw_readl(addr);
 					*pi++ = (l << 24) | (l2 >> 8);
 					l = l2;
@@ -194,7 +194,7 @@ void insl(unsigned long __addr, void *dst, unsigned long count)
 				l = __raw_readl(addr);
 				*pb++ = l >> 24;
 				pi = (u32 *)pb;
-				while (count--) {
+				for (;count;count--) {
 					l2 = __raw_readl(addr);
 					*pi++ = (l << 8) | (l2 >> 24);
 					l = l2;

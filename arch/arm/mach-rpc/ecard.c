@@ -173,7 +173,7 @@ static void ecard_task_readbytes(struct ecard_request *req)
 			index += 1;
 		}
 
-		while (len--) {
+		for (;len;len--) {
 			*buf++ = readb(base + page);
 			index += 1;
 		}
@@ -185,12 +185,12 @@ static void ecard_task_readbytes(struct ecard_request *req)
 
 		if (!req->use_loader || !ec->loader) {
 			off *= 4;
-			while (len--) {
+			for (;len;len--) {
 				*buf++ = readb(pbase + off);
 				off += 4;
 			}
 		} else {
-			while(len--) {
+			for (;len;len--) {
 				/*
 				 * The following is required by some
 				 * expansion card loader programs.

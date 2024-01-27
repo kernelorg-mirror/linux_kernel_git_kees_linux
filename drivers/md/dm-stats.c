@@ -1048,7 +1048,7 @@ static int message_stats_create(struct mapped_device *md,
 	as_backup = as;
 	a = dm_shift_arg(&as);
 	if (a && sscanf(a, "%u%c", &feature_args, &dummy) == 1) {
-		while (feature_args--) {
+		for (;feature_args;feature_args--) {
 			a = dm_shift_arg(&as);
 			if (!a)
 				goto ret_einval;

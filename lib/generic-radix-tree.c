@@ -135,7 +135,7 @@ void *__genradix_ptr_alloc(struct __genradix *radix, size_t offset,
 		}
 	}
 
-	while (level--) {
+	for (;level;level--) {
 		struct genradix_node **p =
 			&n->children[offset >> genradix_depth_shift(level)];
 		offset &= genradix_depth_size(level) - 1;

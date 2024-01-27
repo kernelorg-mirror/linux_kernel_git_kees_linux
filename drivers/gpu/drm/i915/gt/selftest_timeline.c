@@ -93,7 +93,7 @@ static int __mock_hwsp_timeline(struct mock_hwsp_freelist *state,
 	struct intel_timeline *tl;
 	unsigned int idx;
 
-	while (count--) {
+	for (;count;count--) {
 		unsigned long cacheline;
 		int err;
 
@@ -131,7 +131,7 @@ static int __mock_hwsp_timeline(struct mock_hwsp_freelist *state,
 
 	count = i915_prandom_u32_max_state(min(state->count, state->max),
 					   &state->prng);
-	while (count--) {
+	for (;count;count--) {
 		idx = --state->count % state->max;
 		__mock_hwsp_record(state, idx, NULL);
 	}
@@ -337,7 +337,7 @@ static int bench_sync(void *arg)
 	prandom_seed_state(&prng, i915_selftest.random_seed);
 	end_time = count;
 	kt = ktime_get();
-	while (end_time--) {
+	for (;end_time;end_time--) {
 		u64 id = i915_prandom_u64_state(&prng);
 
 		if (!__intel_timeline_sync_is_later(&tl, id, 0)) {
@@ -370,7 +370,7 @@ static int bench_sync(void *arg)
 	/* Benchmark looking up the exact same context ids as we just set */
 	end_time = count;
 	kt = ktime_get();
-	while (end_time--) {
+	for (;end_time;end_time--) {
 		if (!__intel_timeline_sync_is_later(&tl, end_time, 0)) {
 			pr_err("Lookup of %lu failed\n", end_time);
 			mock_timeline_fini(&tl);

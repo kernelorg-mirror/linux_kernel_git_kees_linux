@@ -1171,7 +1171,7 @@ static int pt1_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
 				return ret;
 
 			word = pt1_read_reg(pt1, 2);
-			while (len--) {
+			for (;len;len--) {
 				next_msg->buf[len] = word;
 				word >>= 8;
 			}

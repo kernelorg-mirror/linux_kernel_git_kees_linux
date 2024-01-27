@@ -2422,7 +2422,7 @@ int of_genpd_add_provider_onecell(struct device_node *np,
 	return 0;
 
 error:
-	while (i--) {
+	for (;i;i--) {
 		genpd = data->domains[i];
 
 		if (!genpd)

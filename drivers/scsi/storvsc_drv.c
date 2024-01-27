@@ -1835,7 +1835,7 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
 			 * last sgl should be reached at the same time that
 			 * the PFN array is filled.
 			 */
-			while (hvpfns_to_add--)
+			for (;hvpfns_to_add;hvpfns_to_add--)
 				payload->range.pfn_array[i++] = hvpfn++;
 		}
 	}

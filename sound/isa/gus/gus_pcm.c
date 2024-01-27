@@ -320,12 +320,12 @@ static int snd_gf1_pcm_poke_block(struct snd_gus_card *gus, unsigned char *buf,
 			invert = invert ? 0x80 : 0x00;
 			if (w16) {
 				len >>= 1;
-				while (len--) {
+				for (;len;len--) {
 					snd_gf1_poke(gus, pos++, *buf++);
 					snd_gf1_poke(gus, pos++, *buf++ ^ invert);
 				}
 			} else {
-				while (len--)
+				for (;len;len--)
 					snd_gf1_poke(gus, pos++, *buf++ ^ invert);
 			}
 		}

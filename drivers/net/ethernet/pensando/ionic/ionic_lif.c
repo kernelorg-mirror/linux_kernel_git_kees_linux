@@ -2153,7 +2153,7 @@ static int ionic_txrx_init(struct ionic_lif *lif)
 	return 0;
 
 err_out:
-	while (i--) {
+	for (;i;i--) {
 		ionic_lif_qcq_deinit(lif, lif->txqcqs[i]);
 		ionic_lif_qcq_deinit(lif, lif->rxqcqs[i]);
 	}

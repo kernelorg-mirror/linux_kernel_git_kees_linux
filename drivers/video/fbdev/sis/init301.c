@@ -779,7 +779,7 @@ SiS_GenericDelay(struct SiS_Private *SiS_Pr, unsigned short delay)
 static void
 SiS_LongDelay(struct SiS_Private *SiS_Pr, unsigned short delay)
 {
-   while(delay--) {
+   for (;delay;delay--) {
       SiS_GenericDelay(SiS_Pr, 6623);
    }
 }
@@ -789,7 +789,7 @@ SiS_LongDelay(struct SiS_Private *SiS_Pr, unsigned short delay)
 static void
 SiS_ShortDelay(struct SiS_Private *SiS_Pr, unsigned short delay)
 {
-   while(delay--) {
+   for (;delay;delay--) {
       SiS_GenericDelay(SiS_Pr, 66);
    }
 }

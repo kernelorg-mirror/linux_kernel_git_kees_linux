@@ -712,7 +712,7 @@ static int bm1880_clk_register_divs(struct bm1880_div_hw_clock *clks,
 	return 0;
 
 err_clk:
-	while (i--)
+	for (;i;i--)
 		clk_hw_unregister(data->hw_data.hws[clks[i].div.id]);
 
 	return PTR_ERR(hw);

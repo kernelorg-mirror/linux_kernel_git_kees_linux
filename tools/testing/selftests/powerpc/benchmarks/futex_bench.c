@@ -24,7 +24,7 @@ int test_futex(void)
 
 	clock_gettime(CLOCK_MONOTONIC, &ts_start);
 
-	while (i--) {
+	for (;i;i--) {
 		unsigned int addr = 0;
 		futex(&addr, FUTEX_WAKE, 1, NULL, NULL, 0);
 	}

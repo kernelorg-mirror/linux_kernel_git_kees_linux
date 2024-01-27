@@ -793,7 +793,7 @@ static int ntfs_get_frame_pages(struct address_space *mapping, pgoff_t index,
 
 		page = find_or_create_page(mapping, index, gfp_mask);
 		if (!page) {
-			while (npages--) {
+			for (;npages;npages--) {
 				page = pages[npages];
 				unlock_page(page);
 				put_page(page);

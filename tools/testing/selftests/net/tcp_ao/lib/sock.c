@@ -479,7 +479,7 @@ do {									\
 
 	/* per-key */
 	i = before->nr_keys;
-	while (i--) {
+	for (;i;i--) {
 		if (sndid >= 0 && before->key_cnts[i].sndid != sndid)
 			continue;
 		if (rcvid >= 0 && before->key_cnts[i].rcvid != rcvid)

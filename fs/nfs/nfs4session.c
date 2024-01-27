@@ -43,7 +43,7 @@ static void nfs4_shrink_slot_table(struct nfs4_slot_table  *tbl, u32 newsize)
 		return;
 
 	p = &tbl->slots;
-	while (newsize--)
+	for (;newsize;newsize--)
 		p = &(*p)->next;
 	while (*p) {
 		struct nfs4_slot *slot = *p;

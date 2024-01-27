@@ -734,7 +734,7 @@ static int tegra_powergate_prepare_clocks(struct tegra_powergate *pg)
 	return 0;
 
 out:
-	while (i--)
+	for (;i;i--)
 		clk_set_rate(pg->clks[i], pg->clk_rates[i]);
 
 	return err;
@@ -776,7 +776,7 @@ static int tegra_powergate_enable_clocks(struct tegra_powergate *pg)
 	return 0;
 
 out:
-	while (i--)
+	for (;i;i--)
 		clk_disable_unprepare(pg->clks[i]);
 
 	return err;
@@ -1222,7 +1222,7 @@ static int tegra_powergate_of_get_clks(struct tegra_powergate *pg,
 	return 0;
 
 err:
-	while (i--)
+	for (;i;i--)
 		clk_put(pg->clks[i]);
 
 	kfree(pg->clk_rates);
@@ -1345,7 +1345,7 @@ remove_resets:
 	reset_control_put(pg->reset);
 
 remove_clks:
-	while (pg->num_clks--)
+	for (;pg->num_clks;pg->num_clks--)
 		clk_put(pg->clks[pg->num_clks]);
 
 	kfree(pg->clks);
@@ -1490,7 +1490,7 @@ static void tegra_powergate_remove(struct generic_pm_domain *genpd)
 
 	reset_control_put(pg->reset);
 
-	while (pg->num_clks--)
+	for (;pg->num_clks;pg->num_clks--)
 		clk_put(pg->clks[pg->num_clks]);
 
 	kfree(pg->clks);

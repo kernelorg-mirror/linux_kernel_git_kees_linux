@@ -2238,7 +2238,7 @@ int ni_decompress_file(struct ntfs_inode *ni)
 
 			pg = find_or_create_page(mapping, index, gfp_mask);
 			if (!pg) {
-				while (i--) {
+				for (;i;i--) {
 					unlock_page(pages[i]);
 					put_page(pages[i]);
 				}

@@ -4103,7 +4103,7 @@ static int dm_integrity_ctr(struct dm_target *ti, unsigned int argc, char **argv
 	if (r)
 		goto bad;
 
-	while (extra_args--) {
+	for (;extra_args;extra_args--) {
 		const char *opt_string;
 		unsigned int val;
 		unsigned long long llval;

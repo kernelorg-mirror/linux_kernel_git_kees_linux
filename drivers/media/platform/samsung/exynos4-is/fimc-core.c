@@ -210,7 +210,7 @@ static int fimc_get_scaler_factor(u32 src, u32 tar, u32 *ratio, u32 *shift)
 	if (src >= 64 * tar)
 		return -EINVAL;
 
-	while (sh--) {
+	for (;sh;sh--) {
 		u32 tmp = 1 << sh;
 		if (src >= tar * tmp) {
 			*shift = sh;

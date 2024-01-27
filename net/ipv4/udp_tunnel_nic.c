@@ -741,7 +741,7 @@ udp_tunnel_nic_alloc(const struct udp_tunnel_nic_info *info,
 	return utn;
 
 err_free_prev_entries:
-	while (i--)
+	for (;i;i--)
 		kfree(utn->entries[i]);
 	kfree(utn);
 	return NULL;

@@ -72,7 +72,7 @@ void *memmove(void *__dest, __const void *__src, size_t count)
 	if (__dest < __src)
 		return memcpy(__dest, __src, count);
 
-	while (count--)
+	for (;count;count--)
 		d[count] = s[count];
 	return __dest;
 }
@@ -127,7 +127,7 @@ void *memchr(const void *s, int c, size_t count)
 {
 	const unsigned char *p = s;
 
-	while (count--)
+	for (;count;count--)
 		if ((unsigned char)c == *p++)
 			return (void *)(p - 1);
 	return NULL;
@@ -156,7 +156,7 @@ char *strrchr(const char *s, int c)
 void *memset(void *s, int c, size_t count)
 {
 	char *xs = s;
-	while (count--)
+	for (;count;count--)
 		*xs++ = c;
 	return s;
 }

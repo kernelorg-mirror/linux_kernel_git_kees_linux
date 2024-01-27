@@ -77,7 +77,7 @@ static void virtio_gpu_free_syncobjs(struct drm_syncobj **syncobjs,
 {
 	u32 i = nr_syncobjs;
 
-	while (i--) {
+	for (;i;i--) {
 		if (syncobjs[i])
 			drm_syncobj_put(syncobjs[i]);
 	}
@@ -175,7 +175,7 @@ virtio_gpu_free_post_deps(struct virtio_gpu_submit_post_dep *post_deps,
 {
 	u32 i = nr_syncobjs;
 
-	while (i--) {
+	for (;i;i--) {
 		kfree(post_deps[i].chain);
 		drm_syncobj_put(post_deps[i].syncobj);
 	}

@@ -84,7 +84,7 @@ nvkm_mem_dtor(struct nvkm_memory *memory)
 {
 	struct nvkm_mem *mem = nvkm_mem(memory);
 	if (mem->mem) {
-		while (mem->pages--) {
+		for (;mem->pages;mem->pages--) {
 			dma_unmap_page(mem->mmu->subdev.device->dev,
 				       mem->dma[mem->pages], PAGE_SIZE,
 				       DMA_BIDIRECTIONAL);

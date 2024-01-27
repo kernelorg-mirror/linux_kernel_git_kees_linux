@@ -2711,7 +2711,7 @@ static void _fsg_common_free_buffers(struct fsg_buffhd *buffhds, unsigned n)
 {
 	if (buffhds) {
 		struct fsg_buffhd *bh = buffhds;
-		while (n--) {
+		for (;n;n--) {
 			kfree(bh->buf);
 			++bh;
 		}

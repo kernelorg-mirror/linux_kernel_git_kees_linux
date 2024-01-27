@@ -55,7 +55,7 @@ static void __memcpy_ntdqa(void *dst, const void *src, unsigned long len)
 		dst += 64;
 		len -= 4;
 	}
-	while (len--) {
+	for (;len;len--) {
 		asm("movntdqa (%0), %%xmm0\n"
 		    "movaps %%xmm0, (%1)\n"
 		    :: "r" (src), "r" (dst) : "memory");
@@ -84,7 +84,7 @@ static void __memcpy_ntdqu(void *dst, const void *src, unsigned long len)
 		dst += 64;
 		len -= 4;
 	}
-	while (len--) {
+	for (;len;len--) {
 		asm("movntdqa (%0), %%xmm0\n"
 		    "movups %%xmm0, (%1)\n"
 		    :: "r" (src), "r" (dst) : "memory");

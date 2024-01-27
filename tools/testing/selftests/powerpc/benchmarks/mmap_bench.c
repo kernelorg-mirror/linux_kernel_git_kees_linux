@@ -38,7 +38,7 @@ int test_mmap(void)
 
 	clock_gettime(CLOCK_MONOTONIC, &ts_start);
 
-	while (i--) {
+	for (;i;i--) {
 		char *c = mmap(NULL, MEMSIZE, PROT_READ|PROT_WRITE,
 			       MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
 		FAIL_IF(c == MAP_FAILED);

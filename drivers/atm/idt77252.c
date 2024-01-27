@@ -1843,7 +1843,7 @@ add_rx_skb(struct idt77252_dev *card, int queue,
 	dma_addr_t paddr;
 	u32 handle;
 
-	while (count--) {
+	for (;count;count--) {
 		skb = dev_alloc_skb(size);
 		if (!skb)
 			return;

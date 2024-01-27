@@ -1265,7 +1265,7 @@ void mlx5e_free_rx_descs(struct mlx5e_rq *rq)
 		/* Missing slots might also contain unreleased pages due to
 		 * deferred release.
 		 */
-		while (missing--) {
+		for (;missing;missing--) {
 			wqe_ix = mlx5_wq_cyc_ctr2ix(wq, head++);
 			rq->dealloc_wqe(rq, wqe_ix);
 		}

@@ -292,7 +292,7 @@ static int reset_control_array_acquire(struct reset_control_array *resets)
 	return 0;
 
 release:
-	while (i--)
+	for (;i;i--)
 		reset_control_release(resets->rstc[i]);
 
 	return err;

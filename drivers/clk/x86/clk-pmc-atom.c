@@ -244,14 +244,14 @@ static void plt_clk_unregister_fixed_rate(struct clk_plt_fixed *pclk)
 static void plt_clk_unregister_fixed_rate_loop(struct clk_plt_data *data,
 					       unsigned int i)
 {
-	while (i--)
+	for (;i;i--)
 		plt_clk_unregister_fixed_rate(data->parents[i]);
 }
 
 static void plt_clk_free_parent_names_loop(const char **parent_names,
 					   unsigned int i)
 {
-	while (i--)
+	for (;i;i--)
 		kfree_const(parent_names[i]);
 	kfree(parent_names);
 }
@@ -259,7 +259,7 @@ static void plt_clk_free_parent_names_loop(const char **parent_names,
 static void plt_clk_unregister_loop(struct clk_plt_data *data,
 				    unsigned int i)
 {
-	while (i--)
+	for (;i;i--)
 		plt_clk_unregister(data->clks[i]);
 }
 

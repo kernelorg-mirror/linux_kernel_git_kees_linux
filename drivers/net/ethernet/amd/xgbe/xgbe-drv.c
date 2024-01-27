@@ -2758,7 +2758,7 @@ void xgbe_dump_tx_desc(struct xgbe_prv_data *pdata, struct xgbe_ring *ring,
 	struct xgbe_ring_data *rdata;
 	struct xgbe_ring_desc *rdesc;
 
-	while (count--) {
+	for (;count;count--) {
 		rdata = XGBE_GET_DESC_DATA(ring, idx);
 		rdesc = rdata->rdesc;
 		netdev_dbg(pdata->netdev,

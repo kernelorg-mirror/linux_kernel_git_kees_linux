@@ -2205,7 +2205,7 @@ dma_error:
 		count--;
 
 	/* clear timestamp and dma mappings for remaining portion of packet */
-	while (count--) {
+	for (;count;count--) {
 		if (i == 0)
 			i += tx_ring->count;
 		i--;

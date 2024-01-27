@@ -879,7 +879,7 @@ static int cio2_vb2_buf_init(struct vb2_buffer *vb)
 	b->lop[i][j] = PFN_DOWN(cio2->dummy_page_bus_addr);
 	return 0;
 fail:
-	while (i--)
+	for (;i;i--)
 		dma_free_coherent(dev, PAGE_SIZE, b->lop[i], b->lop_bus_addr[i]);
 	return -ENOMEM;
 }

@@ -188,7 +188,7 @@ static int ls2x_i2c_rx(struct ls2x_i2c_priv *priv, struct i2c_msg *msg)
 	if (ret)
 		return ret;
 
-	while (len--) {
+	for (;len;len--) {
 		ret = ls2x_i2c_xfer_byte(priv,
 					 LS2X_CR_READ | (len ? 0 : LS2X_CR_ACK),
 					 &rxdata);
@@ -212,7 +212,7 @@ static int ls2x_i2c_tx(struct ls2x_i2c_priv *priv, struct i2c_msg *msg)
 	if (ret)
 		return ret;
 
-	while (len--) {
+	for (;len;len--) {
 		writeb(*buf++, priv->base + I2C_LS2X_TXR);
 
 		ret = ls2x_i2c_send_byte(priv, LS2X_CR_WRITE);

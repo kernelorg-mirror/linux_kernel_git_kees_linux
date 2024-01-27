@@ -455,7 +455,7 @@ static inline void bpf_long_memcpy(void *dst, const void *src, u32 size)
 	long *ldst = dst;
 
 	size /= sizeof(long);
-	while (size--)
+	for (;size;size--)
 		data_race(*ldst++ = *lsrc++);
 }
 

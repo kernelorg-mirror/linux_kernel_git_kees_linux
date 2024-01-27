@@ -2442,7 +2442,7 @@ static void __qedi_remove(struct pci_dev *pdev, int mode)
 	qedi_sync_free_irqs(qedi);
 
 	if (!test_bit(QEDI_IN_OFFLINE, &qedi->flags)) {
-		while (retry--) {
+		for (;retry;retry--) {
 			rval = qedi_ops->stop(qedi->cdev);
 			if (rval < 0)
 				msleep(1000);

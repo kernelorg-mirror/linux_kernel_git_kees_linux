@@ -289,7 +289,7 @@ static void xgene_sgmii_enable_autoneg(struct xgene_enet_pdata *p)
 
 	xgene_sgmii_configure(p);
 
-	while (loop--) {
+	for (;loop;loop--) {
 		data = xgene_mii_phy_read(p, INT_PHY_ADDR,
 					  SGMII_STATUS_ADDR >> 2);
 		if ((data & AUTO_NEG_COMPLETE) && (data & LINK_STATUS))

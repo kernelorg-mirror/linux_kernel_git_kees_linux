@@ -1467,7 +1467,7 @@ static int isp116x_bus_resume(struct usb_hcd *hcd)
 	}
 
 	val = isp116x->rhdesca & RH_A_NDP;
-	while (val--) {
+	for (;val;val--) {
 		u32 stat =
 		    isp116x_read_reg32(isp116x, val ? HCRHPORT2 : HCRHPORT1);
 		/* force global, not selective, resume */

@@ -65,7 +65,7 @@ bitcpy(struct fb_info *p, unsigned long *dst, unsigned dst_idx,
 				*dst++ = *src++;
 				n -= 8;
 			}
-			while (n--)
+			for (;n;n--)
 				*dst++ = *src++;
 
 			/* Trailing bits */
@@ -140,7 +140,7 @@ bitcpy(struct fb_info *p, unsigned long *dst, unsigned dst_idx,
 				d0 = d1;
 				n -= 4;
 			}
-			while (n--) {
+			for (;n;n--) {
 				d1 = *src++;
 				*dst++ = d0 >> right | d1 << left;
 				d0 = d1;
@@ -215,7 +215,7 @@ bitcpy_rev(struct fb_info *p, unsigned long *dst, unsigned dst_idx,
 				*dst-- = *src--;
 				n -= 8;
 			}
-			while (n--)
+			for (;n;n--)
 				*dst-- = *src--;
 			/* Trailing bits */
 			if (last != ULONG_MAX)
@@ -290,7 +290,7 @@ bitcpy_rev(struct fb_info *p, unsigned long *dst, unsigned dst_idx,
 				d0 = d1;
 				n -= 4;
 			}
-			while (n--) {
+			for (;n;n--) {
 				d1 = *src--;
 				*dst-- = d0 << left | d1 >> right;
 				d0 = d1;
@@ -347,7 +347,7 @@ void sys_copyarea(struct fb_info *p, const struct fb_copyarea *area)
 		p->fbops->fb_sync(p);
 
 	if (rev_copy) {
-		while (height--) {
+		for (;height;height--) {
 			dst_idx -= bits_per_line;
 			src_idx -= bits_per_line;
 			bitcpy_rev(p, base + (dst_idx / bits), dst_idx % bits,
@@ -355,7 +355,7 @@ void sys_copyarea(struct fb_info *p, const struct fb_copyarea *area)
 				width*p->var.bits_per_pixel);
 		}
 	} else {
-		while (height--) {
+		for (;height;height--) {
 			bitcpy(p, base + (dst_idx / bits), dst_idx % bits,
 				base + (src_idx / bits), src_idx % bits, bits,
 				width*p->var.bits_per_pixel);

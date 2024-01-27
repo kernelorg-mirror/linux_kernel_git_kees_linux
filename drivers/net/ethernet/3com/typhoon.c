@@ -1298,7 +1298,7 @@ typhoon_request_firmware(struct typhoon *tp)
 	image_data += sizeof(struct typhoon_file_header);
 	remaining -= sizeof(struct typhoon_file_header);
 
-	while (numSections--) {
+	for (;numSections;numSections--) {
 		if (remaining < sizeof(struct typhoon_section_header))
 			goto invalid_fw;
 

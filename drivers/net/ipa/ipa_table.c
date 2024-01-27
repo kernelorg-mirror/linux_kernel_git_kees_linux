@@ -754,7 +754,7 @@ int ipa_table_init(struct ipa *ipa)
 
 	/* All the rest contain the DMA address of the zero rule */
 	le_addr = cpu_to_le64(addr);
-	while (count--)
+	for (;count;count--)
 		*virt++ = le_addr;
 
 	return 0;

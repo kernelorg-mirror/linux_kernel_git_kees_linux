@@ -382,7 +382,7 @@ nvkm_vmm_sparse_ptes(const struct nvkm_vmm_desc *desc,
 		     struct nvkm_vmm_pt *pgt, u32 ptei, u32 ptes)
 {
 	if (desc->type == PGD) {
-		while (ptes--)
+		for (;ptes;ptes--)
 			pgt->pde[ptei++] = NVKM_VMM_PDE_SPARSE;
 	} else
 	if (desc->type == LPT) {
@@ -460,7 +460,7 @@ nvkm_vmm_ref_hwpt(struct nvkm_vmm_iter *it, struct nvkm_vmm_pt *pgd, u32 pdei)
 				memset(&pgt->pte[pteb], 0x00, ptes);
 			} else {
 				desc->func->unmap(vmm, pt, pteb, ptes);
-				while (ptes--)
+				for (;ptes;ptes--)
 					pgt->pte[pteb++] |= NVKM_VMM_PTE_VALID;
 			}
 		}

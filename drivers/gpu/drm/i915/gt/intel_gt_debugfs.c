@@ -106,7 +106,7 @@ void intel_gt_debugfs_register_files(struct dentry *root,
 				     const struct intel_gt_debugfs_file *files,
 				     unsigned long count, void *data)
 {
-	while (count--) {
+	for (;count;count--) {
 		umode_t mode = files->fops->write ? 0644 : 0444;
 
 		if (!files->eval || files->eval(data))

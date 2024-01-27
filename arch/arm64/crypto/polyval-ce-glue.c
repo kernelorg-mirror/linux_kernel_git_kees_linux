@@ -114,7 +114,7 @@ static int polyval_arm64_update(struct shash_desc *desc,
 		dctx->bytes -= n;
 		srclen -= n;
 
-		while (n--)
+		for (;n;n--)
 			*pos++ ^= *src++;
 
 		if (!dctx->bytes)
@@ -133,7 +133,7 @@ static int polyval_arm64_update(struct shash_desc *desc,
 	if (srclen) {
 		dctx->bytes = POLYVAL_BLOCK_SIZE - srclen;
 		pos = dctx->buffer;
-		while (srclen--)
+		for (;srclen;srclen--)
 			*pos++ ^= *src++;
 	}
 

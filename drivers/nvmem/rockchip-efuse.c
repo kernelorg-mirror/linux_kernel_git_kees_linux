@@ -67,7 +67,7 @@ static int rockchip_rk3288_efuse_read(void *context, unsigned int offset,
 
 	writel(RK3288_LOAD | RK3288_PGENB, efuse->base + REG_EFUSE_CTRL);
 	udelay(1);
-	while (bytes--) {
+	for (;bytes;bytes--) {
 		writel(readl(efuse->base + REG_EFUSE_CTRL) &
 			     (~(RK3288_A_MASK << RK3288_A_SHIFT)),
 			     efuse->base + REG_EFUSE_CTRL);
@@ -121,7 +121,7 @@ static int rockchip_rk3328_efuse_read(void *context, unsigned int offset,
 		goto nomem;
 	}
 
-	while (addr_len--) {
+	for (;addr_len;addr_len--) {
 		writel(RK3328_AUTO_RD | RK3328_AUTO_ENB |
 		       ((addr_start++ & RK3399_A_MASK) << RK3399_A_SHIFT),
 		       efuse->base + RK3328_AUTO_CTRL);
@@ -177,7 +177,7 @@ static int rockchip_rk3399_efuse_read(void *context, unsigned int offset,
 	writel(RK3399_LOAD | RK3399_PGENB | RK3399_STROBSFTSEL | RK3399_RSB,
 	       efuse->base + REG_EFUSE_CTRL);
 	udelay(1);
-	while (addr_len--) {
+	for (;addr_len;addr_len--) {
 		writel(readl(efuse->base + REG_EFUSE_CTRL) | RK3399_STROBE |
 		       ((addr_start++ & RK3399_A_MASK) << RK3399_A_SHIFT),
 		       efuse->base + REG_EFUSE_CTRL);

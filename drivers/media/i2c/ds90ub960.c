@@ -1211,7 +1211,7 @@ static int ub960_rxport_enable_vpocs(struct ub960_data *priv)
 	return 0;
 
 err_disable_vpocs:
-	while (nport--) {
+	for (;nport;nport--) {
 		struct ub960_rxport *rxport = priv->rxports[nport];
 
 		if (!rxport || !rxport->vpoc)
@@ -1708,7 +1708,7 @@ static int ub960_rxport_add_serializers(struct ub960_data *priv)
 	return 0;
 
 err_remove_sers:
-	while (nport--) {
+	for (;nport;nport--) {
 		struct ub960_rxport *rxport = priv->rxports[nport];
 
 		if (!rxport)

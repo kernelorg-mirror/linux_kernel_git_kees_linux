@@ -306,7 +306,7 @@ static void cdns_i2c_slave_rcv_data(struct cdns_i2c *id)
 	bytes = cdns_i2c_readreg(CDNS_I2C_XFER_SIZE_OFFSET);
 
 	/* Read data and send to backend */
-	while (bytes--) {
+	for (;bytes;bytes--) {
 		data = cdns_i2c_readreg(CDNS_I2C_DATA_OFFSET);
 		i2c_slave_event(id->slave, I2C_SLAVE_WRITE_RECEIVED, &data);
 	}
@@ -509,7 +509,7 @@ static irqreturn_t cdns_i2c_master_isr(void *ptr)
 			else
 				bytes_to_send = id->send_count;
 
-			while (bytes_to_send--) {
+			for (;bytes_to_send;bytes_to_send--) {
 				cdns_i2c_writereg(
 					(*(id->p_send_buf)++),
 					 CDNS_I2C_DATA_OFFSET);
@@ -702,7 +702,7 @@ static void cdns_i2c_msend(struct cdns_i2c *id)
 	else
 		bytes_to_send = id->send_count;
 
-	while (bytes_to_send--) {
+	for (;bytes_to_send;bytes_to_send--) {
 		cdns_i2c_writereg((*(id->p_send_buf)++), CDNS_I2C_DATA_OFFSET);
 		id->send_count--;
 	}

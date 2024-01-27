@@ -156,7 +156,7 @@ static int ocelot_fdma_alloc_rx_buffs(struct ocelot *ocelot, u16 alloc_cnt)
 	rx_ring = &fdma->rx_ring;
 	idx = rx_ring->next_to_use;
 
-	while (alloc_cnt--) {
+	for (;alloc_cnt;alloc_cnt--) {
 		rxb = &rx_ring->bufs[idx];
 		/* try reuse page */
 		if (unlikely(!rxb->page)) {

@@ -240,7 +240,7 @@ int i915_vm_alloc_pt_stash(struct i915_address_space *vm,
 	GEM_BUG_ON(!is_power_of_2(pt_sz));
 
 	count = pd_count(size, shift);
-	while (count--) {
+	for (;count;count--) {
 		struct i915_page_table *pt;
 
 		pt = alloc_pt(vm, pt_sz);
@@ -256,7 +256,7 @@ int i915_vm_alloc_pt_stash(struct i915_address_space *vm,
 	for (n = 1; n < vm->top; n++) {
 		shift += ilog2(I915_PDES); /* Each PD holds 512 entries */
 		count = pd_count(size, shift);
-		while (count--) {
+		for (;count;count--) {
 			struct i915_page_directory *pd;
 
 			pd = alloc_pd(vm);

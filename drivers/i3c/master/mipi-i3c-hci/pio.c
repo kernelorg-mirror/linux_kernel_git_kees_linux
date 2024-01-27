@@ -255,7 +255,7 @@ static bool hci_pio_do_rx(struct i3c_hci *hci, struct hci_pio_data *pio)
 		/* extract data from FIFO */
 		xfer->data_left -= nr_words * 4;
 		DBG("now %d left %d", nr_words * 4, xfer->data_left);
-		while (nr_words--)
+		for (;nr_words;nr_words--)
 			*p++ = pio_reg_read(XFER_DATA_PORT);
 	}
 
@@ -279,7 +279,7 @@ static void hci_pio_do_trailing_rx(struct i3c_hci *hci,
 		/* extract data from FIFO */
 		xfer->data_left -= nr_words * 4;
 		DBG("now %d left %d", nr_words * 4, xfer->data_left);
-		while (nr_words--)
+		for (;nr_words;nr_words--)
 			*p++ = pio_reg_read(XFER_DATA_PORT);
 	}
 
@@ -297,7 +297,7 @@ static void hci_pio_do_trailing_rx(struct i3c_hci *hci,
 		xfer->data_word_before_partial = data;
 		xfer->data_left -= count;
 		data = (__force u32) cpu_to_le32(data);
-		while (count--) {
+		for (;count;count--) {
 			*p_byte++ = data;
 			data >>= 8;
 		}
@@ -322,7 +322,7 @@ static bool hci_pio_do_tx(struct i3c_hci *hci, struct hci_pio_data *pio)
 		/* push data into the FIFO */
 		xfer->data_left -= nr_words * 4;
 		DBG("now %d left %d", nr_words * 4, xfer->data_left);
-		while (nr_words--)
+		for (;nr_words;nr_words--)
 			pio_reg_write(XFER_DATA_PORT, *p++);
 	}
 
@@ -774,7 +774,7 @@ static bool hci_pio_get_ibi_segment(struct i3c_hci *hci,
 		nr_words = thresh_val;
 		ibi->seg_cnt -= nr_words * 4;
 		DBG("now %d left %d", nr_words * 4, ibi->seg_cnt);
-		while (nr_words--)
+		for (;nr_words;nr_words--)
 			*p++ = pio_reg_read(IBI_PORT);
 	}
 
@@ -794,7 +794,7 @@ static bool hci_pio_get_ibi_segment(struct i3c_hci *hci,
 		DBG("trailing %d", ibi->seg_cnt);
 		data = pio_reg_read(IBI_PORT);
 		data = (__force u32) cpu_to_le32(data);
-		while (ibi->seg_cnt--) {
+		for (;ibi->seg_cnt;ibi->seg_cnt--) {
 			*p_byte++ = data;
 			data >>= 8;
 		}

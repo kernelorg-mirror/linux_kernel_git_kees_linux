@@ -453,25 +453,25 @@ int snd_pcm_format_set_silence(snd_pcm_format_t format, void *data, unsigned int
 	/* a bit optimization for constant width */
 	switch (width) {
 	case 2:
-		while (samples--) {
+		for (;samples;samples--) {
 			memcpy(dst, pat, 2);
 			dst += 2;
 		}
 		break;
 	case 3:
-		while (samples--) {
+		for (;samples;samples--) {
 			memcpy(dst, pat, 3);
 			dst += 3;
 		}
 		break;
 	case 4:
-		while (samples--) {
+		for (;samples;samples--) {
 			memcpy(dst, pat, 4);
 			dst += 4;
 		}
 		break;
 	case 8:
-		while (samples--) {
+		for (;samples;samples--) {
 			memcpy(dst, pat, 8);
 			dst += 8;
 		}

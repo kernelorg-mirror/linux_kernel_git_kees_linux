@@ -503,7 +503,7 @@ int compaq_nvram_load(void __iomem *rom_start, struct controller *ctrl)
 		if (p_byte > ((u8 *)p_EV_header + evbuffer_length))
 			return 2;
 
-		while (nummem--) {
+		for (;nummem;nummem--) {
 			mem_node = kmalloc(sizeof(struct pci_resource), GFP_KERNEL);
 
 			if (!mem_node)
@@ -531,7 +531,7 @@ int compaq_nvram_load(void __iomem *rom_start, struct controller *ctrl)
 			ctrl->mem_head = mem_node;
 		}
 
-		while (numpmem--) {
+		for (;numpmem;numpmem--) {
 			p_mem_node = kmalloc(sizeof(struct pci_resource), GFP_KERNEL);
 
 			if (!p_mem_node)
@@ -559,7 +559,7 @@ int compaq_nvram_load(void __iomem *rom_start, struct controller *ctrl)
 			ctrl->p_mem_head = p_mem_node;
 		}
 
-		while (numio--) {
+		for (;numio;numio--) {
 			io_node = kmalloc(sizeof(struct pci_resource), GFP_KERNEL);
 
 			if (!io_node)
@@ -587,7 +587,7 @@ int compaq_nvram_load(void __iomem *rom_start, struct controller *ctrl)
 			ctrl->io_head = io_node;
 		}
 
-		while (numbus--) {
+		for (;numbus;numbus--) {
 			bus_node = kmalloc(sizeof(struct pci_resource), GFP_KERNEL);
 
 			if (!bus_node)

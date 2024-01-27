@@ -163,7 +163,7 @@ static int squashfs_readdir(struct file *file, struct dir_context *ctx)
 		if (dir_count > SQUASHFS_DIR_COUNT)
 			goto failed_read;
 
-		while (dir_count--) {
+		for (;dir_count;dir_count--) {
 			/*
 			 * Read directory entry.
 			 */

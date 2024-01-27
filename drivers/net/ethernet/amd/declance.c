@@ -340,7 +340,7 @@ static void cp_to_buf(const int type, void *to, const void *from, int len)
 		tp = to;
 		fp = from;
 
-		while (clen--) {
+		for (;clen;clen--) {
 			*tp++ = *fp++;
 			tp++;
 		}
@@ -348,7 +348,7 @@ static void cp_to_buf(const int type, void *to, const void *from, int len)
 		clen = len & 1;
 		rtp = (unsigned char *)tp;
 		rfp = (const unsigned char *)fp;
-		while (clen--) {
+		for (;clen;clen--) {
 			*rtp++ = *rfp++;
 		}
 	} else {
@@ -358,7 +358,7 @@ static void cp_to_buf(const int type, void *to, const void *from, int len)
 		clen = len >> 4;
 		tp = to;
 		fp = from;
-		while (clen--) {
+		for (;clen;clen--) {
 			*tp++ = *fp++;
 			*tp++ = *fp++;
 			*tp++ = *fp++;
@@ -376,7 +376,7 @@ static void cp_to_buf(const int type, void *to, const void *from, int len)
 		clen = len & 15;
 		rtp = (unsigned char *)tp;
 		rfp = (const unsigned char *)fp;
-		while (clen--) {
+		for (;clen;clen--) {
 			*rtp++ = *rfp++;
 		}
 	}
@@ -398,7 +398,7 @@ static void cp_from_buf(const int type, void *to, const void *from, int len)
 		clen = len >> 1;
 		tp = to;
 		fp = from;
-		while (clen--) {
+		for (;clen;clen--) {
 			*tp++ = *fp++;
 			fp++;
 		}
@@ -408,7 +408,7 @@ static void cp_from_buf(const int type, void *to, const void *from, int len)
 		rtp = (unsigned char *)tp;
 		rfp = (const unsigned char *)fp;
 
-		while (clen--) {
+		for (;clen;clen--) {
 			*rtp++ = *rfp++;
 		}
 	} else {
@@ -419,7 +419,7 @@ static void cp_from_buf(const int type, void *to, const void *from, int len)
 		clen = len >> 4;
 		tp = to;
 		fp = from;
-		while (clen--) {
+		for (;clen;clen--) {
 			*tp++ = *fp++;
 			*tp++ = *fp++;
 			*tp++ = *fp++;
@@ -437,7 +437,7 @@ static void cp_from_buf(const int type, void *to, const void *from, int len)
 		clen = len & 15;
 		rtp = (unsigned char *)tp;
 		rfp = (const unsigned char *)fp;
-		while (clen--) {
+		for (;clen;clen--) {
 			*rtp++ = *rfp++;
 		}
 

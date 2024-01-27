@@ -89,7 +89,7 @@ err_free_dma:
 	dma_free_coherent(dev, regs_sz, telemetry->regs_data,
 			  telemetry->regs_data_p);
 
-	while (i--)
+	for (;i;i--)
 		kfree(telemetry->regs_hist_buff[i]);
 
 err_free_regs_hist_buff:

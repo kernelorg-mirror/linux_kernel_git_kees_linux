@@ -376,7 +376,7 @@ void tipc_named_rcv(struct net *net, struct sk_buff_head *namedq,
 		node = msg_orignode(hdr);
 		item = (struct distr_item *)msg_data(hdr);
 		count = msg_data_sz(hdr) / ITEM_SIZE;
-		while (count--) {
+		for (;count;count--) {
 			tipc_update_nametbl(net, item, node, msg_type(hdr));
 			item++;
 		}

@@ -1716,7 +1716,7 @@ pgoff_t page_cache_next_miss(struct address_space *mapping,
 {
 	XA_STATE(xas, &mapping->i_pages, index);
 
-	while (max_scan--) {
+	for (;max_scan;max_scan--) {
 		void *entry = xas_next(&xas);
 		if (!entry || xa_is_value(entry))
 			break;
@@ -1752,7 +1752,7 @@ pgoff_t page_cache_prev_miss(struct address_space *mapping,
 {
 	XA_STATE(xas, &mapping->i_pages, index);
 
-	while (max_scan--) {
+	for (;max_scan;max_scan--) {
 		void *entry = xas_prev(&xas);
 		if (!entry || xa_is_value(entry))
 			break;

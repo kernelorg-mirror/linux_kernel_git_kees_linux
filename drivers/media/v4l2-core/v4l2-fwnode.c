@@ -1040,7 +1040,7 @@ v4l2_fwnode_reference_get_int_prop(struct fwnode_handle *fwnode,
 	 * the integer arguments.
 	 */
 	fwnode = fwnode_args.fwnode;
-	while (nprops--) {
+	for (;nprops;nprops--) {
 		u32 val;
 
 		/* Loop over all child nodes under fwnode. */

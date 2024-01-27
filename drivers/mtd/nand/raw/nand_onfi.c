@@ -21,7 +21,7 @@
 u16 onfi_crc16(u16 crc, u8 const *p, size_t len)
 {
 	int i;
-	while (len--) {
+	for (;len;len--) {
 		crc ^= *p++ << 8;
 		for (i = 0; i < 8; i++)
 			crc = (crc << 1) ^ ((crc & 0x8000) ? 0x8005 : 0);

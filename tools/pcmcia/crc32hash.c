@@ -13,7 +13,7 @@ static unsigned int crc32(unsigned char const *p, unsigned int len)
 {
 	int i;
 	unsigned int crc = 0;
-	while (len--) {
+	for (;len;len--) {
 		crc ^= *p++;
 		for (i = 0; i < 8; i++)
 			crc = (crc >> 1) ^ ((crc & 1) ? 0xedb88320 : 0);

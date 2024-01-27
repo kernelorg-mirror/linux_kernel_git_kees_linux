@@ -1755,7 +1755,7 @@ static int copy_ctr_args(struct clone *clone, int argc, const char **argv, char 
 		copy[i] = kstrdup(argv[i], GFP_KERNEL);
 
 		if (!copy[i]) {
-			while (i--)
+			for (;i;i--)
 				kfree(copy[i]);
 			kfree(copy);
 			goto error;

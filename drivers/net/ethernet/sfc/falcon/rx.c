@@ -918,7 +918,7 @@ bool __ef4_filter_rfs_expire(struct ef4_nic *efx, unsigned int quota)
 	channel_idx = efx->rps_expire_channel;
 	index = efx->rps_expire_index;
 	size = efx->type->max_rx_ip_filters;
-	while (quota--) {
+	for (;quota;quota--) {
 		struct ef4_channel *channel = ef4_get_channel(efx, channel_idx);
 		flow_id = channel->rps_flow_id[index];
 

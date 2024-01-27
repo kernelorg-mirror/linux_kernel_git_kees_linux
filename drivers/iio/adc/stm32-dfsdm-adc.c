@@ -832,7 +832,7 @@ static inline void stm32_dfsdm_process_data(struct stm32_dfsdm_adc *adc,
 	unsigned int i = adc->nconv;
 	s32 *ptr = buffer;
 
-	while (i--) {
+	for (;i;i--) {
 		/* Mask 8 LSB that contains the channel ID */
 		*ptr &= 0xFFFFFF00;
 		/* Convert 2^(n-1) sample to 2^(n-1)-1 to avoid wrap-around */

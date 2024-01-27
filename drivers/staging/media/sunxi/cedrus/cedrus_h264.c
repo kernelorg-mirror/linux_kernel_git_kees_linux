@@ -50,7 +50,7 @@ static void cedrus_h264_write_sram(struct cedrus_dev *dev,
 
 	cedrus_write(dev, VE_AVC_SRAM_PORT_OFFSET, off << 2);
 
-	while (count--)
+	for (;count;count--)
 		cedrus_write(dev, VE_AVC_SRAM_PORT_DATA, *buffer++);
 }
 

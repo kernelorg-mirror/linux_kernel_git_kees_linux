@@ -121,7 +121,7 @@ static void jz4725b_bch_disable(struct ingenic_ecc *bch)
 static void jz4725b_bch_write_data(struct ingenic_ecc *bch, const u8 *buf,
 				   size_t size)
 {
-	while (size--)
+	for (;size;size--)
 		writeb(*buf++, bch->base + BCH_BHDR);
 }
 
@@ -135,7 +135,7 @@ static void jz4725b_bch_read_parity(struct ingenic_ecc *bch, u8 *buf,
 	u32 val, offset = 0;
 
 	dest32 = (u32 *)buf;
-	while (size32--) {
+	for (;size32;size32--) {
 		*dest32++ = readl_relaxed(bch->base + BCH_BHPAR0 + offset);
 		offset += sizeof(u32);
 	}

@@ -1558,7 +1558,7 @@ nfsd4_decode_ssv_sp_parms(struct nfsd4_compoundargs *argp,
 	/* ssp_encr_algs<> */
 	if (xdr_stream_decode_u32(argp->xdr, &count) < 0)
 		return nfserr_bad_xdr;
-	while (count--) {
+	for (;count;count--) {
 		status = nfsd4_decode_ignored_string(argp, 0);
 		if (status)
 			return status;

@@ -1907,7 +1907,7 @@ static void ffs_func_eps_disable(struct ffs_function *func)
 	count = func->ffs->eps_count;
 	epfile = func->ffs->epfiles;
 	ep = func->eps;
-	while (count--) {
+	for (;count;count--) {
 		/* pending requests get nuked */
 		if (ep->ep)
 			usb_ep_disable(ep->ep);
@@ -1936,7 +1936,7 @@ static int ffs_func_eps_enable(struct ffs_function *func)
 	ep = func->eps;
 	epfile = ffs->epfiles;
 	count = ffs->eps_count;
-	while(count--) {
+	for (;count;count--) {
 		ep->ep->driver_data = ep;
 
 		ret = config_ep_by_speed(func->gadget, &func->function, ep->ep);
@@ -2260,7 +2260,7 @@ static int __must_check ffs_do_single_os_desc(char *data, unsigned len,
 	const unsigned _len = len;
 
 	/* loop over all ext compat/ext prop descriptors */
-	while (feature_count--) {
+	for (;feature_count;feature_count--) {
 		ret = entity(type, h, data, len, priv);
 		if (ret < 0) {
 			pr_debug("bad OS descriptor, type: %d\n", type);
@@ -3539,7 +3539,7 @@ static void ffs_func_unbind(struct usb_configuration *c,
 
 	/* cleanup after autoconfig */
 	spin_lock_irqsave(&func->ffs->eps_lock, flags);
-	while (count--) {
+	for (;count;count--) {
 		if (ep->ep && ep->req)
 			usb_ep_free_request(ep->ep, ep->req);
 		ep->req = NULL;

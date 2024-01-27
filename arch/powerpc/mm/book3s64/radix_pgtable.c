@@ -713,7 +713,7 @@ static void __meminit free_vmemmap_pages(struct page *page,
 
 	if (PageReserved(page)) {
 		/* allocated from memblock */
-		while (nr_pages--)
+		for (;nr_pages;nr_pages--)
 			free_reserved_page(page++);
 	} else
 		free_pages((unsigned long)page_address(page), order);

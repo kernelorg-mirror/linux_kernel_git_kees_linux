@@ -571,7 +571,7 @@ int string_escape_mem(const char *src, size_t isz, char *dst, size_t osz,
 	bool is_dict = only && *only;
 	bool is_append = flags & ESCAPE_APPEND;
 
-	while (isz--) {
+	for (;isz;isz--) {
 		unsigned char c = *src++;
 		bool in_dict = is_dict && strchr(only, c);
 

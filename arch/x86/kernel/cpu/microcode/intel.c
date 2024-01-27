@@ -186,7 +186,7 @@ int intel_microcode_sanity_check(void *mc, bool print_err, int hdr_type)
 		ext_tablep = (u32 *)ext_header;
 
 		i = ext_table_size / sizeof(u32);
-		while (i--)
+		for (;i;i--)
 			ext_table_sum += ext_tablep[i];
 
 		if (ext_table_sum) {
@@ -203,7 +203,7 @@ int intel_microcode_sanity_check(void *mc, bool print_err, int hdr_type)
 	 */
 	orig_sum = 0;
 	i = (MC_HEADER_SIZE + data_size) / sizeof(u32);
-	while (i--)
+	for (;i;i--)
 		orig_sum += ((u32 *)mc)[i];
 
 	if (orig_sum) {

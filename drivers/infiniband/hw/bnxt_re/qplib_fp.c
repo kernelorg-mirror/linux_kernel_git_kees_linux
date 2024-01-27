@@ -286,7 +286,7 @@ static void __wait_for_all_nqes(struct bnxt_qplib_cq *cq, u16 cnq_events)
 {
 	u32 retry_cnt = 100;
 
-	while (retry_cnt--) {
+	for (;retry_cnt;retry_cnt--) {
 		if (cnq_events == cq->cnq_events)
 			return;
 		usleep_range(50, 100);

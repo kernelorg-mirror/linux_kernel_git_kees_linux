@@ -1955,7 +1955,7 @@ int dfl_fpga_set_irq_triggers(struct dfl_feature *feature, unsigned int start,
 
 		ret = do_set_irq_trigger(feature, start + i, fd);
 		if (ret) {
-			while (i--)
+			for (;i;i--)
 				do_set_irq_trigger(feature, start + i, -1);
 			break;
 		}

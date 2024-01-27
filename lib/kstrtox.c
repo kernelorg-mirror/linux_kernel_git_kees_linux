@@ -57,7 +57,7 @@ unsigned int _parse_integer_limit(const char *s, unsigned int base, unsigned lon
 
 	res = 0;
 	rv = 0;
-	while (max_chars--) {
+	for (;max_chars;max_chars--) {
 		unsigned int c = *s;
 		unsigned int lc = _tolower(c);
 		unsigned int val;

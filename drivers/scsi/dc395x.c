@@ -2345,7 +2345,7 @@ static void data_io_transfer(struct AdapterCtlBlk *acb,
 
 				left_io -= len;
 
-				while (len--) {
+				for (;len;len--) {
 					if (debug_enabled(DBG_PIO))
 						printk(" %02x", *virt);
 

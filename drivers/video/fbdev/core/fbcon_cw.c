@@ -90,7 +90,7 @@ static inline void cw_putcs_aligned(struct vc_data *vc, struct fb_info *info,
 	u32 idx = (vc->vc_font.height + 7) >> 3;
 	u8 *src;
 
-	while (cnt--) {
+	for (;cnt;cnt--) {
 		src = ops->fontbuffer + (scr_readw(s++) & charmask)*cellsize;
 
 		if (attr) {

@@ -384,7 +384,7 @@ EXPORT_SYMBOL(strrchr);
  */
 char *strnchr(const char *s, size_t count, int c)
 {
-	while (count--) {
+	for (;count;count--) {
 		if (*s == (char)c)
 			return (char *)s;
 		if (*s++ == '\0')
@@ -518,7 +518,7 @@ void *memset(void *s, int c, size_t count)
 {
 	char *xs = s;
 
-	while (count--)
+	for (;count;count--)
 		*xs++ = c;
 	return s;
 }
@@ -540,7 +540,7 @@ void *memset16(uint16_t *s, uint16_t v, size_t count)
 {
 	uint16_t *xs = s;
 
-	while (count--)
+	for (;count;count--)
 		*xs++ = v;
 	return s;
 }
@@ -562,7 +562,7 @@ void *memset32(uint32_t *s, uint32_t v, size_t count)
 {
 	uint32_t *xs = s;
 
-	while (count--)
+	for (;count;count--)
 		*xs++ = v;
 	return s;
 }
@@ -584,7 +584,7 @@ void *memset64(uint64_t *s, uint64_t v, size_t count)
 {
 	uint64_t *xs = s;
 
-	while (count--)
+	for (;count;count--)
 		*xs++ = v;
 	return s;
 }
@@ -606,7 +606,7 @@ void *memcpy(void *dest, const void *src, size_t count)
 	char *tmp = dest;
 	const char *s = src;
 
-	while (count--)
+	for (;count;count--)
 		*tmp++ = *s++;
 	return dest;
 }
@@ -630,14 +630,14 @@ void *memmove(void *dest, const void *src, size_t count)
 	if (dest <= src) {
 		tmp = dest;
 		s = src;
-		while (count--)
+		for (;count;count--)
 			*tmp++ = *s++;
 	} else {
 		tmp = dest;
 		tmp += count;
 		s = src;
 		s += count;
-		while (count--)
+		for (;count;count--)
 			*--tmp = *--s;
 	}
 	return dest;

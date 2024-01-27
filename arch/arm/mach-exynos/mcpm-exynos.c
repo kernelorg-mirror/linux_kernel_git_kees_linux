@@ -170,7 +170,7 @@ static int exynos_wait_for_powerdown(unsigned int cpu, unsigned int cluster)
 			cluster >= EXYNOS5420_NR_CLUSTERS);
 
 	/* Wait for the core state to be OFF */
-	while (tries--) {
+	for (;tries;tries--) {
 		if ((exynos_cpu_power_state(cpunr) == 0))
 			return 0; /* success: the CPU is halted */
 

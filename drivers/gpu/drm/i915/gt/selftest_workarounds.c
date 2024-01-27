@@ -960,7 +960,7 @@ static bool find_reg(struct drm_i915_private *i915,
 {
 	u32 offset = i915_mmio_reg_offset(reg);
 
-	while (count--) {
+	for (;count;count--) {
 		if (GRAPHICS_VER(i915) == tbl->graphics_ver &&
 		    i915_mmio_reg_offset(tbl->reg) == offset)
 			return true;

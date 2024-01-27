@@ -124,7 +124,7 @@ static int gather_array(struct list_head *pagelist,
 
 	pageidx = PAGE_SIZE;
 	pagedata = NULL;	/* quiet, gcc */
-	while (nelem--) {
+	for (;nelem;nelem--) {
 		if (pageidx > PAGE_SIZE-size) {
 			struct page *page = alloc_page(GFP_KERNEL);
 
@@ -170,7 +170,7 @@ static int traverse_pages(unsigned nelem, size_t size,
 	pageidx = PAGE_SIZE;
 	pagedata = NULL;	/* hush, gcc */
 
-	while (nelem--) {
+	for (;nelem;nelem--) {
 		if (pageidx > PAGE_SIZE-size) {
 			struct page *page;
 			pos = pos->next;

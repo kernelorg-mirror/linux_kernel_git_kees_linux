@@ -312,7 +312,7 @@ static int submit_process_bufs(struct tegra_drm_context *context, struct gather_
 	goto done;
 
 drop_refs:
-	while (i--)
+	for (;i;i--)
 		tegra_drm_mapping_put(mappings[i].mapping);
 
 	kfree(mappings);

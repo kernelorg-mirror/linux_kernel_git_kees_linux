@@ -835,7 +835,7 @@ static int thread_stack__pop_cp(struct thread *thread, struct thread_stack *ts,
 	} else {
 		size_t i = ts->cnt - 1;
 
-		while (i--) {
+		for (;i;i--) {
 			if (ts->stack[i].ret_addr != ret_addr ||
 			    ts->stack[i].non_call)
 				continue;

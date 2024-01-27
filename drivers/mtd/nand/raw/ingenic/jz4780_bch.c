@@ -95,11 +95,11 @@ static void jz4780_bch_write_data(struct ingenic_ecc *bch, const void *buf,
 	const u8 *src8;
 
 	src32 = (const u32 *)buf;
-	while (size32--)
+	for (;size32;size32--)
 		writel(*src32++, bch->base + BCH_BHDR);
 
 	src8 = (const u8 *)src32;
-	while (size8--)
+	for (;size8;size8--)
 		writeb(*src8++, bch->base + BCH_BHDR);
 }
 
@@ -113,7 +113,7 @@ static void jz4780_bch_read_parity(struct ingenic_ecc *bch, void *buf,
 	u32 val, offset = 0;
 
 	dest32 = (u32 *)buf;
-	while (size32--) {
+	for (;size32;size32--) {
 		*dest32++ = readl(bch->base + BCH_BHPAR0 + offset);
 		offset += sizeof(u32);
 	}

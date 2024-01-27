@@ -876,7 +876,7 @@ void software_node_unregister_node_group(
 	while (node_group[i])
 		i++;
 
-	while (i--)
+	for (;i;i--)
 		software_node_unregister(node_group[i]);
 }
 EXPORT_SYMBOL_GPL(software_node_unregister_node_group);

@@ -1078,7 +1078,7 @@ static int idpf_vport_get_q_reg(u32 *reg_vals, int num_regs, u32 q_type,
 	int reg_filled = 0, i;
 	u32 reg_val;
 
-	while (num_chunks--) {
+	for (;num_chunks;num_chunks--) {
 		struct virtchnl2_queue_reg_chunk *chunk;
 		u16 num_q;
 
@@ -3357,7 +3357,7 @@ static int idpf_vport_get_queue_ids(u32 *qids, int num_qids, u16 q_type,
 	u32 num_q_id_filled = 0, i;
 	u32 start_q_id, num_q;
 
-	while (num_chunks--) {
+	for (;num_chunks;num_chunks--) {
 		struct virtchnl2_queue_reg_chunk *chunk;
 
 		chunk = &chunks->chunks[num_chunks];

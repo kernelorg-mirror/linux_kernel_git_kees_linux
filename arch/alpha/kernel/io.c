@@ -360,14 +360,14 @@ EXPORT_SYMBOL(insw);
 void ioread32_rep(const void __iomem *port, void *dst, unsigned long count)
 {
 	if (unlikely((unsigned long)dst & 0x3)) {
-		while (count--) {
+		for (;count;count--) {
 			struct S { int x __attribute__((packed)); };
 			((struct S *)dst)->x = ioread32(port);
 			dst += 4;
 		}
 	} else {
 		/* Buffer 32-bit aligned.  */
-		while (count--) {
+		for (;count;count--) {
 			*(unsigned int *)dst = ioread32(port);
 			dst += 4;
 		}
@@ -392,7 +392,7 @@ EXPORT_SYMBOL(insl);
 void iowrite8_rep(void __iomem *port, const void *xsrc, unsigned long count)
 {
 	const unsigned char *src = xsrc;
-	while (count--)
+	for (;count;count--)
 		iowrite8(*src++, port);
 }
 
@@ -454,14 +454,14 @@ EXPORT_SYMBOL(outsw);
 void iowrite32_rep(void __iomem *port, const void *src, unsigned long count)
 {
 	if (unlikely((unsigned long)src & 0x3)) {
-		while (count--) {
+		for (;count;count--) {
 			struct S { int x __attribute__((packed)); };
 			iowrite32(((struct S *)src)->x, port);
 			src += 4;
 		}
 	} else {
 		/* Buffer 32-bit aligned.  */
-		while (count--) {
+		for (;count;count--) {
 			iowrite32(*(unsigned int *)src, port);
 			src += 4;
 		}
@@ -664,7 +664,7 @@ scr_memcpyw(u16 *d, const u16 *s, unsigned int count)
 			   operation widening.  */
 
 			count /= 2;
-			while (count--) {
+			for (;count;count--) {
 				u16 tmp = __raw_readw(ios++);
 				__raw_writew(tmp, iod++);
 			}

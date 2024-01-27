@@ -134,7 +134,7 @@ static void bch_encode_unaligned(struct bch_control *bch,
 	const uint32_t *p;
 	const int l = BCH_ECC_WORDS(bch)-1;
 
-	while (len--) {
+	for (;len;len--) {
 		u8 tmp = swap_bits(bch, *data++);
 
 		p = bch->mod8_tab + (l+1)*(((ecc[0] >> 24)^(tmp)) & 0xff);
@@ -255,7 +255,7 @@ void bch_encode(struct bch_control *bch, const uint8_t *data,
 	 * xxxxxxxx  00000000  00000000  00000000  mod g = r3 (precomputed)
 	 * xxxxxxxx  yyyyyyyy  zzzzzzzz  tttttttt  mod g = r0^r1^r2^r3
 	 */
-	while (mlen--) {
+	for (;mlen;mlen--) {
 		/* input data is read in big-endian format */
 		w = cpu_to_be32(*pdata++);
 		if (bch->swap_bits)

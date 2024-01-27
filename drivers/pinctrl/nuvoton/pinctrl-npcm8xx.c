@@ -2300,7 +2300,7 @@ static int npcm8xx_config_set(struct pinctrl_dev *pctldev, unsigned int pin,
 	struct npcm8xx_pinctrl *npcm = pinctrl_dev_get_drvdata(pctldev);
 	int rc;
 
-	while (num_configs--) {
+	for (;num_configs;num_configs--) {
 		rc = npcm8xx_config_set_one(npcm, pin, *configs++);
 		if (rc)
 			return rc;

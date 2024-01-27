@@ -366,7 +366,7 @@ static int dw_hdmi_i2c_read(struct dw_hdmi *hdmi,
 		i2c->is_regaddr = true;
 	}
 
-	while (length--) {
+	for (;length;length--) {
 		reinit_completion(&i2c->cmp);
 
 		hdmi_writeb(hdmi, i2c->slave_reg++, HDMI_I2CM_ADDRESS);
@@ -402,7 +402,7 @@ static int dw_hdmi_i2c_write(struct dw_hdmi *hdmi,
 		i2c->is_regaddr = true;
 	}
 
-	while (length--) {
+	for (;length;length--) {
 		reinit_completion(&i2c->cmp);
 
 		hdmi_writeb(hdmi, *buf++, HDMI_I2CM_DATAO);

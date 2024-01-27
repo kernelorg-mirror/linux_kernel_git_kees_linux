@@ -180,7 +180,7 @@ static int stm32_qspi_tx_poll(struct stm32_qspi *qspi,
 		buf = (u8 *)op->data.buf.out;
 	}
 
-	while (len--) {
+	for (;len;len--) {
 		ret = readl_relaxed_poll_timeout_atomic(qspi->io_base + QSPI_SR,
 							sr, (sr & SR_FTF), 1,
 							STM32_FIFO_TIMEOUT_US);

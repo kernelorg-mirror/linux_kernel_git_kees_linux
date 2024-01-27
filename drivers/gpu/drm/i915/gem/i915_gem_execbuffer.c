@@ -1731,7 +1731,7 @@ end:
 	kvfree(relocs);
 	err = -EFAULT;
 err:
-	while (i--) {
+	for (;i;i--) {
 		relocs = u64_to_ptr(typeof(*relocs), eb->exec[i].relocs_ptr);
 		if (eb->exec[i].relocation_count)
 			kvfree(relocs);
@@ -2007,7 +2007,7 @@ static int eb_capture_stage(struct i915_execbuffer *eb)
 	const unsigned int count = eb->buffer_count;
 	unsigned int i = count, j;
 
-	while (i--) {
+	for (;i;i--) {
 		struct eb_vma *ev = &eb->vma[i];
 		struct i915_vma *vma = ev->vma;
 		unsigned int flags = ev->flags;
@@ -2099,7 +2099,7 @@ static int eb_move_to_gpu(struct i915_execbuffer *eb)
 	unsigned int i = count;
 	int err = 0, j;
 
-	while (i--) {
+	for (;i;i--) {
 		struct eb_vma *ev = &eb->vma[i];
 		struct i915_vma *vma = ev->vma;
 		unsigned int flags = ev->flags;
@@ -2798,7 +2798,7 @@ eb_put_engine(struct i915_execbuffer *eb)
 static void
 __free_fence_array(struct eb_fence *fences, unsigned int n)
 {
-	while (n--) {
+	for (;n;n--) {
 		drm_syncobj_put(ptr_mask_bits(fences[n].syncobj, 2));
 		dma_fence_put(fences[n].dma_fence);
 		dma_fence_chain_free(fences[n].chain_fence);
@@ -2847,7 +2847,7 @@ add_timeline_fence_array(struct i915_execbuffer *eb,
 	BUILD_BUG_ON(~(ARCH_KMALLOC_MINALIGN - 1) &
 		     ~__I915_EXEC_FENCE_UNKNOWN_FLAGS);
 
-	while (nfences--) {
+	for (;nfences;nfences--) {
 		struct drm_i915_gem_exec_fence user_fence;
 		struct drm_syncobj *syncobj;
 		struct dma_fence *fence = NULL;
@@ -2972,7 +2972,7 @@ static int add_fence_array(struct i915_execbuffer *eb)
 
 	eb->fences = f;
 	f += eb->num_fences;
-	while (num_fences--) {
+	for (;num_fences;num_fences--) {
 		struct drm_i915_gem_exec_fence user_fence;
 		struct drm_syncobj *syncobj;
 		struct dma_fence *fence = NULL;

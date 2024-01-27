@@ -3048,7 +3048,7 @@ unwind_ops:
 free_syncs:
 	if (err == -ENODATA)
 		err = vm_bind_ioctl_signal_fences(vm, q, syncs, num_syncs);
-	while (num_syncs--)
+	for (;num_syncs;num_syncs--)
 		xe_sync_entry_cleanup(&syncs[num_syncs]);
 
 	kfree(syncs);

@@ -1239,7 +1239,7 @@ static void pm2fb_imageblit(struct fb_info *info, const struct fb_image *image)
 			PM2F_RENDER_SYNC_ON_BIT_MASK);
 	}
 
-	while (height--) {
+	for (;height;height--) {
 		int width = ((image->width + 7) >> 3)
 				+ info->pixmap.scan_align - 1;
 		width >>= 2;

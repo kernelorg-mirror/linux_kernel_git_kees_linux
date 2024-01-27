@@ -162,7 +162,7 @@ static void otm3225a_write(struct spi_device *spi,
 {
 	unsigned char buf[3];
 
-	while (count--) {
+	for (;count;count--) {
 		/* address register using index register */
 		buf[0] = OTM3225A_INDEX_REG;
 		buf[1] = 0x00;

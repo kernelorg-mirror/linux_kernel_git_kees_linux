@@ -643,7 +643,7 @@ int dma_resv_get_singleton(struct dma_resv *obj, enum dma_resv_usage usage,
 				       dma_fence_context_alloc(1),
 				       1, false);
 	if (!array) {
-		while (count--)
+		for (;count;count--)
 			dma_fence_put(fences[count]);
 		kfree(fences);
 		return -ENOMEM;

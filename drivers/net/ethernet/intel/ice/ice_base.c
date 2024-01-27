@@ -731,7 +731,7 @@ int ice_vsi_alloc_q_vectors(struct ice_vsi *vsi)
 	return 0;
 
 err_out:
-	while (v_idx--)
+	for (;v_idx;v_idx--)
 		ice_free_q_vector(vsi, v_idx);
 
 	dev_err(dev, "Failed to allocate %d q_vector for VSI %d, ret=%d\n",

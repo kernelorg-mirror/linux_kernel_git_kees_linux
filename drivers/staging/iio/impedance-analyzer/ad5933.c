@@ -127,7 +127,7 @@ static int ad5933_i2c_write(struct i2c_client *client, u8 reg, u8 len, u8 *data)
 {
 	int ret;
 
-	while (len--) {
+	for (;len;len--) {
 		ret = i2c_smbus_write_byte_data(client, reg++, *data++);
 		if (ret < 0) {
 			dev_err(&client->dev, "I2C write error\n");
@@ -141,7 +141,7 @@ static int ad5933_i2c_read(struct i2c_client *client, u8 reg, u8 len, u8 *data)
 {
 	int ret;
 
-	while (len--) {
+	for (;len;len--) {
 		ret = i2c_smbus_read_byte_data(client, reg++);
 		if (ret < 0) {
 			dev_err(&client->dev, "I2C read error\n");
@@ -173,7 +173,7 @@ static int ad5933_wait_busy(struct ad5933_state *st, unsigned char event)
 	unsigned char val, timeout = AD5933_MAX_RETRIES;
 	int ret;
 
-	while (timeout--) {
+	for (;timeout;timeout--) {
 		ret =  ad5933_i2c_read(st->client, AD5933_REG_STATUS, 1, &val);
 		if (ret < 0)
 			return ret;

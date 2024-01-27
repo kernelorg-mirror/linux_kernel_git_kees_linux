@@ -832,7 +832,7 @@ static void npcm_i2c_read_fifo(struct npcm_i2c *bus, u8 bytes_in_fifo)
 {
 	u8 data;
 
-	while (bytes_in_fifo--) {
+	for (;bytes_in_fifo;bytes_in_fifo--) {
 		data = npcm_i2c_rd_byte(bus);
 		if (bus->rd_ind < bus->rd_size)
 			bus->rd_buf[bus->rd_ind++] = data;
@@ -905,7 +905,7 @@ static void npcm_i2c_read_fifo_slave(struct npcm_i2c *bus, u8 bytes_in_fifo)
 	if (!bus->slave)
 		return;
 
-	while (bytes_in_fifo--) {
+	for (;bytes_in_fifo;bytes_in_fifo--) {
 		data = npcm_i2c_rd_byte(bus);
 
 		bus->slv_rd_ind = bus->slv_rd_ind & (bus->data->fifo_size - 1);

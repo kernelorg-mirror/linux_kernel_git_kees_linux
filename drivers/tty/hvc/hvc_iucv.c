@@ -1162,7 +1162,7 @@ static const char *hvc_iucv_parse_filter(const char *filter, char *dest)
 
 	/* pad with blanks and save upper case version of user ID */
 	memset(dest, ' ', 8);
-	while (len--)
+	for (;len;len--)
 		dest[len] = toupper(filter[len]);
 	return residual;
 }

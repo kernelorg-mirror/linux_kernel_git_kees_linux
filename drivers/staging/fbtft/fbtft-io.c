@@ -138,7 +138,7 @@ int fbtft_write_gpio8_wr(struct fbtft_par *par, void *buf, size_t len)
 	fbtft_par_dbg_hex(DEBUG_WRITE, par, par->info->device, u8, buf, len,
 			  "%s(len=%zu): ", __func__, len);
 
-	while (len--) {
+	for (;len;len--) {
 		data = *(u8 *)buf;
 
 		/* Start writing by pulling down /WR */

@@ -897,7 +897,7 @@ static int atomisp_register_entities(struct atomisp_device *isp)
 		/* error case */
 		dev_err(isp->dev, "failed to register the CSI port: %d\n", i);
 		/* deregister all registered CSI ports */
-		while (i--)
+		for (;i;i--)
 			atomisp_mipi_csi2_unregister_entities(
 			    &isp->csi2_port[i]);
 

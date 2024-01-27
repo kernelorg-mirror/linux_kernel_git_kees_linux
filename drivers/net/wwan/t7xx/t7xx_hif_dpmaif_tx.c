@@ -316,7 +316,7 @@ static int t7xx_dpmaif_add_skb_to_ring(struct dpmaif_ctrl *dpmaif_ctrl, struct s
 	return 0;
 
 unmap_buffers:
-	while (wr_cnt--) {
+	for (;wr_cnt;wr_cnt--) {
 		struct dpmaif_drb_skb *drb_skb = txq->drb_skb_base;
 
 		cur_idx = cur_idx ? cur_idx - 1 : txq->drb_size_cnt - 1;

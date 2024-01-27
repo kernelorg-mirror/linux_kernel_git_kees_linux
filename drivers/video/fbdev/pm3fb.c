@@ -577,7 +577,7 @@ static void pm3fb_imageblit(struct fb_info *info, const struct fb_image *image)
 			PM3Render2D_Height(image->height));
 
 
-	while (height--) {
+	for (;height;height--) {
 		int width = ((image->width + 7) >> 3)
 				+ info->pixmap.scan_align - 1;
 		width >>= 2;

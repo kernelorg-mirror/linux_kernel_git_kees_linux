@@ -1617,7 +1617,7 @@ int beiscsi_check_fw_rdy(struct beiscsi_hba *phba)
 	u32 loop, post, rdy = 0;
 
 	loop = 1000;
-	while (loop--) {
+	for (;loop;loop--) {
 		post = beiscsi_get_post_stage(phba);
 		if (post & POST_ERROR_BIT)
 			break;

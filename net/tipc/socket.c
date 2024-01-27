@@ -3017,7 +3017,7 @@ static int tipc_sk_insert(struct tipc_sock *tsk)
 	u32 remaining = (TIPC_MAX_PORT - TIPC_MIN_PORT) + 1;
 	u32 portid = get_random_u32_below(remaining) + TIPC_MIN_PORT;
 
-	while (remaining--) {
+	for (;remaining;remaining--) {
 		portid++;
 		if ((portid < TIPC_MIN_PORT) || (portid > TIPC_MAX_PORT))
 			portid = TIPC_MIN_PORT;

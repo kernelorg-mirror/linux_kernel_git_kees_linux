@@ -77,7 +77,7 @@ void *memset(void *dst, int b, size_t len)
 {
 	char *p = dst;
 
-	while (len--) {
+	for (;len;len--) {
 		/* prevent gcc from recognizing memset() here */
 		__asm__ volatile("");
 		*(p++) = b;

@@ -259,7 +259,7 @@ static int bcmasp_netfilt_wr_m_wake(struct bcmasp_priv *priv,
 	if ((offset + size) > MAX_WAKE_FILTER_SIZE)
 		return -EINVAL;
 
-	while (size--) {
+	for (;size;size--) {
 		/* The HW only accepts 4 byte aligned writes, so if we
 		 * begin unaligned or if remaining bytes less than 4,
 		 * we need to read then write to avoid losing current

@@ -842,7 +842,7 @@ static int fsmc_bch8_correct_data(struct nand_chip *chip, u8 *dat,
 	err_idx[7] = (((ecc4 >> 16) & 0xFF) << 5) | ((ecc3 >> 27) & 0x1F);
 
 	i = 0;
-	while (num_err--) {
+	for (;num_err;num_err--) {
 		err_idx[i] ^= 3;
 
 		if (err_idx[i] < chip->ecc.size * 8) {

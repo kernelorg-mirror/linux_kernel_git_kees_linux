@@ -136,7 +136,7 @@ static void netup_i2c_fifo_tx(struct netup_i2c *i2c)
 	u32 msg_length = i2c->msg->len - i2c->xmit_size;
 
 	msg_length = (msg_length < fifo_space ? msg_length : fifo_space);
-	while (msg_length--) {
+	for (;msg_length;msg_length--) {
 		data = i2c->msg->buf[i2c->xmit_size++];
 		writeb(data, &i2c->regs->tx_fifo.data8);
 		dev_dbg(i2c->adap.dev.parent,
@@ -157,7 +157,7 @@ static void netup_i2c_fifo_rx(struct netup_i2c *i2c)
 
 	dev_dbg(i2c->adap.dev.parent,
 		"%s(): RX fifo size %d\n", __func__, fifo_size);
-	while (fifo_size--) {
+	for (;fifo_size;fifo_size--) {
 		data = readb(&i2c->regs->rx_fifo.data8);
 		if ((i2c->msg->flags & I2C_M_RD) != 0 &&
 					i2c->xmit_size < i2c->msg->len) {

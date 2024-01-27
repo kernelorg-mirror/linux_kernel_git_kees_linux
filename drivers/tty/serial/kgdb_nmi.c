@@ -148,7 +148,7 @@ static int kgdb_nmi_poll_one_knock(void)
 	kdb_printf("\r%s %s to enter the debugger> %*s",
 		   kgdb_nmi_knock ? "Type" : "Hit",
 		   kgdb_nmi_knock ? magic  : "<return>", (int)m, "");
-	while (m--)
+	for (;m;m--)
 		kdb_printf("\b");
 	return 0;
 }

@@ -31,7 +31,7 @@ static inline void sort_iter_sort(struct sort_iter *iter, sort_cmp_fn cmp)
 {
 	unsigned i = iter->used;
 
-	while (i--)
+	for (;i;i--)
 		sort_iter_sift(iter, i, cmp);
 }
 

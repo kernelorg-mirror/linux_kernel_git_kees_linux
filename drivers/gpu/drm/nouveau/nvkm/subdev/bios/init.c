@@ -666,7 +666,7 @@ init_repeat(struct nvbios_init *init)
 
 	init->repeat = init->offset;
 	init->repend = init->offset;
-	while (count--) {
+	for (;count;count--) {
 		init->offset = init->repeat;
 		nvbios_exec(init);
 		if (count)
@@ -930,7 +930,7 @@ init_idx_addr_latched(struct nvbios_init *init)
 	trace("\tCTRL &= 0x%08x |= 0x%08x\n", mask, data);
 	init->offset += 18;
 
-	while (count--) {
+	for (;count;count--) {
 		u8 iaddr = nvbios_rd08(bios, init->offset + 0);
 		u8 idata = nvbios_rd08(bios, init->offset + 1);
 
@@ -1009,7 +1009,7 @@ init_i2c_byte(struct nvbios_init *init)
 	trace("I2C_BYTE\tI2C[0x%02x][0x%02x]\n", index, addr);
 	init->offset += 4;
 
-	while (count--) {
+	for (;count;count--) {
 		u8  reg = nvbios_rd08(bios, init->offset + 0);
 		u8 mask = nvbios_rd08(bios, init->offset + 1);
 		u8 data = nvbios_rd08(bios, init->offset + 2);
@@ -1040,7 +1040,7 @@ init_zm_i2c_byte(struct nvbios_init *init)
 	trace("ZM_I2C_BYTE\tI2C[0x%02x][0x%02x]\n", index, addr);
 	init->offset += 4;
 
-	while (count--) {
+	for (;count;count--) {
 		u8  reg = nvbios_rd08(bios, init->offset + 0);
 		u8 data = nvbios_rd08(bios, init->offset + 1);
 
@@ -1126,7 +1126,7 @@ init_zm_tmds_group(struct nvbios_init *init)
 	trace("TMDS_ZM_GROUP\tT[0x%02x]\n", tmds);
 	init->offset += 3;
 
-	while (count--) {
+	for (;count;count--) {
 		u8 addr = nvbios_rd08(bios, init->offset + 0);
 		u8 data = nvbios_rd08(bios, init->offset + 1);
 
@@ -1156,7 +1156,7 @@ init_cr_idx_adr_latch(struct nvbios_init *init)
 	init->offset += 5;
 
 	save0 = init_rdvgai(init, 0x03d4, addr0);
-	while (count--) {
+	for (;count;count--) {
 		u8 data = nvbios_rd08(bios, init->offset);
 
 		trace("\t\t[0x%02x] = 0x%02x\n", base, data);
@@ -1218,7 +1218,7 @@ init_zm_cr_group(struct nvbios_init *init)
 	trace("ZM_CR_GROUP\n");
 	init->offset += 2;
 
-	while (count--) {
+	for (;count;count--) {
 		u8 addr = nvbios_rd08(bios, init->offset + 0);
 		u8 data = nvbios_rd08(bios, init->offset + 1);
 
@@ -1247,7 +1247,7 @@ init_condition_time(struct nvbios_init *init)
 	if (!init_exec(init))
 		return;
 
-	while (wait--) {
+	for (;wait;wait--) {
 		if (init_condition_met(init, cond))
 			return;
 		mdelay(20);
@@ -1287,7 +1287,7 @@ init_zm_reg_sequence(struct nvbios_init *init)
 	trace("ZM_REG_SEQUENCE\t0x%02x\n", count);
 	init->offset += 6;
 
-	while (count--) {
+	for (;count;count--) {
 		u32 data = nvbios_rd32(bios, init->offset);
 
 		trace("\t\tR[0x%06x] = 0x%08x\n", base, data);
@@ -2041,7 +2041,7 @@ init_zm_reg_group(struct nvbios_init *init)
 	trace("ZM_REG_GROUP\tR[0x%06x] =\n", addr);
 	init->offset += 6;
 
-	while (count--) {
+	for (;count;count--) {
 		u32 data = nvbios_rd32(bios, init->offset);
 		trace("\t0x%08x\n", data);
 		init_wr32(init, addr, data);
@@ -2112,7 +2112,7 @@ init_auxch(struct nvbios_init *init)
 	trace("AUXCH\tAUX[0x%08x] 0x%02x\n", addr, count);
 	init->offset += 6;
 
-	while (count--) {
+	for (;count;count--) {
 		u8 mask = nvbios_rd08(bios, init->offset + 0);
 		u8 data = nvbios_rd08(bios, init->offset + 1);
 		trace("\tAUX[0x%08x] &= 0x%02x |= 0x%02x\n", addr, mask, data);
@@ -2136,7 +2136,7 @@ init_zm_auxch(struct nvbios_init *init)
 	trace("ZM_AUXCH\tAUX[0x%08x] 0x%02x\n", addr, count);
 	init->offset += 6;
 
-	while (count--) {
+	for (;count;count--) {
 		u8 data = nvbios_rd08(bios, init->offset + 0);
 		trace("\tAUX[0x%08x] = 0x%02x\n", addr, data);
 		init_wrauxr(init, addr, data);

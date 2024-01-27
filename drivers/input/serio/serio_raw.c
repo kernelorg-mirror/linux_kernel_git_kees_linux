@@ -215,7 +215,7 @@ static ssize_t serio_raw_write(struct file *file, const char __user *buffer,
 	if (count > 32)
 		count = 32;
 
-	while (count--) {
+	for (;count;count--) {
 		if (get_user(c, buffer++)) {
 			retval = -EFAULT;
 			goto out;

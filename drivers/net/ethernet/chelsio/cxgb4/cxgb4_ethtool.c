@@ -1597,7 +1597,7 @@ static int get_rss_table(struct net_device *dev,
 	rxfh->hfunc = ETH_RSS_HASH_TOP;
 	if (!rxfh->indir)
 		return 0;
-	while (n--)
+	for (;n;n--)
 		rxfh->indir[n] = pi->rss[n];
 	return 0;
 }

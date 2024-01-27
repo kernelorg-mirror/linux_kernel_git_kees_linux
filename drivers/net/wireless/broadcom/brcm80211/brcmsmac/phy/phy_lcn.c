@@ -956,7 +956,7 @@ wlc_lcnphy_qdiv_roundup(u32 dividend, u32 divisor, u8 precision)
 	rbit = divisor & 1;
 	roundup = (divisor >> 1) + rbit;
 
-	while (precision--) {
+	for (;precision;precision--) {
 		quotient <<= 1;
 		if (remainder >= roundup) {
 			quotient++;

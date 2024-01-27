@@ -688,7 +688,7 @@ static void _rtl_pci_rx_interrupt(struct ieee80211_hw *hw)
 	};
 
 	/*RX NORMAL PKT */
-	while (count--) {
+	for (;count;count--) {
 		struct ieee80211_hdr *hdr;
 		__le16 fc;
 		u16 len;

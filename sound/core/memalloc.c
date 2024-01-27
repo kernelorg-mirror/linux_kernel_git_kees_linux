@@ -799,7 +799,7 @@ static void *snd_dma_sg_fallback_alloc(struct snd_dma_buffer *dmab, size_t size)
 		npages = chunk >> PAGE_SHIFT;
 		*addrp = npages; /* store in lower bits */
 		curp = virt_to_page(p);
-		while (npages--) {
+		for (;npages;npages--) {
 			*pagep++ = curp++;
 			*addrp++ |= addr;
 			addr += PAGE_SIZE;

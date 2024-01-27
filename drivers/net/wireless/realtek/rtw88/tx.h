@@ -121,7 +121,7 @@ void fill_txdesc_checksum_common(u8 *txdesc, size_t words)
 
 	le32p_replace_bits(&tx_desc->w7, 0, RTW_TX_DESC_W7_TXDESC_CHECKSUM);
 
-	while (words--)
+	for (;words;words--)
 		chksum ^= *data++;
 
 	le32p_replace_bits(&tx_desc->w7, __le16_to_cpu(chksum),

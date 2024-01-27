@@ -984,11 +984,12 @@ static void __meminit free_pagetable(struct page *page, int order)
 
 		magic = page->index;
 		if (magic == SECTION_INFO || magic == MIX_SECTION_INFO) {
-			while (nr_pages--)
+			for (;nr_pages;nr_pages--)
 				put_page_bootmem(page++);
 		} else
-			while (nr_pages--)
+		{for (;nr_pages;nr_pages--)
 				free_reserved_page(page++);
+		}
 	} else
 		free_pages((unsigned long)page_address(page), order);
 }
@@ -1615,7 +1616,7 @@ void register_page_bootmem_memmap(unsigned long section_nr,
 
 			nr_pmd_pages = 1 << get_order(PMD_SIZE);
 			page = pmd_page(*pmd);
-			while (nr_pmd_pages--)
+			for (;nr_pmd_pages;nr_pmd_pages--)
 				get_page_bootmem(section_nr, page++,
 						 SECTION_INFO);
 		}

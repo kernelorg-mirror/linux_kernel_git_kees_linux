@@ -80,7 +80,7 @@ void __crypto_xor(u8 *dst, const u8 *src1, const u8 *src2, unsigned int len)
 		len -= 2;
 	}
 
-	while (len--)
+	for (;len;len--)
 		*dst++ = *src1++ ^ *src2++;
 }
 EXPORT_SYMBOL_GPL(__crypto_xor);

@@ -139,7 +139,7 @@ static int cxgb4_matchall_tc_bind_queues(struct net_device *dev, u32 tc)
 	return 0;
 
 out_free:
-	while (i--) {
+	for (;i;i--) {
 		qe.queue = i;
 		qe.class = SCHED_CLS_NONE;
 		cxgb4_sched_class_unbind(dev, &qe, SCHED_QUEUE);

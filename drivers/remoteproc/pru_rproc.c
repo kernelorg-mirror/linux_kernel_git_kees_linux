@@ -789,7 +789,7 @@ static int pru_rproc_memcpy(void *dest, const void *src, size_t count)
 		s = tmp_src;
 	}
 
-	while (size--)
+	for (;size;size--)
 		*d++ = *s++;
 
 	kfree(tmp_src);

@@ -561,7 +561,7 @@ static u16 fm10k_crc_16b(const u32 *data, u16 seed, u16 len)
 {
 	u32 result = seed;
 
-	while (len--) {
+	for (;len;len--) {
 		result ^= *(data++);
 		result = (result >> 8) ^ fm10k_crc_16b_table[result & 0xFF];
 		result = (result >> 8) ^ fm10k_crc_16b_table[result & 0xFF];

@@ -364,7 +364,7 @@ static void __ref __vmemmap_free(unsigned long start, unsigned long end,
 				 */
 				WARN_ON_ONCE(1);
 			} else {
-				while (nr_pages--)
+				for (;nr_pages;nr_pages--)
 					free_reserved_page(page++);
 			}
 		} else {

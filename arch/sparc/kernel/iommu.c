@@ -507,7 +507,7 @@ static int dma_4u_map_sg(struct device *dev, struct scatterlist *sglist,
 
 		/* Insert into HW table */
 		paddr &= IO_PAGE_MASK;
-		while (npages--) {
+		for (;npages;npages--) {
 			iopte_val(*base) = prot | paddr;
 			base++;
 			paddr += IO_PAGE_SIZE;

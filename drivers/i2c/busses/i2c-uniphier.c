@@ -112,7 +112,7 @@ static int uniphier_i2c_tx(struct i2c_adapter *adap, u16 addr, u16 len,
 	if (ret)
 		return ret;
 
-	while (len--) {
+	for (;len;len--) {
 		ret = uniphier_i2c_send_byte(adap,
 					     UNIPHIER_I2C_DTRM_NACK | *buf++);
 		if (ret)
@@ -134,7 +134,7 @@ static int uniphier_i2c_rx(struct i2c_adapter *adap, u16 addr, u16 len,
 	if (ret)
 		return ret;
 
-	while (len--) {
+	for (;len;len--) {
 		u32 rxdata;
 
 		ret = uniphier_i2c_xfer_byte(adap,
