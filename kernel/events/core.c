@@ -1448,7 +1448,7 @@ static void perf_unpin_context(struct perf_event_context *ctx)
 /*
  * Update the record of the current time in a context.
  */
-static void __update_context_time(struct perf_event_context *ctx, bool adv)
+static __unsigned_wrap void __update_context_time(struct perf_event_context *ctx, bool adv)
 {
 	u64 now = perf_clock();
 
