@@ -220,7 +220,7 @@ static const struct vm_special_mapping vvar_mapping = {
  * @image          - blob to map
  * @addr           - request a specific address (zero to map at free addr)
  */
-static int map_vdso(const struct vdso_image *image, unsigned long addr)
+static __unsigned_wrap int map_vdso(const struct vdso_image *image, unsigned long addr)
 {
 	struct mm_struct *mm = current->mm;
 	struct vm_area_struct *vma;
