@@ -7,6 +7,7 @@
 #define _LINUX_ATOMIC_LONG_H
 
 #include <linux/compiler.h>
+#include <linux/overflow.h>
 #include <asm/types.h>
 
 #ifdef CONFIG_64BIT
@@ -1795,4 +1796,4 @@ raw_atomic_long_dec_if_positive(atomic_long_t *v)
 }
 
 #endif /* _LINUX_ATOMIC_LONG_H */
-// 4ef23f98c73cff96d239896175fd26b10b88899e
+// 0d0cb73d47e6a5e7051477d2754fdbe38a0ee8dd
