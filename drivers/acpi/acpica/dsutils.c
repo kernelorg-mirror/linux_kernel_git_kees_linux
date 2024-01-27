@@ -659,6 +659,7 @@ acpi_ds_create_operand(struct acpi_walk_state *walk_state,
  *
  ******************************************************************************/
 
+__unsigned_wrap
 acpi_status
 acpi_ds_create_operands(struct acpi_walk_state *walk_state,
 			union acpi_parse_object *first_arg)
