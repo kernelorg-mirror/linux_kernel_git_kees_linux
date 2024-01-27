@@ -67,7 +67,7 @@
  *
  * Returns the hash value of the key. The result depends on endianness.
  */
-static inline u32 jhash(const void *key, u32 length, u32 initval)
+static inline u32 __unsigned_wrap jhash(const void *key, u32 length, u32 initval)
 {
 	u32 a, b, c;
 	const u8 *k = key;
@@ -114,7 +114,7 @@ static inline u32 jhash(const void *key, u32 length, u32 initval)
  *
  * Returns the hash value of the key.
  */
-static inline u32 jhash2(const u32 *k, u32 length, u32 initval)
+static inline u32 __unsigned_wrap jhash2(const u32 *k, u32 length, u32 initval)
 {
 	u32 a, b, c;
 
@@ -147,7 +147,7 @@ static inline u32 jhash2(const u32 *k, u32 length, u32 initval)
 
 
 /* __jhash_nwords - hash exactly 3, 2 or 1 word(s) */
-static inline u32 __jhash_nwords(u32 a, u32 b, u32 c, u32 initval)
+static inline __unsigned_wrap u32 __jhash_nwords(u32 a, u32 b, u32 c, u32 initval)
 {
 	a += initval;
 	b += initval;
@@ -158,17 +158,17 @@ static inline u32 __jhash_nwords(u32 a, u32 b, u32 c, u32 initval)
 	return c;
 }
 
-static inline u32 jhash_3words(u32 a, u32 b, u32 c, u32 initval)
+static inline u32 __unsigned_wrap jhash_3words(u32 a, u32 b, u32 c, u32 initval)
 {
 	return __jhash_nwords(a, b, c, initval + JHASH_INITVAL + (3 << 2));
 }
 
-static inline u32 jhash_2words(u32 a, u32 b, u32 initval)
+static inline u32 __unsigned_wrap jhash_2words(u32 a, u32 b, u32 initval)
 {
 	return __jhash_nwords(a, b, 0, initval + JHASH_INITVAL + (2 << 2));
 }
 
-static inline u32 jhash_1word(u32 a, u32 initval)
+static inline u32 __unsigned_wrap jhash_1word(u32 a, u32 initval)
 {
 	return __jhash_nwords(a, 0, 0, initval + JHASH_INITVAL + (1 << 2));
 }
