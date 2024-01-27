@@ -16,7 +16,7 @@ extern void tk_debug_account_sleep_time(const struct timespec64 *t);
 #endif
 
 #ifdef CONFIG_CLOCKSOURCE_VALIDATE_LAST_CYCLE
-static inline u64 clocksource_delta(u64 now, u64 last, u64 mask)
+static inline __unsigned_wrap u64 clocksource_delta(u64 now, u64 last, u64 mask)
 {
 	u64 ret = (now - last) & mask;
 
@@ -27,7 +27,7 @@ static inline u64 clocksource_delta(u64 now, u64 last, u64 mask)
 	return ret & ~(mask >> 1) ? 0 : ret;
 }
 #else
-static inline u64 clocksource_delta(u64 now, u64 last, u64 mask)
+static inline __unsigned_wrap u64 clocksource_delta(u64 now, u64 last, u64 mask)
 {
 	return (now - last) & mask;
 }
