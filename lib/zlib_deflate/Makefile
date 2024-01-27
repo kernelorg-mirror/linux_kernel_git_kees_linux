@@ -6,6 +6,7 @@
 # This is the compression code, see zlib_inflate for the
 # decompression code.
 #
+UBSAN_UNSIGNED_WRAP := n
 
 obj-$(CONFIG_ZLIB_DEFLATE) += zlib_deflate.o
 
