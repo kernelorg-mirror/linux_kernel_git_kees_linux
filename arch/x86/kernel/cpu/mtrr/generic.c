@@ -127,7 +127,7 @@ static u64 get_mtrr_size(u64 mask)
 	u64 size;
 
 	mask |= (u64)phys_hi_rsvd << 32;
-	size = -mask;
+	size = wrapping_sub(u64, 0, mask);
 
 	return size;
 }
