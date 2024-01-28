@@ -3,6 +3,7 @@
 #define _ASM_GENERIC_PERCPU_H_
 
 #include <linux/compiler.h>
+#include <linux/overflow.h>
 #include <linux/threads.h>
 #include <linux/percpu-defs.h>
 
@@ -67,6 +68,11 @@ extern void setup_per_cpu_areas(void);
 	*raw_cpu_ptr(&(pcp));						\
 })
 
+#define raw_cpu_generic_to_inc(pcp, val)				\
+do {									\
+	inc_wrap(*raw_cpu_ptr(&(pcp)), val);				\
+} while (0)
+
 #define raw_cpu_generic_to_op(pcp, val, op)				\
 do {									\
 	*raw_cpu_ptr(&(pcp)) op val;					\
@@ -76,7 +82,7 @@ do {									\
 ({									\
 	typeof(pcp) *__p = raw_cpu_ptr(&(pcp));				\
 									\
-	*__p += val;							\
+	inc_wrap(*__p, val);						\
 	*__p;								\
 })
 
@@ -225,16 +231,16 @@ do {									\
 #endif
 
 #ifndef raw_cpu_add_1
-#define raw_cpu_add_1(pcp, val)		raw_cpu_generic_to_op(pcp, val, +=)
+#define raw_cpu_add_1(pcp, val)		raw_cpu_generic_to_inc(pcp, val)
 #endif
 #ifndef raw_cpu_add_2
-#define raw_cpu_add_2(pcp, val)		raw_cpu_generic_to_op(pcp, val, +=)
+#define raw_cpu_add_2(pcp, val)		raw_cpu_generic_to_inc(pcp, val)
 #endif
 #ifndef raw_cpu_add_4
-#define raw_cpu_add_4(pcp, val)		raw_cpu_generic_to_op(pcp, val, +=)
+#define raw_cpu_add_4(pcp, val)		raw_cpu_generic_to_inc(pcp, val)
 #endif
 #ifndef raw_cpu_add_8
-#define raw_cpu_add_8(pcp, val)		raw_cpu_generic_to_op(pcp, val, +=)
+#define raw_cpu_add_8(pcp, val)		raw_cpu_generic_to_inc(pcp, val)
 #endif
 
 #ifndef raw_cpu_and_1
