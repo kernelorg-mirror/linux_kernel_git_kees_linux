@@ -1868,10 +1868,11 @@ int jbd2_journal_stop(handle_t *handle)
 	jbd2_debug(4, "Handle %p going down\n", handle);
 	trace_jbd2_handle_stats(journal->j_fs_dev->bd_dev,
 				tid, handle->h_type, handle->h_line_no,
-				jiffies - handle->h_start_jiffies,
+				sub_wrap(unsigned long, jiffies, handle->h_start_jiffies),
 				handle->h_sync, handle->h_requested_credits,
-				(handle->h_requested_credits -
-				 handle->h_total_credits));
+				sub_wrap(unsigned int,
+					 handle->h_requested_credits,
+				         handle->h_total_credits));
 
 	/*
 	 * Implement synchronous transaction batching.  If the handle
