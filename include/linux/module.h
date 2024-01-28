@@ -620,7 +620,7 @@ static inline bool within_module_mem_type(unsigned long addr,
 
 	base = (unsigned long)mod->mem[type].base;
 	size = mod->mem[type].size;
-	return addr - base < size;
+	return sub_wrap(unsigned long, addr, base) < size;
 }
 
 static inline bool within_module_core(unsigned long addr,
