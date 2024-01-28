@@ -507,7 +507,8 @@ static u32 truesize_adjust(bool adjust, const struct sk_buff *skb)
 	return truesize;
 }
 
-static void tcp_grow_window(struct sock *sk, const struct sk_buff *skb,
+static __unsigned_wrap
+void tcp_grow_window(struct sock *sk, const struct sk_buff *skb,
 			    bool adjust)
 {
 	struct tcp_sock *tp = tcp_sk(sk);
@@ -803,7 +804,8 @@ static void tcp_save_lrcv_flowlabel(struct sock *sk, const struct sk_buff *skb)
  * each ACK we send, he increments snd_cwnd and transmits more of his
  * queue.  -DaveM
  */
-static void tcp_event_data_recv(struct sock *sk, struct sk_buff *skb)
+static __unsigned_wrap
+void tcp_event_data_recv(struct sock *sk, struct sk_buff *skb)
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct inet_connection_sock *icsk = inet_csk(sk);
