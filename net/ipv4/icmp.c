@@ -755,7 +755,7 @@ void __icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info,
 	if (room <= (int)sizeof(struct iphdr))
 		goto ende;
 
-	icmp_param.data_len = skb_in->len - icmp_param.offset;
+	icmp_param.data_len = sub_wrap(int, skb_in->len, icmp_param.offset);
 	if (icmp_param.data_len > room)
 		icmp_param.data_len = room;
 	icmp_param.head_len = sizeof(struct icmphdr);
