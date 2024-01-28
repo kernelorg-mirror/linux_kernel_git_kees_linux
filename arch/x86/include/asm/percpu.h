@@ -168,7 +168,7 @@ do {									\
 		  : [tmp] __pcpu_reg_##size("+", paro_tmp__),		\
 		    [var] "+m" (_var)					\
 		  : : "memory");					\
-	(typeof(_var))(unsigned long) (paro_tmp__ + _val);		\
+	add_wrap(typeof(_var), (unsigned long)paro_tmp__, (unsigned long)(_val)); \
 })
 
 /*
