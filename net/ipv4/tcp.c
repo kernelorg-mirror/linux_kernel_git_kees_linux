@@ -2723,7 +2723,7 @@ int tcp_orphan_count_sum(void)
 	int i, total = 0;
 
 	for_each_possible_cpu(i)
-		total += per_cpu(tcp_orphan_count, i);
+		wrapping_assign_add(total, per_cpu(tcp_orphan_count, i));
 
 	return max(total, 0);
 }
