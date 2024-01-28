@@ -139,7 +139,8 @@ __bpf_kfunc static void cubictcp_init(struct sock *sk)
 		tcp_sk(sk)->snd_ssthresh = initial_ssthresh;
 }
 
-__bpf_kfunc static void cubictcp_cwnd_event(struct sock *sk, enum tcp_ca_event event)
+__bpf_kfunc static void __unsigned_wrap
+cubictcp_cwnd_event(struct sock *sk, enum tcp_ca_event event)
 {
 	if (event == CA_EVENT_TX_START) {
 		struct bictcp *ca = inet_csk_ca(sk);
@@ -164,7 +165,7 @@ __bpf_kfunc static void cubictcp_cwnd_event(struct sock *sk, enum tcp_ca_event e
  * Newton-Raphson iteration.
  * Avg err ~= 0.195%
  */
-static u32 cubic_root(u64 a)
+static __unsigned_wrap u32 cubic_root(u64 a)
 {
 	u32 x, b, shift;
 	/*
