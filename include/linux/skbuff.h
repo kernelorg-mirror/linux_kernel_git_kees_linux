@@ -2968,7 +2968,7 @@ static inline void skb_mac_header_rebuild(struct sk_buff *skb)
 
 static inline int skb_checksum_start_offset(const struct sk_buff *skb)
 {
-	return skb->csum_start - skb_headroom(skb);
+	return sub_wrap(int, skb->csum_start, skb_headroom(skb));
 }
 
 static inline unsigned char *skb_checksum_start(const struct sk_buff *skb)
