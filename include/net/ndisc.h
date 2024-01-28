@@ -368,7 +368,8 @@ static inline u8 *ndisc_opt_addr_data(struct nd_opt_hdr *p,
 				     ndisc_addr_option_pad(dev->type));
 }
 
-static inline u32 ndisc_hashfn(const void *pkey, const struct net_device *dev, __u32 *hash_rnd)
+static inline __unsigned_wrap
+u32 ndisc_hashfn(const void *pkey, const struct net_device *dev, __u32 *hash_rnd)
 {
 	const u32 *p32 = pkey;
 
