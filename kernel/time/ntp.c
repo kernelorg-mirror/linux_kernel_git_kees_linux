@@ -256,7 +256,8 @@ static inline int ntp_synced(void)
  * Update (tick_length, tick_length_base, tick_nsec), based
  * on (tick_usec, ntp_tick_adj, time_freq):
  */
-static void ntp_update_frequency(void)
+static __unsigned_wrap
+void ntp_update_frequency(void)
 {
 	u64 second_length;
 	u64 new_base;
@@ -293,7 +294,8 @@ static inline s64 ntp_update_offset_fll(s64 offset64, long secs)
 	return div64_long(offset64 << (NTP_SCALE_SHIFT - SHIFT_FLL), secs);
 }
 
-static void ntp_update_offset(long offset)
+static __unsigned_wrap
+void ntp_update_offset(long offset)
 {
 	s64 freq_adj;
 	s64 offset64;
@@ -397,6 +399,7 @@ ktime_t ntp_get_next_leap(void)
  *
  * Also handles leap second processing, and returns leap offset
  */
+__unsigned_wrap
 int second_overflow(time64_t secs)
 {
 	s64 delta;
@@ -462,11 +465,11 @@ int second_overflow(time64_t secs)
 	}
 
 	/* Compute the phase adjustment for the next second */
-	tick_length	 = tick_length_base;
+	tick_length	= tick_length_base;
 
-	delta		 = ntp_offset_chunk(time_offset);
-	time_offset	-= delta;
-	tick_length	+= delta;
+	delta		= ntp_offset_chunk(time_offset);
+	time_offset	= sub_wrap(typeof(time_offset), time_offset, delta);
+	tick_length	= add_wrap(typeof(tick_length), tick_length, delta);
 
 	/* Check PPS signal */
 	pps_dec_valid();
