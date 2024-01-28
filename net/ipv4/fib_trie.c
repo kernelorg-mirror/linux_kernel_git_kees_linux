@@ -2040,7 +2040,7 @@ int fib_table_flush(struct net *net, struct fib_table *tb, bool flush_all)
 		unsigned char slen = 0;
 		struct key_vector *n;
 
-		if (!(cindex--)) {
+		if (!dec_wrap(cindex, 1)) {
 			t_key pkey = pn->key;
 
 			/* cannot resize the trie vector */

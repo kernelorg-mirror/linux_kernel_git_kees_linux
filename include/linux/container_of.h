@@ -3,6 +3,7 @@
 #define _LINUX_CONTAINER_OF_H
 
 #include <linux/build_bug.h>
+#include <linux/overflow.h>
 #include <linux/stddef.h>
 
 #define typeof_member(T, m)	typeof(((T*)0)->m)
@@ -20,7 +21,7 @@
 	static_assert(__same_type(*(ptr), ((type *)0)->member) ||	\
 		      __same_type(*(ptr), void),			\
 		      "pointer type mismatch in container_of()");	\
-	((type *)(__mptr - offsetof(type, member))); })
+	((type *)(sub_wrap(unsigned long, (unsigned long)__mptr, offsetof(type, member)))); })
 
 /**
  * container_of_const - cast a member of a structure out to the containing
