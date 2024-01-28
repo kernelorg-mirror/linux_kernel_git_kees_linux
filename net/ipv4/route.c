@@ -458,7 +458,8 @@ static u32 *ip_tstamps __read_mostly;
  * if one generator is seldom used. This makes hard for an attacker
  * to infer how many packets were sent between two points in time.
  */
-static u32 ip_idents_reserve(u32 hash, int segs)
+static __unsigned_wrap
+u32 ip_idents_reserve(u32 hash, int segs)
 {
 	u32 bucket, old, now = (u32)jiffies;
 	atomic_t *p_id;
