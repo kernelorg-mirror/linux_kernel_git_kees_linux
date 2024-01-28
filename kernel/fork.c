@@ -529,7 +529,8 @@ void vm_area_free(struct vm_area_struct *vma)
 #endif
 }
 
-static void account_kernel_stack(struct task_struct *tsk, int account)
+static __unsigned_wrap
+void account_kernel_stack(struct task_struct *tsk, int account)
 {
 	if (IS_ENABLED(CONFIG_VMAP_STACK)) {
 		struct vm_struct *vm = task_stack_vm_area(tsk);
