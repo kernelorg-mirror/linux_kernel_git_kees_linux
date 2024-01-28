@@ -1417,7 +1417,7 @@ err:
 	return err;
 }
 
-static inline t_key prefix_mismatch(t_key key, struct key_vector *n)
+static inline __unsigned_wrap t_key prefix_mismatch(t_key key, struct key_vector *n)
 {
 	t_key prefix = n->key;
 
