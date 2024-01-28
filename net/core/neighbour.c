@@ -295,7 +295,8 @@ unlock:
 	return shrunk;
 }
 
-static void neigh_add_timer(struct neighbour *n, unsigned long when)
+static __unsigned_wrap
+void neigh_add_timer(struct neighbour *n, unsigned long when)
 {
 	/* Use safe distance from the jiffies - LONG_MAX point while timer
 	 * is running in DELAY/PROBE state but still show to user space
