@@ -424,9 +424,10 @@ static void proc_put_char(void **buf, size_t *size, char c)
 	}
 }
 
-static int do_proc_dointvec_conv(bool *negp, unsigned long *lvalp,
-				 int *valp,
-				 int write, void *data)
+static __unsigned_wrap
+int do_proc_dointvec_conv(bool *negp, unsigned long *lvalp,
+			  int *valp,
+			  int write, void *data)
 {
 	if (write) {
 		if (*negp) {
