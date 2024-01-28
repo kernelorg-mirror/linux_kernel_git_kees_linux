@@ -236,6 +236,7 @@ static int udp_reuseport_add_sock(struct sock *sk, struct udp_hslot *hslot)
  *  @hash2_nulladdr: AF-dependent hash value in secondary hash chains,
  *                   with NULL address
  */
+__unsigned_wrap
 int udp_lib_get_port(struct sock *sk, unsigned short snum,
 		     unsigned int hash2_nulladdr)
 {
