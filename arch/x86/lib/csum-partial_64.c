@@ -11,7 +11,7 @@
 #include <asm/checksum.h>
 #include <asm/word-at-a-time.h>
 
-static inline __wsum csum_finalize_sum(u64 temp64)
+static inline __unsigned_wrap __wsum csum_finalize_sum(u64 temp64)
 {
 	return (__force __wsum)((temp64 + ror64(temp64, 32)) >> 32);
 }
