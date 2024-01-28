@@ -1349,7 +1349,8 @@ static int dx_make_map(struct inode *dir, struct buffer_head *bh,
 }
 
 /* Sort map by hash value */
-static void dx_sort_map (struct dx_map_entry *map, unsigned count)
+static __unsigned_wrap
+void dx_sort_map (struct dx_map_entry *map, unsigned count)
 {
 	struct dx_map_entry *p, *q, *top = map + count - 1;
 	int more;
