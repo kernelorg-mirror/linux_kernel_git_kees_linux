@@ -2187,7 +2187,8 @@ static int queue_oob(struct socket *sock, struct msghdr *msg, struct sock *other
 }
 #endif
 
-static int unix_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+static __unsigned_wrap
+int unix_stream_sendmsg(struct socket *sock, struct msghdr *msg,
 			       size_t len)
 {
 	struct sock *sk = sock->sk;
