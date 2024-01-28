@@ -87,7 +87,8 @@ static struct notifier_block panic_block = {
 	.notifier_call = hung_task_panic,
 };
 
-static void check_hung_task(struct task_struct *t, unsigned long timeout)
+static __unsigned_wrap
+void check_hung_task(struct task_struct *t, unsigned long timeout)
 {
 	unsigned long switch_count = t->nvcsw + t->nivcsw;
 
@@ -177,7 +178,8 @@ static bool rcu_lock_break(struct task_struct *g, struct task_struct *t)
  * a really long time (120 seconds). If that happens, print out
  * a warning.
  */
-static void check_hung_uninterruptible_tasks(unsigned long timeout)
+static __unsigned_wrap
+void check_hung_uninterruptible_tasks(unsigned long timeout)
 {
 	int max_count = sysctl_hung_task_check_count;
 	unsigned long last_break = jiffies;
@@ -226,8 +228,9 @@ static void check_hung_uninterruptible_tasks(unsigned long timeout)
 		panic("hung_task: blocked tasks");
 }
 
-static long hung_timeout_jiffies(unsigned long last_checked,
-				 unsigned long timeout)
+static __unsigned_wrap
+long hung_timeout_jiffies(unsigned long last_checked,
+			  unsigned long timeout)
 {
 	/* timeout of 0 will disable the watchdog */
 	return timeout ? last_checked - jiffies + timeout * HZ :
