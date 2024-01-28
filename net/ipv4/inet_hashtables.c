@@ -28,6 +28,7 @@
 #include <net/tcp.h>
 #include <net/sock_reuseport.h>
 
+__unsigned_wrap
 u32 inet_ehashfn(const struct net *net, const __be32 laddr,
 		 const __u16 lport, const __be32 faddr,
 		 const __be16 fport)
@@ -44,7 +45,7 @@ EXPORT_SYMBOL_GPL(inet_ehashfn);
 /* This function handles inet_sock, but also timewait and request sockets
  * for IPv4/IPv6.
  */
-static u32 sk_ehashfn(const struct sock *sk)
+static __unsigned_wrap u32 sk_ehashfn(const struct sock *sk)
 {
 #if IS_ENABLED(CONFIG_IPV6)
 	if (sk->sk_family == AF_INET6 &&
