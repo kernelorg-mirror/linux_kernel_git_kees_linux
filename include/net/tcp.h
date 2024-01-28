@@ -1612,7 +1612,7 @@ static inline int keepalive_probes(const struct tcp_sock *tp)
 	return val ? : READ_ONCE(net->ipv4.sysctl_tcp_keepalive_probes);
 }
 
-static inline u32 keepalive_time_elapsed(const struct tcp_sock *tp)
+static inline __unsigned_wrap u32 keepalive_time_elapsed(const struct tcp_sock *tp)
 {
 	const struct inet_connection_sock *icsk = &tp->inet_conn;
 
@@ -1632,8 +1632,8 @@ static inline int tcp_fin_time(const struct sock *sk)
 	return fin_timeout;
 }
 
-static inline bool tcp_paws_check(const struct tcp_options_received *rx_opt,
-				  int paws_win)
+static inline __unsigned_wrap
+bool tcp_paws_check(const struct tcp_options_received *rx_opt, int paws_win)
 {
 	if ((s32)(rx_opt->ts_recent - rx_opt->rcv_tsval) <= paws_win)
 		return true;
@@ -1650,8 +1650,8 @@ static inline bool tcp_paws_check(const struct tcp_options_received *rx_opt,
 	return false;
 }
 
-static inline bool tcp_paws_reject(const struct tcp_options_received *rx_opt,
-				   int rst)
+static inline __unsigned_wrap
+bool tcp_paws_reject(const struct tcp_options_received *rx_opt, int rst)
 {
 	if (tcp_paws_check(rx_opt, 0))
 		return false;
