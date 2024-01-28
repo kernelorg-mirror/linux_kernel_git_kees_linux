@@ -345,6 +345,7 @@ static void jbd2_block_tag_csum_set(journal_t *j, journal_block_tag_t *tag,
  * The primary function for committing a transaction to the log.  This
  * function is called by the journal thread to begin a complete commit.
  */
+__unsigned_wrap
 void jbd2_journal_commit_transaction(journal_t *journal)
 {
 	struct transaction_stats_s stats;
