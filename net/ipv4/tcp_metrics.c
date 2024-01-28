@@ -337,6 +337,7 @@ static struct tcp_metrics_block *tcp_get_metrics(struct sock *sk,
  * only, when TCP finishes successfully i.e. when it enters TIME-WAIT
  * or goes from LAST-ACK to CLOSE.
  */
+__unsigned_wrap
 void tcp_update_metrics(struct sock *sk)
 {
 	const struct inet_connection_sock *icsk = inet_csk(sk);
@@ -369,7 +370,7 @@ void tcp_update_metrics(struct sock *sk)
 		goto out_unlock;
 
 	rtt = tcp_metric_get(tm, TCP_METRIC_RTT);
-	m = rtt - tp->srtt_us;
+	m = rtt + tp->srtt_us;
 
 	/* If newly calculated rtt larger than stored one, store new
 	 * one. Otherwise, use EWMA. Remember, rtt overestimation is
