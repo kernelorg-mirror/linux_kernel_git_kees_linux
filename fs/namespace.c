@@ -303,7 +303,7 @@ static unsigned int mnt_get_writers(struct mount *mnt)
 	int cpu;
 
 	for_each_possible_cpu(cpu) {
-		count += per_cpu_ptr(mnt->mnt_pcp, cpu)->mnt_writers;
+		inc_wrap(count, per_cpu_ptr(mnt->mnt_pcp, cpu)->mnt_writers);
 	}
 
 	return count;
