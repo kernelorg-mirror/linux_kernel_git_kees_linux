@@ -291,6 +291,7 @@ static void __napi_gro_flush_chain(struct napi_struct *napi, u32 index,
  * youngest packets at the head of it.
  * Complete skbs in reverse order to reduce latencies.
  */
+__unsigned_wrap
 void napi_gro_flush(struct napi_struct *napi, bool flush_old)
 {
 	unsigned long bitmask = napi->gro_bitmask;
