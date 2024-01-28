@@ -175,7 +175,8 @@ static inline void dev_requeue_skb(struct sk_buff *skb, struct Qdisc *q)
 	}
 }
 
-static void try_bulk_dequeue_skb(struct Qdisc *q,
+static __unsigned_wrap
+void try_bulk_dequeue_skb(struct Qdisc *q,
 				 struct sk_buff *skb,
 				 const struct netdev_queue *txq,
 				 int *packets)
