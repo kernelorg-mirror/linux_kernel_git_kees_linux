@@ -236,7 +236,7 @@ int put_cmsg(struct msghdr * msg, int level, int type, int len, void *data)
 	if (msg->msg_control_is_user) {
 		struct cmsghdr __user *cm = msg->msg_control_user;
 
-		check_object_size(data, cmlen - sizeof(*cm), true);
+		check_object_size(data, len, true);
 
 		if (!user_write_access_begin(cm, cmlen))
 			goto efault;
@@ -245,7 +245,7 @@ int put_cmsg(struct msghdr * msg, int level, int type, int len, void *data)
 		unsafe_put_user(level, &cm->cmsg_level, efault_end);
 		unsafe_put_user(type, &cm->cmsg_type, efault_end);
 		unsafe_copy_to_user(CMSG_USER_DATA(cm), data,
-				    cmlen - sizeof(*cm), efault_end);
+				    len, efault_end);
 		user_write_access_end();
 	} else {
 		struct cmsghdr *cm = msg->msg_control;
@@ -253,7 +253,7 @@ int put_cmsg(struct msghdr * msg, int level, int type, int len, void *data)
 		cm->cmsg_level = level;
 		cm->cmsg_type = type;
 		cm->cmsg_len = cmlen;
-		memcpy(CMSG_DATA(cm), data, cmlen - sizeof(*cm));
+		memcpy(CMSG_DATA(cm), data, len);
 	}
 
 	cmlen = min(CMSG_SPACE(len), msg->msg_controllen);
