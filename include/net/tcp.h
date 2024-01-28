@@ -282,14 +282,14 @@ static inline bool tcp_under_memory_pressure(const struct sock *sk)
  * and worry about wraparound (automatic with unsigned arithmetic).
  */
 
-static inline bool before(__u32 seq1, __u32 seq2)
+static inline __unsigned_wrap bool before(__u32 seq1, __u32 seq2)
 {
         return (__s32)(seq1-seq2) < 0;
 }
 #define after(seq2, seq1) 	before(seq1, seq2)
 
 /* is s2<=s1<=s3 ? */
-static inline bool between(__u32 seq1, __u32 seq2, __u32 seq3)
+static inline __unsigned_wrap bool between(__u32 seq1, __u32 seq2, __u32 seq3)
 {
 	return seq3 - seq2 >= seq1 - seq2;
 }
@@ -304,7 +304,7 @@ static inline bool tcp_out_of_memory(struct sock *sk)
 
 static inline void tcp_wmem_free_skb(struct sock *sk, struct sk_buff *skb)
 {
-	sk_wmem_queued_add(sk, -skb->truesize);
+	sk_wmem_queued_add(sk, sub_wrap(__u32, 0, skb->truesize));
 	if (!skb_zcopy_pure(skb))
 		sk_mem_uncharge(sk, skb->truesize);
 	else
@@ -539,7 +539,8 @@ static inline void tcp_synq_overflow(const struct sock *sk)
 }
 
 /* syncookies: no recent synqueue overflow on this listening socket? */
-static inline bool tcp_synq_no_recent_overflow(const struct sock *sk)
+static inline __unsigned_wrap
+bool tcp_synq_no_recent_overflow(const struct sock *sk)
 {
 	unsigned int last_overflow;
 	unsigned int now = jiffies;
@@ -1361,14 +1362,14 @@ static inline bool tcp_needs_internal_pacing(const struct sock *sk)
 /* Estimates in how many jiffies next packet for this flow can be sent.
  * Scheduling a retransmit timer too early would be silly.
  */
-static inline unsigned long tcp_pacing_delay(const struct sock *sk)
+static inline __unsigned_wrap unsigned long tcp_pacing_delay(const struct sock *sk)
 {
 	s64 delay = tcp_sk(sk)->tcp_wstamp_ns - tcp_sk(sk)->tcp_clock_cache;
 
 	return delay > 0 ? nsecs_to_jiffies(delay) : 0;
 }
 
-static inline void tcp_reset_xmit_timer(struct sock *sk,
+static inline __unsigned_wrap void tcp_reset_xmit_timer(struct sock *sk,
 					const int what,
 					unsigned long when,
 					const unsigned long max_when)
@@ -1448,7 +1449,7 @@ static inline void tcp_sack_reset(struct tcp_options_received *rx_opt)
 
 void tcp_cwnd_restart(struct sock *sk, s32 delta);
 
-static inline void tcp_slow_start_after_idle_check(struct sock *sk)
+static inline __unsigned_wrap void tcp_slow_start_after_idle_check(struct sock *sk)
 {
 	const struct tcp_congestion_ops *ca_ops = inet_csk(sk)->icsk_ca_ops;
 	struct tcp_sock *tp = tcp_sk(sk);
