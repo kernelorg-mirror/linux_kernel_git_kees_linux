@@ -2,6 +2,7 @@
 #
 # Makefile for the Linux TCP/IP (INET) layer.
 #
+UBSAN_WRAP_UNSIGNED := n
 
 obj-y     := route.o inetpeer.o protocol.o \
 	     ip_input.o ip_fragment.o ip_forward.o ip_options.o \
