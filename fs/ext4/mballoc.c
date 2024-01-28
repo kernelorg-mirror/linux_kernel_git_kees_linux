@@ -4691,7 +4691,7 @@ static void ext4_mb_use_group_pa(struct ext4_allocation_context *ac,
  * space that is having currently known minimal distance
  * from the goal block.
  */
-static struct ext4_prealloc_space *
+static __unsigned_wrap struct ext4_prealloc_space *
 ext4_mb_check_group_pa(ext4_fsblk_t goal_block,
 			struct ext4_prealloc_space *pa,
 			struct ext4_prealloc_space *cpa)
