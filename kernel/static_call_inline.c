@@ -89,7 +89,8 @@ static int static_call_site_cmp(const void *_a, const void *_b)
 	return 0;
 }
 
-static void static_call_site_swap(void *_a, void *_b, int size)
+static __unsigned_wrap
+void static_call_site_swap(void *_a, void *_b, int size)
 {
 	long delta = (unsigned long)_a - (unsigned long)_b;
 	struct static_call_site *a = _a;
