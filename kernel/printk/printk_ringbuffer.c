@@ -629,7 +629,8 @@ static bool data_make_reusable(struct printk_ringbuffer *rb,
  * descriptors into the reusable state if the tail is pushed beyond
  * their associated data block.
  */
-static bool data_push_tail(struct printk_ringbuffer *rb, unsigned long lpos)
+static __unsigned_wrap
+bool data_push_tail(struct printk_ringbuffer *rb, unsigned long lpos)
 {
 	struct prb_data_ring *data_ring = &rb->text_data_ring;
 	unsigned long tail_lpos_new;
@@ -1102,7 +1103,8 @@ static char *data_alloc(struct printk_ringbuffer *rb, unsigned int size,
  * Return a pointer to the beginning of the entire data buffer or NULL on
  * failure.
  */
-static char *data_realloc(struct printk_ringbuffer *rb, unsigned int size,
+static __unsigned_wrap
+char *data_realloc(struct printk_ringbuffer *rb, unsigned int size,
 			  struct prb_data_blk_lpos *blk_lpos, unsigned long id)
 {
 	struct prb_data_ring *data_ring = &rb->text_data_ring;
@@ -1541,7 +1543,7 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
 	if (seq == 0 && DESC_INDEX(desc_ring, id) != 0)
 		info->seq = DESC_INDEX(desc_ring, id);
 	else
-		info->seq = seq + DESCS_COUNT(desc_ring);
+		info->seq = add_wrap(u64, seq, DESCS_COUNT(desc_ring));
 
 	/*
 	 * New data is about to be reserved. Once that happens, previous
