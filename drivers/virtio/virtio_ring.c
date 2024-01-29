@@ -742,7 +742,7 @@ static bool virtqueue_kick_prepare_split(struct virtqueue *_vq)
 	 * event. */
 	virtio_mb(vq->weak_barriers);
 
-	old = vq->split.avail_idx_shadow - vq->num_added;
+	old = sub_wrap(typeof(old), vq->split.avail_idx_shadow, vq->num_added);
 	new = vq->split.avail_idx_shadow;
 	vq->num_added = 0;
 
