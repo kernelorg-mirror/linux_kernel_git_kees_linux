@@ -515,7 +515,8 @@ static inline int qdisc_qlen(const struct Qdisc *q)
 	return q->q.qlen;
 }
 
-static inline int qdisc_qlen_sum(const struct Qdisc *q)
+static inline __unsigned_wrap
+int qdisc_qlen_sum(const struct Qdisc *q)
 {
 	__u32 qlen = q->qstats.qlen;
 	int i;
