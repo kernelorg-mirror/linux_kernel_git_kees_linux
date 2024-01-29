@@ -740,7 +740,7 @@ ext4_xattr_list_entries(struct dentry *dentry, struct ext4_xattr_entry *entry,
 				buffer += entry->e_name_len;
 				*buffer++ = 0;
 			}
-			rest -= size;
+			dec_wrap(rest, size);
 		}
 	}
 	return buffer_size - rest;  /* total size */
