@@ -3621,6 +3621,7 @@ i915_gem_execbuffer2_ioctl(struct drm_device *dev, void *data,
 		struct drm_i915_gem_exec_object2 __user *user_exec_list =
 			u64_to_user_ptr(args->buffers_ptr);
 		unsigned int i;
+		const size_t bytes = count * sizeof(*user_exec_list);
 
 		/* Copy the new buffer offsets back to the user's exec list. */
 		/*
@@ -3630,8 +3631,7 @@ i915_gem_execbuffer2_ioctl(struct drm_device *dev, void *data,
 		 * And this range already got effectively checked earlier
 		 * when we did the "copy_from_user()" above.
 		 */
-		if (!user_write_access_begin(user_exec_list,
-					     count * sizeof(*user_exec_list)))
+		if (!user_write_access_begin(user_exec_list, bytes))
 			goto end;
 
 		for (i = 0; i < args->buffer_count; i++) {
