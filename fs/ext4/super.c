@@ -3252,7 +3252,7 @@ static __le16 ext4_group_desc_csum(struct super_block *sb, __u32 block_group,
 	if (!ext4_has_feature_gdt_csum(sb))
 		return 0;
 
-	crc = crc16(~0, sbi->s_es->s_uuid, sizeof(sbi->s_es->s_uuid));
+	crc = crc16(U16_MAX, sbi->s_es->s_uuid, sizeof(sbi->s_es->s_uuid));
 	crc = crc16(crc, (__u8 *)&le_group, sizeof(le_group));
 	crc = crc16(crc, (__u8 *)gdp, offset);
 	offset += sizeof(gdp->bg_checksum); /* skip checksum */
