@@ -46,9 +46,9 @@ static inline void * __must_check ERR_PTR(long error)
  * @ptr: An error pointer.
  * Return: The error code within @ptr.
  */
-static inline long __must_check PTR_ERR(__force const void *ptr)
+static inline int __must_check PTR_ERR(__force const void *ptr)
 {
-	return (long) ptr;
+	return (int)(long) ptr;
 }
 
 /**
