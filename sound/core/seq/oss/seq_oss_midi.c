@@ -79,7 +79,7 @@ snd_seq_oss_midi_lookup_ports(int client)
 		if (clinfo->client == client)
 			continue; /* ignore myself */
 		pinfo->addr.client = clinfo->client;
-		pinfo->addr.port = -1;
+		pinfo->addr.port = U8_MAX;
 		while (snd_seq_kernel_client_ctl(client, SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT, pinfo) == 0)
 			snd_seq_oss_midi_check_new_port(pinfo);
 	}

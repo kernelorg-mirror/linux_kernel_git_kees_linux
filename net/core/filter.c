@@ -944,7 +944,7 @@ static int check_load_and_stores(const struct sock_filter *filter, int flen)
 		case BPF_JMP | BPF_JA:
 			/* A jump must set masks on target */
 			masks[pc + 1 + filter[pc].k] &= memvalid;
-			memvalid = ~0;
+			memvalid = type_max(typeof(memvalid));
 			break;
 		case BPF_JMP | BPF_JEQ | BPF_K:
 		case BPF_JMP | BPF_JEQ | BPF_X:
@@ -957,7 +957,7 @@ static int check_load_and_stores(const struct sock_filter *filter, int flen)
 			/* A jump must set masks on targets */
 			masks[pc + 1 + filter[pc].jt] &= memvalid;
 			masks[pc + 1 + filter[pc].jf] &= memvalid;
-			memvalid = ~0;
+			memvalid = type_max(typeof(memvalid));
 			break;
 		}
 	}

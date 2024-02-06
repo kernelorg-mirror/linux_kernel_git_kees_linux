@@ -137,7 +137,7 @@ int snd_seq_create_port(struct snd_seq_client *client, int port,
 		return -ENOMEM;	/* failure, out of memory */
 	/* init port data */
 	new_port->addr.client = client->number;
-	new_port->addr.port = -1;
+	new_port->addr.port = U8_MAX;
 	new_port->owner = THIS_MODULE;
 	snd_use_lock_init(&new_port->use_lock);
 	port_subs_info_init(&new_port->c_src);

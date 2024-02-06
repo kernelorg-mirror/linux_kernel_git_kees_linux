@@ -18,7 +18,7 @@
 void pci_assign_irq(struct pci_dev *dev)
 {
 	u8 pin;
-	u8 slot = -1;
+	u8 slot = U8_MAX;
 	int irq = 0;
 	struct pci_host_bridge *hbrg = pci_find_host_bridge(dev->bus);
 

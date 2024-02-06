@@ -300,7 +300,7 @@ static void unmask_8259A(void)
 
 static int probe_8259A(void)
 {
-	unsigned char new_val, probe_val = ~(1 << PIC_CASCADE_IR);
+	unsigned char new_val, probe_val = ~(1U << PIC_CASCADE_IR);
 	unsigned long flags;
 
 	/*
