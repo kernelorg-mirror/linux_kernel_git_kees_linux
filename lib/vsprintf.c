@@ -3497,7 +3497,7 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
 		}
 
 		/* get conversion qualifier */
-		qualifier = -1;
+		qualifier = U8_MAX;
 		if (*fmt == 'h' || _tolower(*fmt) == 'l' ||
 		    *fmt == 'z') {
 			qualifier = *fmt++;
