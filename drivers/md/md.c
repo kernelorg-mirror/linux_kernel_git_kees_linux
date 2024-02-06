@@ -6796,7 +6796,7 @@ int md_add_new_disk(struct mddev *mddev, struct mdu_disk_info_s *info)
 		/* expecting a device which has a superblock */
 		rdev = md_import_device(dev, mddev->major_version, mddev->minor_version);
 		if (IS_ERR(rdev)) {
-			pr_warn("md: md_import_device returned %ld\n",
+			pr_warn("md: md_import_device returned %d\n",
 				PTR_ERR(rdev));
 			return PTR_ERR(rdev);
 		}
@@ -6838,7 +6838,7 @@ int md_add_new_disk(struct mddev *mddev, struct mdu_disk_info_s *info)
 		else
 			rdev = md_import_device(dev, -1, -1);
 		if (IS_ERR(rdev)) {
-			pr_warn("md: md_import_device returned %ld\n",
+			pr_warn("md: md_import_device returned %d\n",
 				PTR_ERR(rdev));
 			return PTR_ERR(rdev);
 		}
@@ -6945,7 +6945,7 @@ int md_add_new_disk(struct mddev *mddev, struct mdu_disk_info_s *info)
 		int err;
 		rdev = md_import_device(dev, -1, 0);
 		if (IS_ERR(rdev)) {
-			pr_warn("md: error, md_import_device() returned %ld\n",
+			pr_warn("md: error, md_import_device() returned %d\n",
 				PTR_ERR(rdev));
 			return PTR_ERR(rdev);
 		}
@@ -7043,7 +7043,7 @@ static int hot_add_disk(struct mddev *mddev, dev_t dev)
 
 	rdev = md_import_device(dev, -1, 0);
 	if (IS_ERR(rdev)) {
-		pr_warn("md: error, md_import_device() returned %ld\n",
+		pr_warn("md: error, md_import_device() returned %d\n",
 			PTR_ERR(rdev));
 		return -EINVAL;
 	}

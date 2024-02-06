@@ -1619,7 +1619,7 @@ i915_gem_create_context(struct drm_i915_private *i915,
 
 		ppgtt = i915_ppgtt_create(to_gt(i915), 0);
 		if (IS_ERR(ppgtt)) {
-			drm_dbg(&i915->drm, "PPGTT setup failed (%ld)\n",
+			drm_dbg(&i915->drm, "PPGTT setup failed (%d)\n",
 				PTR_ERR(ppgtt));
 			err = PTR_ERR(ppgtt);
 			goto err_ctx;

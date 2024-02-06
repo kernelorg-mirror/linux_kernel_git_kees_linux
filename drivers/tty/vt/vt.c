@@ -4105,7 +4105,7 @@ static int do_register_con_driver(const struct consw *csw, int first, int last)
 					  con_driver, con_dev_groups,
 					  "vtcon%i", con_driver->node);
 	if (IS_ERR(con_driver->dev)) {
-		pr_warn("Unable to create device for %s; errno = %ld\n",
+		pr_warn("Unable to create device for %s; errno = %d\n",
 			con_driver->desc, PTR_ERR(con_driver->dev));
 		con_driver->dev = NULL;
 	} else {
@@ -4258,7 +4258,7 @@ static int __init vtconsole_class_init(void)
 							  "vtcon%i", con->node);
 
 			if (IS_ERR(con->dev)) {
-				pr_warn("Unable to create device for %s; errno = %ld\n",
+				pr_warn("Unable to create device for %s; errno = %d\n",
 					con->desc, PTR_ERR(con->dev));
 				con->dev = NULL;
 			} else {

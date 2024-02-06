@@ -453,7 +453,7 @@ int __init devtmpfs_init(void)
 
 	mnt = vfs_kern_mount(&internal_fs_type, 0, "devtmpfs", opts);
 	if (IS_ERR(mnt)) {
-		pr_err("unable to create devtmpfs %ld\n", PTR_ERR(mnt));
+		pr_err("unable to create devtmpfs %d\n", PTR_ERR(mnt));
 		return PTR_ERR(mnt);
 	}
 	err = register_filesystem(&dev_fs_type);

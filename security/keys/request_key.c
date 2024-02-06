@@ -479,7 +479,7 @@ link_lock_failed:
 
 alloc_failed:
 	mutex_unlock(&user->cons_lock);
-	kleave(" = %ld", PTR_ERR(key));
+	kleave(" = %d", PTR_ERR(key));
 	return PTR_ERR(key);
 }
 

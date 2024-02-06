@@ -361,7 +361,7 @@ static struct dentry *ecryptfs_lookup_interpose(struct dentry *dentry,
 	}
 	inode = __ecryptfs_get_inode(lower_inode, dentry->d_sb);
 	if (IS_ERR(inode)) {
-		printk(KERN_ERR "%s: Error interposing; rc = [%ld]\n",
+		printk(KERN_ERR "%s: Error interposing; rc = [%d]\n",
 		       __func__, PTR_ERR(inode));
 		return ERR_CAST(inode);
 	}
@@ -418,7 +418,7 @@ static struct dentry *ecryptfs_lookup(struct inode *ecryptfs_dir_inode,
 	lower_dentry = lookup_one_len_unlocked(name, lower_dir_dentry, len);
 	if (IS_ERR(lower_dentry)) {
 		ecryptfs_printk(KERN_DEBUG, "%s: lookup_one_len() returned "
-				"[%ld] on lower_dentry = [%s]\n", __func__,
+				"[%d] on lower_dentry = [%s]\n", __func__,
 				PTR_ERR(lower_dentry),
 				name);
 		res = ERR_CAST(lower_dentry);

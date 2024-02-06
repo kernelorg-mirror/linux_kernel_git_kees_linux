@@ -3385,7 +3385,7 @@ void __init fb_console_init(void)
 
 	if (IS_ERR(fbcon_device)) {
 		printk(KERN_WARNING "Unable to create device "
-		       "for fbcon; errno = %ld\n",
+		       "for fbcon; errno = %d\n",
 		       PTR_ERR(fbcon_device));
 		fbcon_device = NULL;
 	} else

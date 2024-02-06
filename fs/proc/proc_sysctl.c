@@ -1022,7 +1022,7 @@ failed:
 	if (IS_ERR(subdir)) {
 		pr_err("sysctl could not get directory: ");
 		sysctl_print_dir(dir);
-		pr_cont("%*.*s %ld\n", namelen, namelen, name,
+		pr_cont("%*.*s %d\n", namelen, namelen, name,
 			PTR_ERR(subdir));
 	}
 	drop_sysctl_table(&dir->header);

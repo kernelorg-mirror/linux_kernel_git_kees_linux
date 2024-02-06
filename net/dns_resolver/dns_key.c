@@ -207,7 +207,7 @@ dns_resolver_preparse(struct key_preparsed_payload *prep)
 	/* don't cache the result if we're caching an error saying there's no
 	 * result */
 	if (prep->payload.data[dns_key_error]) {
-		kleave(" = 0 [h_error %ld]", PTR_ERR(prep->payload.data[dns_key_error]));
+		kleave(" = 0 [h_error %d]", PTR_ERR(prep->payload.data[dns_key_error]));
 		return 0;
 	}
 

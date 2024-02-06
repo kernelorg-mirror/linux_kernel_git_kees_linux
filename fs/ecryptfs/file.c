@@ -297,7 +297,7 @@ static int ecryptfs_dir_open(struct inode *inode, struct file *file)
 	if (IS_ERR(lower_file)) {
 		printk(KERN_ERR "%s: Error attempting to initialize "
 			"the lower file for the dentry with name "
-			"[%pd]; rc = [%ld]\n", __func__,
+			"[%pd]; rc = [%d]\n", __func__,
 			ecryptfs_dentry, PTR_ERR(lower_file));
 		kmem_cache_free(ecryptfs_file_info_cache, file_info);
 		return PTR_ERR(lower_file);

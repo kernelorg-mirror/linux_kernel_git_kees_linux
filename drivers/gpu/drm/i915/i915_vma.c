@@ -1303,7 +1303,7 @@ __i915_vma_get_pages(struct i915_vma *vma)
 
 	if (IS_ERR(pages)) {
 		drm_err(&vma->vm->i915->drm,
-			"Failed to get pages for VMA view type %u (%ld)!\n",
+			"Failed to get pages for VMA view type %u (%d)!\n",
 			vma->gtt_view.type, PTR_ERR(pages));
 		return PTR_ERR(pages);
 	}

@@ -176,7 +176,7 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
 
 	pdev = platform_device_register_full(&pdevinfo);
 	if (IS_ERR(pdev))
-		dev_err(&adev->dev, "platform device creation failed: %ld\n",
+		dev_err(&adev->dev, "platform device creation failed: %d\n",
 			PTR_ERR(pdev));
 	else {
 		set_dev_node(&pdev->dev, acpi_get_node(adev->handle));

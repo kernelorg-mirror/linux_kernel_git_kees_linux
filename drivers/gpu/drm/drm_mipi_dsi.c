@@ -217,7 +217,7 @@ mipi_dsi_device_register_full(struct mipi_dsi_host *host,
 
 	dsi = mipi_dsi_device_alloc(host);
 	if (IS_ERR(dsi)) {
-		drm_err(host, "failed to allocate DSI device %ld\n",
+		drm_err(host, "failed to allocate DSI device %d\n",
 			PTR_ERR(dsi));
 		return dsi;
 	}

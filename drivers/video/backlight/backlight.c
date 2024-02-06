@@ -753,7 +753,7 @@ static int __init backlight_class_init(void)
 {
 	backlight_class = class_create("backlight");
 	if (IS_ERR(backlight_class)) {
-		pr_warn("Unable to create backlight class; errno = %ld\n",
+		pr_warn("Unable to create backlight class; errno = %d\n",
 			PTR_ERR(backlight_class));
 		return PTR_ERR(backlight_class);
 	}

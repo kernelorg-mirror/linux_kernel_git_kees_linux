@@ -2086,7 +2086,7 @@ static int pinctrl_claim_hogs(struct pinctrl_dev *pctldev)
 	}
 
 	if (IS_ERR(pctldev->p)) {
-		dev_err(pctldev->dev, "error claiming hogs: %li\n",
+		dev_err(pctldev->dev, "error claiming hogs: %i\n",
 			PTR_ERR(pctldev->p));
 
 		return PTR_ERR(pctldev->p);

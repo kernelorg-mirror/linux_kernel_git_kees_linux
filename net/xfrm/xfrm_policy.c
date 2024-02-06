@@ -1356,7 +1356,7 @@ static void xfrm_hash_rebuild(struct work_struct *work)
 		if (!chain) {
 			void *p = xfrm_policy_inexact_insert(policy, dir, 0);
 
-			WARN_ONCE(IS_ERR(p), "reinsert: %ld\n", PTR_ERR(p));
+			WARN_ONCE(IS_ERR(p), "reinsert: %d\n", PTR_ERR(p));
 			continue;
 		}
 

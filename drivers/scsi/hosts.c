@@ -505,7 +505,7 @@ struct Scsi_Host *scsi_host_alloc(const struct scsi_host_template *sht, int priv
 			"scsi_eh_%d", shost->host_no);
 	if (IS_ERR(shost->ehandler)) {
 		shost_printk(KERN_WARNING, shost,
-			"error handler thread failed to spawn, error = %ld\n",
+			"error handler thread failed to spawn, error = %d\n",
 			PTR_ERR(shost->ehandler));
 		shost->ehandler = NULL;
 		goto fail;

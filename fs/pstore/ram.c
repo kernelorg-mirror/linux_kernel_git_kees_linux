@@ -952,7 +952,7 @@ static void __init ramoops_register_dummy(void)
 	dummy = platform_device_register_data(NULL, "ramoops", -1,
 			&pdata, sizeof(pdata));
 	if (IS_ERR(dummy)) {
-		pr_info("could not create platform device: %ld\n",
+		pr_info("could not create platform device: %d\n",
 			PTR_ERR(dummy));
 		dummy = NULL;
 	}

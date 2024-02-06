@@ -974,7 +974,7 @@ int intel_backlight_device_register(struct intel_connector *connector)
 
 	if (IS_ERR(bd)) {
 		drm_err(&i915->drm,
-			"[CONNECTOR:%d:%s] backlight device %s register failed: %ld\n",
+			"[CONNECTOR:%d:%s] backlight device %s register failed: %d\n",
 			connector->base.base.id, connector->base.name, name, PTR_ERR(bd));
 		ret = PTR_ERR(bd);
 		goto out;

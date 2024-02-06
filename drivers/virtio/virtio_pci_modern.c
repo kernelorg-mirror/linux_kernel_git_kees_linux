@@ -756,7 +756,7 @@ static int vp_modern_create_avq(struct virtio_device *vdev)
 	vq = vp_dev->setup_vq(vp_dev, &vp_dev->admin_vq.info, avq->vq_index, NULL,
 			      avq->name, NULL, VIRTIO_MSI_NO_VECTOR);
 	if (IS_ERR(vq)) {
-		dev_err(&vdev->dev, "failed to setup admin virtqueue, err=%ld",
+		dev_err(&vdev->dev, "failed to setup admin virtqueue, err=%d",
 			PTR_ERR(vq));
 		return PTR_ERR(vq);
 	}

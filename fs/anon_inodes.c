@@ -275,11 +275,11 @@ static int __init anon_inode_init(void)
 {
 	anon_inode_mnt = kern_mount(&anon_inode_fs_type);
 	if (IS_ERR(anon_inode_mnt))
-		panic("anon_inode_init() kernel mount failed (%ld)\n", PTR_ERR(anon_inode_mnt));
+		panic("anon_inode_init() kernel mount failed (%d)\n", PTR_ERR(anon_inode_mnt));
 
 	anon_inode_inode = alloc_anon_inode(anon_inode_mnt->mnt_sb);
 	if (IS_ERR(anon_inode_inode))
-		panic("anon_inode_init() inode allocation failed (%ld)\n", PTR_ERR(anon_inode_inode));
+		panic("anon_inode_init() inode allocation failed (%d)\n", PTR_ERR(anon_inode_inode));
 
 	return 0;
 }

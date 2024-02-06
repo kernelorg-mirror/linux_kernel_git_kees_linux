@@ -132,7 +132,7 @@ static struct dentry *reconnect_one(struct vfsmount *mnt,
 	inode_unlock(dentry->d_inode);
 
 	if (IS_ERR(parent)) {
-		dprintk("get_parent of %lu failed, err %ld\n",
+		dprintk("get_parent of %lu failed, err %d\n",
 			dentry->d_inode->i_ino, PTR_ERR(parent));
 		return parent;
 	}
@@ -147,7 +147,7 @@ static struct dentry *reconnect_one(struct vfsmount *mnt,
 	dprintk("%s: found name: %s\n", __func__, nbuf);
 	tmp = lookup_one_unlocked(mnt_idmap(mnt), nbuf, parent, strlen(nbuf));
 	if (IS_ERR(tmp)) {
-		dprintk("lookup failed: %ld\n", PTR_ERR(tmp));
+		dprintk("lookup failed: %d\n", PTR_ERR(tmp));
 		err = PTR_ERR(tmp);
 		goto out_err;
 	}

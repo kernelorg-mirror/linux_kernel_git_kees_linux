@@ -139,7 +139,7 @@ static struct dentry *rpc_setup_pipedir_sb(struct super_block *sb,
 		if (dentry == ERR_PTR(-EEXIST))
 			continue;
 		printk(KERN_INFO "RPC: Couldn't create pipefs entry"
-				" %s/%s, error %ld\n",
+				" %s/%s, error %d\n",
 				dir_name, name, PTR_ERR(dentry));
 		break;
 	}

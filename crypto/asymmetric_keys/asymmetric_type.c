@@ -97,7 +97,7 @@ struct key *find_asymmetric_key(struct key *keyring,
 	ref = keyring_search(make_key_ref(keyring, 1),
 			     &key_type_asymmetric, req, true);
 	if (IS_ERR(ref))
-		pr_debug("Request for key '%s' err %ld\n", req, PTR_ERR(ref));
+		pr_debug("Request for key '%s' err %d\n", req, PTR_ERR(ref));
 	kfree(req);
 
 	if (IS_ERR(ref)) {
