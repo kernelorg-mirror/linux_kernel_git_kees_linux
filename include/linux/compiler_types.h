@@ -288,12 +288,17 @@ struct ftrace_likely_data {
 #else
 # define __signed_wrap
 #endif
+#ifdef CONFIG_UBSAN_UNSIGNED_WRAP
+# define __unsigned_wrap __attribute__((no_sanitize("unsigned-integer-overflow")))
+#else
+# define __unsigned_wrap
+#endif
 
 /* Section for code which can't be instrumented at all */
 #define __noinstr_section(section)					\
 	noinline notrace __attribute((__section__(section)))		\
 	__no_kcsan __no_sanitize_address __no_profile __no_sanitize_coverage \
-	__no_sanitize_memory __signed_wrap
+	__no_sanitize_memory __signed_wrap __unsigned_wrap
 
 #define noinstr __noinstr_section(".noinstr.text")
 
