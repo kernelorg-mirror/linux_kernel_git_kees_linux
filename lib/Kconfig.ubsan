@@ -131,6 +131,17 @@ config UBSAN_SIGNED_WRAP
 	  sanitizer versions will allow for wrap-around checking (rather than
 	  exclusively undefined behavior).
 
+config UBSAN_UNSIGNED_WRAP
+	bool "Perform checking for unsigned arithmetic wrap-around"
+	depends on !COMPILE_TEST
+	depends on $(cc-option,-fsanitize=unsigned-integer-overflow)
+	help
+	  This option enables -fsanitize=unsigned-integer-overflow which checks
+	  for wrap-around of any arithmetic operations with unsigned integers.
+	  This is currently extremely noisy, as unsigned types have long been
+	  expected to wrap around on overflow, and many places in the kernel
+	  depend on this behavior.
+
 config UBSAN_BOOL
 	bool "Perform checking for non-boolean values used as boolean"
 	default UBSAN

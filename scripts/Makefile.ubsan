@@ -16,3 +16,6 @@ export CFLAGS_UBSAN := $(ubsan-cflags-y)
 
 ubsan-signed-wrap-cflags-$(CONFIG_UBSAN_SIGNED_WRAP)     += -fsanitize=signed-integer-overflow
 export CFLAGS_UBSAN_SIGNED_WRAP := $(ubsan-signed-wrap-cflags-y)
+
+ubsan-unsigned-wrap-cflags-$(CONFIG_UBSAN_UNSIGNED_WRAP) += -fsanitize=unsigned-integer-overflow
+export CFLAGS_UBSAN_UNSIGNED_WRAP := $(ubsan-unsigned-wrap-cflags-y)
