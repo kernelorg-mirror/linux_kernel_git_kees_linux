@@ -129,6 +129,17 @@ config UBSAN_SIGNED_WRAP
 	  sanitizer versions will allow for wrap-around checking (rather than
 	  exclusively undefined behavior).
 
+config UBSAN_SIGNED_TRUNC
+	bool "Perform checking for signed truncation on assignment"
+	default UBSAN_SIGNED_WRAP
+	depends on !COMPILE_TEST
+	depends on $(cc-option,-fsanitize=implicit-signed-integer-truncation)
+	help
+	  This option enables -fsanitize=implicit-signed-integer-truncation
+	  which checks for truncation of signed values when they are assigned
+	  to a type that cannot represent the signed value and would result in
+	  an implicit truncation of value or sign.
+
 config UBSAN_BOOL
 	bool "Perform checking for non-boolean values used as boolean"
 	default UBSAN
