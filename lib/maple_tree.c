@@ -1554,7 +1554,7 @@ static inline unsigned long
 ma_max_gap(struct maple_node *node, unsigned long *gaps, enum maple_type mt,
 	    unsigned char *off)
 {
-	unsigned char offset, i;
+	unsigned short offset, i;
 	unsigned long max_gap = 0;
 
 	i = offset = ma_meta_end(node, mt);
@@ -1689,7 +1689,7 @@ static inline void mas_adopt_children(struct ma_state *mas,
 	void __rcu **slots = ma_slots(node, type);
 	unsigned long *pivots = ma_pivots(node, type);
 	struct maple_enode *child;
-	unsigned char offset;
+	short offset;
 
 	offset = ma_data_end(node, type, pivots, mas->max);
 	do {
