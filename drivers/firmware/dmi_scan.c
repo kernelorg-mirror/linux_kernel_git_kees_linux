@@ -158,7 +158,7 @@ static int __init dmi_checksum(const u8 *buf, u8 len)
 	int a;
 
 	for (a = 0; a < len; a++)
-		sum += buf[a];
+		wrapping_assign_add(sum, buf[a]);
 
 	return sum == 0;
 }
