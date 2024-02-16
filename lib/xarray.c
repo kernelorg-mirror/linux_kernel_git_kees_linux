@@ -1162,7 +1162,7 @@ void *__xas_prev(struct xa_state *xas)
 		xas->xa_offset--;
 
 	while (xas->xa_offset == 255) {
-		xas->xa_offset = xas->xa_node->offset - 1;
+		xas->xa_offset = wrapping_sub(u8, xas->xa_node->offset, 1);
 		xas->xa_node = xa_parent(xas->xa, xas->xa_node);
 		if (!xas->xa_node)
 			return set_bounds(xas);
