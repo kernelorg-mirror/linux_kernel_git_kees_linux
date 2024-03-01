@@ -137,7 +137,7 @@ bool static_key_fast_inc_not_disabled(struct static_key *key)
 	 */
 	v = atomic_read(&key->enabled);
 	do {
-		if (v <= 0 || (v + 1) < 0)
+		if (v <= 0 || v == INT_MAX)
 			return false;
 	} while (!likely(atomic_try_cmpxchg(&key->enabled, &v, v + 1)));
 
