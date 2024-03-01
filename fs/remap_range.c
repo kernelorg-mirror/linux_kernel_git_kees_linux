@@ -45,7 +45,7 @@ static int generic_remap_checks(struct file *file_in, loff_t pos_in,
 		return -EINVAL;
 
 	/* Ensure offsets don't wrap. */
-	if (pos_in + count < pos_in || pos_out + count < pos_out)
+	if (count > type_max(pos_in) - pos_in || count > type_max(pos_out) - pos_out)
 		return -EINVAL;
 
 	size_in = i_size_read(inode_in);
