@@ -42,6 +42,22 @@ static void lkdtm_VMALLOC_LINEAR_OVERFLOW(void)
 	vfree(one);
 }
 
+static noinline void do_SLAB_NEGATIVE(int neg_len)
+{
+	u8 *data = kmalloc(neg_len, GFP_KERNEL);
+	if (!data)
+		return;
+	OPTIMIZER_HIDE_VAR(data);
+	kfree(data);
+}
+
+static void lkdtm_SLAB_NEGATIVE(void)
+{
+	volatile int neg_len = -44;
+
+	do_SLAB_NEGATIVE(neg_len);
+}
+
 /*
  * This tries to stay within the next largest power-of-2 kmalloc cache
  * to avoid actually overwriting anything important if it's not detected
@@ -382,6 +398,7 @@ void __exit lkdtm_heap_exit(void)
 }
 
 static struct crashtype crashtypes[] = {
+	CRASHTYPE(SLAB_NEGATIVE),
 	CRASHTYPE(SLAB_LINEAR_OVERFLOW),
 	CRASHTYPE(VMALLOC_LINEAR_OVERFLOW),
 	CRASHTYPE(WRITE_AFTER_FREE),
