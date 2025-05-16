@@ -275,12 +275,12 @@ static inline void fanotify_init_event(struct fanotify_event *event,
 	event->pid = NULL;
 }
 
-#define FANOTIFY_INLINE_FH(name, size)					\
-struct {								\
-	struct fanotify_fh name;					\
-	/* Space for object_fh.buf[] - access with fanotify_fh_buf() */	\
-	unsigned char _inline_fh_buf[size];				\
-}
+#define FANOTIFY_INLINE_FH(name, size)				\
+	TRAILING_OVERLAP(					\
+		struct fanotify_fh, name, buf,			\
+		/* Space for object_fh.buf[] - access with fanotify_fh_buf() */	\
+		unsigned char _inline_fh_buf[size];		\
+	)
 
 struct fanotify_fid_event {
 	struct fanotify_event fae;
@@ -288,6 +288,7 @@ struct fanotify_fid_event {
 
 	FANOTIFY_INLINE_FH(object_fh, FANOTIFY_INLINE_FH_LEN);
 };
+TRAILING_OVERLAP_ASSERT(struct fanotify_fid_event, object_fh.buf, _inline_fh_buf);
 
 static inline struct fanotify_fid_event *
 FANOTIFY_FE(struct fanotify_event *event)
@@ -316,6 +317,7 @@ struct fanotify_error_event {
 
 	FANOTIFY_INLINE_FH(object_fh, MAX_HANDLE_SZ);
 };
+TRAILING_OVERLAP_ASSERT(struct fanotify_fid_event, object_fh.buf, _inline_fh_buf);
 
 static inline struct fanotify_error_event *
 FANOTIFY_EE(struct fanotify_event *event)
