@@ -1168,9 +1168,12 @@ static enum es_result vc_handle_rdtsc(struct ghcb *ghcb,
 }
 
 struct cc_setup_data {
-	struct setup_data header;
-	u32 cc_blob_address;
+	TRAILING_OVERLAP(
+		struct setup_data, header, data,
+		u32 cc_blob_address;
+	);
 };
+TRAILING_OVERLAP_ASSERT(struct cc_setup_data, header.data, cc_blob_address);
 
 /*
  * Search for a Confidential Computing blob passed in as a setup_data entry
