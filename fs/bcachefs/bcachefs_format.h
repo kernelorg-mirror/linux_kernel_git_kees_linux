@@ -610,8 +610,10 @@ struct jset_entry {
 	__u8			type; /* designates what this jset holds */
 	__u8			pad[3];
 
-	struct bkey_i		start[0];
-	__u64			_data[];
+	union {
+		DECLARE_FLEX_ARRAY(struct bkey_i, start);
+		DECLARE_FLEX_ARRAY(__u64, _data);
+	};
 };
 
 struct bch_sb_field_clean {
@@ -622,8 +624,10 @@ struct bch_sb_field_clean {
 	__le16			_write_clock;
 	__le64			journal_seq;
 
-	struct jset_entry	start[0];
-	__u64			_data[];
+	union {
+		DECLARE_FLEX_ARRAY(struct jset_entry, start);
+		DECLARE_FLEX_ARRAY(__u64, _data);
+	};
 };
 
 struct bch_sb_field_ext {
@@ -1181,15 +1185,21 @@ static inline bool jset_entry_is_key(struct jset_entry *e)
  * don't think there was a missing journal entry.
  */
 struct jset_entry_blacklist {
-	struct jset_entry	entry;
-	__le64			seq;
+	TRAILING_OVERLAP(
+		struct jset_entry, entry, _data,
+		__le64          seq;
+	);
 };
+TRAILING_OVERLAP_ASSERT(struct jset_entry_blacklist, entry._data, seq);
 
 struct jset_entry_blacklist_v2 {
-	struct jset_entry	entry;
-	__le64			start;
-	__le64			end;
+	TRAILING_OVERLAP(
+		struct jset_entry, entry, _data,
+		__le64		start;
+		__le64		end;
+	);
 };
+TRAILING_OVERLAP_ASSERT(struct jset_entry_blacklist_v2, entry._data, start);
 
 #define BCH_FS_USAGE_TYPES()			\
 	x(reserved,		0)		\
@@ -1204,39 +1214,53 @@ enum bch_fs_usage_type {
 };
 
 struct jset_entry_usage {
-	struct jset_entry	entry;
-	__le64			v;
+	TRAILING_OVERLAP(
+		struct jset_entry, entry, _data,
+		__le64		v;
+	);
 } __packed;
+TRAILING_OVERLAP_ASSERT(struct jset_entry_usage, entry._data, v);
 
 struct jset_entry_data_usage {
-	struct jset_entry	entry;
-	__le64			v;
-	struct bch_replicas_entry_v1 r;
+	TRAILING_OVERLAP(
+		struct jset_entry, entry, _data,
+		__le64				v;
+		struct bch_replicas_entry_v1	r;
+	);
 } __packed;
+TRAILING_OVERLAP_ASSERT(struct jset_entry_data_usage, entry._data, v);
 
 struct jset_entry_clock {
-	struct jset_entry	entry;
-	__u8			rw;
-	__u8			pad[7];
-	__le64			time;
+	TRAILING_OVERLAP(
+		struct jset_entry, entry, _data,
+		__u8		rw;
+		__u8		pad[7];
+		__le64		time;
+	);
 } __packed;
+TRAILING_OVERLAP_ASSERT(struct jset_entry_clock, entry._data, rw);
 
 struct jset_entry_dev_usage_type {
-	__le64			buckets;
-	__le64			sectors;
-	__le64			fragmented;
+	TRAILING_OVERLAP(struct jset_entry, entry, _data,
+		__le64		buckets;
+		__le64		sectors;
+		__le64		fragmented;
+	);
 } __packed;
+TRAILING_OVERLAP_ASSERT(struct jset_entry_dev_usage_type, entry._data, buckets);
 
 struct jset_entry_dev_usage {
-	struct jset_entry	entry;
-	__le32			dev;
-	__u32			pad;
+	TRAILING_OVERLAP(struct jset_entry, entry, _data,
+		__le32		dev;
+		__u32		pad;
 
-	__le64			_buckets_ec;		/* No longer used */
-	__le64			_buckets_unavailable;	/* No longer used */
+		__le64		_buckets_ec;		/* No longer used */
+		__le64		_buckets_unavailable;	/* No longer used */
 
-	struct jset_entry_dev_usage_type d[];
+		struct jset_entry_dev_usage_type d[];
+	);
 };
+TRAILING_OVERLAP_ASSERT(struct jset_entry_dev_usage, entry._data, dev);
 
 static inline unsigned jset_entry_dev_usage_nr_types(struct jset_entry_dev_usage *u)
 {
@@ -1245,9 +1269,12 @@ static inline unsigned jset_entry_dev_usage_nr_types(struct jset_entry_dev_usage
 }
 
 struct jset_entry_log {
-	struct jset_entry	entry;
-	u8			d[];
+	TRAILING_OVERLAP(
+		struct jset_entry, entry, _data,
+		u8		d[];
+	);
 } __packed __aligned(8);
+TRAILING_OVERLAP_ASSERT(struct jset_entry_log, entry._data, d);
 
 static inline unsigned jset_entry_log_msg_bytes(struct jset_entry_log *l)
 {
@@ -1259,9 +1286,12 @@ static inline unsigned jset_entry_log_msg_bytes(struct jset_entry_log *l)
 }
 
 struct jset_entry_datetime {
-	struct jset_entry	entry;
-	__le64			seconds;
+	TRAILING_OVERLAP(
+		struct jset_entry, entry, _data,
+		__le64		seconds;
+	);
 } __packed __aligned(8);
+TRAILING_OVERLAP_ASSERT(struct jset_entry_datetime, entry._data, seconds);
 
 /*
  * On disk format for a journal entry:
@@ -1292,8 +1322,10 @@ struct jset {
 	__le64			last_seq;
 
 
-	struct jset_entry	start[0];
-	__u64			_data[];
+	union {
+		DECLARE_FLEX_ARRAY(struct jset_entry, start);
+		DECLARE_FLEX_ARRAY(__u64, _data);
+	};
 } __packed __aligned(8);
 
 LE32_BITMASK(JSET_CSUM_TYPE,	struct jset, flags, 0, 4);

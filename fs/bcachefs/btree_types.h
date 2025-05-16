@@ -553,11 +553,13 @@ struct btree_trans {
 	struct closure		ref;
 
 	unsigned long		_paths_allocated[BITS_TO_LONGS(BTREE_ITER_INITIAL)];
-	struct btree_trans_paths trans_paths;
-	struct btree_path	_paths[BTREE_ITER_INITIAL];
 	btree_path_idx_t	_sorted[BTREE_ITER_INITIAL + 4];
 	struct btree_insert_entry _updates[BTREE_ITER_INITIAL];
+	TRAILING_OVERLAP(struct btree_trans_paths, trans_paths, paths,
+		struct btree_path _paths[BTREE_ITER_INITIAL];
+	);
 };
+TRAILING_OVERLAP_ASSERT(struct btree_trans, trans_paths.paths, _paths);
 
 static inline struct btree_path *btree_iter_path(struct btree_trans *trans, struct btree_iter *iter)
 {

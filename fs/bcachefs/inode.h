@@ -103,13 +103,15 @@ struct bch_inode_unpacked {
 };
 BITMASK(INODE_STR_HASH,	struct bch_inode_unpacked, bi_flags, 20, 24);
 
-struct bkey_inode_buf {
-	struct bkey_i_inode_v3	inode;
-
 #define x(_name, _bits)		+ 8 + _bits / 8
-	u8		_pad[0 + BCH_INODE_FIELDS_v3()];
-#undef  x
+struct bkey_inode_buf {
+	TRAILING_OVERLAP(
+		struct bkey_i_inode_v3, inode, v.fields,
+		u8	_pad[0 + BCH_INODE_FIELDS_v3()];
+	);
 };
+#undef  x
+TRAILING_OVERLAP_ASSERT(struct bkey_inode_buf, inode.v.fields, _pad);
 
 void bch2_inode_pack(struct bkey_inode_buf *, const struct bch_inode_unpacked *);
 int bch2_inode_unpack(struct bkey_s_c, struct bch_inode_unpacked *);

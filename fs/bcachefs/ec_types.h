@@ -5,8 +5,9 @@
 #include "bcachefs_format.h"
 
 struct bch_replicas_padded {
-	struct bch_replicas_entry_v1	e;
-	u8				pad[BCH_BKEY_PTRS_MAX];
+	TRAILING_OVERLAP(struct bch_replicas_entry_v1, e, devs,
+		u8		pad[BCH_BKEY_PTRS_MAX];
+	);
 };
 
 struct stripe {
