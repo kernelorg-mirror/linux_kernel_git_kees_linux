@@ -571,9 +571,12 @@ struct hv_tlb_flush {	 /* HV_INPUT_FLUSH_VIRTUAL_ADDRESS_LIST */
 struct hv_tlb_flush_ex {
 	u64 address_space;
 	u64 flags;
-	struct hv_vpset hv_vp_set;
-	u64 gva_list[];
+	TRAILING_OVERLAP(
+		struct hv_vpset, hv_vp_set, bank_contents,
+		u64 gva_list[];
+	);
 } __packed;
+TRAILING_OVERLAP_ASSERT(struct hv_tlb_flush_ex, hv_vp_set.bank_contents, gva_list);
 
 struct ms_hyperv_tsc_page {	 /* HV_REFERENCE_TSC_PAGE */
 	volatile u32 tsc_sequence;
