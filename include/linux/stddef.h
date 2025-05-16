@@ -93,4 +93,15 @@ enum {
 #define DECLARE_FLEX_ARRAY(TYPE, NAME) \
 	__DECLARE_FLEX_ARRAY(TYPE, NAME)
 
+#define TRAILING_OVERLAP(TYPE, NAME, FLEX, MEMBERS)			\
+	union {								\
+		TYPE NAME;						\
+		struct {						\
+			unsigned char __##NAME[offsetof(TYPE, FLEX)];	\
+			MEMBERS						\
+		};							\
+	}
+#define TRAILING_OVERLAP_ASSERT(TYPE, FLEX, FIRST)			\
+	_Static_assert(offsetof(TYPE, FLEX) == offsetof(TYPE, FIRST))
+
 #endif
