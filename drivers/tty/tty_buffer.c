@@ -99,7 +99,7 @@ unsigned int tty_buffer_space_avail(struct tty_port *port)
 }
 EXPORT_SYMBOL_GPL(tty_buffer_space_avail);
 
-static void tty_buffer_reset(struct tty_buffer *p, size_t size)
+static void tty_buffer_reset(struct tty_buffer_metadata *p, size_t size)
 {
 	p->used = 0;
 	p->size = size;
@@ -136,8 +136,8 @@ void tty_buffer_free_all(struct tty_port *port)
 		kfree(p);
 
 	tty_buffer_reset(&buf->sentinel, 0);
-	buf->head = &buf->sentinel;
-	buf->tail = &buf->sentinel;
+	buf->head = (struct tty_buffer *)&buf->sentinel;
+	buf->tail = buf->head;
 
 	still_used = atomic_xchg(&buf->mem_used, 0);
 	WARN(still_used != freed, "we still have not freed %d bytes!",
@@ -182,7 +182,7 @@ static struct tty_buffer *tty_buffer_alloc(struct tty_port *port, size_t size)
 		return NULL;
 
 found:
-	tty_buffer_reset(p, size);
+	tty_buffer_reset(&p->metadata, size);
 	atomic_add(size, &port->buf.mem_used);
 	return p;
 }
@@ -579,8 +579,8 @@ void tty_buffer_init(struct tty_port *port)
 
 	mutex_init(&buf->lock);
 	tty_buffer_reset(&buf->sentinel, 0);
-	buf->head = &buf->sentinel;
-	buf->tail = &buf->sentinel;
+	buf->head = (struct tty_buffer *)&buf->sentinel;
+	buf->tail = buf->head;
 	init_llist_head(&buf->free);
 	atomic_set(&buf->mem_used, 0);
 	atomic_set(&buf->priority, 0);

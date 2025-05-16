@@ -8,6 +8,7 @@
 #include <linux/workqueue.h>
 
 struct tty_buffer {
+	struct_group_tagged(tty_buffer_metadata, metadata,
 	union {
 		struct tty_buffer *next;
 		struct llist_node free;
@@ -18,6 +19,7 @@ struct tty_buffer {
 	unsigned int lookahead;		/* Lazy update on recv, can become less than "read" */
 	unsigned int read;
 	bool flags;
+	);
 	/* Data points here */
 	u8 data[] __aligned(sizeof(unsigned long));
 };
@@ -37,7 +39,7 @@ struct tty_bufhead {
 	struct work_struct work;
 	struct mutex	   lock;
 	atomic_t	   priority;
-	struct tty_buffer sentinel;
+	struct tty_buffer_metadata sentinel;
 	struct llist_head free;		/* Free queue head */
 	atomic_t	   mem_used;    /* In-use buffers excluding free list */
 	int		   mem_limit;
