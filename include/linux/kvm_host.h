@@ -1923,9 +1923,12 @@ struct kvm_stat_data {
 };
 
 struct _kvm_stats_desc {
-	struct kvm_stats_desc desc;
-	char name[KVM_STATS_NAME_SIZE];
+	TRAILING_OVERLAP(
+		struct kvm_stats_desc, desc, name,
+		char name[KVM_STATS_NAME_SIZE];
+	);
 };
+TRAILING_OVERLAP_ASSERT(struct _kvm_stats_desc, desc.name, name);
 
 #define STATS_DESC_COMMON(type, unit, base, exp, sz, bsz)		       \
 	.flags = type | unit | base |					       \
@@ -1938,7 +1941,7 @@ struct _kvm_stats_desc {
 
 #define VM_GENERIC_STATS_DESC(stat, type, unit, base, exp, sz, bsz)	       \
 	{								       \
-		{							       \
+		.desc = {						       \
 			STATS_DESC_COMMON(type, unit, base, exp, sz, bsz),     \
 			.offset = offsetof(struct kvm_vm_stat, generic.stat)   \
 		},							       \
@@ -1946,7 +1949,7 @@ struct _kvm_stats_desc {
 	}
 #define VCPU_GENERIC_STATS_DESC(stat, type, unit, base, exp, sz, bsz)	       \
 	{								       \
-		{							       \
+		.desc = {						       \
 			STATS_DESC_COMMON(type, unit, base, exp, sz, bsz),     \
 			.offset = offsetof(struct kvm_vcpu_stat, generic.stat) \
 		},							       \
@@ -1954,7 +1957,7 @@ struct _kvm_stats_desc {
 	}
 #define VM_STATS_DESC(stat, type, unit, base, exp, sz, bsz)		       \
 	{								       \
-		{							       \
+		.desc = {						       \
 			STATS_DESC_COMMON(type, unit, base, exp, sz, bsz),     \
 			.offset = offsetof(struct kvm_vm_stat, stat)	       \
 		},							       \
@@ -1962,7 +1965,7 @@ struct _kvm_stats_desc {
 	}
 #define VCPU_STATS_DESC(stat, type, unit, base, exp, sz, bsz)		       \
 	{								       \
-		{							       \
+		.desc = {						       \
 			STATS_DESC_COMMON(type, unit, base, exp, sz, bsz),     \
 			.offset = offsetof(struct kvm_vcpu_stat, stat)	       \
 		},							       \
