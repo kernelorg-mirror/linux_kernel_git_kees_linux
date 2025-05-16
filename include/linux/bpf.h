@@ -2110,9 +2110,12 @@ struct bpf_prog_array {
 };
 
 struct bpf_empty_prog_array {
-	struct bpf_prog_array hdr;
-	struct bpf_prog *null_prog;
+	TRAILING_OVERLAP(
+		struct bpf_prog_array, hdr, items,
+		struct bpf_prog *null_prog;
+	);
 };
+TRAILING_OVERLAP_ASSERT(struct bpf_empty_prog_array, hdr.items, null_prog);
 
 /* to avoid allocating empty bpf_prog_array for cgroups that
  * don't have bpf program attached use one global 'bpf_empty_prog_array'
