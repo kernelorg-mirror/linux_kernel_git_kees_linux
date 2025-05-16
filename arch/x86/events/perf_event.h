@@ -291,9 +291,6 @@ struct cpu_hw_events {
 	 */
 	int				lbr_users;
 	int				lbr_pebs_users;
-	struct perf_branch_stack	lbr_stack;
-	struct perf_branch_entry	lbr_entries[MAX_LBR_ENTRIES];
-	u64				lbr_counters[MAX_LBR_ENTRIES]; /* branch stack extra */
 	union {
 		struct er_account		*lbr_sel;
 		struct er_account		*lbr_ctl;
@@ -352,7 +349,14 @@ struct cpu_hw_events {
 	void				*kfree_on_online[X86_PERF_KFREE_MAX];
 
 	struct pmu			*pmu;
+
+	TRAILING_OVERLAP(
+		struct perf_branch_stack, lbr_stack, entries,
+		struct perf_branch_entry	lbr_entries[MAX_LBR_ENTRIES];
+		u64				lbr_counters[MAX_LBR_ENTRIES]; /* branch stack extra */
+	);
 };
+TRAILING_OVERLAP_ASSERT(struct cpu_hw_events, lbr_stack.entries, lbr_entries);
 
 #define __EVENT_CONSTRAINT_RANGE(c, e, n, m, w, o, f) {	\
 	{ .idxmsk64 = (n) },		\
