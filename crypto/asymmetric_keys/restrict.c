@@ -16,10 +16,13 @@ static bool use_builtin_keys;
 static struct asymmetric_key_id *ca_keyid;
 
 #ifndef MODULE
-static struct {
-	struct asymmetric_key_id id;
-	unsigned char data[10];
+static struct asymmetric_key_id_data {
+	TRAILING_OVERLAP(
+		struct asymmetric_key_id, id, data,
+		unsigned char data[10];
+	);
 } cakey;
+TRAILING_OVERLAP_ASSERT(struct asymmetric_key_id_data, id.data, data);
 
 static int __init ca_keys_setup(char *str)
 {
