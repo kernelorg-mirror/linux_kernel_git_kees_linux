@@ -362,15 +362,19 @@ struct mmu_gather {
 	unsigned int		batch_count;
 
 #ifndef CONFIG_MMU_GATHER_NO_GATHER
-	struct mmu_gather_batch *active;
-	struct mmu_gather_batch	local;
-	struct page		*__pages[MMU_GATHER_BUNDLE];
-
 #ifdef CONFIG_MMU_GATHER_PAGE_SIZE
 	unsigned int page_size;
 #endif
+	struct mmu_gather_batch *active;
+	TRAILING_OVERLAP(
+		struct mmu_gather_batch, local, encoded_pages,
+		struct page		*__pages[MMU_GATHER_BUNDLE];
+	);
 #endif
 };
+#ifndef CONFIG_MMU_GATHER_NO_GATHER
+TRAILING_OVERLAP_ASSERT(struct mmu_gather, local.encoded_pages, __pages);
+#endif
 
 void tlb_flush_mmu(struct mmu_gather *tlb);
 
