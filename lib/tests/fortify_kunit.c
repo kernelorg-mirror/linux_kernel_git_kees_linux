@@ -53,6 +53,9 @@ void fortify_add_kunit_error(int write);
 # define __compiletime_strlen __builtin_strlen
 #endif
 
+static const char writable_default[] = "default";
+static char writable[strlen(writable_default) > 5 ? 9 : 10];
+
 static struct kunit_resource read_resource;
 static struct kunit_resource write_resource;
 static int fortify_read_overflows;
@@ -107,6 +110,12 @@ static void fortify_test_known_sizes(struct kunit *test)
 	/* Externally defined and dynamically sized string pointer: */
 	KUNIT_EXPECT_FALSE(test, __is_constexpr(__builtin_strlen(test->name)));
 	KUNIT_EXPECT_FALSE(test, __is_constexpr(__compiletime_strlen(test->name)));
+
+	/* Statically initialized with strlen. */
+	KUNIT_EXPECT_EQ(test, __member_size(writable_default), 8);
+	KUNIT_EXPECT_EQ(test, strlen(writable_default), 7);
+	KUNIT_EXPECT_EQ(test, __member_size(writable), 9);
+	KUNIT_EXPECT_EQ(test, strlen(writable), 0);
 }
 
 /* This is volatile so the optimizer can't perform DCE below. */
