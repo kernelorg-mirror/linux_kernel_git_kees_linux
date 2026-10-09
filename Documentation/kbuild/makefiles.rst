@@ -1452,13 +1452,14 @@ objcopy
   OBJCOPYFLAGS_$@ may be used to set additional options.
 
 gzip
-  Compress target. Use maximum compression to compress target.
+  Compress target. Use maximum compression to compress target. Add '+' prefix
+  to allow parallel gzip compression via pigz (if available).
 
   Example::
 
     #arch/x86/boot/compressed/Makefile
     $(obj)/vmlinux.bin.gz: $(vmlinux.bin.all-y) FORCE
-            $(call if_changed,gzip)
+            +$(call if_changed,gzip)
 
 dtc
   Create flattened device tree blob object suitable for linking
