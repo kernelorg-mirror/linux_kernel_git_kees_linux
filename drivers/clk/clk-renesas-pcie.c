@@ -287,7 +287,7 @@ static int rs9_probe(struct i2c_client *client)
 	struct clk_hw *hw;
 	int i, ret;
 
-	rs9 = devm_kzalloc(&client->dev, sizeof(*rs9), GFP_KERNEL);
+	rs9 = devm_kzalloc_obj(&client->dev, *rs9);
 	if (!rs9)
 		return -ENOMEM;
 

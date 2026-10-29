@@ -518,15 +518,15 @@ tegra_bpmp_clk_register(struct tegra_bpmp *bpmp,
 	unsigned int i;
 	int err;
 
-	clk = devm_kzalloc(bpmp->dev, sizeof(*clk), GFP_KERNEL);
+	clk = devm_kzalloc_obj(bpmp->dev, *clk);
 	if (!clk)
 		return ERR_PTR(-ENOMEM);
 
 	clk->id = info->id;
 	clk->bpmp = bpmp;
 
-	clk->parents = devm_kcalloc(bpmp->dev, info->num_parents,
-				    sizeof(*clk->parents), GFP_KERNEL);
+	clk->parents = devm_kzalloc_objs(bpmp->dev, *clk->parents,
+					 info->num_parents);
 	if (!clk->parents)
 		return ERR_PTR(-ENOMEM);
 
@@ -643,7 +643,7 @@ static int tegra_bpmp_register_clocks(struct tegra_bpmp *bpmp,
 
 	bpmp->num_clocks = count;
 
-	bpmp->clocks = devm_kcalloc(bpmp->dev, count, sizeof(*bpmp->clocks), GFP_KERNEL);
+	bpmp->clocks = devm_kzalloc_objs(bpmp->dev, *bpmp->clocks, count);
 	if (!bpmp->clocks)
 		return -ENOMEM;
 

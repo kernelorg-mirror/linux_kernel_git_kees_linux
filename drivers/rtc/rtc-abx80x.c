@@ -898,7 +898,7 @@ static int abx80x_probe(struct i2c_client *client)
 	if (err)
 		return err;
 
-	priv = devm_kzalloc(&client->dev, sizeof(*priv), GFP_KERNEL);
+	priv = devm_kzalloc_obj(&client->dev, *priv);
 	if (priv == NULL)
 		return -ENOMEM;
 

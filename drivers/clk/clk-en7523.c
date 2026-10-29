@@ -610,7 +610,7 @@ static struct clk_hw *en7523_register_pcie_clk(struct device *dev,
 	};
 	struct en_clk_gate *cg;
 
-	cg = devm_kzalloc(dev, sizeof(*cg), GFP_KERNEL);
+	cg = devm_kzalloc_obj(dev, *cg);
 	if (!cg)
 		return NULL;
 
@@ -828,7 +828,7 @@ static int en7581_reset_register(struct device *dev, void __iomem *base,
 {
 	struct en_rst_data *rst_data;
 
-	rst_data = devm_kzalloc(dev, sizeof(*rst_data), GFP_KERNEL);
+	rst_data = devm_kzalloc_obj(dev, *rst_data);
 	if (!rst_data)
 		return -ENOMEM;
 
@@ -989,9 +989,8 @@ static int en7523_clk_probe(struct platform_device *pdev)
 
 	soc_data = device_get_match_data(&pdev->dev);
 
-	clk_data = devm_kzalloc(&pdev->dev,
-				struct_size(clk_data, hws, soc_data->num_clocks),
-				GFP_KERNEL);
+	clk_data = devm_kzalloc_flex(&pdev->dev, *clk_data, hws,
+				     soc_data->num_clocks);
 	if (!clk_data)
 		return -ENOMEM;
 
