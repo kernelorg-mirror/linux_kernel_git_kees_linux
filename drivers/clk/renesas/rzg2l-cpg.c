@@ -312,7 +312,7 @@ static int rzg2l_register_notifier(struct clk_hw *hw, const struct cpg_core_clk 
 	if (!core->notifier)
 		return 0;
 
-	nb = devm_kzalloc(priv->dev, sizeof(*nb), GFP_KERNEL);
+	nb = devm_kzalloc_obj(priv->dev, *nb);
 	if (!nb)
 		return -ENOMEM;
 
@@ -397,7 +397,7 @@ rzg3s_cpg_div_clk_register(const struct cpg_core_clk *core, struct rzg2l_cpg_pri
 
 	parent_name = __clk_get_name(parent);
 
-	div_hw_data = devm_kzalloc(priv->dev, sizeof(*div_hw_data), GFP_KERNEL);
+	div_hw_data = devm_kzalloc_obj(priv->dev, *div_hw_data);
 	if (!div_hw_data)
 		return ERR_PTR(-ENOMEM);
 
@@ -553,7 +553,7 @@ rzg2l_cpg_sd_mux_clk_register(const struct cpg_core_clk *core,
 	struct clk_hw *clk_hw;
 	int ret;
 
-	sd_mux_hw_data = devm_kzalloc(priv->dev, sizeof(*sd_mux_hw_data), GFP_KERNEL);
+	sd_mux_hw_data = devm_kzalloc_obj(priv->dev, *sd_mux_hw_data);
 	if (!sd_mux_hw_data)
 		return ERR_PTR(-ENOMEM);
 
@@ -810,7 +810,7 @@ rzg2l_cpg_dsi_div_clk_register(const struct cpg_core_clk *core,
 	if (IS_ERR(parent))
 		return ERR_CAST(parent);
 
-	clk_hw_data = devm_kzalloc(priv->dev, sizeof(*clk_hw_data), GFP_KERNEL);
+	clk_hw_data = devm_kzalloc_obj(priv->dev, *clk_hw_data);
 	if (!clk_hw_data)
 		return ERR_PTR(-ENOMEM);
 
@@ -900,7 +900,7 @@ rzg2l_cpg_pll5_4_mux_clk_register(const struct cpg_core_clk *core,
 	struct clk_hw *clk_hw;
 	int ret;
 
-	clk_hw_data = devm_kzalloc(priv->dev, sizeof(*clk_hw_data), GFP_KERNEL);
+	clk_hw_data = devm_kzalloc_obj(priv->dev, *clk_hw_data);
 	if (!clk_hw_data)
 		return ERR_PTR(-ENOMEM);
 
@@ -1034,7 +1034,7 @@ rzg2l_cpg_sipll5_register(const struct cpg_core_clk *core,
 	if (IS_ERR(parent))
 		return ERR_CAST(parent);
 
-	sipll5 = devm_kzalloc(priv->dev, sizeof(*sipll5), GFP_KERNEL);
+	sipll5 = devm_kzalloc_obj(priv->dev, *sipll5);
 	if (!sipll5)
 		return ERR_PTR(-ENOMEM);
 
@@ -1150,7 +1150,7 @@ rzg2l_cpg_pll_clk_register(const struct cpg_core_clk *core,
 	if (IS_ERR(parent))
 		return ERR_CAST(parent);
 
-	pll_clk = devm_kzalloc(dev, sizeof(*pll_clk), GFP_KERNEL);
+	pll_clk = devm_kzalloc_obj(dev, *pll_clk);
 	if (!pll_clk)
 		return ERR_PTR(-ENOMEM);
 
@@ -1756,7 +1756,7 @@ rzg2l_cpg_register_mod_clk(const struct rzg2l_mod_clk *mod,
 		goto fail;
 	}
 
-	clock = devm_kzalloc(dev, sizeof(*clock), GFP_KERNEL);
+	clock = devm_kzalloc_obj(dev, *clock);
 	if (!clock) {
 		clk = ERR_PTR(-ENOMEM);
 		goto fail;
@@ -1786,7 +1786,7 @@ rzg2l_cpg_register_mod_clk(const struct rzg2l_mod_clk *mod,
 		struct mstop *mstop = rzg2l_mod_clock_get_mstop(priv, mod->mstop_conf);
 
 		if (!mstop) {
-			mstop = devm_kzalloc(dev, sizeof(*mstop), GFP_KERNEL);
+			mstop = devm_kzalloc_obj(dev, *mstop);
 			if (!mstop) {
 				clk = ERR_PTR(-ENOMEM);
 				goto fail;
@@ -2100,7 +2100,7 @@ static int __init rzg2l_cpg_probe(struct platform_device *pdev)
 
 	info = of_device_get_match_data(dev);
 
-	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+	priv = devm_kzalloc_obj(dev, *priv);
 	if (!priv)
 		return -ENOMEM;
 
@@ -2113,7 +2113,7 @@ static int __init rzg2l_cpg_probe(struct platform_device *pdev)
 		return PTR_ERR(priv->base);
 
 	nclks = info->num_total_core_clks + info->num_hw_mod_clks;
-	clks = devm_kmalloc_array(dev, nclks, sizeof(*clks), GFP_KERNEL);
+	clks = devm_kmalloc_objs(dev, *clks, nclks);
 	if (!clks)
 		return -ENOMEM;
 

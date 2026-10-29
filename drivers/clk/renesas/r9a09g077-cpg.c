@@ -543,12 +543,12 @@ r9a09g077_cpg_fselxspi_div_clk_register(struct device *dev,
 	if (IS_ERR(parent))
 		return ERR_CAST(parent);
 
-	div = devm_kzalloc(dev, sizeof(*div), GFP_KERNEL);
+	div = devm_kzalloc_obj(dev, *div);
 	if (!div)
 		return ERR_PTR(-ENOMEM);
 
 	if (!xspi_div_ops) {
-		xspi_div_ops = devm_kzalloc(dev, sizeof(*xspi_div_ops), GFP_KERNEL);
+		xspi_div_ops = devm_kzalloc_obj(dev, *xspi_div_ops);
 		if (!xspi_div_ops)
 			return  ERR_PTR(-ENOMEM);
 		memcpy(xspi_div_ops, &clk_divider_ops,
@@ -694,7 +694,7 @@ r9a09g077_cpg_pll3_clk_register(struct device *dev,
 	if (IS_ERR(parent))
 		return ERR_CAST(parent);
 
-	pll_clk = devm_kzalloc(dev, sizeof(*pll_clk), GFP_KERNEL);
+	pll_clk = devm_kzalloc_obj(dev, *pll_clk);
 	if (!pll_clk)
 		return ERR_PTR(-ENOMEM);
 
@@ -823,7 +823,7 @@ r9a09g077_cpg_lcdc_div_clk_register(struct device *dev,
 	if (IS_ERR(parent))
 		return ERR_CAST(parent);
 
-	clk_hw_data = devm_kzalloc(dev, sizeof(*clk_hw_data), GFP_KERNEL);
+	clk_hw_data = devm_kzalloc_obj(dev, *clk_hw_data);
 	if (!clk_hw_data)
 		return ERR_PTR(-ENOMEM);
 

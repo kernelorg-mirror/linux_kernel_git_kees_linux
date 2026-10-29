@@ -117,15 +117,14 @@ static int acpm_clk_probe(struct platform_device *pdev)
 	count = acpm_clk_gs101.nr_clks;
 	mbox_chan_id = acpm_clk_gs101.mbox_chan_id;
 
-	clk_data = devm_kzalloc(dev, struct_size(clk_data, hws, count),
-				GFP_KERNEL);
+	clk_data = devm_kzalloc_flex(dev, *clk_data, hws, count);
 	if (!clk_data)
 		return -ENOMEM;
 
 	clk_data->num = count;
 	hws = clk_data->hws;
 
-	aclks = devm_kcalloc(dev, count, sizeof(*aclks), GFP_KERNEL);
+	aclks = devm_kzalloc_objs(dev, *aclks, count);
 	if (!aclks)
 		return -ENOMEM;
 

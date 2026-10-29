@@ -338,7 +338,7 @@ static struct clk_hw *ipq_cmn_pll_clk_hw_register(struct platform_device *pdev)
 	if (IS_ERR(regmap))
 		return ERR_CAST(regmap);
 
-	cmn_pll = devm_kzalloc(dev, sizeof(*cmn_pll), GFP_KERNEL);
+	cmn_pll = devm_kzalloc_obj(dev, *cmn_pll);
 	if (!cmn_pll)
 		return ERR_PTR(-ENOMEM);
 
@@ -375,8 +375,7 @@ static int ipq_cmn_pll_register_clks(struct platform_device *pdev)
 	for (p = fixed_clk; p->name; p++)
 		num_clks++;
 
-	hw_data = devm_kzalloc(dev, struct_size(hw_data, hws, num_clks + 1),
-			       GFP_KERNEL);
+	hw_data = devm_kzalloc_flex(dev, *hw_data, hws, num_clks + 1);
 	if (!hw_data)
 		return -ENOMEM;
 
