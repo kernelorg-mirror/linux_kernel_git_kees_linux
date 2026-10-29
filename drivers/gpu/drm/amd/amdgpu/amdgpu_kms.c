@@ -906,8 +906,7 @@ int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
 		if (info->read_mmr_reg.count > 128)
 			return -EINVAL;
 
-		regs = kmalloc_array(info->read_mmr_reg.count, sizeof(*regs),
-				     GFP_KERNEL);
+		regs = kmalloc_objs(*regs, info->read_mmr_reg.count);
 		if (!regs)
 			return -ENOMEM;
 
@@ -1492,7 +1491,7 @@ int amdgpu_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
 	if (r < 0)
 		goto pm_put;
 
-	fpriv = kzalloc(sizeof(*fpriv), GFP_KERNEL);
+	fpriv = kzalloc_obj(*fpriv);
 	if (unlikely(!fpriv)) {
 		r = -ENOMEM;
 		goto out_suspend;

@@ -7636,8 +7636,8 @@ static int find_file_posix_info(struct ksmbd_work *work,
 	if (filename[0] == '\\')
 		memmove(filename, filename + 1, strlen(filename));
 	name_bytes = strlen(filename);
-	utf16_name = kmalloc_array(name_bytes + 1, sizeof(*utf16_name),
-				    KSMBD_DEFAULT_GFP);
+	utf16_name = kmalloc_objs(*utf16_name, name_bytes + 1,
+				  KSMBD_DEFAULT_GFP);
 	if (!utf16_name) {
 		kfree(filename);
 		return -ENOMEM;
